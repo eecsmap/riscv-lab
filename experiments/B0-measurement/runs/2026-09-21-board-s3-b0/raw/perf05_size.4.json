@@ -1,0 +1,10 @@
+{
+  "outcome": "completed",
+  "sample": 4,
+  "harness_exit": 0,
+  "started": "2026-09-21T19:06:10+00:00",
+  "wall_seconds": 1.009343,
+  "boot_id": "ebeab8a6-0ac9-474a-84c3-bd6e0b357d3b",
+  "session": "xv6-board-run-3",
+  "timeout_s": 120
+}

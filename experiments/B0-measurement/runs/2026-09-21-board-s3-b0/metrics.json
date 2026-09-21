@@ -718,6 +718,363 @@
         "formula": "configured_hz / CPI",
         "frequency_source": "configured"
       }
+    },
+    {
+      "platform": "board",
+      "run_id": "2026-09-21-board-s3-b0",
+      "workload": "perf05_size",
+      "roi": "alu",
+      "roi_description": "baseline: no data access",
+      "units": {
+        "cycles": "cycles",
+        "cpi": "cycles/instruction",
+        "derived_ips": "instructions/second"
+      },
+      "samples_successful": 5,
+      "samples_failed": 0,
+      "samples_required": 5,
+      "meets_sample_policy": true,
+      "retired_per_sample": 30002,
+      "boot_ids": [
+        "ebeab8a6-0ac9-474a-84c3-bd6e0b357d3b"
+      ],
+      "repeat_kind": "same-session",
+      "status": "reported",
+      "evidence": [
+        "experiments/B0-measurement/runs/2026-09-21-board-s3-b0/raw/perf05_size.1.out",
+        "experiments/B0-measurement/runs/2026-09-21-board-s3-b0/raw/perf05_size.2.out",
+        "experiments/B0-measurement/runs/2026-09-21-board-s3-b0/raw/perf05_size.3.out",
+        "experiments/B0-measurement/runs/2026-09-21-board-s3-b0/raw/perf05_size.4.out",
+        "experiments/B0-measurement/runs/2026-09-21-board-s3-b0/raw/perf05_size.5.out"
+      ],
+      "failures": [],
+      "cycles": {
+        "median": 1210433,
+        "min": 1210156,
+        "max": 1210744,
+        "n": 5
+      },
+      "cpi": {
+        "median": 40.34507699486701,
+        "min": 40.335844277048196,
+        "max": 40.35544297046864,
+        "n": 5
+      },
+      "derived_ips": {
+        "median": 991446.8624037845,
+        "min": 991192.192569197,
+        "max": 991673.8007331287,
+        "n": 5,
+        "kind": "model-derived",
+        "formula": "configured_hz / CPI",
+        "frequency_source": "configured"
+      }
+    },
+    {
+      "platform": "board",
+      "run_id": "2026-09-21-board-s3-b0",
+      "workload": "perf05_size",
+      "roi": "load_1b",
+      "roi_description": "load 1 byte",
+      "units": {
+        "cycles": "cycles",
+        "cpi": "cycles/instruction",
+        "derived_ips": "instructions/second"
+      },
+      "samples_successful": 5,
+      "samples_failed": 0,
+      "samples_required": 5,
+      "meets_sample_policy": true,
+      "retired_per_sample": 30002,
+      "boot_ids": [
+        "ebeab8a6-0ac9-474a-84c3-bd6e0b357d3b"
+      ],
+      "repeat_kind": "same-session",
+      "status": "reported",
+      "evidence": [
+        "experiments/B0-measurement/runs/2026-09-21-board-s3-b0/raw/perf05_size.1.out",
+        "experiments/B0-measurement/runs/2026-09-21-board-s3-b0/raw/perf05_size.2.out",
+        "experiments/B0-measurement/runs/2026-09-21-board-s3-b0/raw/perf05_size.3.out",
+        "experiments/B0-measurement/runs/2026-09-21-board-s3-b0/raw/perf05_size.4.out",
+        "experiments/B0-measurement/runs/2026-09-21-board-s3-b0/raw/perf05_size.5.out"
+      ],
+      "failures": [],
+      "cycles": {
+        "median": 1403675,
+        "min": 1400999,
+        "max": 1406522,
+        "n": 5
+      },
+      "cpi": {
+        "median": 46.786047596826876,
+        "min": 46.69685354309713,
+        "max": 46.880941270581964,
+        "n": 5
+      },
+      "derived_ips": {
+        "median": 854955.7411794041,
+        "min": 853225.1895100111,
+        "max": 856588.7627328784,
+        "n": 5,
+        "kind": "model-derived",
+        "formula": "configured_hz / CPI",
+        "frequency_source": "configured"
+      }
+    },
+    {
+      "platform": "board",
+      "run_id": "2026-09-21-board-s3-b0",
+      "workload": "perf05_size",
+      "roi": "load_2b",
+      "roi_description": "load 2 bytes",
+      "units": {
+        "cycles": "cycles",
+        "cpi": "cycles/instruction",
+        "derived_ips": "instructions/second"
+      },
+      "samples_successful": 5,
+      "samples_failed": 0,
+      "samples_required": 5,
+      "meets_sample_policy": true,
+      "retired_per_sample": 30002,
+      "boot_ids": [
+        "ebeab8a6-0ac9-474a-84c3-bd6e0b357d3b"
+      ],
+      "repeat_kind": "same-session",
+      "status": "reported",
+      "evidence": [
+        "experiments/B0-measurement/runs/2026-09-21-board-s3-b0/raw/perf05_size.1.out",
+        "experiments/B0-measurement/runs/2026-09-21-board-s3-b0/raw/perf05_size.2.out",
+        "experiments/B0-measurement/runs/2026-09-21-board-s3-b0/raw/perf05_size.3.out",
+        "experiments/B0-measurement/runs/2026-09-21-board-s3-b0/raw/perf05_size.4.out",
+        "experiments/B0-measurement/runs/2026-09-21-board-s3-b0/raw/perf05_size.5.out"
+      ],
+      "failures": [],
+      "cycles": {
+        "median": 1404341,
+        "min": 1401433,
+        "max": 1406854,
+        "n": 5
+      },
+      "cpi": {
+        "median": 46.80824611692554,
+        "min": 46.71131924538364,
+        "max": 46.89200719952003,
+        "n": 5
+      },
+      "derived_ips": {
+        "median": 854550.2837273853,
+        "min": 853023.8390053269,
+        "max": 856323.4917402401,
+        "n": 5,
+        "kind": "model-derived",
+        "formula": "configured_hz / CPI",
+        "frequency_source": "configured"
+      }
+    },
+    {
+      "platform": "board",
+      "run_id": "2026-09-21-board-s3-b0",
+      "workload": "perf05_size",
+      "roi": "load_4b",
+      "roi_description": "load 4 bytes",
+      "units": {
+        "cycles": "cycles",
+        "cpi": "cycles/instruction",
+        "derived_ips": "instructions/second"
+      },
+      "samples_successful": 5,
+      "samples_failed": 0,
+      "samples_required": 5,
+      "meets_sample_policy": true,
+      "retired_per_sample": 30002,
+      "boot_ids": [
+        "ebeab8a6-0ac9-474a-84c3-bd6e0b357d3b"
+      ],
+      "repeat_kind": "same-session",
+      "status": "reported",
+      "evidence": [
+        "experiments/B0-measurement/runs/2026-09-21-board-s3-b0/raw/perf05_size.1.out",
+        "experiments/B0-measurement/runs/2026-09-21-board-s3-b0/raw/perf05_size.2.out",
+        "experiments/B0-measurement/runs/2026-09-21-board-s3-b0/raw/perf05_size.3.out",
+        "experiments/B0-measurement/runs/2026-09-21-board-s3-b0/raw/perf05_size.4.out",
+        "experiments/B0-measurement/runs/2026-09-21-board-s3-b0/raw/perf05_size.5.out"
+      ],
+      "failures": [],
+      "cycles": {
+        "median": 1405864,
+        "min": 1401631,
+        "max": 1407464,
+        "n": 5
+      },
+      "cpi": {
+        "median": 46.85900939937338,
+        "min": 46.71791880541297,
+        "max": 46.912339177388176,
+        "n": 5
+      },
+      "derived_ips": {
+        "median": 853624.5326717235,
+        "min": 852654.1353810825,
+        "max": 856202.5240594707,
+        "n": 5,
+        "kind": "model-derived",
+        "formula": "configured_hz / CPI",
+        "frequency_source": "configured"
+      }
+    },
+    {
+      "platform": "board",
+      "run_id": "2026-09-21-board-s3-b0",
+      "workload": "perf05_size",
+      "roi": "load_8b",
+      "roi_description": "load 8 bytes, a full 64-bit beat",
+      "units": {
+        "cycles": "cycles",
+        "cpi": "cycles/instruction",
+        "derived_ips": "instructions/second"
+      },
+      "samples_successful": 5,
+      "samples_failed": 0,
+      "samples_required": 5,
+      "meets_sample_policy": true,
+      "retired_per_sample": 30002,
+      "boot_ids": [
+        "ebeab8a6-0ac9-474a-84c3-bd6e0b357d3b"
+      ],
+      "repeat_kind": "same-session",
+      "status": "reported",
+      "evidence": [
+        "experiments/B0-measurement/runs/2026-09-21-board-s3-b0/raw/perf05_size.1.out",
+        "experiments/B0-measurement/runs/2026-09-21-board-s3-b0/raw/perf05_size.2.out",
+        "experiments/B0-measurement/runs/2026-09-21-board-s3-b0/raw/perf05_size.3.out",
+        "experiments/B0-measurement/runs/2026-09-21-board-s3-b0/raw/perf05_size.4.out",
+        "experiments/B0-measurement/runs/2026-09-21-board-s3-b0/raw/perf05_size.5.out"
+      ],
+      "failures": [],
+      "cycles": {
+        "median": 1404021,
+        "min": 1400822,
+        "max": 1407731,
+        "n": 5
+      },
+      "cpi": {
+        "median": 46.79758016132258,
+        "min": 46.69095393640424,
+        "max": 46.9212385840944,
+        "n": 5
+      },
+      "derived_ips": {
+        "median": 854745.0501096493,
+        "min": 852492.4150991915,
+        "max": 856696.9964777823,
+        "n": 5,
+        "kind": "model-derived",
+        "formula": "configured_hz / CPI",
+        "frequency_source": "configured"
+      }
+    },
+    {
+      "platform": "board",
+      "run_id": "2026-09-21-board-s3-b0",
+      "workload": "perf05_size",
+      "roi": "store_1b",
+      "roi_description": "store 1 byte",
+      "units": {
+        "cycles": "cycles",
+        "cpi": "cycles/instruction",
+        "derived_ips": "instructions/second"
+      },
+      "samples_successful": 5,
+      "samples_failed": 0,
+      "samples_required": 5,
+      "meets_sample_policy": true,
+      "retired_per_sample": 30002,
+      "boot_ids": [
+        "ebeab8a6-0ac9-474a-84c3-bd6e0b357d3b"
+      ],
+      "repeat_kind": "same-session",
+      "status": "reported",
+      "evidence": [
+        "experiments/B0-measurement/runs/2026-09-21-board-s3-b0/raw/perf05_size.1.out",
+        "experiments/B0-measurement/runs/2026-09-21-board-s3-b0/raw/perf05_size.2.out",
+        "experiments/B0-measurement/runs/2026-09-21-board-s3-b0/raw/perf05_size.3.out",
+        "experiments/B0-measurement/runs/2026-09-21-board-s3-b0/raw/perf05_size.4.out",
+        "experiments/B0-measurement/runs/2026-09-21-board-s3-b0/raw/perf05_size.5.out"
+      ],
+      "failures": [],
+      "cycles": {
+        "median": 1385353,
+        "min": 1385212,
+        "max": 1386099,
+        "n": 5
+      },
+      "cpi": {
+        "median": 46.17535497633491,
+        "min": 46.17065528964736,
+        "max": 46.200219985334314,
+        "n": 5
+      },
+      "derived_ips": {
+        "median": 866262.9669116825,
+        "min": 865796.7432340691,
+        "max": 866351.1433628931,
+        "n": 5,
+        "kind": "model-derived",
+        "formula": "configured_hz / CPI",
+        "frequency_source": "configured"
+      }
+    },
+    {
+      "platform": "board",
+      "run_id": "2026-09-21-board-s3-b0",
+      "workload": "perf05_size",
+      "roi": "store_8b",
+      "roi_description": "store 8 bytes",
+      "units": {
+        "cycles": "cycles",
+        "cpi": "cycles/instruction",
+        "derived_ips": "instructions/second"
+      },
+      "samples_successful": 5,
+      "samples_failed": 0,
+      "samples_required": 5,
+      "meets_sample_policy": true,
+      "retired_per_sample": 30002,
+      "boot_ids": [
+        "ebeab8a6-0ac9-474a-84c3-bd6e0b357d3b"
+      ],
+      "repeat_kind": "same-session",
+      "status": "reported",
+      "evidence": [
+        "experiments/B0-measurement/runs/2026-09-21-board-s3-b0/raw/perf05_size.1.out",
+        "experiments/B0-measurement/runs/2026-09-21-board-s3-b0/raw/perf05_size.2.out",
+        "experiments/B0-measurement/runs/2026-09-21-board-s3-b0/raw/perf05_size.3.out",
+        "experiments/B0-measurement/runs/2026-09-21-board-s3-b0/raw/perf05_size.4.out",
+        "experiments/B0-measurement/runs/2026-09-21-board-s3-b0/raw/perf05_size.5.out"
+      ],
+      "failures": [],
+      "cycles": {
+        "median": 1386076,
+        "min": 1385357,
+        "max": 1386676,
+        "n": 5
+      },
+      "cpi": {
+        "median": 46.19945336977535,
+        "min": 46.175488300779946,
+        "max": 46.219452036530896,
+        "n": 5
+      },
+      "derived_ips": {
+        "median": 865811.1099247083,
+        "min": 865436.4826390592,
+        "max": 866260.4657138918,
+        "n": 5,
+        "kind": "model-derived",
+        "formula": "configured_hz / CPI",
+        "frequency_source": "configured"
+      }
     }
   ]
 }

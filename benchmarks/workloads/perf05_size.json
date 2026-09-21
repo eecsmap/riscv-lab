@@ -1,0 +1,70 @@
+{
+  "id": "perf05_size",
+  "kind": "microbenchmark",
+  "description": "Does the size of an access change what it costs? The same loop at the same aligned address, differing in one instruction: an ALU baseline, loads of 1/2/4/8 bytes, and stores of 1 and 8 bytes.",
+  "source": "benchmarks/workloads/src/perf05_size.S",
+  "source_sha256": "42f256efca72ad305a0d74265fa8edd5343b6c1f20a4488c24b510648a6dbcc9",
+  "source_imported": false,
+  "iters": 10000,
+  "marker": "TEACHING-PERF-SIZE-OK",
+  "roi": [
+    {
+      "name": "alu",
+      "cycles_label": "SIZE-CYC-ALU",
+      "retired_label": "SIZE-INS-ALU",
+      "insns_per_iter": 3,
+      "expected_retired": 30002,
+      "description": "baseline: no data access"
+    },
+    {
+      "name": "load_1b",
+      "cycles_label": "SIZE-CYC-LB",
+      "retired_label": "SIZE-INS-LB",
+      "insns_per_iter": 3,
+      "expected_retired": 30002,
+      "description": "load 1 byte"
+    },
+    {
+      "name": "load_2b",
+      "cycles_label": "SIZE-CYC-LH",
+      "retired_label": "SIZE-INS-LH",
+      "insns_per_iter": 3,
+      "expected_retired": 30002,
+      "description": "load 2 bytes"
+    },
+    {
+      "name": "load_4b",
+      "cycles_label": "SIZE-CYC-LW",
+      "retired_label": "SIZE-INS-LW",
+      "insns_per_iter": 3,
+      "expected_retired": 30002,
+      "description": "load 4 bytes"
+    },
+    {
+      "name": "load_8b",
+      "cycles_label": "SIZE-CYC-LD",
+      "retired_label": "SIZE-INS-LD",
+      "insns_per_iter": 3,
+      "expected_retired": 30002,
+      "description": "load 8 bytes, a full 64-bit beat"
+    },
+    {
+      "name": "store_1b",
+      "cycles_label": "SIZE-CYC-SB",
+      "retired_label": "SIZE-INS-SB",
+      "insns_per_iter": 3,
+      "expected_retired": 30002,
+      "description": "store 1 byte"
+    },
+    {
+      "name": "store_8b",
+      "cycles_label": "SIZE-CYC-SD",
+      "retired_label": "SIZE-INS-SD",
+      "insns_per_iter": 3,
+      "expected_retired": 30002,
+      "description": "store 8 bytes"
+    }
+  ],
+  "extra_values": [],
+  "notes": "all seven ROIs use the SAME 8-byte-aligned address, so no case is penalised for alignment rather than for size"
+}

@@ -29,10 +29,11 @@
   },
   "coverage": {
     "microbenchmarks": {
-      "defined": 13,
-      "measured_on_board": 13,
+      "defined": 20,
+      "measured_on_board": 20,
       "measured_on_simulator": 13,
-      "sample_policy_met": true
+      "sample_policy_met": true,
+      "note": "perf05_size was added after the simulator run; it is measured on the board (5 samples) and in simulation once, outside the sampled sim run"
     },
     "applications": {
       "defined": 3,
@@ -51,5 +52,10 @@
     "Microbenchmarks are synthetic loops. No figure here is xv6's average CPI (ERRATA E3).",
     "Application workloads are built but unexecuted; their metrics are null, not zero."
   ],
-  "errata": "benchmarks/ERRATA.md supersedes five conclusions stated before B0 existed"
+  "errata": "benchmarks/ERRATA.md supersedes five conclusions stated before B0 existed",
+  "findings_added_after_first_draft": [
+    "perf05_size: within a single 64-bit beat, access SIZE does not affect cost. A 1-byte load costs 19.32 cycles and an 8-byte load 19.36 -- 0.2% apart. Stores: 17.49 vs 17.56, 0.4% apart.",
+    "Stores are about 10% cheaper than loads (17.5 vs 19.4 cycles), consistent with a write being acknowledged before a read could return data.",
+    "Sub-word writes carry NO read-modify-write penalty: sb costs the same as sd, so byte strobes are being used rather than a read-modify-write below."
+  ]
 }

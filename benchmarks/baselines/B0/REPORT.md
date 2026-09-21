@@ -118,3 +118,45 @@ make bench-metrics     # regenerate every metrics.json from the immutable raw re
 make bench-check       # regenerate comparisons.csv and diff it against the committed copy
 make check             # the repository's pre-existing offline checks, unchanged
 ```
+
+---
+
+## Addendum: access size does not affect cost (`perf05_size`)
+
+Added after the first draft, to discriminate between two explanations for the low achieved bandwidth:
+**granularity** (a 2-byte parcel uses a quarter of one 64-bit beat) or **concurrency** (one outstanding
+access, so bandwidth is size ÷ latency whatever the bus width). The same loop, the same 8-byte-aligned
+address, seven times, differing in one instruction. Board, median of 5 samples.
+
+| access | bytes | CPI | extra cycles per access |
+| --- | --- | --- | --- |
+| baseline, no data access | — | 40.35 | — |
+| load | 1 | 46.79 | **19.32** |
+| load | 2 | 46.81 | **19.39** |
+| load | 4 | 46.86 | **19.54** |
+| load | 8 | 46.80 | **19.36** |
+| store | 1 | 46.18 | **17.49** |
+| store | 8 | 46.20 | **17.56** |
+
+**An 8× larger transfer costs the same.** 1-byte and 8-byte loads differ by **0.2 %**; stores by 0.4 %.
+Within a single beat the cost is **pure latency** and the transfer itself is not on the critical path.
+
+Two further results fall out:
+
+* **stores are ~10 % cheaper than loads** (17.5 against 19.4 cycles), consistent with a write being
+  acknowledged before a read could have returned data;
+* **sub-word writes carry no read-modify-write penalty** — `sb` costs the same as `sd`, so byte strobes
+  are being used rather than a read-modify-write somewhere below. This was a specific worry the probe was
+  written to check, and it is answered: no.
+
+### What this settles, and what it does not
+
+**Settled:** widening an access buys nothing. Any proposal of the form "fetch more bytes per request"
+gains only from the requests it *eliminates*, never from the extra bytes. This is why the aligned 32-bit
+fetch is worth doing — it removes one round-trip of two per instruction, and under Sv39 one walk of two —
+and not because it moves 4 bytes instead of 2.
+
+**Not settled:** whether a multi-beat **burst** amortises the latency across a cache line. The core issues
+one single-beat request at a time and cannot express a burst, so this probe cannot test it. The estimate
+that a 32-byte line would cost ≈32 B / (470 + 3×25) ns remains a **model-derived hypothesis**, not a
+measurement, and would need an RTL change to test.
