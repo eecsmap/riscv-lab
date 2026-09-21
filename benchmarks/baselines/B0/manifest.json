@@ -1,0 +1,55 @@
+{
+  "baseline_id": "B0",
+  "status": "candidate",
+  "note": "candidate until Codex's independent review; nothing here is accepted",
+  "created": "2026-09-21T16:37:42.625250+00:00",
+  "repo": {
+    "commit": "9845da2546cdf00c45bb482da2f7c477b4ab5bfe",
+    "dirty": true
+  },
+  "constituent_runs": {
+    "2026-09-21-board-s3-b0": {
+      "platform": "board",
+      "status": "reported"
+    },
+    "2026-09-21-board-s3-historical": {
+      "platform": "board",
+      "status": "reported"
+    },
+    "2026-09-21-sim-boot3": {
+      "platform": "simulator",
+      "status": "reported"
+    }
+  },
+  "primary_run": "2026-09-21-board-s3-b0",
+  "frequency": {
+    "hz": 40000000,
+    "source": "configured",
+    "derivation": "125 MHz oscillator on pin H16 (create_clock -period 8) through an MMCM at x8/25. NOT measured by any probe here."
+  },
+  "coverage": {
+    "microbenchmarks": {
+      "defined": 13,
+      "measured_on_board": 13,
+      "measured_on_simulator": 13,
+      "sample_policy_met": true
+    },
+    "applications": {
+      "defined": 3,
+      "built": true,
+      "measured": 0,
+      "status": "pending",
+      "blocker": "The accepted production lifecycle (board-runner.py -> board_run.py -> xv6_console.py) drives a FIXED four-command workload: EXPECTED is a module-level constant, not a parameter. Hardware repetitions in this task are authorised only through that lifecycle, and extending it is host/driver redesign, which this task excludes. The simulator route is also impractical: the accepted xv6 simulation run took 12054 s (3.35 h) for one session, so three samples of three workloads is a multi-day campaign, not a task step.",
+      "what_exists": "the three programs, an xv6 image containing them, recorded identities, and expected checksums computed independently on the host",
+      "what_is_missing": "any execution on any platform, therefore any timing"
+    }
+  },
+  "limits": [
+    "Both board runs share one boot session; nothing is reproduced across cold boots.",
+    "All IPS figures are derived (configured_hz / CPI), never measured wall throughput.",
+    "The 40 MHz frequency is configured, not measured by anything here.",
+    "Microbenchmarks are synthetic loops. No figure here is xv6's average CPI (ERRATA E3).",
+    "Application workloads are built but unexecuted; their metrics are null, not zero."
+  ],
+  "errata": "benchmarks/ERRATA.md supersedes five conclusions stated before B0 existed"
+}

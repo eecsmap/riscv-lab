@@ -1,0 +1,10 @@
+{
+  "outcome": "completed",
+  "sample": 2,
+  "exit_status": 0,
+  "started": "2026-09-21T16:31:48+00:00",
+  "wall_seconds": 44.935216561,
+  "boot_id": null,
+  "session": "simulator-deterministic",
+  "timeout_s": 900
+}

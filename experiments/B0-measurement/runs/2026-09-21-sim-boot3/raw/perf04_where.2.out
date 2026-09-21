@@ -1,0 +1,15 @@
+WHERE-CYC-DRAM=000000000009ff20
+WHERE-INS-DRAM=0000000000007532
+WHERE-CYC-CLINT=000000000009f3d8
+WHERE-INS-CLINT=0000000000007532
+TEACHING-PERF-WHERE-OK
+EVH 1 ASSERTS armed (cold reset released; cpu soft reset=1)
+EVH 3 CPURESET released restart_safe=1
+EVH 1372871 HOSTDONE_WHY tsi_done=1 io_success=1 tsi_exit=0
+EVH 1372871 HOSTDONE exit_code=0 busy=0
+EVH 1372871 SETTLED after 1 cycles
+Completed after 1372871 cycles
+AXI ar=151240 r=151240 rlast=151240 aw=400 w=400 wlast=400 b=400
+RD2HOST restarts_requested=0 restarts_completed=0
+RD2HOST FINAL aWaits=28639 aFires=146893 dFires=146893 epoch=1 injections=0 boot_ready=0 boot_timeout=0 bdev_queued=0
+CYCLES total=1372871 host_done_at=1372871 drained=1

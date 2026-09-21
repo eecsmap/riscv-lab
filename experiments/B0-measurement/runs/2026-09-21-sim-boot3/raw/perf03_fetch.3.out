@@ -1,0 +1,15 @@
+FETCH-CYC-32BIT=000000000008e0f3
+FETCH-INS-32BIT=0000000000007532
+FETCH-CYC-COMPRESSED=00000000000512e5
+FETCH-INS-COMPRESSED=0000000000007532
+TEACHING-PERF-FETCH-OK
+EVH 1 ASSERTS armed (cold reset released; cpu soft reset=1)
+EVH 3 CPURESET released restart_safe=1
+EVH 984856 HOSTDONE_WHY tsi_done=1 io_success=1 tsi_exit=0
+EVH 984856 HOSTDONE exit_code=0 busy=1
+EVH 984858 SETTLED after 3 cycles
+Completed after 984858 cycles
+AXI ar=107531 r=107531 rlast=107531 aw=424 w=424 wlast=424 b=424
+RD2HOST restarts_requested=0 restarts_completed=0
+RD2HOST FINAL aWaits=15751 aFires=97420 dFires=97420 epoch=1 injections=0 boot_ready=0 boot_timeout=0 bdev_queued=0
+CYCLES total=984858 host_done_at=984856 drained=3

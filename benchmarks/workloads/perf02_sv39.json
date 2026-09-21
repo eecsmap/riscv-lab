@@ -1,0 +1,62 @@
+{
+  "id": "perf02_sv39",
+  "kind": "microbenchmark",
+  "description": "The same two loops under three translation regimes: bare, Sv39 1 GiB megapage, Sv39 4 KiB.",
+  "source": "software/probes/perf02_sv39.S",
+  "source_sha256": "d0d939c82557c3852fcdd2978bd38f5ff65a248b43a52aa0a8713ae2e8cd1ff5",
+  "source_imported": true,
+  "iters": 10000,
+  "marker": "TEACHING-PERF-SV39-OK",
+  "roi": [
+    {
+      "name": "bare_alu",
+      "cycles_label": "SV39-CYC-BARE-ALU",
+      "retired_label": "SV39-INS-BARE-ALU",
+      "insns_per_iter": 3,
+      "expected_retired": 30002,
+      "description": "bare, satp=0, M-mode"
+    },
+    {
+      "name": "bare_load",
+      "cycles_label": "SV39-CYC-BARE-LD",
+      "retired_label": "SV39-INS-BARE-LD",
+      "insns_per_iter": 3,
+      "expected_retired": 30002,
+      "description": "bare, with a load"
+    },
+    {
+      "name": "mega_alu",
+      "cycles_label": "SV39-CYC-MEGA-ALU",
+      "retired_label": "SV39-INS-MEGA-ALU",
+      "insns_per_iter": 3,
+      "expected_retired": 30002,
+      "description": "Sv39, 1 GiB megapage leaf, S-mode"
+    },
+    {
+      "name": "mega_load",
+      "cycles_label": "SV39-CYC-MEGA-LD",
+      "retired_label": "SV39-INS-MEGA-LD",
+      "insns_per_iter": 3,
+      "expected_retired": 30002,
+      "description": "Sv39 megapage, with a load"
+    },
+    {
+      "name": "k4_alu",
+      "cycles_label": "SV39-CYC-4K-ALU",
+      "retired_label": "SV39-INS-4K-ALU",
+      "insns_per_iter": 3,
+      "expected_retired": 30002,
+      "description": "Sv39, 4 KiB leaf, three-level walk"
+    },
+    {
+      "name": "k4_load",
+      "cycles_label": "SV39-CYC-4K-LD",
+      "retired_label": "SV39-INS-4K-LD",
+      "insns_per_iter": 3,
+      "expected_retired": 30002,
+      "description": "Sv39 4 KiB, with a load"
+    }
+  ],
+  "extra_values": [],
+  "notes": "expected_retired = iters*insns_per_iter + 2; the +2 is the two counter reads inside the ROI (see metrics.md section 2)"
+}

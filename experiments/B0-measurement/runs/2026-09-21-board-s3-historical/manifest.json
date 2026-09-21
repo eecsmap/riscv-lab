@@ -1,0 +1,79 @@
+{
+  "run_id": "2026-09-21-board-s3-historical",
+  "platform": "board",
+  "status": "reported",
+  "created": "2026-09-21T16:29:52.895621+00:00",
+  "description": "The four perf probes as run on the PYNQ-Z1 on 2026-09-21, imported verbatim. One sample each: this session ran each probe exactly once, so NOTHING here meets the B0 sample policy of 5. Imported as historical reported data, not as a baseline.",
+  "source_revision": {
+    "repo": "riscv-lab",
+    "commit": "9845da2546cdf00c45bb482da2f7c477b4ab5bfe",
+    "dirty": true,
+    "note": "the probes predate this repo's B0 work; their own identities are below"
+  },
+  "cpu_config": {
+    "name": "teaching CPU, PHYSICAL_PORT_V2, M/C/A/Sv39",
+    "rtl": [
+      "rtl/cpu/tcpu_core.v",
+      "rtl/cpu/tcpu_csr.v",
+      "rtl/cpu/tcpu_ptw.v"
+    ],
+    "features": {
+      "pipelined": false,
+      "icache": false,
+      "dcache": false,
+      "tlb": false,
+      "store_buffer": false,
+      "outstanding_accesses": 1
+    }
+  },
+  "artifacts": {
+    "bitstream_sha256": "2cd8a9927cfa2f51da16bc6ba4865a407e985d00bf2accbb046f48c81c0fda52",
+    "bitstream_bin_sha256": "20fae71e4661c6c93a9826397594e058ef4bf6dc01071a41809ebb3a312c9f5a",
+    "host_binary_sha256": "c050eab30f80a21a7c92c8688faa2f043c67aa2900fbc08b80f3dd8de2ba1fb9",
+    "probe_elf_sha256": {
+      "perf01_cpi.elf": "e5250f5035787a26b41389e20a932890d4c4e116fc87c403c4cea5826925df96",
+      "perf02_sv39.elf": "bc6185566c5de9da7a4dbce1942262dbeb68b1c8e556ac8f72f15fc1465596ab",
+      "perf03_fetch.elf": "6498f89970d429e92a944036d91b20801410be8b14df88f7f59d6512efff05b5",
+      "perf04_where.elf": "235f2318149ed2064904c92d4cab6849115d576fe80f478eea603e77c067315d"
+    },
+    "kernel_sha256": null,
+    "disk_sha256": null,
+    "note": "kernel and disk are not used by bare-metal probes"
+  },
+  "tools": {
+    "host": "fesvr-teaching-static on the board's ARM",
+    "transport": "serial console, exclusive channel, /dev/ttyUSB1"
+  },
+  "board": {
+    "boot_id": "ebeab8a6-0ac9-474a-84c3-bd6e0b357d3b",
+    "session": "xv6-board-run-3",
+    "cold_start_verified": true
+  },
+  "frequency": {
+    "hz": 40000000,
+    "source": "configured",
+    "derivation": "125 MHz oscillator on pin H16 (create_clock -period 8) through an MMCM at x8/25. NOT measured by any probe here."
+  },
+  "memory_layout": {
+    "target_window": "0x10000000-0x1fffffff",
+    "ps_dram_visible_to_linux": "0x00000000-0x0fffffff",
+    "note": "the target's 256 MiB window maps to PS DDR via the HP port address translation"
+  },
+  "sample_policy": {
+    "min_samples": 5,
+    "rationale": "B0 policy for microbenchmarks",
+    "met": false,
+    "shortfall_note": "1 sample per workload exists; 4 short of policy"
+  },
+  "timing_method": "core mcycle/minstret (or cycle/instret in S-mode) read either side of the ROI; see benchmarks/metrics.md section 2",
+  "timeouts": {
+    "per_probe_seconds": {
+      "perf01_cpi": 120,
+      "perf02_sv39": 180,
+      "perf03_fetch": 120,
+      "perf04_where": 120
+    },
+    "set_before_run": true
+  },
+  "output_checks": "each probe asserts its own retired count and prints a completion marker; the parser re-checks both and refuses the record otherwise"
+}

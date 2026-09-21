@@ -1,0 +1,11 @@
+{
+  "outcome": "completed",
+  "sample": 5,
+  "harness_exit": 0,
+  "started": "2026-09-21T16:32:46+00:00",
+  "wall_seconds": 1.206828170,
+  "boot_id": "ebeab8a6-0ac9-474a-84c3-bd6e0b357d3b",
+  "session": "xv6-board-run-3",
+  "timeout_s": 180,
+  "note": "wall_seconds covers the whole fesvr invocation over the serial console, not the ROI"
+}

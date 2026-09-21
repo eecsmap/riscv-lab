@@ -1,0 +1,37 @@
+{
+  "id": "b0file",
+  "kind": "application",
+  "workload_class": "file I/O",
+  "description": "Writes 64 x 512 B blocks, reads them all back and checksums what was read. Unlinks its file before and after, so a repeat is the same workload.",
+  "source": "benchmarks/workloads/src/b0file.c",
+  "source_sha256": "bc94c6932d42b8b618d3584e65cd773b1440a1b3dad7ee807ad1537b7462edcd",
+  "source_imported": false,
+  "parameters": {
+    "block_bytes": 512,
+    "blocks": 64,
+    "total_bytes": 32768
+  },
+  "marker": "B0-FILE-DONE",
+  "expected_output": "B0-FILE-CHECKSUM=62e55f5326378000",
+  "expected_output_origin": "computed independently on the host with identical uint64 semantics (benchmarks/workloads/src/b0expect.c); NOT yet observed from the target",
+  "metrics": {
+    "cycles": null,
+    "cpi": null,
+    "wall_seconds": "host-measured, includes console transport"
+  },
+  "metrics_note": "target-side cycle counts are NOT available for application workloads: reading mcycle from a user program needs mcounteren/scounteren delegation that this kernel does not perform, and changing the kernel for measurement convenience is out of scope. Cycle metrics are deferred, reported as null, never zero.",
+  "disk_reset_policy": "each sample gets a fresh copy of the same initial disk image; the program also unlinks its own file at both ends",
+  "image": {
+    "kernel_sha256": "e990fb31fad483b805aaeae77ecaebb3111abcec012d70447c620c9e9b289c2c",
+    "disk_sha256": "6bdd8148b79e5983ecaad04e394327f970e893a4c756a627b7e47da6e31c82ec",
+    "accepted_kernel_sha256": "e990fb31fad483b805aaeae77ecaebb3111abcec012d70447c620c9e9b289c2c",
+    "accepted_disk_sha256": "4691ffea6b05562d33a599a3406ab3b6d69e6c2444addb08838f1ef6f97527b7",
+    "differs_from_accepted": "disk only",
+    "note": "The KERNEL is byte-identical to the accepted one (e990fb31...): the three programs live in fs.img, not in the kernel, and this build reproduced the accepted kernel exactly. The DISK differs and is therefore a different workload image. Results from this disk must never be compared to results from the accepted disk as though they were the same workload.",
+    "kernel_identical_to_accepted": true,
+    "build_reproducible": true,
+    "reproducibility_note": "rebuilt in a different directory and both artefacts reproduced byte-identically; the kernel also reproduced the ACCEPTED kernel exactly"
+  },
+  "status": "built, not executed",
+  "build": "benchmarks/workloads/build-xv6-b0.sh (copies the imported xv6 tree, adds the three programs, builds; the generated tree is not committed)"
+}

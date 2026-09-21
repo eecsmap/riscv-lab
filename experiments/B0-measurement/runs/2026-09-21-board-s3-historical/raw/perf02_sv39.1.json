@@ -1,0 +1,10 @@
+{
+  "outcome": "completed",
+  "sample": 1,
+  "boot_id": "ebeab8a6-0ac9-474a-84c3-bd6e0b357d3b",
+  "session": "xv6-board-run-3",
+  "wall_seconds": null,
+  "note": "imported from the 2026-09-21 session; wall time was not recorded for the ROI",
+  "original_path": "experiments/teaching-cpu/xv6-board-run-3/logs/11-perf02.txt",
+  "original_sha256": "e99d3780c7db3886e6b2b2762210d30263563f838602355dc5fc3293525e0212"
+}

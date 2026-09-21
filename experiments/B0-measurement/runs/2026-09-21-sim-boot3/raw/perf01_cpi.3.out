@@ -1,0 +1,19 @@
+PERF-CYC-ALU=000000000008e0f5
+PERF-INS-ALU=0000000000007532
+PERF-CYC-LD=000000000009ff31
+PERF-INS-LD=0000000000007532
+PERF-CYC-ST=000000000009ff32
+PERF-INS-ST=0000000000007532
+PERF-CYC-CAL=00000000000bd69c
+PERF-MTIME-CAL=0000000000001e4f
+TEACHING-PERF-OK
+EVH 1 ASSERTS armed (cold reset released; cpu soft reset=1)
+EVH 3 CPURESET released restart_safe=1
+EVH 2769807 HOSTDONE_WHY tsi_done=1 io_success=1 tsi_exit=0
+EVH 2769807 HOSTDONE exit_code=0 busy=1
+EVH 2769809 SETTLED after 3 cycles
+Completed after 2769809 cycles
+AXI ar=309926 r=309926 rlast=309926 aw=10640 w=10640 wlast=10640 b=10640
+RD2HOST restarts_requested=0 restarts_completed=0
+RD2HOST FINAL aWaits=59971 aFires=290692 dFires=290692 epoch=1 injections=0 boot_ready=0 boot_timeout=0 bdev_queued=0
+CYCLES total=2769809 host_done_at=2769807 drained=3

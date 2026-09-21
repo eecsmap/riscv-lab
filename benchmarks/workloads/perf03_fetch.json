@@ -1,0 +1,30 @@
+{
+  "id": "perf03_fetch",
+  "kind": "microbenchmark",
+  "description": "The same three-instruction loop as 32-bit and as compressed instructions.",
+  "source": "benchmarks/workloads/src/perf03_fetch.S",
+  "source_sha256": "9d9e7e043ca97e5bcdb7b126793f7800b534d06f29e12e4a6c2a5bb2542bbdcb",
+  "source_imported": false,
+  "iters": 10000,
+  "marker": "TEACHING-PERF-FETCH-OK",
+  "roi": [
+    {
+      "name": "insn32",
+      "cycles_label": "FETCH-CYC-32BIT",
+      "retired_label": "FETCH-INS-32BIT",
+      "insns_per_iter": 3,
+      "expected_retired": 30002,
+      "description": "three 32-bit instructions: two parcel fetches each"
+    },
+    {
+      "name": "insn16",
+      "cycles_label": "FETCH-CYC-COMPRESSED",
+      "retired_label": "FETCH-INS-COMPRESSED",
+      "insns_per_iter": 3,
+      "expected_retired": 30002,
+      "description": "three compressed instructions: one parcel fetch each"
+    }
+  ],
+  "extra_values": [],
+  "notes": "expected_retired = iters*insns_per_iter + 2; the +2 is the two counter reads inside the ROI (see metrics.md section 2)"
+}

@@ -1,0 +1,7 @@
+teaching: ready after 50 ms; status=0x00131a11 cpu_restart_safe=1 pl_reconfig_safe=0 draining=0 drain_timeout=0 boot_ready=1 boot_timeout=0 epoch=26 ndrained=19
+FETCH-CYC-32BIT=0000000000127699
+FETCH-INS-32BIT=0000000000007532
+FETCH-CYC-COMPRESSED=000000000009e76b
+FETCH-INS-COMPRESSED=0000000000007532
+TEACHING-PERF-FETCH-OK
+RC=0

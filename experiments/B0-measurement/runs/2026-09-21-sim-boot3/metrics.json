@@ -1,0 +1,660 @@
+{
+  "generated_from": "manifest.json + raw/ by benchmarks/tools/gen_metrics.py",
+  "run_id": "2026-09-21-sim-boot3",
+  "platform": "simulator",
+  "status": "reported",
+  "frequency": {
+    "hz": 40000000,
+    "source": "configured",
+    "derivation": "the simulator has no clock; 40 MHz is applied so that derived IPS is comparable in FORM with the board. It is NOT a simulated frequency and the simulator's cycle counts do not correspond to board time.",
+    "caution": "simulator CPI is not board CPI: this simulator models no PS or DDR path at all"
+  },
+  "results": [
+    {
+      "platform": "simulator",
+      "run_id": "2026-09-21-sim-boot3",
+      "workload": "perf01_cpi",
+      "roi": "alu",
+      "roi_description": "three 32-bit instructions, no data access",
+      "units": {
+        "cycles": "cycles",
+        "cpi": "cycles/instruction",
+        "derived_ips": "instructions/second"
+      },
+      "samples_successful": 3,
+      "samples_failed": 0,
+      "samples_required": 3,
+      "meets_sample_policy": true,
+      "retired_per_sample": 30002,
+      "boot_ids": [],
+      "repeat_kind": "same-session",
+      "status": "reported",
+      "evidence": [
+        "experiments/B0-measurement/runs/2026-09-21-sim-boot3/raw/perf01_cpi.1.out",
+        "experiments/B0-measurement/runs/2026-09-21-sim-boot3/raw/perf01_cpi.2.out",
+        "experiments/B0-measurement/runs/2026-09-21-sim-boot3/raw/perf01_cpi.3.out"
+      ],
+      "failures": [],
+      "cycles": {
+        "median": 581877,
+        "min": 581877,
+        "max": 581877,
+        "n": 3
+      },
+      "cpi": {
+        "median": 19.394607026198255,
+        "min": 19.394607026198255,
+        "max": 19.394607026198255,
+        "n": 3
+      },
+      "derived_ips": {
+        "median": 2062429.0013181479,
+        "min": 2062429.0013181479,
+        "max": 2062429.0013181479,
+        "n": 3,
+        "kind": "model-derived",
+        "formula": "configured_hz / CPI",
+        "frequency_source": "configured"
+      }
+    },
+    {
+      "platform": "simulator",
+      "run_id": "2026-09-21-sim-boot3",
+      "workload": "perf01_cpi",
+      "roi": "load",
+      "roi_description": "as alu, one instruction replaced by a load from DRAM",
+      "units": {
+        "cycles": "cycles",
+        "cpi": "cycles/instruction",
+        "derived_ips": "instructions/second"
+      },
+      "samples_successful": 3,
+      "samples_failed": 0,
+      "samples_required": 3,
+      "meets_sample_policy": true,
+      "retired_per_sample": 30002,
+      "boot_ids": [],
+      "repeat_kind": "same-session",
+      "status": "reported",
+      "evidence": [
+        "experiments/B0-measurement/runs/2026-09-21-sim-boot3/raw/perf01_cpi.1.out",
+        "experiments/B0-measurement/runs/2026-09-21-sim-boot3/raw/perf01_cpi.2.out",
+        "experiments/B0-measurement/runs/2026-09-21-sim-boot3/raw/perf01_cpi.3.out"
+      ],
+      "failures": [],
+      "cycles": {
+        "median": 655153,
+        "min": 655153,
+        "max": 655153,
+        "n": 3
+      },
+      "cpi": {
+        "median": 21.83697753483101,
+        "min": 21.83697753483101,
+        "max": 21.83697753483101,
+        "n": 3
+      },
+      "derived_ips": {
+        "median": 1831755.330434265,
+        "min": 1831755.330434265,
+        "max": 1831755.330434265,
+        "n": 3,
+        "kind": "model-derived",
+        "formula": "configured_hz / CPI",
+        "frequency_source": "configured"
+      }
+    },
+    {
+      "platform": "simulator",
+      "run_id": "2026-09-21-sim-boot3",
+      "workload": "perf01_cpi",
+      "roi": "store",
+      "roi_description": "as alu, one instruction replaced by a store to DRAM",
+      "units": {
+        "cycles": "cycles",
+        "cpi": "cycles/instruction",
+        "derived_ips": "instructions/second"
+      },
+      "samples_successful": 3,
+      "samples_failed": 0,
+      "samples_required": 3,
+      "meets_sample_policy": true,
+      "retired_per_sample": 30002,
+      "boot_ids": [],
+      "repeat_kind": "same-session",
+      "status": "reported",
+      "evidence": [
+        "experiments/B0-measurement/runs/2026-09-21-sim-boot3/raw/perf01_cpi.1.out",
+        "experiments/B0-measurement/runs/2026-09-21-sim-boot3/raw/perf01_cpi.2.out",
+        "experiments/B0-measurement/runs/2026-09-21-sim-boot3/raw/perf01_cpi.3.out"
+      ],
+      "failures": [],
+      "cycles": {
+        "median": 655154,
+        "min": 655154,
+        "max": 655154,
+        "n": 3
+      },
+      "cpi": {
+        "median": 21.837010865942272,
+        "min": 21.837010865942272,
+        "max": 21.837010865942272,
+        "n": 3
+      },
+      "derived_ips": {
+        "median": 1831752.5345186016,
+        "min": 1831752.5345186016,
+        "max": 1831752.5345186016,
+        "n": 3,
+        "kind": "model-derived",
+        "formula": "configured_hz / CPI",
+        "frequency_source": "configured"
+      }
+    },
+    {
+      "platform": "simulator",
+      "run_id": "2026-09-21-sim-boot3",
+      "workload": "perf01_cpi",
+      "roi": "_extra",
+      "roi_description": "probe-specific auxiliary values",
+      "units": {},
+      "samples_successful": 3,
+      "samples_failed": 0,
+      "samples_required": 3,
+      "meets_sample_policy": true,
+      "status": "reported",
+      "boot_ids": [],
+      "repeat_kind": "same-session",
+      "values": [
+        {
+          "cal_cycles": 775836,
+          "cal_mtime": 7759
+        },
+        {
+          "cal_cycles": 775836,
+          "cal_mtime": 7759
+        },
+        {
+          "cal_cycles": 775836,
+          "cal_mtime": 7759
+        }
+      ],
+      "evidence": [
+        "experiments/B0-measurement/runs/2026-09-21-sim-boot3/raw/perf01_cpi.1.out",
+        "experiments/B0-measurement/runs/2026-09-21-sim-boot3/raw/perf01_cpi.2.out",
+        "experiments/B0-measurement/runs/2026-09-21-sim-boot3/raw/perf01_cpi.3.out"
+      ],
+      "failures": []
+    },
+    {
+      "platform": "simulator",
+      "run_id": "2026-09-21-sim-boot3",
+      "workload": "perf02_sv39",
+      "roi": "bare_alu",
+      "roi_description": "bare, satp=0, M-mode",
+      "units": {
+        "cycles": "cycles",
+        "cpi": "cycles/instruction",
+        "derived_ips": "instructions/second"
+      },
+      "samples_successful": 3,
+      "samples_failed": 0,
+      "samples_required": 3,
+      "meets_sample_policy": true,
+      "retired_per_sample": 30002,
+      "boot_ids": [],
+      "repeat_kind": "same-session",
+      "status": "reported",
+      "evidence": [
+        "experiments/B0-measurement/runs/2026-09-21-sim-boot3/raw/perf02_sv39.1.out",
+        "experiments/B0-measurement/runs/2026-09-21-sim-boot3/raw/perf02_sv39.2.out",
+        "experiments/B0-measurement/runs/2026-09-21-sim-boot3/raw/perf02_sv39.3.out"
+      ],
+      "failures": [],
+      "cycles": {
+        "median": 581881,
+        "min": 581881,
+        "max": 581881,
+        "n": 3
+      },
+      "cpi": {
+        "median": 19.39474035064329,
+        "min": 19.39474035064329,
+        "max": 19.39474035064329,
+        "n": 3
+      },
+      "derived_ips": {
+        "median": 2062414.8236495093,
+        "min": 2062414.8236495093,
+        "max": 2062414.8236495093,
+        "n": 3,
+        "kind": "model-derived",
+        "formula": "configured_hz / CPI",
+        "frequency_source": "configured"
+      }
+    },
+    {
+      "platform": "simulator",
+      "run_id": "2026-09-21-sim-boot3",
+      "workload": "perf02_sv39",
+      "roi": "bare_load",
+      "roi_description": "bare, with a load",
+      "units": {
+        "cycles": "cycles",
+        "cpi": "cycles/instruction",
+        "derived_ips": "instructions/second"
+      },
+      "samples_successful": 3,
+      "samples_failed": 0,
+      "samples_required": 3,
+      "meets_sample_policy": true,
+      "retired_per_sample": 30002,
+      "boot_ids": [],
+      "repeat_kind": "same-session",
+      "status": "reported",
+      "evidence": [
+        "experiments/B0-measurement/runs/2026-09-21-sim-boot3/raw/perf02_sv39.1.out",
+        "experiments/B0-measurement/runs/2026-09-21-sim-boot3/raw/perf02_sv39.2.out",
+        "experiments/B0-measurement/runs/2026-09-21-sim-boot3/raw/perf02_sv39.3.out"
+      ],
+      "failures": [],
+      "cycles": {
+        "median": 655156,
+        "min": 655156,
+        "max": 655156,
+        "n": 3
+      },
+      "cpi": {
+        "median": 21.837077528164787,
+        "min": 21.837077528164787,
+        "max": 21.837077528164787,
+        "n": 3
+      },
+      "derived_ips": {
+        "median": 1831746.9427128807,
+        "min": 1831746.9427128807,
+        "max": 1831746.9427128807,
+        "n": 3,
+        "kind": "model-derived",
+        "formula": "configured_hz / CPI",
+        "frequency_source": "configured"
+      }
+    },
+    {
+      "platform": "simulator",
+      "run_id": "2026-09-21-sim-boot3",
+      "workload": "perf02_sv39",
+      "roi": "mega_alu",
+      "roi_description": "Sv39, 1 GiB megapage leaf, S-mode",
+      "units": {
+        "cycles": "cycles",
+        "cpi": "cycles/instruction",
+        "derived_ips": "instructions/second"
+      },
+      "samples_successful": 3,
+      "samples_failed": 0,
+      "samples_required": 3,
+      "meets_sample_policy": true,
+      "retired_per_sample": 30002,
+      "boot_ids": [],
+      "repeat_kind": "same-session",
+      "status": "reported",
+      "evidence": [
+        "experiments/B0-measurement/runs/2026-09-21-sim-boot3/raw/perf02_sv39.1.out",
+        "experiments/B0-measurement/runs/2026-09-21-sim-boot3/raw/perf02_sv39.2.out",
+        "experiments/B0-measurement/runs/2026-09-21-sim-boot3/raw/perf02_sv39.3.out"
+      ],
+      "failures": [],
+      "cycles": {
+        "median": 1195203,
+        "min": 1195203,
+        "max": 1195203,
+        "n": 3
+      },
+      "cpi": {
+        "median": 39.83744417038864,
+        "min": 39.83744417038864,
+        "max": 39.83744417038864,
+        "n": 3
+      },
+      "derived_ips": {
+        "median": 1004080.4783789866,
+        "min": 1004080.4783789866,
+        "max": 1004080.4783789866,
+        "n": 3,
+        "kind": "model-derived",
+        "formula": "configured_hz / CPI",
+        "frequency_source": "configured"
+      }
+    },
+    {
+      "platform": "simulator",
+      "run_id": "2026-09-21-sim-boot3",
+      "workload": "perf02_sv39",
+      "roi": "mega_load",
+      "roi_description": "Sv39 megapage, with a load",
+      "units": {
+        "cycles": "cycles",
+        "cpi": "cycles/instruction",
+        "derived_ips": "instructions/second"
+      },
+      "samples_successful": 3,
+      "samples_failed": 0,
+      "samples_required": 3,
+      "meets_sample_policy": true,
+      "retired_per_sample": 30002,
+      "boot_ids": [],
+      "repeat_kind": "same-session",
+      "status": "reported",
+      "evidence": [
+        "experiments/B0-measurement/runs/2026-09-21-sim-boot3/raw/perf02_sv39.1.out",
+        "experiments/B0-measurement/runs/2026-09-21-sim-boot3/raw/perf02_sv39.2.out",
+        "experiments/B0-measurement/runs/2026-09-21-sim-boot3/raw/perf02_sv39.3.out"
+      ],
+      "failures": [],
+      "cycles": {
+        "median": 1360701,
+        "min": 1360701,
+        "max": 1360701,
+        "n": 3
+      },
+      "cpi": {
+        "median": 45.3536764215719,
+        "min": 45.3536764215719,
+        "max": 45.3536764215719,
+        "n": 3
+      },
+      "derived_ips": {
+        "median": 881957.167665784,
+        "min": 881957.167665784,
+        "max": 881957.167665784,
+        "n": 3,
+        "kind": "model-derived",
+        "formula": "configured_hz / CPI",
+        "frequency_source": "configured"
+      }
+    },
+    {
+      "platform": "simulator",
+      "run_id": "2026-09-21-sim-boot3",
+      "workload": "perf02_sv39",
+      "roi": "k4_alu",
+      "roi_description": "Sv39, 4 KiB leaf, three-level walk",
+      "units": {
+        "cycles": "cycles",
+        "cpi": "cycles/instruction",
+        "derived_ips": "instructions/second"
+      },
+      "samples_successful": 3,
+      "samples_failed": 0,
+      "samples_required": 3,
+      "meets_sample_policy": true,
+      "retired_per_sample": 30002,
+      "boot_ids": [],
+      "repeat_kind": "same-session",
+      "status": "reported",
+      "evidence": [
+        "experiments/B0-measurement/runs/2026-09-21-sim-boot3/raw/perf02_sv39.1.out",
+        "experiments/B0-measurement/runs/2026-09-21-sim-boot3/raw/perf02_sv39.2.out",
+        "experiments/B0-measurement/runs/2026-09-21-sim-boot3/raw/perf02_sv39.3.out"
+      ],
+      "failures": [],
+      "cycles": {
+        "median": 2192874,
+        "min": 2192874,
+        "max": 2192874,
+        "n": 3
+      },
+      "cpi": {
+        "median": 73.09092727151523,
+        "min": 73.09092727151523,
+        "max": 73.09092727151523,
+        "n": 3
+      },
+      "derived_ips": {
+        "median": 547263.5454659046,
+        "min": 547263.5454659046,
+        "max": 547263.5454659046,
+        "n": 3,
+        "kind": "model-derived",
+        "formula": "configured_hz / CPI",
+        "frequency_source": "configured"
+      }
+    },
+    {
+      "platform": "simulator",
+      "run_id": "2026-09-21-sim-boot3",
+      "workload": "perf02_sv39",
+      "roi": "k4_load",
+      "roi_description": "Sv39 4 KiB, with a load",
+      "units": {
+        "cycles": "cycles",
+        "cpi": "cycles/instruction",
+        "derived_ips": "instructions/second"
+      },
+      "samples_successful": 3,
+      "samples_failed": 0,
+      "samples_required": 3,
+      "meets_sample_policy": true,
+      "retired_per_sample": 30002,
+      "boot_ids": [],
+      "repeat_kind": "same-session",
+      "status": "reported",
+      "evidence": [
+        "experiments/B0-measurement/runs/2026-09-21-sim-boot3/raw/perf02_sv39.1.out",
+        "experiments/B0-measurement/runs/2026-09-21-sim-boot3/raw/perf02_sv39.2.out",
+        "experiments/B0-measurement/runs/2026-09-21-sim-boot3/raw/perf02_sv39.3.out"
+      ],
+      "failures": [],
+      "cycles": {
+        "median": 2527047,
+        "min": 2527047,
+        "max": 2527047,
+        "n": 3
+      },
+      "cpi": {
+        "median": 84.22928471435237,
+        "min": 84.22928471435237,
+        "max": 84.22928471435237,
+        "n": 3
+      },
+      "derived_ips": {
+        "median": 474894.2144724653,
+        "min": 474894.2144724653,
+        "max": 474894.2144724653,
+        "n": 3,
+        "kind": "model-derived",
+        "formula": "configured_hz / CPI",
+        "frequency_source": "configured"
+      }
+    },
+    {
+      "platform": "simulator",
+      "run_id": "2026-09-21-sim-boot3",
+      "workload": "perf03_fetch",
+      "roi": "insn32",
+      "roi_description": "three 32-bit instructions: two parcel fetches each",
+      "units": {
+        "cycles": "cycles",
+        "cpi": "cycles/instruction",
+        "derived_ips": "instructions/second"
+      },
+      "samples_successful": 3,
+      "samples_failed": 0,
+      "samples_required": 3,
+      "meets_sample_policy": true,
+      "retired_per_sample": 30002,
+      "boot_ids": [],
+      "repeat_kind": "same-session",
+      "status": "reported",
+      "evidence": [
+        "experiments/B0-measurement/runs/2026-09-21-sim-boot3/raw/perf03_fetch.1.out",
+        "experiments/B0-measurement/runs/2026-09-21-sim-boot3/raw/perf03_fetch.2.out",
+        "experiments/B0-measurement/runs/2026-09-21-sim-boot3/raw/perf03_fetch.3.out"
+      ],
+      "failures": [],
+      "cycles": {
+        "median": 581875,
+        "min": 581875,
+        "max": 581875,
+        "n": 3
+      },
+      "cpi": {
+        "median": 19.394540363975736,
+        "min": 19.394540363975736,
+        "max": 19.394540363975736,
+        "n": 3
+      },
+      "derived_ips": {
+        "median": 2062436.0902255639,
+        "min": 2062436.0902255639,
+        "max": 2062436.0902255639,
+        "n": 3,
+        "kind": "model-derived",
+        "formula": "configured_hz / CPI",
+        "frequency_source": "configured"
+      }
+    },
+    {
+      "platform": "simulator",
+      "run_id": "2026-09-21-sim-boot3",
+      "workload": "perf03_fetch",
+      "roi": "insn16",
+      "roi_description": "three compressed instructions: one parcel fetch each",
+      "units": {
+        "cycles": "cycles",
+        "cpi": "cycles/instruction",
+        "derived_ips": "instructions/second"
+      },
+      "samples_successful": 3,
+      "samples_failed": 0,
+      "samples_required": 3,
+      "meets_sample_policy": true,
+      "retired_per_sample": 30002,
+      "boot_ids": [],
+      "repeat_kind": "same-session",
+      "status": "reported",
+      "evidence": [
+        "experiments/B0-measurement/runs/2026-09-21-sim-boot3/raw/perf03_fetch.1.out",
+        "experiments/B0-measurement/runs/2026-09-21-sim-boot3/raw/perf03_fetch.2.out",
+        "experiments/B0-measurement/runs/2026-09-21-sim-boot3/raw/perf03_fetch.3.out"
+      ],
+      "failures": [],
+      "cycles": {
+        "median": 332517,
+        "min": 332517,
+        "max": 332517,
+        "n": 3
+      },
+      "cpi": {
+        "median": 11.083161122591827,
+        "min": 11.083161122591827,
+        "max": 11.083161122591827,
+        "n": 3
+      },
+      "derived_ips": {
+        "median": 3609078.633573622,
+        "min": 3609078.633573622,
+        "max": 3609078.633573622,
+        "n": 3,
+        "kind": "model-derived",
+        "formula": "configured_hz / CPI",
+        "frequency_source": "configured"
+      }
+    },
+    {
+      "platform": "simulator",
+      "run_id": "2026-09-21-sim-boot3",
+      "workload": "perf04_where",
+      "roi": "load_dram",
+      "roi_description": "load from DRAM",
+      "units": {
+        "cycles": "cycles",
+        "cpi": "cycles/instruction",
+        "derived_ips": "instructions/second"
+      },
+      "samples_successful": 3,
+      "samples_failed": 0,
+      "samples_required": 3,
+      "meets_sample_policy": true,
+      "retired_per_sample": 30002,
+      "boot_ids": [],
+      "repeat_kind": "same-session",
+      "status": "reported",
+      "evidence": [
+        "experiments/B0-measurement/runs/2026-09-21-sim-boot3/raw/perf04_where.1.out",
+        "experiments/B0-measurement/runs/2026-09-21-sim-boot3/raw/perf04_where.2.out",
+        "experiments/B0-measurement/runs/2026-09-21-sim-boot3/raw/perf04_where.3.out"
+      ],
+      "failures": [],
+      "cycles": {
+        "median": 655136,
+        "min": 655136,
+        "max": 655136,
+        "n": 3
+      },
+      "cpi": {
+        "median": 21.836410905939605,
+        "min": 21.836410905939605,
+        "max": 21.836410905939605,
+        "n": 3
+      },
+      "derived_ips": {
+        "median": 1831802.8623064524,
+        "min": 1831802.8623064524,
+        "max": 1831802.8623064524,
+        "n": 3,
+        "kind": "model-derived",
+        "formula": "configured_hz / CPI",
+        "frequency_source": "configured"
+      }
+    },
+    {
+      "platform": "simulator",
+      "run_id": "2026-09-21-sim-boot3",
+      "workload": "perf04_where",
+      "roi": "load_clint",
+      "roi_description": "load from the CLINT at 0x0200bff8, inside the PL",
+      "units": {
+        "cycles": "cycles",
+        "cpi": "cycles/instruction",
+        "derived_ips": "instructions/second"
+      },
+      "samples_successful": 3,
+      "samples_failed": 0,
+      "samples_required": 3,
+      "meets_sample_policy": true,
+      "retired_per_sample": 30002,
+      "boot_ids": [],
+      "repeat_kind": "same-session",
+      "status": "reported",
+      "evidence": [
+        "experiments/B0-measurement/runs/2026-09-21-sim-boot3/raw/perf04_where.1.out",
+        "experiments/B0-measurement/runs/2026-09-21-sim-boot3/raw/perf04_where.2.out",
+        "experiments/B0-measurement/runs/2026-09-21-sim-boot3/raw/perf04_where.3.out"
+      ],
+      "failures": [],
+      "cycles": {
+        "median": 652248,
+        "min": 652248,
+        "max": 652248,
+        "n": 3
+      },
+      "cpi": {
+        "median": 21.74015065662289,
+        "min": 21.74015065662289,
+        "max": 21.74015065662289,
+        "n": 3
+      },
+      "derived_ips": {
+        "median": 1839913.6524757454,
+        "min": 1839913.6524757454,
+        "max": 1839913.6524757454,
+        "n": 3,
+        "kind": "model-derived",
+        "formula": "configured_hz / CPI",
+        "frequency_source": "configured"
+      }
+    }
+  ]
+}

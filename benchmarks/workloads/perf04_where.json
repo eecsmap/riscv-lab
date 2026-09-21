@@ -1,0 +1,30 @@
+{
+  "id": "perf04_where",
+  "kind": "microbenchmark",
+  "description": "A load from DRAM and a load from the PL-internal CLINT. See ERRATA E2 on what the difference is and is not.",
+  "source": "benchmarks/workloads/src/perf04_where.S",
+  "source_sha256": "95a443f0912b093014571ab86a1b5552c0e34e57bbae35341e31a3cabf8d6cde",
+  "source_imported": false,
+  "iters": 10000,
+  "marker": "TEACHING-PERF-WHERE-OK",
+  "roi": [
+    {
+      "name": "load_dram",
+      "cycles_label": "WHERE-CYC-DRAM",
+      "retired_label": "WHERE-INS-DRAM",
+      "insns_per_iter": 3,
+      "expected_retired": 30002,
+      "description": "load from DRAM"
+    },
+    {
+      "name": "load_clint",
+      "cycles_label": "WHERE-CYC-CLINT",
+      "retired_label": "WHERE-INS-CLINT",
+      "insns_per_iter": 3,
+      "expected_retired": 30002,
+      "description": "load from the CLINT at 0x0200bff8, inside the PL"
+    }
+  ],
+  "extra_values": [],
+  "notes": "expected_retired = iters*insns_per_iter + 2; the +2 is the two counter reads inside the ROI (see metrics.md section 2)"
+}

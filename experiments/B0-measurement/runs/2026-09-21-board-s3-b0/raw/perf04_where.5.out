@@ -1,0 +1,7 @@
+teaching: ready after 50 ms; status=0x00182111 cpu_restart_safe=1 pl_reconfig_safe=0 draining=0 drain_timeout=0 boot_ready=1 boot_timeout=0 epoch=33 ndrained=24
+WHERE-CYC-DRAM=00000000001561ec
+WHERE-INS-DRAM=0000000000007532
+WHERE-CYC-CLINT=0000000000139b6f
+WHERE-INS-CLINT=0000000000007532
+TEACHING-PERF-WHERE-OK
+RC=0

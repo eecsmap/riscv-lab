@@ -1,0 +1,75 @@
+{
+  "run_id": "2026-09-21-sim-boot3",
+  "platform": "simulator",
+  "status": "reported",
+  "created": "2026-09-21T16:34:55.816360+00:00",
+  "description": "The same four probe binaries under the pre-existing Verilator simulator. Three samples each; all three are byte-identical in their measurement values, so the platform is verified deterministic and further repeats would add no information.",
+  "source_revision": {
+    "repo": "riscv-lab",
+    "commit": "9845da2546cdf00c45bb482da2f7c477b4ab5bfe",
+    "dirty": true,
+    "note": "the probes predate this repo's B0 work; their own identities are below"
+  },
+  "cpu_config": {
+    "name": "teaching CPU, PHYSICAL_PORT_V2, M/C/A/Sv39",
+    "rtl": [
+      "rtl/cpu/tcpu_core.v",
+      "rtl/cpu/tcpu_csr.v",
+      "rtl/cpu/tcpu_ptw.v"
+    ],
+    "features": {
+      "pipelined": false,
+      "icache": false,
+      "dcache": false,
+      "tlb": false,
+      "store_buffer": false,
+      "outstanding_accesses": 1
+    },
+    "note": "same RTL as the board build; the SoC harness differs"
+  },
+  "artifacts": {
+    "simulator_sha256": "fa8c59db3654bff95ca7bb81a28f2f75163d342a7d36bb99e4bf6f5d48b1c6e2",
+    "simulator_provenance": {
+      "built": "2026-09-19T22:48:53Z",
+      "inputs_manifest": "inputs.sha256 beside the binary, listing 16 source files",
+      "top_module": "TeachingCpuHarness / RD2AtomicXv6FastConfig",
+      "freshly_rebuilt": false,
+      "note": "this is the ACCEPTED pre-existing simulator, reused. No claim is made that it was rebuilt for B0."
+    },
+    "probe_elf_sha256": {
+      "perf01_cpi.elf": "e5250f5035787a26b41389e20a932890d4c4e116fc87c403c4cea5826925df96",
+      "perf02_sv39.elf": "bc6185566c5de9da7a4dbce1942262dbeb68b1c8e556ac8f72f15fc1465596ab",
+      "perf03_fetch.elf": "6498f89970d429e92a944036d91b20801410be8b14df88f7f59d6512efff05b5",
+      "perf04_where.elf": "235f2318149ed2064904c92d4cab6849115d576fe80f478eea603e77c067315d"
+    },
+    "bitstream_sha256": null,
+    "kernel_sha256": null,
+    "disk_sha256": null
+  },
+  "tools": {
+    "verilator": "Verilator 5.022 2024-02-24 rev conda-forge build 1",
+    "built_at": "2026-09-19T22:48:53Z"
+  },
+  "board": null,
+  "frequency": {
+    "hz": 40000000,
+    "source": "configured",
+    "derivation": "the simulator has no clock; 40 MHz is applied so that derived IPS is comparable in FORM with the board. It is NOT a simulated frequency and the simulator's cycle counts do not correspond to board time.",
+    "caution": "simulator CPI is not board CPI: this simulator models no PS or DDR path at all"
+  },
+  "memory_layout": {
+    "note": "harness memory model; not the board's PS DDR via the HP port"
+  },
+  "sample_policy": {
+    "min_samples": 3,
+    "rationale": "the simulator is deterministic and this run verifies it: repeats beyond confirming identity would only inflate a count",
+    "met": true,
+    "determinism_verified": true
+  },
+  "timing_method": "core mcycle/minstret (or cycle/instret in S-mode) read either side of the ROI; see benchmarks/metrics.md section 2",
+  "timeouts": {
+    "per_probe_seconds": 900,
+    "set_before_run": true
+  },
+  "output_checks": "each probe asserts its own retired count and prints a completion marker; the parser re-checks both and refuses the record otherwise"
+}

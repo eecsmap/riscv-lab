@@ -1,0 +1,47 @@
+{
+  "id": "perf01_cpi",
+  "kind": "microbenchmark",
+  "description": "Bare-mode CPI, and the added cost of one load and one store.",
+  "source": "software/probes/perf01_cpi.S",
+  "source_sha256": "12191623e9f08b19fc64e523b9914d9c175ee9259ec02306ed252f6889997bb2",
+  "source_imported": true,
+  "iters": 10000,
+  "marker": "TEACHING-PERF-OK",
+  "roi": [
+    {
+      "name": "alu",
+      "cycles_label": "PERF-CYC-ALU",
+      "retired_label": "PERF-INS-ALU",
+      "insns_per_iter": 3,
+      "expected_retired": 30002,
+      "description": "three 32-bit instructions, no data access"
+    },
+    {
+      "name": "load",
+      "cycles_label": "PERF-CYC-LD",
+      "retired_label": "PERF-INS-LD",
+      "insns_per_iter": 3,
+      "expected_retired": 30002,
+      "description": "as alu, one instruction replaced by a load from DRAM"
+    },
+    {
+      "name": "store",
+      "cycles_label": "PERF-CYC-ST",
+      "retired_label": "PERF-INS-ST",
+      "insns_per_iter": 3,
+      "expected_retired": 30002,
+      "description": "as alu, one instruction replaced by a store to DRAM"
+    }
+  ],
+  "extra_values": [
+    {
+      "name": "cal_cycles",
+      "label": "PERF-CYC-CAL"
+    },
+    {
+      "name": "cal_mtime",
+      "label": "PERF-MTIME-CAL"
+    }
+  ],
+  "notes": "expected_retired = iters*insns_per_iter + 2; the +2 is the two counter reads inside the ROI (see metrics.md section 2)"
+}
