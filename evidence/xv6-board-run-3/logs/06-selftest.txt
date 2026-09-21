@@ -1,0 +1,6 @@
+TEACHING_HOST_SELFTEST
+  build: Sep 20 2026 17:38:59
+  status word bit map: bit0 CPU_RESTART_SAFE, bit1 PL_RECONFIG_SAFE, bit2 DRAINING, bit3 DRAIN_TIMEOUT, bit4 BOOT_READY, bit5 BOOT_TIMEOUT
+  hold floor 50 ms, default ready timeout 5000 ms
+  no device was opened, mapped, read or written by this invocation
+SELFTEST_RC=0

@@ -1,0 +1,12 @@
+teaching: ready after 50 ms; status=0x00020411 cpu_restart_safe=1 pl_reconfig_safe=0 draining=0 drain_timeout=0 boot_ready=1 boot_timeout=0 epoch=4 ndrained=2
+TEACHING-EXT-M-OK
+RC=0
+teaching: ready after 50 ms; status=0x00030511 cpu_restart_safe=1 pl_reconfig_safe=0 draining=0 drain_timeout=0 boot_ready=1 boot_timeout=0 epoch=5 ndrained=3
+TEACHING-EXT-C-OK
+RC=0
+teaching: ready after 50 ms; status=0x00040611 cpu_restart_safe=1 pl_reconfig_safe=0 draining=0 drain_timeout=0 boot_ready=1 boot_timeout=0 epoch=6 ndrained=4
+TEACHING-EXT-A-OK
+RC=0
+teaching: ready after 50 ms; status=0x00050711 cpu_restart_safe=1 pl_reconfig_safe=0 draining=0 drain_timeout=0 boot_ready=1 boot_timeout=0 epoch=7 ndrained=5
+TEACHING-EXT-SV39-OK
+RC=0

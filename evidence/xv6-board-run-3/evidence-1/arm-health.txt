@@ -1,0 +1,40 @@
+e1000e: Copyright(c) 1999 - 2014 Intel Corporation.
+uio_pdrv_genirq 43c00000.htif: failed to get IRQ
+uio_pdrv_genirq: probe of 43c00000.htif failed with error -22
+ehci_hcd: USB 2.0 'Enhanced' Host Controller (EHCI) Driver
+ehci-pci: EHCI PCI platform driver
+ULPI transceiver vendor/product ID 0x0451/0x1507
+Found TI TUSB1210 ULPI transceiver.
+ULPI integrity check: passed.
+zynq-ehci zynq-ehci.0: Xilinx Zynq USB EHCI Host Controller
+zynq-ehci zynq-ehci.0: new USB bus registered, assigned bus number 1
+zynq-ehci zynq-ehci.0: irq 53, io mem 0x00000000
+zynq-ehci zynq-ehci.0: USB 2.0 started, EHCI 1.00
+hub 1-0:1.0: USB hub found
+hub 1-0:1.0: 1 port detected
+usbcore: registered new interface driver usb-storage
+mousedev: PS/2 mouse device common for all mice
+i2c /dev entries driver
+cdns-wdt f8005000.watchdog: Xilinx Watchdog Timer at d086e000 with timeout 10s
+zynq-edac f8006000.memory-controller: ecc not enabled
+cpufreq: __cpufreq_add_dev: CPU0: Running at unlisted freq: 650000 KHz
+cpufreq: __cpufreq_add_dev: CPU0: Unlisted initial frequency changed to: 666667 KHz
+Xilinx Zynq CpuIdle Driver started
+sdhci: Secure Digital Host Controller Interface driver
+sdhci: Copyright(c) Pierre Ossman
+sdhci-pltfm: SDHCI platform and OF driver helper
+mmc0: no vqmmc regulator found
+mmc0: no vmmc regulator found
+mmc0: SDHCI controller on e0100000.sdhci [e0100000.sdhci] using ADMA
+usbcore: registered new interface driver usbhid
+usbhid: USB HID core driver
+TCP: cubic registered
+NET: Registered protocol family 17
+Registering SWP/SWPB emulation handler
+drivers/rtc/hctosys.c: unable to open rtc device (rtc0)
+ALSA device list:
+No soundcards found.
+Freeing unused kernel memory: 220K (c0617000 - c064e000)
+mmc0: new high speed SD card at address 1234
+mmcblk0: mmc0:1234 SA02G 1.83 GiB
+mmcblk0: p1

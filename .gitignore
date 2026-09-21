@@ -1,0 +1,17 @@
+/build/
+/release/
+__pycache__/
+*.pyc
+*.o
+*.d
+*.elf
+*.bit
+*.dcp
+/software/xv6/kernel/kernel
+/software/xv6/kernel/*.asm
+/software/xv6/kernel/*.sym
+/software/xv6/user/_*
+/software/xv6/user/*.asm
+/software/xv6/user/*.sym
+/software/xv6/fs.img
+/software/xv6/mkfs/mkfs

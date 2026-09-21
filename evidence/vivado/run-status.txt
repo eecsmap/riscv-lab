@@ -1,0 +1,11 @@
+tool: 2025.2.1
+part: xc7z020clg400-1
+synth_1 STATUS: synth_design Complete!
+synth_1 PROGRESS: 100%
+impl_1 STATUS: write_bitstream Complete!
+impl_1 PROGRESS: 100%
+WNS: 0.779245
+TNS: 0.000000
+WHS: 0.024302
+THS: 0.000000
+bitstream: /home/engineer/fpga/experiments/teaching-cpu/xv6-board-prep/attempt-1/reports/rocketchip_wrapper.bit

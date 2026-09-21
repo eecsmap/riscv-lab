@@ -1,0 +1,130 @@
+python3 tools/check.py
+IMPORT_HASHES_OK 413
+XV6_CHECK segments=5 prompts=5 stages=7 console_bytes=3387 fails=0
+## evidence: evidence/xv6-board-run-3/evidence-1
+   session ebeab8a6-0ac9-474a-84c3-bd6e0b357d3b
+   #address-cells=1 #size-cells=1
+   DT memory: 0x00000000 + 0x10000000 (256 MiB)
+   no reserved-memory captured (absent is acceptable; unreadable is not)
+   iomem System RAM: 0x00000000-0x0fffffff
+   MemTotal 247 MiB
+## target window: 0x10000000-0x1fffffff
+MEM_PREFLIGHT OK refusals=0
+== 1. every split boundary of a complete record
+  ok   : a record split at any of 42 points still reads 130 and leaks no marker text
+== 2. byte-at-a-time, the worst case
+  ok   : fed one byte at a time, the status is still 130
+  ok   : and no fragment of the marker reached the console
+== 3. a pause inside the marker, and inside the number
+  ok   : a pause between tag and '=' still yields 130
+  ok   :   and nothing of the marker leaked while paused between tag and '='
+  ok   : a pause inside the tag still yields 130
+  ok   :   and nothing of the marker leaked while paused inside the tag
+  ok   : a pause inside the number still yields 130
+  ok   :   and nothing of the marker leaked while paused inside the number
+  ok   : a pause before the terminator still yields 130
+  ok   :   and nothing of the marker leaked while paused before the terminator
+== 4. THE defect: an unterminated number is not a status
+  ok   : '=1' with no terminator does not become a status
+  ok   :   and it is retained, not emitted
+  ok   :   and once the rest arrives the status is 130, not 1
+== 5. ordinary output leaves promptly, including a bare prompt
+  ok   : a prompt with no newline is emitted at once, not held
+  ok   : ordinary lines pass through unchanged
+== 6. text that merely resembles the marker
+  ok   : a different tag is not taken as our status
+  ok   :   and it is passed through as console text
+  ok   : the tag in prose is not taken as a status
+== 7. retention is bounded
+  ok   : ordinary bulk output is not accumulated
+  ok   : a pending record retains only the record itself
+== 8. at end of stream a never-completed prefix is console text after all
+  ok   : the prefix is held while the stream is open
+  ok   : and flush() returns it at EOF
+== 9. the PRODUCTION shim end to end, with a real pause inside the marker
+  ok   : a 400 ms pause inside the number: shim exits 130
+  ok   :   a 400 ms pause inside the number: console output passed through
+  ok   :   a 400 ms pause inside the number: no marker text leaked
+  ok   :   a 400 ms pause inside the number: framing evidence records 130
+  ok   : a 400 ms pause inside the tag: shim exits 0
+  ok   :   a 400 ms pause inside the tag: console passed through
+  ok   :   a 400 ms pause inside the tag: no marker text leaked
+  ok   :   a 400 ms pause inside the tag: evidence records 0
+== 10. an incomplete marker authorises nothing
+  ok   : with an unterminated record the shim does not exit
+  ok   :   and writes no framing evidence
+FRAMING_SELFTEST pass=33 fail=0
+== 1. the simulator path is unchanged
+  ok   : the simulator still gets its plusargs
+  ok   : its platform is 'simulator'
+  ok   : its identity set is the simulator's
+== 2. the transport contract: the prefix takes ONE argument, a complete shell command
+  ok   : the prefix is parsed with shlex, so options survive
+  ok   : exactly one argument is appended to the prefix
+  ok   : and it is the command verbatim
+== 3. remote paths that cannot be carried safely are refused early
+  ok   : an ordinary path passes through
+  ok   : the unsafe path '/srv/my disk.img' is refused
+  ok   : the unsafe path "/srv/a'b" is refused
+  ok   : the unsafe path '/srv/a"b' is refused
+  ok   : the unsafe path '/srv/a;rm -rf /' is refused
+  ok   : the unsafe path '/srv/a$(x)' is refused
+  ok   : the unsafe path '/srv/a\nb' is refused
+  ok   : the unsafe path '' is refused
+== 4. the device lock
+  ok   : the production lock is the default
+  ok   : a non-production lock needs the test flag
+== 5. there is still no way to release the reset or reconfigure the PL
+  ok   : the transport's code contains no reset or PL-reconfiguration call
+  ok   : and no recursive delete
+== the channel has no default
+  ok   : a transport built without a channel is refused
+  ok   : an exclusive transport with no device is refused
+  ok   : a device on a multiplexed channel is refused
+== control replies: a number in the stream is not an answer
+  ok   : a real record is read back through a console that echoes the whole command
+  ok   : the exact serialposix.py traceback from hardware session 2 is not taken as the remote exit
+  ok   : a traceback whose line number is a VALID exit status is not taken as the remote exit
+  ok   : a bare number with no framing is not taken as the remote exit
+  ok   : an empty stream is not taken as the remote exit
+  ok   : console furniture only is not taken as the remote exit
+  ok   : a control command that failed is not taken as an answer
+  ok   : two framed replies on one channel are refused
+  ok   : a status above 255 is refused as an exit status
+  ok   : a negative status is refused as an exit status
+  ok   : an absurd number is refused as an exit status
+  ok   : a record that is not a bare integer is refused
+  ok   : a record the board has not written yet reads as absent, not as a value
+== the pre-host lock cleanup: exactly one case, reported as it happens
+  ok   : the empty lock this claim created is removed
+  ok   :   and it is really gone from the board
+  ok   :   and the message reports the removal that happened
+  ok   : a lock that acquired contents is NOT removed
+  ok   :   and it is left exactly as it is
+  ok   :   and the failure is reported as uncertain, not softened
+TRANSPORT_SELFTEST pass=40 fail=0
+== the one machine that may proceed
+  ok   : a machine with Linux in the low 256 MiB is accepted
+  ok   : the same machine described with 2-cell addresses is also accepted
+== everything else is refused, for the right reason
+  ok   : 512 MiB to Linux is refused -- this is the recorded incident
+  ok   : a reserved region reaching into the target window is refused
+  ok   : a reg blob that is not a whole number of tuples is refused
+  ok   : evidence from a different boot is refused
+  ok   : a hand-edited capture is refused
+  ok   : a device tree and /proc/iomem that disagree are refused
+  ok   : a reserved-memory name with no reg is refused
+== the NUL boundary: a terminator is tolerated, corruption is not
+  ok   : a boot id with ONE trailing NUL is accepted (this is what the board sends)
+  ok   : a NUL *inside* the boot id is refused, not scrubbed
+  ok   : a NUL inside /proc/iomem is refused -- corruption must not be normalised away
+  ok   : a session id that is not a UUID is refused
+  ok   : a truncated session id is refused
+== missing evidence is a refusal, not a default
+  ok   : missing session-id is refused
+  ok   : missing dt/memory-reg is refused
+  ok   : missing dt/address-cells is refused
+  ok   : missing proc-iomem is refused
+  ok   : missing proc-meminfo is refused
+MEM_PREFLIGHT_SELFTEST pass=19 fail=0
+RISCV_LAB_CHECK_OK (offline; no hardware run)

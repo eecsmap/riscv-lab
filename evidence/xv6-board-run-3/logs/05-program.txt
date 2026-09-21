@@ -1,0 +1,6 @@
+PROG_RC=0
+1
+0x00000011
+0x00000001
+ mmcblk0: p1
+random: nonblocking pool is initialized

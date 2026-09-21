@@ -1,0 +1,9 @@
+## evidence: xv6-board-run-3/evidence-1
+   session ebeab8a6-0ac9-474a-84c3-bd6e0b357d3b
+   #address-cells=1 #size-cells=1
+   DT memory: 0x00000000 + 0x10000000 (256 MiB)
+   no reserved-memory captured (absent is acceptable; unreadable is not)
+   iomem System RAM: 0x00000000-0x0fffffff
+   MemTotal 247 MiB
+## target window: 0x10000000-0x1fffffff
+MEM_PREFLIGHT OK refusals=0

@@ -1,0 +1,12 @@
+teaching: ready after 50 ms; status=0x00000011 cpu_restart_safe=1 pl_reconfig_safe=0 draining=0 drain_timeout=0 boot_ready=1 boot_timeout=0 epoch=0 ndrained=0
+TEACHING-CPU-M3-OK
+RC=0
+teaching: ready after 50 ms; status=0x00000111 cpu_restart_safe=1 pl_reconfig_safe=0 draining=0 drain_timeout=0 boot_ready=1 boot_timeout=0 epoch=1 ndrained=0
+M3-CLINT-OK
+RC=0
+teaching: ready after 50 ms; status=0x00010211 cpu_restart_safe=1 pl_reconfig_safe=0 draining=0 drain_timeout=0 boot_ready=1 boot_timeout=0 epoch=2 ndrained=1
+M3-DDR-OK
+RC=0
+teaching: ready after 50 ms; status=0x00010311 cpu_restart_safe=1 pl_reconfig_safe=0 draining=0 drain_timeout=0 boot_ready=1 boot_timeout=0 epoch=3 ndrained=1
+M3-BADADDR-OK
+RC=0

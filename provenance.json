@@ -1,0 +1,2067 @@
+[
+  {
+    "source": "teaching-cpu-work/cpu/rtl/tcpu_cdecode.v",
+    "path": "rtl/cpu/tcpu_cdecode.v",
+    "sha256": "7ea0ee368aebae35d962c09e83df0a41282fb47ddbfeff46fe37b27d3e837139"
+  },
+  {
+    "source": "teaching-cpu-work/cpu/rtl/tcpu_core.v",
+    "path": "rtl/cpu/tcpu_core.v",
+    "sha256": "09449b24e64440f745134e7c98ddff1009667087bf438f03381a0228c40fafc9"
+  },
+  {
+    "source": "teaching-cpu-work/cpu/rtl/tcpu_csr.v",
+    "path": "rtl/cpu/tcpu_csr.v",
+    "sha256": "0a5722962012f54a22740d7f207311e4264f46e11074b38f71097035b6005a2a"
+  },
+  {
+    "source": "teaching-cpu-work/cpu/rtl/tcpu_defs.vh",
+    "path": "rtl/cpu/tcpu_defs.vh",
+    "sha256": "4d86ce139119a062928900f65b8f5bd38418253d5e91cf805de81329ef930920"
+  },
+  {
+    "source": "teaching-cpu-work/cpu/rtl/tcpu_muldiv.v",
+    "path": "rtl/cpu/tcpu_muldiv.v",
+    "sha256": "5e85de1d474ad63ff33aa78944ce60b9da579a47d5db0dc43c32c80fa7d8607f"
+  },
+  {
+    "source": "teaching-cpu-work/cpu/rtl/tcpu_ptw.v",
+    "path": "rtl/cpu/tcpu_ptw.v",
+    "sha256": "8a36ea44338c86c07fd4e6f78015cebafd6eca8c14e2b3d38b5abe352eb10d12"
+  },
+  {
+    "source": "teaching-cpu-work/cpu/rtl/tcpu_regfile.v",
+    "path": "rtl/cpu/tcpu_regfile.v",
+    "sha256": "40334e9cf0c7a247bc587cd486f59d7206131f121b6e1c6a6f254eeda3452350"
+  },
+  {
+    "source": "teaching-cpu-work/cpu/tb/tcpu_harness.v",
+    "path": "tests/cpu/tb/tcpu_harness.v",
+    "sha256": "9ecbb91824401c787fb63111fdbe81c01534c634b41e0d5a8003d28db052cfd9"
+  },
+  {
+    "source": "teaching-cpu-work/cpu/tb/tcpu_top.v",
+    "path": "tests/cpu/tb/tcpu_top.v",
+    "sha256": "cf4f96780bf1226d04f743c0e8a9c367f4f4566cff72b3f25ed45009aab57c98"
+  },
+  {
+    "source": "teaching-cpu-work/cpu/tests/d01_highpa.S",
+    "path": "tests/cpu/tests/d01_highpa.S",
+    "sha256": "e51bab8414ef6b6d04516c1f40e339a79f13951b511c5fc890a939eb07c05b2a"
+  },
+  {
+    "source": "teaching-cpu-work/cpu/tests/d02_misaligned.S",
+    "path": "tests/cpu/tests/d02_misaligned.S",
+    "sha256": "fb8fefb0636f05a53f238a44283a2069e14fdf45102bdbf82695736f57613d3c"
+  },
+  {
+    "source": "teaching-cpu-work/cpu/tests/d03_badbranch.S",
+    "path": "tests/cpu/tests/d03_badbranch.S",
+    "sha256": "86200ecc41609ddcb5b403767563ac230cda79feb1cd3a3207a4b7d2dc96ccec"
+  },
+  {
+    "source": "teaching-cpu-work/cpu/tests/d04_illegal.S",
+    "path": "tests/cpu/tests/d04_illegal.S",
+    "sha256": "13da5aa4b26f6125109868cd865eb183ace53fa0592cdded12db660a4f76509a"
+  },
+  {
+    "source": "teaching-cpu-work/cpu/tests/d05_jalr_illegal.S",
+    "path": "tests/cpu/tests/d05_jalr_illegal.S",
+    "sha256": "d57a22a84f49a6fe87db6885ed39370c93c89f898161aa1598f833263b22ad01"
+  },
+  {
+    "source": "teaching-cpu-work/cpu/tests/d06_loadpayload.S",
+    "path": "tests/cpu/tests/d06_loadpayload.S",
+    "sha256": "83df880e333e1e18d9561b6e039b8c8e614471ca4ac72eabb888512072e60881"
+  },
+  {
+    "source": "teaching-cpu-work/cpu/tests/d07_csr_cycle.S",
+    "path": "tests/cpu/tests/d07_csr_cycle.S",
+    "sha256": "544220852234b52682a1cf2620e7a25536e170e3f133707a64d757a9c524e0a3"
+  },
+  {
+    "source": "teaching-cpu-work/cpu/tests/d08_minstret_ok.S",
+    "path": "tests/cpu/tests/d08_minstret_ok.S",
+    "sha256": "f379bac219c30ba2fd66e7a6600549f9a4473ec021cfcfba40aaa86240419af9"
+  },
+  {
+    "source": "teaching-cpu-work/cpu/tests/dcrt.S",
+    "path": "tests/cpu/tests/dcrt.S",
+    "sha256": "18465e7ddf2daa28b0756f2844bf103a5ee779cf2198bb592d20d9e3956acb45"
+  },
+  {
+    "source": "teaching-cpu-work/cpu/tests2/c01_csrforms.S",
+    "path": "tests/cpu/tests2/c01_csrforms.S",
+    "sha256": "d0e9ff7e81c03a8063a8560062ae797db958f65fa952b24701a2c3ec575864fd"
+  },
+  {
+    "source": "teaching-cpu-work/cpu/tests2/c02_warl.S",
+    "path": "tests/cpu/tests2/c02_warl.S",
+    "sha256": "62060dabc3e94a23ea12c0c61f2eeb094efcbfaa18119b97c35d90832cf85de0"
+  },
+  {
+    "source": "teaching-cpu-work/cpu/tests2/c03_csr_illegal.S",
+    "path": "tests/cpu/tests2/c03_csr_illegal.S",
+    "sha256": "4a0899d74eea8773e6900e09ecd38734427d7a40e9a935fc19746beac3e25a21"
+  },
+  {
+    "source": "teaching-cpu-work/cpu/tests2/c04_counters.S",
+    "path": "tests/cpu/tests2/c04_counters.S",
+    "sha256": "31da1aca60aa41ee9fca2941605c2d9e45fe1272f25094adf10d8d86db05b8de"
+  },
+  {
+    "source": "teaching-cpu-work/cpu/tests2/c05_mret_count.S",
+    "path": "tests/cpu/tests2/c05_mret_count.S",
+    "sha256": "db7d93aadb65ba1769b4935c7a395c5979add672ce806805df2609f5b5326d2d"
+  },
+  {
+    "source": "teaching-cpu-work/cpu/tests2/c06_targets.S",
+    "path": "tests/cpu/tests2/c06_targets.S",
+    "sha256": "66a4facd74213925f53aa1537588399aec4d59be7e4bb83d45f77fa192a8c1e2"
+  },
+  {
+    "source": "teaching-cpu-work/cpu/tests2/c07_handler_fault.S",
+    "path": "tests/cpu/tests2/c07_handler_fault.S",
+    "sha256": "c083254e9d34b86d9a61b457b2e6c8baec67796b51a4cbe530bccef0330eb1d5"
+  },
+  {
+    "source": "teaching-cpu-work/cpu/tests2/c08_accessfault.S",
+    "path": "tests/cpu/tests2/c08_accessfault.S",
+    "sha256": "81540ada26b7374a4effc43a55b01e0c8176cd2df567624018ad9317e7efd46f"
+  },
+  {
+    "source": "teaching-cpu-work/cpu/tests2/c09_ecall_ebreak.S",
+    "path": "tests/cpu/tests2/c09_ecall_ebreak.S",
+    "sha256": "599633feee0ec3906a9881e5efae6b669e3f0d2e9a3fc960b3411ac22c12e170"
+  },
+  {
+    "source": "teaching-cpu-work/cpu/tests2/c10_trapcount.S",
+    "path": "tests/cpu/tests2/c10_trapcount.S",
+    "sha256": "b52af254448157503e9888cd7c1a2618800a980695f3afcd4544c19ab5c2dfe4"
+  },
+  {
+    "source": "teaching-cpu-work/cpu/tests2/i01_basic.S",
+    "path": "tests/cpu/tests2/i01_basic.S",
+    "sha256": "3352450c8ecd7229e5ff9cb4958004da367ca32411706b9283c22639134441e0"
+  },
+  {
+    "source": "teaching-cpu-work/cpu/tests2/i02_priority.S",
+    "path": "tests/cpu/tests2/i02_priority.S",
+    "sha256": "70e78d17f56164a2adb9a81559cc2642ddc0732fa6595db0685e0bd1e3d2ae42"
+  },
+  {
+    "source": "teaching-cpu-work/cpu/tests2/i03_masking.S",
+    "path": "tests/cpu/tests2/i03_masking.S",
+    "sha256": "ee9e8ef81610810bfeb4aa0720346202f5a11809b82e68586d6a3d59e1dc2314"
+  },
+  {
+    "source": "teaching-cpu-work/cpu/tests2/i04_mip_level.S",
+    "path": "tests/cpu/tests2/i04_mip_level.S",
+    "sha256": "9999789bb62749eb8b86805b3a27702fecdc0ec8849ee35dea7882c20f6f5e37"
+  },
+  {
+    "source": "teaching-cpu-work/cpu/tests2/i05_wfi.S",
+    "path": "tests/cpu/tests2/i05_wfi.S",
+    "sha256": "6b7449f1bee031fe0ce5aa5bdef605960cd2a365d08ee3cb3d2d8b8618c05d3c"
+  },
+  {
+    "source": "teaching-cpu-work/cpu/tests2/i06_mret_reenter.S",
+    "path": "tests/cpu/tests2/i06_mret_reenter.S",
+    "sha256": "df19ec506d36ad978d13bcfa1f0cd97b7b6cf339f4e6d97a75a4f19fedc12473"
+  },
+  {
+    "source": "teaching-cpu-work/cpu/tests2/i07_epc_redirect.S",
+    "path": "tests/cpu/tests2/i07_epc_redirect.S",
+    "sha256": "51a513b389c9d79373de6643c8972d33988669951f2eca7b2c35964a7e815773"
+  },
+  {
+    "source": "teaching-cpu-work/cpu/tests2/i08_sync_first.S",
+    "path": "tests/cpu/tests2/i08_sync_first.S",
+    "sha256": "690a1e16a10ca337a65e45364b5701a2020a213ac3c85c43621b9ff0a6de075b"
+  },
+  {
+    "source": "teaching-cpu-work/cpu/tests2/i09_store_exact.S",
+    "path": "tests/cpu/tests2/i09_store_exact.S",
+    "sha256": "0a802f5d3829711abc9458752e1b0ab79b9d19365c175b779027ed83209cb555"
+  },
+  {
+    "source": "teaching-cpu-work/cpu/tests2/ihandler.S",
+    "path": "tests/cpu/tests2/ihandler.S",
+    "sha256": "a76ff3e5c75c7fa62a92f110b5a657fd5ef0995453937bc0dc9210065199cb40"
+  },
+  {
+    "source": "teaching-cpu-work/cpu/tests2/irqmac.h",
+    "path": "tests/cpu/tests2/irqmac.h",
+    "sha256": "30bca94eb32320b278627d90c16e352483406d223cdcff6f386ab52fad425a40"
+  },
+  {
+    "source": "teaching-cpu-work/cpu/tests2/j01_enabled_boundary.S",
+    "path": "tests/cpu/tests2/j01_enabled_boundary.S",
+    "sha256": "98fbadbede80d8014dad6a5d7e15a316e27f0b33866c44334efd56fc5a45f14c"
+  },
+  {
+    "source": "teaching-cpu-work/cpu/tests2/j02_store_once.S",
+    "path": "tests/cpu/tests2/j02_store_once.S",
+    "sha256": "01dedc1a852ae90d486e5854f2bf32ef4c36497158f71c514bccf017c3e9792c"
+  },
+  {
+    "source": "teaching-cpu-work/cpu/tests2/thandler.S",
+    "path": "tests/cpu/tests2/thandler.S",
+    "sha256": "eb131b8a0626a7b7e31b316740ef386496ff158e42054f7dc8069fcc13a50eca"
+  },
+  {
+    "source": "teaching-cpu-work/cpu/m3tests/boot01_marker.S",
+    "path": "tests/cpu/m3tests/boot01_marker.S",
+    "sha256": "896dc90ad2690cb271f7663d8dc40ebe0abeb65f2bd92e3776388c0ac51e60e2"
+  },
+  {
+    "source": "teaching-cpu-work/cpu/m3tests/boot02_clint.S",
+    "path": "tests/cpu/m3tests/boot02_clint.S",
+    "sha256": "481e014efc96ff1372eb2abb3599572fa75efa9fb33b086c9f8d8ca31a8ac852"
+  },
+  {
+    "source": "teaching-cpu-work/cpu/m3tests/boot03_ddr.S",
+    "path": "tests/cpu/m3tests/boot03_ddr.S",
+    "sha256": "142117496387217aad7c23cc10df669321e6b5623a8623dc7d4527ef33c8f91f"
+  },
+  {
+    "source": "teaching-cpu-work/cpu/m3tests/boot04_badaddr.S",
+    "path": "tests/cpu/m3tests/boot04_badaddr.S",
+    "sha256": "166d47bfc02f1343bcc169a15b432bfb89bd42a371c0b17d7dd196f6822824b6"
+  },
+  {
+    "source": "teaching-cpu-work/cpu/m3tests/htif.S",
+    "path": "tests/cpu/m3tests/htif.S",
+    "sha256": "f8bf05febd4550f6781777da438d74623e1c9c85fd5735c96ede7035e8469b35"
+  },
+  {
+    "source": "teaching-cpu-work/cpu/m3tests/m3lib.h",
+    "path": "tests/cpu/m3tests/m3lib.h",
+    "sha256": "09998a534ba25cbfd22ed3d455a054dd5673a33454cf59ae715860eafc4cefce"
+  },
+  {
+    "source": "teaching-cpu-work/fpga-zynq/common/src/main/scala/Configs.scala",
+    "path": "soc/scala/Configs.scala",
+    "sha256": "ced60b20aa5a884a8d5dc32862493c6492a77dea424a237c33e300ec58870a1e"
+  },
+  {
+    "source": "teaching-cpu-work/fpga-zynq/common/src/main/scala/Drivers.scala",
+    "path": "soc/scala/Drivers.scala",
+    "sha256": "5be631343331e94716cd74d7354fb41178fff4ea6c777f572ab663c30f9a7231"
+  },
+  {
+    "source": "teaching-cpu-work/fpga-zynq/common/src/main/scala/Generator.scala",
+    "path": "soc/scala/Generator.scala",
+    "sha256": "8c43c80e2ab5d7d1e1a9e1804ad6e7ba4aa24f637b24a8311a1ffe2b80d4dc83"
+  },
+  {
+    "source": "teaching-cpu-work/fpga-zynq/common/src/main/scala/Serdes.scala",
+    "path": "soc/scala/Serdes.scala",
+    "sha256": "8f81035971cc5a681521e5f252b05980efb5954999749abca78addb917d30141"
+  },
+  {
+    "source": "teaching-cpu-work/fpga-zynq/common/src/main/scala/TestHarness.scala",
+    "path": "soc/scala/TestHarness.scala",
+    "sha256": "af53a988869d0cd4ab913a668f516c46c015f245f1f96c5788bf9540451722e1"
+  },
+  {
+    "source": "teaching-cpu-work/fpga-zynq/common/src/main/scala/Top.scala",
+    "path": "soc/scala/Top.scala",
+    "sha256": "531a260df3ce9fe3d8a246434a283112a70bfe6f60c40940b9d7ef19636a3a94"
+  },
+  {
+    "source": "teaching-cpu-work/fpga-zynq/common/src/main/scala/ZynqAdapter.scala",
+    "path": "soc/scala/ZynqAdapter.scala",
+    "sha256": "7580f45cdca07391c211b23ac70af8d5bd4730ecd6d2723b3babdc142c7b9ebf"
+  },
+  {
+    "source": "teaching-cpu-work/fpga-zynq/common/src/main/scala/ZynqAdapterRD2.scala",
+    "path": "soc/scala/ZynqAdapterRD2.scala",
+    "sha256": "2781b2d4deb28a92be1d46291f811197a875aab61d0faa109338504c95b0c421"
+  },
+  {
+    "source": "teaching-cpu-work/fpga-zynq/common/src/main/scala/teaching/AtomicBackend.scala",
+    "path": "soc/scala/teaching/AtomicBackend.scala",
+    "sha256": "8e5a9a5881177720fbfdc8cec7c3c513f9fba59f92fce074a76b52d14f9fb31b"
+  },
+  {
+    "source": "teaching-cpu-work/fpga-zynq/common/src/main/scala/teaching/AtomicHub.scala",
+    "path": "soc/scala/teaching/AtomicHub.scala",
+    "sha256": "f2a700169cad2f55f16fba500389ac72798e7f9ad5ca5135bf03da4adc8a2316"
+  },
+  {
+    "source": "teaching-cpu-work/fpga-zynq/common/src/main/scala/teaching/AtomicSoc.scala",
+    "path": "soc/scala/teaching/AtomicSoc.scala",
+    "sha256": "1639a08c5a9ebd77ad6f017cef3da7acfa1cc85b28ae9d806e97ff6a36560085"
+  },
+  {
+    "source": "teaching-cpu-work/fpga-zynq/common/src/main/scala/teaching/AtomicTest.scala",
+    "path": "soc/scala/teaching/AtomicTest.scala",
+    "sha256": "b11586e81d9d63ccd15fc02ed742adecb5e5ca31d5665aac15b72656d74e0414"
+  },
+  {
+    "source": "teaching-cpu-work/fpga-zynq/common/src/main/scala/teaching/BusTest.scala",
+    "path": "soc/scala/teaching/BusTest.scala",
+    "sha256": "3267a5dfe6e10d40a993c0fee0d10e9e20273cf9934aa7fe7271f47a6e07c8b7"
+  },
+  {
+    "source": "teaching-cpu-work/fpga-zynq/common/src/main/scala/teaching/BusTester.scala",
+    "path": "soc/scala/teaching/BusTester.scala",
+    "sha256": "aa774abab1b4e675ff4051bc77e8009f0e29bfa38200accf63c5b7e8b365e893"
+  },
+  {
+    "source": "teaching-cpu-work/fpga-zynq/common/src/main/scala/teaching/PhysPort.scala",
+    "path": "soc/scala/teaching/PhysPort.scala",
+    "sha256": "4a1e6bad6cd6d844db80d74f52a00a4a93161ecdd60b400e15f036e50025d5f2"
+  },
+  {
+    "source": "teaching-cpu-work/fpga-zynq/common/src/main/scala/teaching/PhysPortV2.scala",
+    "path": "soc/scala/teaching/PhysPortV2.scala",
+    "sha256": "6e24f37554fb4293adc6e048c5fe7ee5dd4612bc48d0b92d45f605675c043e5f"
+  },
+  {
+    "source": "teaching-cpu-work/fpga-zynq/common/src/main/scala/teaching/RD1Bridge.scala",
+    "path": "soc/scala/teaching/RD1Bridge.scala",
+    "sha256": "d35345e544c564c3f52d81a634fd8623c44344ea43d060bbc3da60ce312c00bd"
+  },
+  {
+    "source": "teaching-cpu-work/fpga-zynq/common/src/main/scala/teaching/RD1Regress.scala",
+    "path": "soc/scala/teaching/RD1Regress.scala",
+    "sha256": "b9a2f99694b410b72febbceece1054b88951e2aceef4d0b0c7ba4646ac0cceaf"
+  },
+  {
+    "source": "teaching-cpu-work/fpga-zynq/common/src/main/scala/teaching/RD1Test.scala",
+    "path": "soc/scala/teaching/RD1Test.scala",
+    "sha256": "0d5799d3d303ad0bc9a63a9b07af01a0b69191e2c85222cedb55170c2c485b04"
+  },
+  {
+    "source": "teaching-cpu-work/fpga-zynq/common/src/main/scala/teaching/RD2BlockDevice.scala",
+    "path": "soc/scala/teaching/RD2BlockDevice.scala",
+    "sha256": "e8de47ab295d1b7e2b6dfc2ea16b56174074448c10633f1f7ec3b9c0092ca672"
+  },
+  {
+    "source": "teaching-cpu-work/fpga-zynq/common/src/main/scala/teaching/RD2BridgeV2.scala",
+    "path": "soc/scala/teaching/RD2BridgeV2.scala",
+    "sha256": "dca62ce32fb8cac5f2edca02574199a2dbd6b97ebf526576350b72f312f0d167"
+  },
+  {
+    "source": "teaching-cpu-work/fpga-zynq/common/src/main/scala/teaching/RD2Clint.scala",
+    "path": "soc/scala/teaching/RD2Clint.scala",
+    "sha256": "271a19942031e992a04b0df58b80109ae1ff111dd4b6e29b825179f440bb372f"
+  },
+  {
+    "source": "teaching-cpu-work/fpga-zynq/common/src/main/scala/teaching/RD2Serial.scala",
+    "path": "soc/scala/teaching/RD2Serial.scala",
+    "sha256": "7acf6d627561a438fe1d8cae03d24d3a7a543310d9b6d10ff21c3dc30530b1b9"
+  },
+  {
+    "source": "teaching-cpu-work/fpga-zynq/common/src/main/scala/teaching/RD2Soc.scala",
+    "path": "soc/scala/teaching/RD2Soc.scala",
+    "sha256": "02c78054d40f6ea007cca0c525b2411cf9342cbab2d782f3d62cdee836aebe4f"
+  },
+  {
+    "source": "teaching-cpu-work/fpga-zynq/common/src/main/scala/teaching/RD2Throttle.scala",
+    "path": "soc/scala/teaching/RD2Throttle.scala",
+    "sha256": "619689acc3e45201e522a34b913b3e63f5aaea6a67339767f82d87a95c064674"
+  },
+  {
+    "source": "teaching-cpu-work/fpga-zynq/common/src/main/scala/teaching/RD2ThrottleTest.scala",
+    "path": "soc/scala/teaching/RD2ThrottleTest.scala",
+    "sha256": "081786ff6367afa7a4c90370138748a5e040a83afa917d9ca771c992e1dd4d33"
+  },
+  {
+    "source": "teaching-cpu-work/fpga-zynq/common/src/main/scala/teaching/RD2Watch.scala",
+    "path": "soc/scala/teaching/RD2Watch.scala",
+    "sha256": "725ffd898a36bd77f1f8fda621774d54b532df287d4b9bbf354fd63252f1cc8b"
+  },
+  {
+    "source": "teaching-cpu-work/fpga-zynq/common/src/main/scala/teaching/ReqRespToTL.scala",
+    "path": "soc/scala/teaching/ReqRespToTL.scala",
+    "sha256": "f4b6bd13f901cce79fbcdaaac90e3dfdfa8ea736b5aec6518a9e16e86fdaab52"
+  },
+  {
+    "source": "teaching-cpu-work/fpga-zynq/common/src/main/scala/teaching/TeachingCpuBlackBox.scala",
+    "path": "soc/scala/teaching/TeachingCpuBlackBox.scala",
+    "sha256": "1247805c284e8a8cb8f64afd54ddcdda2896451beabdbbf88729b194b43dab07"
+  },
+  {
+    "source": "teaching-cpu-work/fpga-zynq/common/src/main/scala/teaching/TeachingCpuSoc.scala",
+    "path": "soc/scala/teaching/TeachingCpuSoc.scala",
+    "sha256": "cff0c098d4ebf27f6b21434abf1d5aa9b9b5972446af5926d5fe00194c74f09a"
+  },
+  {
+    "source": "teaching-cpu-work/fpga-zynq/common/src/main/scala/teaching/TeachingSoc.scala",
+    "path": "soc/scala/teaching/TeachingSoc.scala",
+    "sha256": "6d80143994bd041b1a15e2f546df9157f0dcdfdf6555c4c6595a9a940f177f33"
+  },
+  {
+    "source": "teaching-cpu-work/fpga-zynq/common/src/main/scala/teaching/atomic_soc_main.cpp",
+    "path": "soc/scala/teaching/atomic_soc_main.cpp",
+    "sha256": "0d8c3c5cbfba7a546c2ff87d38ac7f0ce4e0435238db0b2b5f54e837452e28c9"
+  },
+  {
+    "source": "teaching-cpu-work/fpga-zynq/common/src/main/scala/teaching/cpu_boot_main.cpp",
+    "path": "soc/scala/teaching/cpu_boot_main.cpp",
+    "sha256": "7ac41b995dc56faac6fc4744efd4cfc23602fa8bb89272a7386624b47ec1f09f"
+  },
+  {
+    "source": "teaching-cpu-work/fpga-zynq/common/src/main/scala/teaching/soc_main.cpp",
+    "path": "soc/scala/teaching/soc_main.cpp",
+    "sha256": "675e8f91fe180a7ec0b30ee3e433279a019262085d894deb3876e2a5cf8ad26e"
+  },
+  {
+    "source": "teaching-cpu-work/fpga-zynq/common/src/main/scala/teaching/soc_tb_main.cpp",
+    "path": "soc/scala/teaching/soc_tb_main.cpp",
+    "sha256": "30bb677bd7fe95c4deb2183b17f84826e63665adeb59ebc576e55919e75d6fa6"
+  },
+  {
+    "source": "teaching-cpu-work/fpga-zynq/common/src/main/scala/teaching/unittest_main.cpp",
+    "path": "soc/scala/teaching/unittest_main.cpp",
+    "sha256": "d954c96e0f8a9d920a68d27c69842ee13751fda4a5d6e66da28e5d39831fd1ac"
+  },
+  {
+    "source": "teaching-cpu-work/fpga-zynq/common/csrc/fesvr_teaching.cc",
+    "path": "host/csrc/fesvr_teaching.cc",
+    "sha256": "e553e11f905d758cd03d1c8c2bb8d8c4422ed558afbe7c0b6768c36c8ab89d49"
+  },
+  {
+    "source": "teaching-cpu-work/fpga-zynq/common/csrc/fesvr_zynq.cc",
+    "path": "host/csrc/fesvr_zynq.cc",
+    "sha256": "fd74e94a5030bde9951d7f5220fe31511352250549b76d354387d90dff8416c4"
+  },
+  {
+    "source": "teaching-cpu-work/fpga-zynq/common/csrc/teaching_driver.cc",
+    "path": "host/csrc/teaching_driver.cc",
+    "sha256": "cd10fb3cc47a569e87d844b146944f778cba592a4a54b07ab4409cc5cf1cb951"
+  },
+  {
+    "source": "teaching-cpu-work/fpga-zynq/common/csrc/teaching_driver.h",
+    "path": "host/csrc/teaching_driver.h",
+    "sha256": "50b02ec11b141a17b9c4061e0405657341066b77d3c782599d4a64c30ace293f"
+  },
+  {
+    "source": "teaching-cpu-work/fpga-zynq/common/csrc/teaching_host_test.cc",
+    "path": "host/csrc/teaching_host_test.cc",
+    "sha256": "521dc65e91c8476fe3044e9c8560791cd617563e44a576a103ef3907798dfb8a"
+  },
+  {
+    "source": "teaching-cpu-work/fpga-zynq/common/csrc/teaching_ports.h",
+    "path": "host/csrc/teaching_ports.h",
+    "sha256": "24f3a11c45002ccfa36a300517c1ee87bf74a70d02d1cde16ec8b6a3bcd7bc71"
+  },
+  {
+    "source": "teaching-cpu-work/fpga-zynq/common/csrc/teaching_real_ports.cc",
+    "path": "host/csrc/teaching_real_ports.cc",
+    "sha256": "464daa7edeee58335861a4ec7c3da413fa3d13208e3fd80f6bc7268aa04f3e5b"
+  },
+  {
+    "source": "teaching-cpu-work/fpga-zynq/common/csrc/teaching_real_ports.h",
+    "path": "host/csrc/teaching_real_ports.h",
+    "sha256": "0b4b5f1c976b4129d76840aa88f769a644a82e7b10728e2e53b2b468593da807"
+  },
+  {
+    "source": "teaching-cpu-work/fpga-zynq/common/csrc/zynq_driver.cc",
+    "path": "host/csrc/zynq_driver.cc",
+    "sha256": "bbd9dc51b5f59b2d04474ac2a0c90fba1b69a4edb5a0871d46c36f1d50f0cb06"
+  },
+  {
+    "source": "teaching-cpu-work/fpga-zynq/common/csrc/zynq_driver.h",
+    "path": "host/csrc/zynq_driver.h",
+    "sha256": "0dad2a01063befb7517f012615774eade24d66a8bd302ce28121056d2676c2a7"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/LICENSE",
+    "path": "software/xv6/LICENSE",
+    "sha256": "677302f30c9882c1f81b9be8ceda6efd4edff5576b9e02963b6114cf70c3162c"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/Makefile",
+    "path": "software/xv6/Makefile",
+    "sha256": "1fa90c21dcf34433e5b1002a9b843fd086c4db5ceee599340ed5263e8635ab96"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/README",
+    "path": "software/xv6/README",
+    "sha256": "62e7b5718d95ed57222e818e0a4a44cb827b822c89d6da0d682f541222e7b0a1"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/kernel/bio.c",
+    "path": "software/xv6/kernel/bio.c",
+    "sha256": "a97ad91634d927a6ccb12d36dc9f93ff51ae9a1ec3f62a96a7235d14b5b99dea"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/kernel/blkdev.c",
+    "path": "software/xv6/kernel/blkdev.c",
+    "sha256": "696df5116f43fb5279053d86ba8a91ecacb45375e6ba47f879a802730a7c68d2"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/kernel/buf.h",
+    "path": "software/xv6/kernel/buf.h",
+    "sha256": "78102df8608e97bb19e11f6ac7c705903499eddfb89330e2184cffd71e7e75ea"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/kernel/console.c",
+    "path": "software/xv6/kernel/console.c",
+    "sha256": "d3088059d9591e367b7b15706590e472fe38cc505b22d7d8cf03b8da5de5d699"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/kernel/defs.h",
+    "path": "software/xv6/kernel/defs.h",
+    "sha256": "a2648ed87434afc552d884a3f4e8f92e8d98840a15a79da0f0ace8e77219ee0f"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/kernel/elf.h",
+    "path": "software/xv6/kernel/elf.h",
+    "sha256": "f51c9ad3bed12d4047e5b6aa62086685ad1fa8c1ac0709076f6390eda6306ac5"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/kernel/entry.S",
+    "path": "software/xv6/kernel/entry.S",
+    "sha256": "bc064b802759060414c3ce9ae94cd8b609d6a7adf42e8bf857899de81da10b2f"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/kernel/exec.c",
+    "path": "software/xv6/kernel/exec.c",
+    "sha256": "b93ef7e97e7c701474ae5d9d7a5f0399e7fcf430c47c9bca15d49f4102ebaad2"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/kernel/fcntl.h",
+    "path": "software/xv6/kernel/fcntl.h",
+    "sha256": "c8c2a7fa8a9c432be55dcd4bd6db9429c88c3a95cec6f79a576968b36048e166"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/kernel/file.c",
+    "path": "software/xv6/kernel/file.c",
+    "sha256": "b31fe01b67f97c8e00c36150cf16ec0ea7d27d2f324b6066d0f62eeddff4a4ac"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/kernel/file.h",
+    "path": "software/xv6/kernel/file.h",
+    "sha256": "8b1d433b0deca07fab07bb9eb4e750d0b7c869b33f3b448447dbfca5f2814826"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/kernel/fs.c",
+    "path": "software/xv6/kernel/fs.c",
+    "sha256": "eb2cab16ab4eac8059e022e5c009c14d12fc35b720dd63e147270a1dbc50eed6"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/kernel/fs.h",
+    "path": "software/xv6/kernel/fs.h",
+    "sha256": "08118f92377d555b5352579518c26ad5093188c6f88257be70d1f122691545a3"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/kernel/htif.c",
+    "path": "software/xv6/kernel/htif.c",
+    "sha256": "fc8bd07fbddc2c3bd69e9f2f2b00a8c98e84c2d5eba4475096d100120ed51634"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/kernel/kalloc.c",
+    "path": "software/xv6/kernel/kalloc.c",
+    "sha256": "047f9f7b0c433577f5b58abcb7f5ec904a1891dd41461db752b1ed0f97410f12"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/kernel/kernel.ld",
+    "path": "software/xv6/kernel/kernel.ld",
+    "sha256": "5bfb4cc2da14087b472181653b7e0de6639c34222d78f2c1f1f84aa68c7304a8"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/kernel/kernelvec.S",
+    "path": "software/xv6/kernel/kernelvec.S",
+    "sha256": "86653ca81a1b13957ed276fc423a2658cf9108aa8f7860d767893164dbbd9290"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/kernel/log.c",
+    "path": "software/xv6/kernel/log.c",
+    "sha256": "62c1a96498b2e345f24ddf13bc81b7bdee89f845d6d8d553f07dbb43ff498f71"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/kernel/main.c",
+    "path": "software/xv6/kernel/main.c",
+    "sha256": "ecf8f96a43ecee810b9b8655b994efdded9db86aa727682acae6936283d8367a"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/kernel/memlayout.h",
+    "path": "software/xv6/kernel/memlayout.h",
+    "sha256": "d936c72756682f6cf08d2696c6ef35b9a93642562cfdb2cf4144bb82cd510685"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/kernel/param.h",
+    "path": "software/xv6/kernel/param.h",
+    "sha256": "2e231d4c792da80c39668de92d56c28e9d24fd1bdc190435f7ce4025d24bbb59"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/kernel/pipe.c",
+    "path": "software/xv6/kernel/pipe.c",
+    "sha256": "c38b2e8b0530d1382d9dc3a957954ab3cf6ae3bb8fd232362d0f908da96ec5bb"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/kernel/plic.c",
+    "path": "software/xv6/kernel/plic.c",
+    "sha256": "125fc60925cae8cfff87450c88faa30634e4406f1e5a16234ff49ffba5dca7ab"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/kernel/printk.c",
+    "path": "software/xv6/kernel/printk.c",
+    "sha256": "a4e6d431a3f56250b4962025290e662ddd211db56567cbba95957df0c4e3b2e3"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/kernel/proc.c",
+    "path": "software/xv6/kernel/proc.c",
+    "sha256": "439a6df41647cd63c72d3a4c9b48f77ec946e6ced1011271ec3760c72ff8d550"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/kernel/proc.h",
+    "path": "software/xv6/kernel/proc.h",
+    "sha256": "117f9994f13255bc1422857ff8bcef858ade187881f3f1391d295df237692004"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/kernel/riscv.h",
+    "path": "software/xv6/kernel/riscv.h",
+    "sha256": "f8e7ac4aad80badba46e003bb1607e2a4ff6ddae93a59876dbe0117d1ea4949a"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/kernel/sleeplock.c",
+    "path": "software/xv6/kernel/sleeplock.c",
+    "sha256": "0ddda91203e2ee48285182e165879f25eaf56dc1ba34118e0d7066a34ff455bd"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/kernel/sleeplock.h",
+    "path": "software/xv6/kernel/sleeplock.h",
+    "sha256": "70e71f5e3ac908740add92f74058f2264cb86f800b9d1ab4099ff37ce457e9e3"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/kernel/spinlock.c",
+    "path": "software/xv6/kernel/spinlock.c",
+    "sha256": "9f7911af4c249f5b9af5ea28c7b97b675a3e5daf3285cd84458b66e12f1c4851"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/kernel/spinlock.h",
+    "path": "software/xv6/kernel/spinlock.h",
+    "sha256": "82e59d9f745045042c74892b7e055bc5339f8ae438362e4b6f0ff962eae6ee36"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/kernel/start.c",
+    "path": "software/xv6/kernel/start.c",
+    "sha256": "48d0b03173cbe630a5218316075f1647a7a86b655fbd4d00d36528f7d57b2ab7"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/kernel/stat.h",
+    "path": "software/xv6/kernel/stat.h",
+    "sha256": "653da9a25a16140de6733b0fa87d2988d0dee962fe75ab5f17fcb50d19e3f8be"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/kernel/string.c",
+    "path": "software/xv6/kernel/string.c",
+    "sha256": "cb0345e98ad54cf1b6d622fc22fd7539c1eb794632dccd849eeec6550dfd66d1"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/kernel/swtch.S",
+    "path": "software/xv6/kernel/swtch.S",
+    "sha256": "baff65e42b8f80e3b2ec5e1f67e2033b0b9bd7b35564db998573f576bc816088"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/kernel/syscall.c",
+    "path": "software/xv6/kernel/syscall.c",
+    "sha256": "5b8a911360bec429ff6990d8814eba53e5add3465e6bc343b92f43983774a788"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/kernel/syscall.h",
+    "path": "software/xv6/kernel/syscall.h",
+    "sha256": "cd8b85b251ca89434ce0ce31d86d98521b8ecb3e2b224d95c74db6ee9948525f"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/kernel/sysfile.c",
+    "path": "software/xv6/kernel/sysfile.c",
+    "sha256": "5e18c50913ebc5c007b06bec86511d93b46d0361fac75291c8456867a7fd0b29"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/kernel/sysproc.c",
+    "path": "software/xv6/kernel/sysproc.c",
+    "sha256": "55c1161e4fe5ba7d0094881f0b610b072d0e0e9233f01520226260a79f3ecb98"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/kernel/trampoline.S",
+    "path": "software/xv6/kernel/trampoline.S",
+    "sha256": "92c055df5557217dc6008714c01dc801836a86538a1ab67b617b66bcd873053f"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/kernel/trap.c",
+    "path": "software/xv6/kernel/trap.c",
+    "sha256": "3e5f05a163b0914ba7402a42a42a7cb213b442cbb597f05278b42c917010d54b"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/kernel/types.h",
+    "path": "software/xv6/kernel/types.h",
+    "sha256": "2b243b4826114e7b4dfcdb80dd3ce26d50e9f6c3b2acc776d2887ffc1cf19785"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/kernel/uart.c",
+    "path": "software/xv6/kernel/uart.c",
+    "sha256": "6c284f94eb8fcca9c723015f366a849a441f462b99d16e3cca5880439df6a493"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/kernel/virtio.h",
+    "path": "software/xv6/kernel/virtio.h",
+    "sha256": "beb83bae22279e8f0358232139e5e368302e59625b72309ed9a32d7bdcb1f0d8"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/kernel/virtio_disk.c",
+    "path": "software/xv6/kernel/virtio_disk.c",
+    "sha256": "ea2074da81f9f1f7ef808aac832982f4ccfc6b3bad8d1df7a8c037737ed17186"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/kernel/vm.c",
+    "path": "software/xv6/kernel/vm.c",
+    "sha256": "fc91eaf5881f2d78be5a930a12071e3f09c3db97110adcbd3f7d530f5ca145fd"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/kernel/vm.h",
+    "path": "software/xv6/kernel/vm.h",
+    "sha256": "ebd5dfc1a2d28cb16a15dea12ac9467bded6ca4bf652f44b580e4c5bef3fb1a3"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/mkfs/mkfs.c",
+    "path": "software/xv6/mkfs/mkfs.c",
+    "sha256": "7bb235c8f644713a07cbd4a22b56ff5752c6b376615367342e4435a8b4547eb0"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/user/cat.c",
+    "path": "software/xv6/user/cat.c",
+    "sha256": "44b0acf6d999a9addc466faa090c8349962a7a51528c8af2e7afae4bf2437df0"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/user/dorphan.c",
+    "path": "software/xv6/user/dorphan.c",
+    "sha256": "22b733e653f7e845770266f4c79f0c4be3803aa760b8bbc1d34b841f19288ce5"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/user/echo.c",
+    "path": "software/xv6/user/echo.c",
+    "sha256": "b51803acf48c2c3e87bebf637c941c4a63d21313f0c6d103cd76753eb72b2145"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/user/forktest.c",
+    "path": "software/xv6/user/forktest.c",
+    "sha256": "2db82f25cd4f248c31744a88b5cd8d332128c7c0e689d6899077dff1f2c08b35"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/user/forphan.c",
+    "path": "software/xv6/user/forphan.c",
+    "sha256": "500755a5f770f8f7385b867119b43fd6f468fb8130a40050258d0b24f08c7eed"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/user/grep.c",
+    "path": "software/xv6/user/grep.c",
+    "sha256": "691a256810d8cd1ac7033750fae8369aac58a9412461c2c03e19ebcb54f5e787"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/user/grind.c",
+    "path": "software/xv6/user/grind.c",
+    "sha256": "a40116e15183bf2738980800289db9b93a509d62403e256613212b8126558355"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/user/init.c",
+    "path": "software/xv6/user/init.c",
+    "sha256": "39f1a20c9d369b9f782eeb5c01ef5fa7747b850adeec0a7a1a6549052d4a0018"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/user/kill.c",
+    "path": "software/xv6/user/kill.c",
+    "sha256": "bed1eb7a8446eb3295f47d07e1c5bf7eeee0473de8ca9a213fe6eb73bf7d3c49"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/user/ln.c",
+    "path": "software/xv6/user/ln.c",
+    "sha256": "5d797233c2ae45ce210f2d5e7954084fe84c882b7645fba52bb55c6428d768cc"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/user/logstress.c",
+    "path": "software/xv6/user/logstress.c",
+    "sha256": "86adae4bd36a98232d96b3febf7050b1b60153bf377e1a4e4428fe793fc24a21"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/user/ls.c",
+    "path": "software/xv6/user/ls.c",
+    "sha256": "fde93accc14669a7e69ffbd1ed695608fd7d9b307e1e4662734cc8246454e5d6"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/user/mkdir.c",
+    "path": "software/xv6/user/mkdir.c",
+    "sha256": "86c0730a6ae8088a9fa19b0efebf8c59eea9cff20da5a2d4bb3d89f3c1c8c836"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/user/printf.c",
+    "path": "software/xv6/user/printf.c",
+    "sha256": "8c98780668f6418103de788fa8f2c2d16ed419de95a4484e20fe9531194ccbca"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/user/rm.c",
+    "path": "software/xv6/user/rm.c",
+    "sha256": "fa81e84bc38dffa25cf4387dcf52781b41822fd65077ab6eb3296fefb14fe551"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/user/sh.c",
+    "path": "software/xv6/user/sh.c",
+    "sha256": "9f0ea2e437df99f3eecc0adfbf0dd0854f9cb80a8e7a0f636fa73da5b01fc5e3"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/user/stressfs.c",
+    "path": "software/xv6/user/stressfs.c",
+    "sha256": "7a88dd1e545ac0207b013430d095e2c45aa692275590d0d997631fa0605f27a1"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/user/sync.c",
+    "path": "software/xv6/user/sync.c",
+    "sha256": "a3c4a87c18c1da9262524de13c4a7011d0a9d9c456c01098a4c204d4ff3d9734"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/user/ulib.c",
+    "path": "software/xv6/user/ulib.c",
+    "sha256": "0bb30cebbd735f730e335e807742e0d20ddf5779d534714f558a606aac2d7a4b"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/user/umalloc.c",
+    "path": "software/xv6/user/umalloc.c",
+    "sha256": "510c0c97dc26156ef758aac9823d2c66f3bfa59b8389d4164c22f16ff968b4c5"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/user/user.h",
+    "path": "software/xv6/user/user.h",
+    "sha256": "7bdb892e879d1ef3affc682e3ae9a6c13e965c87b35fb838a413cfa3a48f25d4"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/user/user.ld",
+    "path": "software/xv6/user/user.ld",
+    "sha256": "33cf919389b25afe2f6ce8d74eebe5687c42037f9be3453f09ba5f6da158c488"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/user/usertests.c",
+    "path": "software/xv6/user/usertests.c",
+    "sha256": "afd549c0b9be8764445d503e489d0e86573ec2233f9b564c479aa7adac199792"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/user/usys.S",
+    "path": "software/xv6/user/usys.S",
+    "sha256": "e6c7b6a2bcdbaf6149715d6744ce260b02493941541f0d5d9d1cbccf62c6ec25"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/user/usys.pl",
+    "path": "software/xv6/user/usys.pl",
+    "sha256": "377fa27e4f7c07436fb487be27ef6c004ba1ddc4f018da0a19139e8946653e58"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/user/wc.c",
+    "path": "software/xv6/user/wc.c",
+    "sha256": "89bdbe572fda16deee86b94365754db4e9834f50c7067a8aedac1b5a89edd769"
+  },
+  {
+    "source": "teaching-cpu-work/xv6-teaching/user/zombie.c",
+    "path": "software/xv6/user/zombie.c",
+    "sha256": "eae866f906bd4061737c2704e2e50d82cabc9ef7c0aec86fee3472354e752e4a"
+  },
+  {
+    "source": "board_files/pynq-z1/1.0/board.xml",
+    "path": "boards/pynq-z1/board_files/pynq-z1/1.0/board.xml",
+    "sha256": "5db0afcd5dbd99bc1d4d72ad586e05c75ffb0ddd9a843582251a696a882f3889"
+  },
+  {
+    "source": "board_files/pynq-z1/1.0/part0_pins.xml",
+    "path": "boards/pynq-z1/board_files/pynq-z1/1.0/part0_pins.xml",
+    "sha256": "409ee51c096824c8e5ad8ae42379dc79bdadced5c11dbda29b6221c05d9b7de1"
+  },
+  {
+    "source": "board_files/pynq-z1/1.0/preset.xml",
+    "path": "boards/pynq-z1/board_files/pynq-z1/1.0/preset.xml",
+    "sha256": "f9c063b6e1d47d9ea0137dfd29f756ca2a5d68b9dc415d81afed6b47f9658544"
+  },
+  {
+    "source": "board_files/pynq-z1/1.0/pynq_z1_board.png",
+    "path": "boards/pynq-z1/board_files/pynq-z1/1.0/pynq_z1_board.png",
+    "sha256": "020573c741d5e8b0e1d0ce31da5c4282b574ee25bb8e832d6bd2f3144eec238b"
+  },
+  {
+    "source": "board_files/README.md",
+    "path": "boards/pynq-z1/board_files/README.md",
+    "sha256": "603f9b3c997335ec70a8ebf3df4bdfe9c884fc49db3c1e15daa2d3744826d5f3"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/probes/ext01_m.S",
+    "path": "software/probes/ext01_m.S",
+    "sha256": "b03fef1f598b5df428b7e5479c918c55976574051172200eec2f2ca209861c42"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/probes/ext02_c.S",
+    "path": "software/probes/ext02_c.S",
+    "sha256": "645d6b6a5569184f984e9e0d519f427b78f116070d5b97ef8cc03ebe4c81a43f"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/probes/ext03_a.S",
+    "path": "software/probes/ext03_a.S",
+    "sha256": "ac7db509e2e3e4a08439aaec890817facb227af01fe1ecb9f427b215e07deace"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/probes/ext04_sv39.S",
+    "path": "software/probes/ext04_sv39.S",
+    "sha256": "9bfbe109647070d22654d58c0963cbb2513ae6610541ad5a1e6ed1c4fc8f5325"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/probes/perf01_cpi.S",
+    "path": "software/probes/perf01_cpi.S",
+    "sha256": "12191623e9f08b19fc64e523b9914d9c175ee9259ec02306ed252f6889997bb2"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/probes/perf02_sv39.S",
+    "path": "software/probes/perf02_sv39.S",
+    "sha256": "d0d939c82557c3852fcdd2978bd38f5ff65a248b43a52aa0a8713ae2e8cd1ff5"
+  },
+  {
+    "source": "experiments/teaching-cpu/m2-prep/tests/link.ld",
+    "path": "software/probes/link.ld",
+    "sha256": "7e3fd6092754ed1e15ad95b0f5ffad0b9e2f9f7972c049e3f5b08095f889172b"
+  },
+  {
+    "source": "teaching-cpu-work/cpu/m3tests/htif.S",
+    "path": "software/probes/htif.S",
+    "sha256": "f8bf05febd4550f6781777da438d74623e1c9c85fd5735c96ede7035e8469b35"
+  },
+  {
+    "source": "teaching-cpu-work/cpu/m3tests/m3lib.h",
+    "path": "software/probes/m3lib.h",
+    "sha256": "09998a534ba25cbfd22ed3d455a054dd5673a33454cf59ae715860eafc4cefce"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/scripts/_test_runner.py",
+    "path": "tools/board/scripts/_test_runner.py",
+    "sha256": "a4190fa3f6b90006c15d1e152f1ac8877b05789a8c85c824307732ccbd494556"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/scripts/audit-board-rtl-atomic.py",
+    "path": "tools/board/scripts/audit-board-rtl-atomic.py",
+    "sha256": "211c53626c77ef9d52cfabee23c838ae012be0bed4179e8ef81d62b551a42c8c"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/scripts/board-runner.py",
+    "path": "tools/board/scripts/board-runner.py",
+    "sha256": "e5a08cd52d585bdef88e099da40fb6b15027e0fc30ab940bcdee0d00117512f8"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/scripts/board-safety-selftest.sh",
+    "path": "tools/board/scripts/board-safety-selftest.sh",
+    "sha256": "6e065855b232feaad64e6a93deb3f16abb628d59006bc661d59d5856a68abaff"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/scripts/board_gate.py",
+    "path": "tools/board/scripts/board_gate.py",
+    "sha256": "d8938ff19aeb5c4f66524618c81e82fd3875059e0c4b3107737ec403766855ba"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/scripts/board_run.py",
+    "path": "tools/board/scripts/board_run.py",
+    "sha256": "1639fea593c5d93f90b4962dde3cb5ba07e83ff175ee4babe7b1ca35f7493dec"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/scripts/build-atomic.sh",
+    "path": "tools/board/scripts/build-atomic.sh",
+    "sha256": "46b115a3b9c8ffd7d284eacd40ea916062f640d0d6a76ce8db97eb17363cab69"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/scripts/check-hierarchy-atomic.py",
+    "path": "tools/board/scripts/check-hierarchy-atomic.py",
+    "sha256": "243a14890c80944a0c0fca258921db938d373bca22fa0c844df2a23659d7b165"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/scripts/exclusive-integration-selftest.sh",
+    "path": "tools/board/scripts/exclusive-integration-selftest.sh",
+    "sha256": "ffb857c1eb361513231e60547a9c35677110403dacf424bb446b82664fdb8287"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/scripts/exclusive-selftest.py",
+    "path": "tools/board/scripts/exclusive-selftest.py",
+    "sha256": "2493d4b76bba9ffa3c49405119b99ce6e3b2547f8c82b432f49692fcba69e0b9"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/scripts/fake_host.py",
+    "path": "tools/board/scripts/fake_host.py",
+    "sha256": "11de07b798c3351055a2ddfa00cf673bc05df70432a471a97011f0fdf1e9ab60"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/scripts/framing-selftest.py",
+    "path": "tools/board/scripts/framing-selftest.py",
+    "sha256": "2a45a1ef4f8e6564617699ae1fc3fe0d5f7c2df6b879a0b2fca3f86131f45117"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/scripts/make-build-manifest-atomic.py",
+    "path": "tools/board/scripts/make-build-manifest-atomic.py",
+    "sha256": "62bcd46867b8d2260a9ecb29fea2ebea0e7b55821cc1d7387cb4c9765c5317f3"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/scripts/make-mem-fixtures.py",
+    "path": "tools/board/scripts/make-mem-fixtures.py",
+    "sha256": "d83e341be8b59af403493041a8f51b2054647ced0a25d1e9d6e2bf11659bfc39"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/scripts/make-top-shim-atomic.py",
+    "path": "tools/board/scripts/make-top-shim-atomic.py",
+    "sha256": "ee29832944e6cda905529789a20869ef6f30be5754962c758b6404313ebe4998"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/scripts/mem-preflight-selftest.sh",
+    "path": "tools/board/scripts/mem-preflight-selftest.sh",
+    "sha256": "6f203f24ed7d502f88cdc227965deb8613de440ae4e9ac712b57ed8f168b5c0f"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/scripts/mem-preflight.py",
+    "path": "tools/board/scripts/mem-preflight.py",
+    "sha256": "b44d454fb4136115f5b9173e31988bbbfc2a0cf6fdff665aaeca51b4153999bd"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/scripts/production-entry-selftest.sh",
+    "path": "tools/board/scripts/production-entry-selftest.sh",
+    "sha256": "66d197116852f8dd7c2cc8dcdcb5dbd0ee7407850a883892c8c4c50a038954d1"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/scripts/pty_board.py",
+    "path": "tools/board/scripts/pty_board.py",
+    "sha256": "cbce276f1109fb38abc6982eb2b4e00ba016ee901d08797c19bdd95a38c143e6"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/scripts/real_pty_board.py",
+    "path": "tools/board/scripts/real_pty_board.py",
+    "sha256": "53c1b3ae2c417a0a647e9ccec60e1035fd0a55210fedc2be2692c707a723e6d5"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/scripts/sigint-diagnosis.py",
+    "path": "tools/board/scripts/sigint-diagnosis.py",
+    "sha256": "6b8041b8ed52b6832e9c9aa69464e6d14e6f1afaba9c2b3985eccbaacf404c9c"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/scripts/transport-selftest.py",
+    "path": "tools/board/scripts/transport-selftest.py",
+    "sha256": "bb4a55d170c7ec62906b9fa359a40f418be5b7305ae41f0ec26e06a3fc3b01aa"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/scripts/transport.py",
+    "path": "tools/board/scripts/transport.py",
+    "sha256": "b462d851dce3a7249e8e81af72b6a7488c75719d6b95bfb578787d272b72a07e"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-boot/scripts/archive-run.sh",
+    "path": "tools/xv6-boot/scripts/archive-run.sh",
+    "sha256": "4eb4362cf4b920307f73f7adba47a20fe5cd32e585ea928d177b75a864279b51"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-boot/scripts/check-selftest.sh",
+    "path": "tools/xv6-boot/scripts/check-selftest.sh",
+    "sha256": "c4069761f5c03e8661ac483897edd758bdd2d4f226af54c50fa28e313f73896e"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-boot/scripts/check-xv6.py",
+    "path": "tools/xv6-boot/scripts/check-xv6.py",
+    "sha256": "ced6ea10ce59fd9e2ec24a3431cf92efc1bc0df94970c93375e5aab004bae65c"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-boot/scripts/console-selftest.py",
+    "path": "tools/xv6-boot/scripts/console-selftest.py",
+    "sha256": "465c5c947905aefd47619ecf004ed2585d89936d6866c2eace010c68546a7ab8"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-boot/scripts/drive-selftest.sh",
+    "path": "tools/xv6-boot/scripts/drive-selftest.sh",
+    "sha256": "114d90c2e4c751dc018b82ae6c6ed5126e6fb970fddcb28311a2f3518700b565"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-boot/scripts/fakesim.py",
+    "path": "tools/xv6-boot/scripts/fakesim.py",
+    "sha256": "94e4116868d12ad1f1c3b9e710f5654442d222648e63af0d0bb7b80d9511e55a"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-boot/scripts/rd2-build-sim-fast.sh",
+    "path": "tools/xv6-boot/scripts/rd2-build-sim-fast.sh",
+    "sha256": "dc2da51480667cb3da4913f762680b27a61f44122af472d1918ff20a317c81a4"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-boot/scripts/xv6-drive.py",
+    "path": "tools/xv6-boot/scripts/xv6-drive.py",
+    "sha256": "9ab7615473d13102b48defd975f1c5ffb1d69fe1212ff11e99dae3ceb9a0f3d4"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-boot/scripts/xv6_console.py",
+    "path": "tools/xv6-boot/scripts/xv6_console.py",
+    "sha256": "d879f46dfac223230398381fcf6b5ab10de89f7bab30c950cb40aa543ce98218"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-run/scripts/capture-evidence.py",
+    "path": "tools/xv6-board-run/scripts/capture-evidence.py",
+    "sha256": "1596ce2615a776f3b2b28c936a78ec13adecade4b20632b9d025cd57462335df"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-run/scripts/deploy.sh",
+    "path": "tools/xv6-board-run/scripts/deploy.sh",
+    "sha256": "db433fabe6d38d8daac72b74a931525e8b93515094eebf249e595914190c4882"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-run/scripts/framing.py",
+    "path": "tools/xv6-board-run/scripts/framing.py",
+    "sha256": "39fd90da1f616a94d4441f2cc870bd080d5575efc0e9e471b6267055081ce134"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-run/scripts/send-file.py",
+    "path": "tools/xv6-board-run/scripts/send-file.py",
+    "sha256": "5a319027e6981de8810fcd7418c40eca2eb9fb79b9b6432f12aa596e84af246f"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-run/scripts/serial-transport.py",
+    "path": "tools/xv6-board-run/scripts/serial-transport.py",
+    "sha256": "36123db823fc7194a551fb55075402d4bab9566e3d631aec742503688f7a3cb1"
+  },
+  {
+    "source": "experiments/teaching-cpu/m4-prep/scripts/gen-project-tcl.py",
+    "path": "tools/gen-project-tcl.py",
+    "sha256": "60d5a609ca6a9f039c01bba8233b85af0263314aa510393c37022488de02f4a2"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-run-3/CODEX_MILESTONE_ACCEPTANCE.md",
+    "path": "evidence/xv6-board-run-3/CODEX_MILESTONE_ACCEPTANCE.md",
+    "sha256": "993c064f5b935880752063bc8659318866a33d7de4083f934b917fbd5167890c"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-run-3/COLD-VERIFIED.md",
+    "path": "evidence/xv6-board-run-3/COLD-VERIFIED.md",
+    "sha256": "ba958ab39e03535e3496e0bf3f8d66b71fdbfe936795c905b95b72e08734ec0f"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-run-3/MILESTONE-REPORT.md",
+    "path": "evidence/xv6-board-run-3/MILESTONE-REPORT.md",
+    "sha256": "fc763a0018566f5524a18f976f32f0d043f1fb9155c1ab603b11529cc240101d"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-run-3/PERF-MEASURED.md",
+    "path": "evidence/xv6-board-run-3/PERF-MEASURED.md",
+    "sha256": "3d0d2ed9ef38e3aaa7e696f2187ba7e6cd092eab1e4d28e2570fff93c4963365"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-run-3/PRE-CYCLE-STATE.md",
+    "path": "evidence/xv6-board-run-3/PRE-CYCLE-STATE.md",
+    "sha256": "581780f28442107546616894962a3c597dfb98bdca13b966b104db86f1397af5"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-run-3/evidence-1/arm-health.txt",
+    "path": "evidence/xv6-board-run-3/evidence-1/arm-health.txt",
+    "sha256": "8dea4492a42bbfa0a2e7523274c81b6aab633104f6205e620dfbf09a6d10e562"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-run-3/evidence-1/dt/address-cells",
+    "path": "evidence/xv6-board-run-3/evidence-1/dt/address-cells",
+    "sha256": "b40711a88c7039756fb8a73827eabe2c0fe5a0346ca7e0a104adc0fc764f528d"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-run-3/evidence-1/dt/memory-reg",
+    "path": "evidence/xv6-board-run-3/evidence-1/dt/memory-reg",
+    "sha256": "48443c868f27fd5d4e1749506108b7419f6c508bd93fa3cb4f99b5745241e476"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-run-3/evidence-1/dt/size-cells",
+    "path": "evidence/xv6-board-run-3/evidence-1/dt/size-cells",
+    "sha256": "b40711a88c7039756fb8a73827eabe2c0fe5a0346ca7e0a104adc0fc764f528d"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-run-3/evidence-1/proc-iomem",
+    "path": "evidence/xv6-board-run-3/evidence-1/proc-iomem",
+    "sha256": "1c6e1222e13f6d8030bf8a2c893ff09341119c21b3ae9eb8655531dafbfc5928"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-run-3/evidence-1/proc-meminfo",
+    "path": "evidence/xv6-board-run-3/evidence-1/proc-meminfo",
+    "sha256": "cb5070860e0ff8f9aa11586ea1bb706639445fed06a8e22d6b33b3cf4cdf27a6"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-run-3/evidence-1/session-id",
+    "path": "evidence/xv6-board-run-3/evidence-1/session-id",
+    "sha256": "c37e9a4bdf8faa5afa3f78ee9cc9dbf6fbca788d98e8e0dcca4fb898ac767cdf"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-run-3/logs/01-capture.log",
+    "path": "evidence/xv6-board-run-3/logs/01-capture.log",
+    "sha256": "804113aa31436db17e69ce5e61ae8eddce9abce5bb7aa42f107312039a60aede"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-run-3/logs/01-cold-verify.txt",
+    "path": "evidence/xv6-board-run-3/logs/01-cold-verify.txt",
+    "sha256": "54f819644cf3afec6396c4434f4fd3c09760204b7751c53d302c5e5f415c44de"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-run-3/logs/02-preflight.txt",
+    "path": "evidence/xv6-board-run-3/logs/02-preflight.txt",
+    "sha256": "97b3379ca85450c98430dc44656b81846e2ff6809e38a25166d67d21be5cfe96"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-run-3/logs/03-deploy.log",
+    "path": "evidence/xv6-board-run-3/logs/03-deploy.log",
+    "sha256": "536e4aab0bea4237a0286babc08c9039beb841f8d0a2344eded3a14ad72fc21e"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-run-3/logs/04-verify.txt",
+    "path": "evidence/xv6-board-run-3/logs/04-verify.txt",
+    "sha256": "6b6fae9e9d90d72d0c3c5e88aacfe4e95886aeb7ac94afbb2f748e11168da2db"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-run-3/logs/05-program.txt",
+    "path": "evidence/xv6-board-run-3/logs/05-program.txt",
+    "sha256": "e719e6c173cbffc7814211d36ff5e694499bb4b2f53398dda4cc09e3064d40c3"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-run-3/logs/06-selftest.txt",
+    "path": "evidence/xv6-board-run-3/logs/06-selftest.txt",
+    "sha256": "c1749e1992d7a3ab0edca27dcedfd4c2d4706053a8e7f3d9038d130f1ec0f7e8"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-run-3/logs/07-m3probes.txt",
+    "path": "evidence/xv6-board-run-3/logs/07-m3probes.txt",
+    "sha256": "0d7f90ac2c33107462a7a589745529a5367843c216759cfc8242a27d92ab51c8"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-run-3/logs/08-extprobes.txt",
+    "path": "evidence/xv6-board-run-3/logs/08-extprobes.txt",
+    "sha256": "d9874b88f7c8d9552652b32e7363e782ea9b7e238c67f64c093cdd7752dae60b"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-run-3/logs/09-post-health.txt",
+    "path": "evidence/xv6-board-run-3/logs/09-post-health.txt",
+    "sha256": "de3e6cadec51cecdc1c0c510d30f57e2f64cd7d20212e068f820d224fbbea72d"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-run-3/logs/10-perf01.txt",
+    "path": "evidence/xv6-board-run-3/logs/10-perf01.txt",
+    "sha256": "e63ba249ac6142c9d9d1e972633061d4afc4c445f07ebc45729f88432c260ebb"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-run-3/logs/11-perf02.txt",
+    "path": "evidence/xv6-board-run-3/logs/11-perf02.txt",
+    "sha256": "e99d3780c7db3886e6b2b2762210d30263563f838602355dc5fc3293525e0212"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-run-3/run-1/console.txt",
+    "path": "evidence/xv6-board-run-3/run-1/console.txt",
+    "sha256": "1b3cea5242881909f25c9fc24affb5b1d09c8b3993a70a3d7c95d6565e66f407"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-run-3/run-1/phases.txt",
+    "path": "evidence/xv6-board-run-3/run-1/phases.txt",
+    "sha256": "577b716638097c97a7f21374a100cf6d938c440f4eca5a7e2646f384c39a2fe6"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-run-3/run-1/run.log",
+    "path": "evidence/xv6-board-run-3/run-1/run.log",
+    "sha256": "1b3cea5242881909f25c9fc24affb5b1d09c8b3993a70a3d7c95d6565e66f407"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-run-3/run-1/stages.txt",
+    "path": "evidence/xv6-board-run-3/run-1/stages.txt",
+    "sha256": "58a370d000d7a3f3b6d4dbd76df8959faaab8f5903526cde2ff01a007b97f0b1"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-run-3/scripts/deploy.sh",
+    "path": "evidence/xv6-board-run-3/scripts/deploy.sh",
+    "sha256": "bf820373085b5a5ad3b89bd649babcbbc2dfbe3170cd49af3bf1d80343ff03e9"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/attempt-1/reports/post_route_cdc.rpt",
+    "path": "evidence/vivado/post_route_cdc.rpt",
+    "sha256": "7ea00f1e81cf6e7618eac5c0ae21351a0ddb24e7cb494c6b53ce0d0e718a127d"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/attempt-1/reports/post_route_check_timing.rpt",
+    "path": "evidence/vivado/post_route_check_timing.rpt",
+    "sha256": "d40d8e22436b9e5454ad8d337a5950f2b3fc5bfdadc4a141feea85c848872774"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/attempt-1/reports/post_route_clock_interaction.rpt",
+    "path": "evidence/vivado/post_route_clock_interaction.rpt",
+    "sha256": "ffe08de0039ff8b21012044f1b2705ac452ccf97bd74b95d8ec50947ec5ee8d1"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/attempt-1/reports/post_route_clock_utilization.rpt",
+    "path": "evidence/vivado/post_route_clock_utilization.rpt",
+    "sha256": "071b2006b9622c6cc3b130df6d4d30ba925df0dd40208c0354261edf21e074c8"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/attempt-1/reports/post_route_clocks.rpt",
+    "path": "evidence/vivado/post_route_clocks.rpt",
+    "sha256": "4e28554e71a98f00ab0a83c7dc686a3a2d8bae785fe83cf49ed124cbb6fdc5b6"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/attempt-1/reports/post_route_control_sets.rpt",
+    "path": "evidence/vivado/post_route_control_sets.rpt",
+    "sha256": "13df57355b3a6f1bbd07b53172ae10af5de7494880e629aad5b5e2a53bb46e4e"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/attempt-1/reports/post_route_drc.rpt",
+    "path": "evidence/vivado/post_route_drc.rpt",
+    "sha256": "e75905a8b37790f130036a6a22ddfdc24022ac21388e9a2af59ac2923b4f3073"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/attempt-1/reports/post_route_methodology.rpt",
+    "path": "evidence/vivado/post_route_methodology.rpt",
+    "sha256": "cac7c50e1580eed6e7ff2d84b4cac1e087421847342cc4c8f8f5919b8a3902c8"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/attempt-1/reports/post_route_status.rpt",
+    "path": "evidence/vivado/post_route_status.rpt",
+    "sha256": "4677191146864786c32a0afa5ba6b8e7f37ea28f478b1b7834e9f40c8c1abcfd"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/attempt-1/reports/post_route_timing_summary.rpt",
+    "path": "evidence/vivado/post_route_timing_summary.rpt",
+    "sha256": "804220429706da2d3c7a6f1ad862c107a5e0ec5722dde69548a2106166705636"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/attempt-1/reports/post_route_timing_worst.rpt",
+    "path": "evidence/vivado/post_route_timing_worst.rpt",
+    "sha256": "71b1affb38dd1a0c8edec997dfb614e7ed507c44d8fa41909e143d98b7ee7a34"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/attempt-1/reports/post_route_utilization.rpt",
+    "path": "evidence/vivado/post_route_utilization.rpt",
+    "sha256": "4660d5a0b9627919b1048e36a7cb483c8ed9084b8be40a0c0427c2e70f6f4e1a"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/attempt-1/reports/post_route_utilization_hier.rpt",
+    "path": "evidence/vivado/post_route_utilization_hier.rpt",
+    "sha256": "29b50c2bf8ef8a7724062406c1ab21ef2fb3fe1b524b2b4ee9d58dff1ffc2c92"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/attempt-1/reports/post_synth_checks.txt",
+    "path": "evidence/vivado/post_synth_checks.txt",
+    "sha256": "9c64e4acfa39cbbcd132cb88cc2d0d884045b2e0d12220c6baa5f66e01ef2eab"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/attempt-1/reports/post_synth_utilization.rpt",
+    "path": "evidence/vivado/post_synth_utilization.rpt",
+    "sha256": "a90db3c80a83586416ec89f8f167668e643f241fc0a4f182835852c740619b6e"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/attempt-1/reports/post_synth_utilization_hier.rpt",
+    "path": "evidence/vivado/post_synth_utilization_hier.rpt",
+    "sha256": "82ce8357aebc09d5163363c6f845ededa5942214a834cebc5d387116dd734335"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/attempt-1/reports/run-status.txt",
+    "path": "evidence/vivado/run-status.txt",
+    "sha256": "11eff49d77e917f592063ac1c4e700d5674fa2ba5cca1996f46e84ce1943157f"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/attempt-1/reports/source-set.txt",
+    "path": "evidence/vivado/source-set.txt",
+    "sha256": "a62f1b24323fb8cf6223f5dbe23621967dce7509e3dcb1d600ad253b3ef65ccb"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-run-3/PRE-CYCLE-STATE.md",
+    "path": "docs/archive/xv6-board-run-3/PRE-CYCLE-STATE.md",
+    "sha256": "581780f28442107546616894962a3c597dfb98bdca13b966b104db86f1397af5"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-run-3/CODEX_MILESTONE_ACCEPTANCE.md",
+    "path": "docs/archive/xv6-board-run-3/CODEX_MILESTONE_ACCEPTANCE.md",
+    "sha256": "993c064f5b935880752063bc8659318866a33d7de4083f934b917fbd5167890c"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-run-3/PERF-MEASURED.md",
+    "path": "docs/archive/xv6-board-run-3/PERF-MEASURED.md",
+    "sha256": "3d0d2ed9ef38e3aaa7e696f2187ba7e6cd092eab1e4d28e2570fff93c4963365"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-run-3/MILESTONE-REPORT.md",
+    "path": "docs/archive/xv6-board-run-3/MILESTONE-REPORT.md",
+    "sha256": "fc763a0018566f5524a18f976f32f0d043f1fb9155c1ab603b11529cc240101d"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-run-3/COLD-VERIFIED.md",
+    "path": "docs/archive/xv6-board-run-3/COLD-VERIFIED.md",
+    "sha256": "ba958ab39e03535e3496e0bf3f8d66b71fdbfe936795c905b95b72e08734ec0f"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-run/REPORT.md",
+    "path": "docs/archive/xv6-board-run/REPORT.md",
+    "sha256": "99aaddc13bbb4601ced163fad5dd4999042a6b3c9d5c1491e1460b4e300de184"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-run/PRE-STATE.md",
+    "path": "docs/archive/xv6-board-run/PRE-STATE.md",
+    "sha256": "3ae1d4d83a2f2ad761d693f7edd41874b1f89a1d1ed86e001340e2abf6cc411f"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-run/SESSION-PLAN.md",
+    "path": "docs/archive/xv6-board-run/SESSION-PLAN.md",
+    "sha256": "8da237bcb88ad4cca27dae712d140fecf266cd0cc7934bf6408f2f1a2ebf3dff"
+  },
+  {
+    "source": "experiments/teaching-cpu/cpu-a/CODEX_REVIEW.md",
+    "path": "docs/archive/cpu-a/CODEX_REVIEW.md",
+    "sha256": "81f346fa97adc7f4197be9cfe24575f39894869bcea8515d4342ab2f3d890020"
+  },
+  {
+    "source": "experiments/teaching-cpu/cpu-a/REPORT.md",
+    "path": "docs/archive/cpu-a/REPORT.md",
+    "sha256": "24904966447d02be7d5152fb6f225954c2369c67ce3a7342440932672ef13f56"
+  },
+  {
+    "source": "experiments/teaching-cpu/cpu-a/DESIGN.md",
+    "path": "docs/archive/cpu-a/DESIGN.md",
+    "sha256": "9524f23f09f7bfc5a5f21c8447111748cdec16d239f597e8131dd5a70e7a243c"
+  },
+  {
+    "source": "experiments/teaching-cpu/cpu-a/RBOOT_PREEXISTING.md",
+    "path": "docs/archive/cpu-a/RBOOT_PREEXISTING.md",
+    "sha256": "764ce0082cea8b301cf68eb8545d755a0724422448fd6e6cb76f5a69011a5e9d"
+  },
+  {
+    "source": "experiments/teaching-cpu/m4-prep/CODEX_REVIEW.md",
+    "path": "docs/archive/m4-prep/CODEX_REVIEW.md",
+    "sha256": "c6548eeaa5b3d141ead858948c4dc97cb72133625d6f190a6bc2d1356fb65306"
+  },
+  {
+    "source": "experiments/teaching-cpu/m4-prep/REPORT.md",
+    "path": "docs/archive/m4-prep/REPORT.md",
+    "sha256": "ea4e5322a41dad1f7da965b8ac9575b8244dc793d799735f8aa8d2cef0a2453d"
+  },
+  {
+    "source": "experiments/teaching-cpu/m4-prep/CODEX_REVIEW_3.md",
+    "path": "docs/archive/m4-prep/CODEX_REVIEW_3.md",
+    "sha256": "386635bf9576e9080989b357a8c07d220d22a5b6a0c9e3075db4a120c46eb06f"
+  },
+  {
+    "source": "experiments/teaching-cpu/m4-prep/CODEX_REVIEW_2.md",
+    "path": "docs/archive/m4-prep/CODEX_REVIEW_2.md",
+    "sha256": "2539ab65d9b61226b6385ad3fe1e773f7b67112ac6a39e52ddb58eff1d483731"
+  },
+  {
+    "source": "experiments/teaching-cpu/m4-prep/CORRECTIONS.md",
+    "path": "docs/archive/m4-prep/CORRECTIONS.md",
+    "sha256": "97efb3ecb6bbb99afcdd83ae1c2cc6cd7c0ec213b800dd34ca6cbb837a6d5813"
+  },
+  {
+    "source": "experiments/teaching-cpu/m2-prep/CODEX_REVIEW.md",
+    "path": "docs/archive/m2-prep/CODEX_REVIEW.md",
+    "sha256": "b2e905be902b37b9b0d715c635028a51773c09f6fc53997b3130d97bd5a27caa"
+  },
+  {
+    "source": "experiments/teaching-cpu/m2-prep/NEXT_TASKS.md",
+    "path": "docs/archive/m2-prep/NEXT_TASKS.md",
+    "sha256": "d8c35be8677a9b7479400b08cb62c634910d5135fad43813126f5f2d9e94b8fd"
+  },
+  {
+    "source": "experiments/teaching-cpu/m2-prep/TEST_PLAN.md",
+    "path": "docs/archive/m2-prep/TEST_PLAN.md",
+    "sha256": "05cff7d0bbbd5789810d3fe53ac0e27011c697050cb322b8532310b9336c4e2b"
+  },
+  {
+    "source": "experiments/teaching-cpu/m2-prep/SPEC.md",
+    "path": "docs/archive/m2-prep/SPEC.md",
+    "sha256": "00e498df30c3be239528e7f17a9bb1a18017f8cbf85e8ec600d9a79fc71702c3"
+  },
+  {
+    "source": "experiments/teaching-cpu/m2-prep/STAGES.md",
+    "path": "docs/archive/m2-prep/STAGES.md",
+    "sha256": "5f7f0d6c4a27d28e34e3f7fcbd33b6a27e40300b7a2af733fe53b064dbeca6c8"
+  },
+  {
+    "source": "experiments/teaching-cpu/m2-prep/DECISIONS.md",
+    "path": "docs/archive/m2-prep/DECISIONS.md",
+    "sha256": "4f85cb0a216168301e1d3fcaf731e3642ce9458c49cf3b63ffff8d437c22dd0c"
+  },
+  {
+    "source": "experiments/teaching-cpu/cpu-atomic-prep/REPORT.md",
+    "path": "docs/archive/cpu-atomic-prep/REPORT.md",
+    "sha256": "c6c0ea61556991a36c5ce33f1eddf71817d98ba220191f23a4f27216ce2be429"
+  },
+  {
+    "source": "experiments/teaching-cpu/cpu-atomic-prep/CODEX_DECISIONS.md",
+    "path": "docs/archive/cpu-atomic-prep/CODEX_DECISIONS.md",
+    "sha256": "921a2dfae664010fbcd2d45d6cc15b04d9e6c92f41cbf8bb4aab1f2e047610ae"
+  },
+  {
+    "source": "experiments/teaching-cpu/cpu-atomic-prep/GATES.md",
+    "path": "docs/archive/cpu-atomic-prep/GATES.md",
+    "sha256": "1233ceccbad665bfff499ed9b4ad969c2c81c857b936ae735b1def5254253083"
+  },
+  {
+    "source": "experiments/teaching-cpu/cpu-atomic-prep/CONTRACT.md",
+    "path": "docs/archive/cpu-atomic-prep/CONTRACT.md",
+    "sha256": "0fbecda597da3d9fb2ce12b9e5d20830130dc957c4a8180adbfe992cdcaa1497"
+  },
+  {
+    "source": "experiments/teaching-cpu/m3-fixes/CODEX_REVIEW.md",
+    "path": "docs/archive/m3-fixes/CODEX_REVIEW.md",
+    "sha256": "d514e75c32f24ffb245ba482c781c9cc2c8e373ef0f09df23cf0f7d9b3d4fd19"
+  },
+  {
+    "source": "experiments/teaching-cpu/m3-fixes/REPORT.md",
+    "path": "docs/archive/m3-fixes/REPORT.md",
+    "sha256": "648d9250de5ec9676dc72ab361ad62091a0c1e656142f01460e4d07d93dbb268"
+  },
+  {
+    "source": "experiments/teaching-cpu/m3-fixes/TAIL_CODEX_REVIEW.md",
+    "path": "docs/archive/m3-fixes/TAIL_CODEX_REVIEW.md",
+    "sha256": "e603aa63cc26192354f94481b9bff9012c39c4ed9c3dee486e089acc0132a69e"
+  },
+  {
+    "source": "experiments/teaching-cpu/cpu-m/CODEX_REVIEW.md",
+    "path": "docs/archive/cpu-m/CODEX_REVIEW.md",
+    "sha256": "cf78e3b4c702eaf9ed00b44843330f930c9aa8dd16c4a95f26e435c41e9a89a8"
+  },
+  {
+    "source": "experiments/teaching-cpu/cpu-m/CODEX_CLOSEOUT_REVIEW.md",
+    "path": "docs/archive/cpu-m/CODEX_CLOSEOUT_REVIEW.md",
+    "sha256": "0693f1fccc77e36420b25336329b0471d8f5738aa5d5b02e947eb71aa8dc9044"
+  },
+  {
+    "source": "experiments/teaching-cpu/cpu-m/REPORT.md",
+    "path": "docs/archive/cpu-m/REPORT.md",
+    "sha256": "83514ca8fef2dca1d18adb0ee87a4eb87a75e0dee4d5788cd588197baa456d00"
+  },
+  {
+    "source": "experiments/teaching-cpu/cpu-m/DESIGN.md",
+    "path": "docs/archive/cpu-m/DESIGN.md",
+    "sha256": "cce2fcaf6582f3b30dc8c3c7b7f1f979f399c79a7f0db239e2dbdc4f3b0873ea"
+  },
+  {
+    "source": "experiments/teaching-cpu/m4-build/CODEX_REVIEW.md",
+    "path": "docs/archive/m4-build/CODEX_REVIEW.md",
+    "sha256": "c5a88b4dba7d92d82c45e4efdecd56b896acc6be1eb4f20aecd373be291fbbcc"
+  },
+  {
+    "source": "experiments/teaching-cpu/cpu-c/CODEX_REVIEW.md",
+    "path": "docs/archive/cpu-c/CODEX_REVIEW.md",
+    "sha256": "540460e345a24320f987a52c1616cf564ab09ddc0b2a8246b55898ea435edf63"
+  },
+  {
+    "source": "experiments/teaching-cpu/cpu-c/REPORT.md",
+    "path": "docs/archive/cpu-c/REPORT.md",
+    "sha256": "3deea8bb80870ca39f132b18ad33a0632ead03e27a6fc1773748100f782d9ce3"
+  },
+  {
+    "source": "experiments/teaching-cpu/cpu-c/ENCODINGS.md",
+    "path": "docs/archive/cpu-c/ENCODINGS.md",
+    "sha256": "1bd940600554a3099dfe9d9551d4ccc117146bafa3a268159504ebdd3069979a"
+  },
+  {
+    "source": "experiments/teaching-cpu/cpu-c/DESIGN.md",
+    "path": "docs/archive/cpu-c/DESIGN.md",
+    "sha256": "6fea8caa16f51ef9a39445ac85d9ba8455e2606320eab8245d36c567d8ea1c24"
+  },
+  {
+    "source": "experiments/teaching-cpu/m2/CODEX_REVIEW.md",
+    "path": "docs/archive/m2/CODEX_REVIEW.md",
+    "sha256": "cc2cd30753eb28290de4734afc2b6fdacc798b1407ab97a9cf9fd74e59aab317"
+  },
+  {
+    "source": "experiments/teaching-cpu/m2/REPORT.md",
+    "path": "docs/archive/m2/REPORT.md",
+    "sha256": "735c10b26706664fc32962429269cd8fe849b692677fe89c77d24aae0f1bc851"
+  },
+  {
+    "source": "experiments/teaching-cpu/m2/REPORT-round1.md",
+    "path": "docs/archive/m2/REPORT-round1.md",
+    "sha256": "0a4e749a311ee19ac41e1bc060de7bbe9193b7d7baffda35c9b986cf0cbd7f0c"
+  },
+  {
+    "source": "experiments/teaching-cpu/cpu-a-closeout/G2_EVIDENCE.md",
+    "path": "docs/archive/cpu-a-closeout/G2_EVIDENCE.md",
+    "sha256": "39d119a19fd8171f968a36875a83194c043781519af17ac126a23cd7eb0924a1"
+  },
+  {
+    "source": "experiments/teaching-cpu/cpu-a-closeout/REPORT.md",
+    "path": "docs/archive/cpu-a-closeout/REPORT.md",
+    "sha256": "0bf740a1bd97018961380e0f4168295d77dd109443051c979f5523c4774f8680"
+  },
+  {
+    "source": "experiments/teaching-cpu/cpu-a-closeout/CODEX_DECISIONS.md",
+    "path": "docs/archive/cpu-a-closeout/CODEX_DECISIONS.md",
+    "sha256": "912b65b2e798c34993b48654fbc98a7582987953d0b66cd851f1d9ed8c97d919"
+  },
+  {
+    "source": "experiments/teaching-cpu/m0/CODEX_REVIEW.md",
+    "path": "docs/archive/m0/CODEX_REVIEW.md",
+    "sha256": "9a2154218fd94ecbce9002da1d1669063dc5cc9951fcde1391086d25b87595ab"
+  },
+  {
+    "source": "experiments/teaching-cpu/m0/NEXT_TASKS.md",
+    "path": "docs/archive/m0/NEXT_TASKS.md",
+    "sha256": "be38c6a57dbbc0d50ed87642d13550c8c36f716e66a328615ba3cbe64a27c7fc"
+  },
+  {
+    "source": "experiments/teaching-cpu/m0/REPORT.md",
+    "path": "docs/archive/m0/REPORT.md",
+    "sha256": "5b12a52f59ed91580e99b06be021e2596cbec551832c68c1b51d4d6d1edfc54c"
+  },
+  {
+    "source": "experiments/teaching-cpu/m0/CONTRACT.md",
+    "path": "docs/archive/m0/CONTRACT.md",
+    "sha256": "c6f509821ffa10c0d636744be892425d9122fbf7359effa17c7d669a006ed5f0"
+  },
+  {
+    "source": "experiments/teaching-cpu/cpu-atomic-backend/CODEX_REVIEW.md",
+    "path": "docs/archive/cpu-atomic-backend/CODEX_REVIEW.md",
+    "sha256": "dd10ad5145033d93cb16beb1765ca4a590a0fc75cc14f5b2d0cc6b085811247e"
+  },
+  {
+    "source": "experiments/teaching-cpu/cpu-atomic-backend/REPORT.md",
+    "path": "docs/archive/cpu-atomic-backend/REPORT.md",
+    "sha256": "33d4faf657f220ffa688866b0a97ca0aaf0997e2490610d1050e34afe56d2685"
+  },
+  {
+    "source": "experiments/teaching-cpu/cpu-atomic-backend/CODEX_REVIEW_3.md",
+    "path": "docs/archive/cpu-atomic-backend/CODEX_REVIEW_3.md",
+    "sha256": "ed660b18dc7c3d332e4ea8b8241c49a3aeb4f3f526c62d2f0fb99c59a4f3da3c"
+  },
+  {
+    "source": "experiments/teaching-cpu/cpu-atomic-backend/CODEX_REVIEW_2.md",
+    "path": "docs/archive/cpu-atomic-backend/CODEX_REVIEW_2.md",
+    "sha256": "303ee1e8ebe37a9ffc64ac0adafe57abf963c114d13deae4755bbde3128e8980"
+  },
+  {
+    "source": "experiments/teaching-cpu/cpu-atomic-backend/DESIGN.md",
+    "path": "docs/archive/cpu-atomic-backend/DESIGN.md",
+    "sha256": "7fb6fc26824c9643beaaff89c6034f4cd0c5ff40182c1d4608b32a5518030f9c"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-run-2/PRE-CYCLE-STATE.md",
+    "path": "docs/archive/xv6-board-run-2/PRE-CYCLE-STATE.md",
+    "sha256": "466c717a4ed0950d1dbc44911cdd0846348d15a1580f8ca3e68eaf23c7f8e2e5"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-run-2/COLD-BOARD-RETRY-REPORT.md",
+    "path": "docs/archive/xv6-board-run-2/COLD-BOARD-RETRY-REPORT.md",
+    "sha256": "8d674150180b8773c2dc1d55e60082f8a0567272a3b129783d0eeba01011a02f"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-run-2/REVIEW-CORRECTION.md",
+    "path": "docs/archive/xv6-board-run-2/REVIEW-CORRECTION.md",
+    "sha256": "0f0fee1e5d7cf45d3551f04dc3869cca21a1795a562a3047f585abc8d190ccdf"
+  },
+  {
+    "source": "experiments/teaching-cpu/m2-3/CODEX_REVIEW.md",
+    "path": "docs/archive/m2-3/CODEX_REVIEW.md",
+    "sha256": "02733d175b0071739fbd3a163d483482ff3566b341e57a7ca73f0e69ffc9103f"
+  },
+  {
+    "source": "experiments/teaching-cpu/m2-3/REPORT.md",
+    "path": "docs/archive/m2-3/REPORT.md",
+    "sha256": "3baa355e6511920de18d1f218c2e00ac0cec9c20d2dfa64e5a886ed2358bad04"
+  },
+  {
+    "source": "experiments/teaching-cpu/m3/CODEX_REVIEW.md",
+    "path": "docs/archive/m3/CODEX_REVIEW.md",
+    "sha256": "d750a47369341cdfa39c535e1bf1c2bcc43102f7817d9f023144a1bbd5397bc0"
+  },
+  {
+    "source": "experiments/teaching-cpu/m3/REPORT.md",
+    "path": "docs/archive/m3/REPORT.md",
+    "sha256": "8524d28f01c2b7ef72d53171583dc2636076329718fb1cd6b622e14ab3397ec7"
+  },
+  {
+    "source": "experiments/teaching-cpu/m3/ROM_DECISION.md",
+    "path": "docs/archive/m3/ROM_DECISION.md",
+    "sha256": "c737bc1b2f3a7c3b52f318c6a24da3a294e8216d904eec8667750a7975e16318"
+  },
+  {
+    "source": "experiments/teaching-cpu/m3/MANIFEST.md",
+    "path": "docs/archive/m3/MANIFEST.md",
+    "sha256": "95adccc4ec6236631f301104a5a661fc4a5e7db09989e56b13d9722940b28307"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/STATUS-MAP.md",
+    "path": "docs/archive/xv6-board-prep/STATUS-MAP.md",
+    "sha256": "94006b2cd47041f564c1ac87b3ae0313b1ceb3bb581f8545862ba89e2adbda33"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/CODEX_CLOSEOUT_REVIEW.md",
+    "path": "docs/archive/xv6-board-prep/CODEX_CLOSEOUT_REVIEW.md",
+    "sha256": "49becd6a98875b65c43917b9340f2e481ade8d9b918a2c94f99cd298fc793f94"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/CONVERGENCE-PACKAGE.md",
+    "path": "docs/archive/xv6-board-prep/CONVERGENCE-PACKAGE.md",
+    "sha256": "fcc12f01efffee8f0dc1301d9ae71ad2b483a953c410b88c61f28f8feff41154"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/CODEX_EXECUTION_REVIEW.md",
+    "path": "docs/archive/xv6-board-prep/CODEX_EXECUTION_REVIEW.md",
+    "sha256": "6135f5e0bbc431c5212814ec7ab4c8b7e545b3e3f654cb5dde28e6803fe2d625"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/INTEGRATION-REPORT.md",
+    "path": "docs/archive/xv6-board-prep/INTEGRATION-REPORT.md",
+    "sha256": "0480da458314e0b8075e67e4ee246bad46ad49d76a1a940fa29ed200e9b2ada5"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/REPORT.md",
+    "path": "docs/archive/xv6-board-prep/REPORT.md",
+    "sha256": "594ab69be80f5f1d29d1f336a4e15464a41e978ac85ee9d56993aa65267c5300"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/TEARDOWN-REPORT.md",
+    "path": "docs/archive/xv6-board-prep/TEARDOWN-REPORT.md",
+    "sha256": "109c43336c335bb96eaab820bf7f7b62bd23327ed73b6c3c2019124c22319052"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/TWO-GAPS-REPORT.md",
+    "path": "docs/archive/xv6-board-prep/TWO-GAPS-REPORT.md",
+    "sha256": "306d712008acdb7ce8465e948cfb79602b518cec55a731e040d9080aeb73c258"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/CLOSEOUT-REPORT.md",
+    "path": "docs/archive/xv6-board-prep/CLOSEOUT-REPORT.md",
+    "sha256": "61e3d619a10bd6d0f78cd0ec848ace78746133a96c0f9c2d45cad636828877a5"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/BOARD-PROCEDURE.md",
+    "path": "docs/archive/xv6-board-prep/BOARD-PROCEDURE.md",
+    "sha256": "e7b4d19c49ff834e985cb276a069fe19497355bc83d8a9770f4c140e119f02bd"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/SERIAL-CLOSEOUT-REPORT.md",
+    "path": "docs/archive/xv6-board-prep/SERIAL-CLOSEOUT-REPORT.md",
+    "sha256": "9188e06eebc57beef6da9221ee6a253ce9301546ef7fd3c846691ac6fd7d9791"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/CODEX_BUILD_REVIEW.md",
+    "path": "docs/archive/xv6-board-prep/CODEX_BUILD_REVIEW.md",
+    "sha256": "b9c4981a1e1308502ecdca1d456d7efd7275adaecc159f36df87a17e91f5ad16"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/CODEX_LAUNCH_ACCEPTANCE.md",
+    "path": "docs/archive/xv6-board-prep/CODEX_LAUNCH_ACCEPTANCE.md",
+    "sha256": "01e30eb87a9c9859e8a3d7b67cb60045fb08dc899d51826b32d670b434b2ff81"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/EXECUTION-REPORT.md",
+    "path": "docs/archive/xv6-board-prep/EXECUTION-REPORT.md",
+    "sha256": "9e67ea381d533e1c9426e07bd09f94243c988a84a0acdf2ab7ae6882d8e116b0"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/SIGINT-DIAGNOSIS-REPORT.md",
+    "path": "docs/archive/xv6-board-prep/SIGINT-DIAGNOSIS-REPORT.md",
+    "sha256": "b2f51a1bc98864613ef1853b8119ace5361e56e2087c66b48509eac90e4b2f29"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/SAFETY-REPORT.md",
+    "path": "docs/archive/xv6-board-prep/SAFETY-REPORT.md",
+    "sha256": "9a02d9cadc786d94ba6c9eb7dbf5bbe520954fd0df164338b5642f683059c738"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/EXCLUSIVE-INTEGRATION-REPORT.md",
+    "path": "docs/archive/xv6-board-prep/EXCLUSIVE-INTEGRATION-REPORT.md",
+    "sha256": "44356e7f1905f2e1cd6559964a84f8dedab71d0602d7289ccd9b4270662e741c"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/RUNNER-PORTABILITY.md",
+    "path": "docs/archive/xv6-board-prep/RUNNER-PORTABILITY.md",
+    "sha256": "4726189b3768b8df72f35c1ced2481eb59aa3657564be359890e17b84639ca3f"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/CODEX_CONVERGENCE_ACCEPTANCE.md",
+    "path": "docs/archive/xv6-board-prep/CODEX_CONVERGENCE_ACCEPTANCE.md",
+    "sha256": "a3551af338c1b0cb151892558cb3cae48a5b4a84ec1eee77e07f63f617b6a4ac"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/LAUNCH-FINAL-REPORT.md",
+    "path": "docs/archive/xv6-board-prep/LAUNCH-FINAL-REPORT.md",
+    "sha256": "4120f0d6b1500bba021b5db9e9a24f07f787f2387954c53323d712a58bf63288"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/BUILD-REPORT.md",
+    "path": "docs/archive/xv6-board-prep/BUILD-REPORT.md",
+    "sha256": "fb182c319b998c32c5b6a684f5534e2e85a352866b6e9f990498d3c9442b10a2"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/CODEX_SERIAL_ACCEPTANCE.md",
+    "path": "docs/archive/xv6-board-prep/CODEX_SERIAL_ACCEPTANCE.md",
+    "sha256": "667305461c5181feef60d746cc898370150cfd9d9cd3525d0e0cfcade0b922f4"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/FRAMING-FINAL-REPORT.md",
+    "path": "docs/archive/xv6-board-prep/FRAMING-FINAL-REPORT.md",
+    "sha256": "ca2831c53fe3ea7537ef56df100aeb507ae7f14375698cd307f51de28da36c66"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/PRODUCTION-ENTRY-REPORT.md",
+    "path": "docs/archive/xv6-board-prep/PRODUCTION-ENTRY-REPORT.md",
+    "sha256": "81edb72e0a2dc13c258cd7052da2495bc8bdf22ee943dfd9eee7aa617a4854d6"
+  },
+  {
+    "source": "experiments/teaching-cpu/restart-boot/CODEX_REVIEW.md",
+    "path": "docs/archive/restart-boot/CODEX_REVIEW.md",
+    "sha256": "d4c0d002c773c7eb43c5541d4d24c5416249e348fd8d55cc7701f34c60bb2292"
+  },
+  {
+    "source": "experiments/teaching-cpu/restart-boot/REPORT.md",
+    "path": "docs/archive/restart-boot/REPORT.md",
+    "sha256": "afc9af4df7453ec34dafbbe59420ac595d5ab47be4d76e174f0e22075474188a"
+  },
+  {
+    "source": "experiments/teaching-cpu/restart-boot/CODEX_REVIEW_2.md",
+    "path": "docs/archive/restart-boot/CODEX_REVIEW_2.md",
+    "sha256": "5abbae5a0eb406efaf16c0038e339208bd7c54458ea0786e27856aac6c0b2991"
+  },
+  {
+    "source": "experiments/teaching-cpu/restart-boot/DESIGN.md",
+    "path": "docs/archive/restart-boot/DESIGN.md",
+    "sha256": "06c87054992f1c9744127abe497dd2a6a86b889e897c4d7d1d8c9e9c7ec38b9a"
+  },
+  {
+    "source": "experiments/teaching-cpu/m3-axi-review/CODEX_REVIEW.md",
+    "path": "docs/archive/m3-axi-review/CODEX_REVIEW.md",
+    "sha256": "eef799424e9de099c48ad60a4937772d9c54dd79d2e9f0ef95fea2b4d4d131f5"
+  },
+  {
+    "source": "experiments/teaching-cpu/m3-axi-review/REPORT.md",
+    "path": "docs/archive/m3-axi-review/REPORT.md",
+    "sha256": "ad5508f856f3f7a37048a0eb77d388ac5ec1f2ca9845aff7f0668427365fd8bd"
+  },
+  {
+    "source": "experiments/teaching-cpu/m3-axi-review/SELF_AUDIT.md",
+    "path": "docs/archive/m3-axi-review/SELF_AUDIT.md",
+    "sha256": "0353b46a6cc4ca8ba7ca48c4fcc8779f053ab59e165af8b583411fb2e849b602"
+  },
+  {
+    "source": "experiments/teaching-cpu/m2-3-events/CODEX_REVIEW.md",
+    "path": "docs/archive/m2-3-events/CODEX_REVIEW.md",
+    "sha256": "120746bf504c1abb417d1f2795367b4e2775e865fcc63bae44bcc23e6d74ca87"
+  },
+  {
+    "source": "experiments/teaching-cpu/m2-3-events/REPORT.md",
+    "path": "docs/archive/m2-3-events/REPORT.md",
+    "sha256": "05646352ab8b6727f9669b67e379850b9355a7fcf38792bc97cc397ee71fbcc0"
+  },
+  {
+    "source": "experiments/teaching-cpu/m4-board/CODEX_REVIEW.md",
+    "path": "docs/archive/m4-board/CODEX_REVIEW.md",
+    "sha256": "8856f4af6268c077601c7baf6022b2ac365302f5334319ee63eb412e42a10d3a"
+  },
+  {
+    "source": "experiments/teaching-cpu/m4-board/RESET-DRAIN-SPEC.md",
+    "path": "docs/archive/m4-board/RESET-DRAIN-SPEC.md",
+    "sha256": "d5ee88fd60d3401036d1d68635a4fe453dda5143abb75e8c1e4b26f7a57bab9f"
+  },
+  {
+    "source": "experiments/teaching-cpu/m4-board/DIAGNOSIS.md",
+    "path": "docs/archive/m4-board/DIAGNOSIS.md",
+    "sha256": "15f2488fcc75b7d18492313fe7bcb4326f5f90aef26328a99d1bad698c718c84"
+  },
+  {
+    "source": "experiments/teaching-cpu/m2-3-fixes/CODEX_REVIEW.md",
+    "path": "docs/archive/m2-3-fixes/CODEX_REVIEW.md",
+    "sha256": "9212e51e8a6c493325923e6df5d597c6a73c3b3d262d13879380641aa9c5b92c"
+  },
+  {
+    "source": "experiments/teaching-cpu/m2-3-fixes/REPORT.md",
+    "path": "docs/archive/m2-3-fixes/REPORT.md",
+    "sha256": "7b560e8afe5eaa52ad58d869b5683d3d532183ec37dec0f321aeddf993d480a1"
+  },
+  {
+    "source": "experiments/teaching-cpu/m1/CODEX_REVIEW.md",
+    "path": "docs/archive/m1/CODEX_REVIEW.md",
+    "sha256": "7b17058c433ce0e6daa70d48a38ad2c3d99da898deac1e4f08fe19ad5ba6a208"
+  },
+  {
+    "source": "experiments/teaching-cpu/m1/REPORT.md",
+    "path": "docs/archive/m1/REPORT.md",
+    "sha256": "3e04b1f1611afcaeb1ab368de5b3933ac05c43cd93b11c964117a8d8c62f99a0"
+  },
+  {
+    "source": "experiments/teaching-cpu/m2-2/CODEX_REVIEW.md",
+    "path": "docs/archive/m2-2/CODEX_REVIEW.md",
+    "sha256": "2a4f4c0e28fb5e8cf95f9880c642ac0a0e11310fa6abc013499d101cccf40d22"
+  },
+  {
+    "source": "experiments/teaching-cpu/m2-2/REPORT.md",
+    "path": "docs/archive/m2-2/REPORT.md",
+    "sha256": "c60c50a352d0cf69b3a2022ac8fe084752c09cddd5d5957a8c26115d9e861de7"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-boot/RECONCILIATION.md",
+    "path": "docs/archive/xv6-boot/RECONCILIATION.md",
+    "sha256": "2a76c996f009f161ec5496590af883f8873e524c4e2a952faf9a3b6933beb256"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-boot/DRIVER.md",
+    "path": "docs/archive/xv6-boot/DRIVER.md",
+    "sha256": "67fa489dcb38d64d84523b0eb5171a7efc5a68100aacbe7a58bc5f5beea33e5a"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-boot/REPORT.md",
+    "path": "docs/archive/xv6-boot/REPORT.md",
+    "sha256": "76c35ee4755dcc1cf536d146db2ae042c82049cd297f4b1f22366eefe9737d54"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-boot/CODEX_DRIVER_ACCEPTANCE.md",
+    "path": "docs/archive/xv6-boot/CODEX_DRIVER_ACCEPTANCE.md",
+    "sha256": "527b8ffee22d4004a52146ccbbd1a7691fccfa8c329f4e0e7549dbc911ab699a"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-boot/CODEX_RESUME_REVIEW.md",
+    "path": "docs/archive/xv6-boot/CODEX_RESUME_REVIEW.md",
+    "sha256": "c8d18f8e6cd9948654f33e5656145ef4ed3ea0d195c230f561b1509105319fa9"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-boot/CODEX_CHECKER_FINDING.md",
+    "path": "docs/archive/xv6-boot/CODEX_CHECKER_FINDING.md",
+    "sha256": "8791b519e51d4045918c3171580249770d1ba0ab76e04ee151c6e7488ec730d0"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-boot/CODEX_DECISIONS.md",
+    "path": "docs/archive/xv6-boot/CODEX_DECISIONS.md",
+    "sha256": "d62b03071334f1381412be459518e0c48264ffc47254eff7ec2b8a67364b92d0"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-boot/PHYSTOP_MEASUREMENT.md",
+    "path": "docs/archive/xv6-boot/PHYSTOP_MEASUREMENT.md",
+    "sha256": "c1b0d220ca66bb755dc78e1afd35fe44e8246df5591ef83b74b78ca9350e3f0c"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-boot/CODEX_FOUR_COMMAND_ACCEPTANCE.md",
+    "path": "docs/archive/xv6-boot/CODEX_FOUR_COMMAND_ACCEPTANCE.md",
+    "sha256": "a80565df99cb89e6416fff3da8504f79d81e5bdfcd214b5ac37fac7fae6704c0"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-boot/DESIGN.md",
+    "path": "docs/archive/xv6-boot/DESIGN.md",
+    "sha256": "e61d1471f488bc6d99b2c7d15446520a4b8a5c13a4663263ed204dd51099ae81"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-boot/FINDING-RUN-V2.md",
+    "path": "docs/archive/xv6-boot/FINDING-RUN-V2.md",
+    "sha256": "55b3c476217afbd42ffb7883183d78f2bf5692cfc173ece621a36d634d0b99b1"
+  },
+  {
+    "source": "experiments/teaching-cpu/cpu-su-prep/CODEX_REVIEW.md",
+    "path": "docs/archive/cpu-su-prep/CODEX_REVIEW.md",
+    "sha256": "007dbda08c5175e68db10ee521bad9029249c4141d42f7f838a299ff75c02957"
+  },
+  {
+    "source": "experiments/teaching-cpu/cpu-su-prep/REPORT.md",
+    "path": "docs/archive/cpu-su-prep/REPORT.md",
+    "sha256": "6c7b2cf25ae111f9b8ebcd0f6f5a9260b9743a7856c34722889387adb5bae1ce"
+  },
+  {
+    "source": "experiments/teaching-cpu/cpu-su-prep/TEST_PLAN.md",
+    "path": "docs/archive/cpu-su-prep/TEST_PLAN.md",
+    "sha256": "5d2f30c618c3c37b9cd8d773cc870e4816ce93296a7b3564cd323803c7c9db86"
+  },
+  {
+    "source": "experiments/teaching-cpu/cpu-su-prep/SPEC.md",
+    "path": "docs/archive/cpu-su-prep/SPEC.md",
+    "sha256": "5109faca22d4d6d269d84cc1b1dc6b8a67e1c01b66c9cf1abc27d15b5617861e"
+  },
+  {
+    "source": "experiments/teaching-cpu/cpu-su-prep/CODEX_DECISIONS.md",
+    "path": "docs/archive/cpu-su-prep/CODEX_DECISIONS.md",
+    "sha256": "0c2a6768199b89ec33e4f25d843a3480b3a582e114e6e9d43fb8d1aedae4cf4a"
+  },
+  {
+    "source": "experiments/teaching-cpu/cpu-su-prep/DECISIONS.md",
+    "path": "docs/archive/cpu-su-prep/DECISIONS.md",
+    "sha256": "6d55652f95820a1620654ed8d6a47c0b7e3cab52264caff548f844812dbe3252"
+  },
+  {
+    "source": "experiments/teaching-cpu/rboot-write-target/CODEX_REVIEW.md",
+    "path": "docs/archive/rboot-write-target/CODEX_REVIEW.md",
+    "sha256": "a111a9216041dfb2a3c8f59039dcfccffabd4940aba1d9811a5b20f789eaf315"
+  },
+  {
+    "source": "experiments/teaching-cpu/rboot-write-target/REPORT.md",
+    "path": "docs/archive/rboot-write-target/REPORT.md",
+    "sha256": "ace3b3705328479d52cf10554522cd3d99b69594329ce3d68e7dd99bbb99c962"
+  },
+  {
+    "source": "experiments/teaching-cpu/cpu-sv39/CODEX_REVIEW.md",
+    "path": "docs/archive/cpu-sv39/CODEX_REVIEW.md",
+    "sha256": "28c8e39596de05bf3b3471d48ba8e16673f246454099a839e21f9ad702ddca12"
+  },
+  {
+    "source": "experiments/teaching-cpu/cpu-sv39/REPORT.md",
+    "path": "docs/archive/cpu-sv39/REPORT.md",
+    "sha256": "9bcac00a062cdf3136542de60aed625817dba1b661038dc4ba4d167156131cfe"
+  },
+  {
+    "source": "experiments/teaching-cpu/cpu-sv39/CODEX_REVIEW_2.md",
+    "path": "docs/archive/cpu-sv39/CODEX_REVIEW_2.md",
+    "sha256": "0f71ead67cf7a13a556b3d494da2431fcb3bc88e7ec348bc3e54ee08b11c3874"
+  },
+  {
+    "source": "experiments/teaching-cpu/cpu-sv39/DESIGN.md",
+    "path": "docs/archive/cpu-sv39/DESIGN.md",
+    "sha256": "40789cfa9cda639738a1180a274aa08ff2e43d2562a039cbd0832f19dfd36fcc"
+  },
+  {
+    "source": "experiments/teaching-cpu/cpu-su/CODEX_REVIEW.md",
+    "path": "docs/archive/cpu-su/CODEX_REVIEW.md",
+    "sha256": "b007cae16863711ede05e97b137cfc857b251e011aa7ce53ae1e7ea4bf060479"
+  },
+  {
+    "source": "experiments/teaching-cpu/cpu-su/REPORT.md",
+    "path": "docs/archive/cpu-su/REPORT.md",
+    "sha256": "7163dfde060f92c0fbfdd54685566caad6bad9cf352cc560696f5bf82a62b531"
+  },
+  {
+    "source": "experiments/teaching-cpu/cpu-su/DESIGN.md",
+    "path": "docs/archive/cpu-su/DESIGN.md",
+    "sha256": "af700561147ca06e8c22bd524db84863adc8532112e758f01cdc8779883ba7f4"
+  },
+  {
+    "source": "experiments/teaching-cpu/m1-soc/CODEX_REVIEW.md",
+    "path": "docs/archive/m1-soc/CODEX_REVIEW.md",
+    "sha256": "77963ef6ed041670d43c786e54d7f128021884d04e6dab20ac4c8aedf51e88ff"
+  },
+  {
+    "source": "experiments/teaching-cpu/m1-soc/REPORT.md",
+    "path": "docs/archive/m1-soc/REPORT.md",
+    "sha256": "2ba40c9f91c57e54b167b764baebea535c1efe703b6ccbb0f5062523d333abd3"
+  },
+  {
+    "source": "MEMORY_MICROARCH_EXPERIMENT_PLAN.md",
+    "path": "docs/archive/MEMORY_MICROARCH_EXPERIMENT_PLAN.md",
+    "sha256": "cc2073300379d5127c60def25cf358f8a2a2f41f3d6458c2aeb70d68656c5df9"
+  },
+  {
+    "source": "experiments/EXECUTION.md",
+    "path": "docs/archive/EXECUTION.md",
+    "sha256": "f9c244601cf7ce81f3e12b28ce11d7e1b2b97d4dffd81baf378c9be61c520568"
+  },
+  {
+    "source": "teaching-cpu-work/MANIFEST.md",
+    "path": "docs/archive/MANIFEST.md",
+    "sha256": "d2e80343ae31feba700688c30c8dab9425fd026c0428d0e0d38caf2a1362804e"
+  },
+  {
+    "source": "teaching-cpu-work/fpga-zynq/LICENSE",
+    "path": "licenses/fpga-zynq-LICENSE",
+    "sha256": "529a6607c7a998862a2b2434d22e72c2147ce75205764ca679a284b8c2f6fa04"
+  },
+  {
+    "source": "teaching-cpu-work/fpga-zynq/rocket-chip/LICENSE.Berkeley",
+    "path": "licenses/rocket-chip-LICENSE.Berkeley",
+    "sha256": "54349a017a8a0876fcc5ef281fc37aedbf5a008158395eaad0f589ade7f019cc"
+  },
+  {
+    "source": "teaching-cpu-work/fpga-zynq/rocket-chip/LICENSE.SiFive",
+    "path": "licenses/rocket-chip-LICENSE.SiFive",
+    "sha256": "63b453c2c3f5e5d31007f55eaacc2b72e8b7a40e6ab33eae6972ba010fa7acc4"
+  },
+  {
+    "source": "teaching-cpu-work/fpga-zynq/rocket-chip/LICENSE.jtag",
+    "path": "licenses/rocket-chip-LICENSE.jtag",
+    "sha256": "8d0cdcf66ae00aefe3b2f4d48798bca923651cb1ad297ff007b16cfab122ec00"
+  },
+  {
+    "source": "teaching-cpu-work/fpga-zynq/rocket-chip/riscv-tools/riscv-fesvr/LICENSE",
+    "path": "licenses/riscv-fesvr-LICENSE",
+    "sha256": "7a2a8577b920db0ed2442b323963061c07536f1e382f4bd052bd2d7ea0e495fe"
+  },
+  {
+    "source": "experiments/teaching-cpu/xv6-board-prep/build-inputs/MANIFEST.txt",
+    "path": "evidence/board-inputs-original.tsv",
+    "sha256": "c5df0c629053d399ac8d9cdeee71242aef1363a882199f3f104060e175892471"
+  }
+]

@@ -1,0 +1,11 @@
+BOOTID=ebeab8a6-0ac9-474a-84c3-bd6e0b357d3b
+UPTIME=1503.38
+LOCK_RELEASED
+FESVR=0
+STATUS=0x00050900
+MEMINFO_OK
+KERNEL_ERRORS=0
+mmcblk0: mmc0:1234 SA02G 1.83 GiB 
+ mmcblk0: p1
+random: nonblocking pool is initialized
+4c8f242a9734593f4d0fdae321ab997d748cd4c839b87928ed31c664f8a19a57  /root/xv6run/fs-run.img

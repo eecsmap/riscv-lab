@@ -1,0 +1,21 @@
+ok	5.4	kernel banner
+ok	73.8	init started / first prompt
+ok	86.2	shell prompt
+ok	96.4	command echo
+ok	247.4	command ls
+ok	261.8	command cat
+ok	277.9	command pipe
+# driver: v3
+# platform: board
+# channel: exclusive
+# console device: /dev/ttyUSB1
+# bitstream sha256: 2cd8a9927cfa2f51da16bc6ba4865a407e985d00bf2accbb046f48c81c0fda52
+# host binary sha256: c050eab30f80a21a7c92c8688faa2f043c67aa2900fbc08b80f3dd8de2ba1fb9
+# kernel sha256: e990fb31fad483b805aaeae77ecaebb3111abcec012d70447c620c9e9b289c2c
+# disk at start sha256: 4691ffea6b05562d33a599a3406ab3b6d69e6c2444addb08838f1ef6f97527b7
+# memory evidence session: ebeab8a6-0ac9-474a-84c3-bd6e0b357d3b
+# memory evidence digest: ae1898787833944aa2caea81178de2a4c9cf9cab92b9599084822f6796897898
+# board boot id: ebeab8a6-0ac9-474a-84c3-bd6e0b357d3b
+# host exit: 0
+# stop: deliberate-stop-after-all-commands
+# remote exit confirmed: yes

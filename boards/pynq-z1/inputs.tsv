@@ -1,0 +1,16 @@
+# role	sha256	bytes	repo-relative path	note
+include	d0fd087a156a336433edadf559d18c23046ed1931f96d5918f5970d9928365e8	1748	boards/pynq-z1/frozen/clocking.vh	included by the board wrapper
+include	4d86ce139119a062928900f65b8f5bd38418253d5e91cf805de81329ef930920	1139	rtl/cpu/tcpu_defs.vh	included by tcpu_core.v; needs an include dir
+wrapper	6d0b92b5f5a955a117fb80321fda227177f4e77fb4a64130e8391118b33d8fb4	11718	boards/pynq-z1/frozen/rocketchip_wrapper.v	the real board top: PS, pins, MMCM, both AXI boundaries, and the HP0 address translation {4'd1, addr[27:0]}. BASELINE, READ ONLY
+shim	8c45fe154c3cc7a30a1b3a709e01fb35d9a1eafafe17a8317e0d2a6e00cea4bd	8807	boards/pynq-z1/frozen/teaching_top_shim.v	module Top: 76 ports straight through to RD2BoardTop
+board-rtl	5b217650b2574c506c92d596dbb425afc2c6c4c69edff5765c1c8f0299d7bfe7	9708278	boards/pynq-z1/frozen/RD2BoardTop.RD2AtomicBoardConfig.v	the elaborated atomic teaching board design
+blackbox	09449b24e64440f745134e7c98ddff1009667087bf438f03381a0228c40fafc9	47200	rtl/cpu/tcpu_core.v	the teaching CPU, a Verilog black box to Chisel
+blackbox	0a5722962012f54a22740d7f207311e4264f46e11074b38f71097035b6005a2a	18141	rtl/cpu/tcpu_csr.v	instantiated by tcpu_core
+blackbox	40334e9cf0c7a247bc587cd486f59d7206131f121b6e1c6a6f254eeda3452350	1264	rtl/cpu/tcpu_regfile.v	instantiated by tcpu_core
+blackbox	5e85de1d474ad63ff33aa78944ce60b9da579a47d5db0dc43c32c80fa7d8607f	7570	rtl/cpu/tcpu_muldiv.v	NEW since the board-proven build: M
+blackbox	7ea0ee368aebae35d962c09e83df0a41282fb47ddbfeff46fe37b27d3e837139	9123	rtl/cpu/tcpu_cdecode.v	NEW since the board-proven build: C
+blackbox	8a36ea44338c86c07fd4e6f78015cebafd6eca8c14e2b3d38b5abe352eb10d12	6169	rtl/cpu/tcpu_ptw.v	NEW since the board-proven build: Sv39 page-table walk
+support	90af647728313f1a9586b4b46042fc522a895727d5d62ac233cdfe9ca483335e	1647	boards/pynq-z1/frozen/AsyncResetReg.v	instantiated by the generated RTL
+support	5afcca017b4a6ca89dbc9ae86e688a73604d4503e07997d7b32006013ae419d3	534	boards/pynq-z1/frozen/plusarg_reader.v	kept in the set because the wrapper/baseline may reference it; the generated board RTL instantiates none (audit section 2)
+xdc	b9a05afdf3edfa1d4939558521302faa4855a7645a8a28351f240d4a0b763b0d	168	boards/pynq-z1/frozen/base.xdc	baseline constraints, unchanged
+bd-tcl	e50dbbea52f8e2cf7cdf8e88ceb2766d9326e1b80cedd93f1fb0943e579d7b66	10805	boards/pynq-z1/frozen/pynqz1_bd.tcl	baseline block design, unchanged; HP0 segment offset 0x0 range 0x20000000
