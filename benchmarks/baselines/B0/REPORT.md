@@ -63,7 +63,7 @@ built on the other and calling the total exact is the error corrected in `ERRATA
 
 | class | defined | measured | note |
 | --- | --- | --- | --- |
-| microbenchmarks | 13 ROIs across 4 probes | **13 on board, 13 in simulation** | sample policy met |
+| microbenchmarks | **20 ROIs across 5 probes** | **20 on board** (5 samples each); **13 in simulation** | board policy met; `perf05_size` was added after the sampled simulator run and has one simulator observation outside it, which is **not** a sampled result |
 | applications | 3 | **0 — pending** | built, identities recorded, expected checksums computed; never executed |
 
 ### Why the application workloads are pending

@@ -74,3 +74,26 @@ Both remain interesting as *hypotheses* about where time goes. Neither is a resu
   `tcpu_ptw.v`. These are read from the source, not inferred from timings;
 * the measured cycle and retired counts themselves, which are in `raw/` and unaltered;
 * the RTC divider measuring 100, hence `mtime` at 400 kHz against a device tree declaring 1 MHz.
+
+---
+
+### E6 — what perf05 shows, and what it does not
+
+Added 2026-09-21 after Codex's review of the B0 candidate.
+
+perf05 measured 1-, 2-, 4- and 8-byte loads and 1- and 8-byte stores at **one repeatedly-hit, naturally
+aligned address**, and found their costs within 0.4 % of each other. The correct statement of that result
+is: **no resolved sub-word latency penalty was observed under this workload.**
+
+It does **not** establish:
+
+* **the absence of internal read-modify-write.** A read-modify-write whose extra work is hidden behind the
+  same round-trip latency — which is plausible, given the round-trip dominates — would be invisible to
+  this measurement. `sb` costing what `sd` costs is consistent with byte strobes *and* with a concealed
+  RMW;
+* **that widening an access is cost-free in general.** The result is bounded to sizes that fit within one
+  64-bit beat, at an aligned address, with one access outstanding. Nothing here measures an unaligned
+  access, a size crossing a beat, a burst, or behaviour under contention.
+
+The conclusion drawn from it elsewhere — that a wider *fetch* gains only from the requests it eliminates
+— stands for the 2→4 byte case actually measured, and should not be generalised beyond it.
