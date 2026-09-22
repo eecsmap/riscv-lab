@@ -1,0 +1,20 @@
+# every file Vivado has in sources_1, in compile order, as the tool reports it
+# top: rocketchip_wrapper
+# verilog_define: SYNTHESIS
+# include_dirs: /home/engineer/fpga/riscv-lab/experiments/E1-clock-scaling/inputs
+/home/engineer/fpga/riscv-lab/experiments/E1-clock-scaling/inputs/teaching_top_shim.v
+/home/engineer/fpga/riscv-lab/experiments/E1-clock-scaling/inputs/RD2BoardTop.RD2AtomicBoardConfig.v
+/home/engineer/fpga/riscv-lab/experiments/E1-clock-scaling/inputs/rocketchip_wrapper.v
+/home/engineer/fpga/riscv-lab/experiments/E1-clock-scaling/inputs/tcpu_core.v
+/home/engineer/fpga/riscv-lab/experiments/E1-clock-scaling/inputs/tcpu_csr.v
+/home/engineer/fpga/riscv-lab/experiments/E1-clock-scaling/inputs/tcpu_regfile.v
+/home/engineer/fpga/riscv-lab/experiments/E1-clock-scaling/inputs/tcpu_muldiv.v
+/home/engineer/fpga/riscv-lab/experiments/E1-clock-scaling/inputs/tcpu_cdecode.v
+/home/engineer/fpga/riscv-lab/experiments/E1-clock-scaling/inputs/tcpu_ptw.v
+/home/engineer/fpga/riscv-lab/experiments/E1-clock-scaling/inputs/AsyncResetReg.v
+/home/engineer/fpga/riscv-lab/experiments/E1-clock-scaling/inputs/plusarg_reader.v
+/home/engineer/fpga/riscv-lab/experiments/E1-clock-scaling/build/vivado-project/teaching_pynqz1.srcs/sources_1/bd/system/system.bd
+/home/engineer/fpga/riscv-lab/experiments/E1-clock-scaling/build/vivado-project/teaching_pynqz1.srcs/sources_1/bd/system/ip/system_proc_sys_reset_0_0/system_proc_sys_reset_0_0.xci
+/home/engineer/fpga/riscv-lab/experiments/E1-clock-scaling/build/vivado-project/teaching_pynqz1.srcs/sources_1/bd/system/ip/system_processing_system7_0_0/system_processing_system7_0_0.xci
+# constraints
+/home/engineer/fpga/riscv-lab/experiments/E1-clock-scaling/inputs/base.xdc

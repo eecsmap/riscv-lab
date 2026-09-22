@@ -1,0 +1,94 @@
+{
+  "experiment": "E1-clock-scaling",
+  "created": "2026-09-21T23:43:24.470793+00:00",
+  "purpose": "Measure L at a second frequency so the split between design-clock cycles and fixed PS/DDR time can be solved rather than bracketed. Two-point EMPIRICAL model; linearity is an assumption to be tested, not asserted -- CDC quantisation, DDR scheduling and a changed implementation may all violate it.",
+  "frozen_inputs": [
+    {
+      "role": "include",
+      "path": "boards/pynq-z1/frozen/clocking.vh",
+      "sha256": "d0fd087a156a336433edadf559d18c23046ed1931f96d5918f5970d9928365e8"
+    },
+    {
+      "role": "include",
+      "path": "rtl/cpu/tcpu_defs.vh",
+      "sha256": "4d86ce139119a062928900f65b8f5bd38418253d5e91cf805de81329ef930920"
+    },
+    {
+      "role": "wrapper",
+      "path": "boards/pynq-z1/frozen/rocketchip_wrapper.v",
+      "sha256": "6d0b92b5f5a955a117fb80321fda227177f4e77fb4a64130e8391118b33d8fb4"
+    },
+    {
+      "role": "shim",
+      "path": "boards/pynq-z1/frozen/teaching_top_shim.v",
+      "sha256": "8c45fe154c3cc7a30a1b3a709e01fb35d9a1eafafe17a8317e0d2a6e00cea4bd"
+    },
+    {
+      "role": "board-rtl",
+      "path": "boards/pynq-z1/frozen/RD2BoardTop.RD2AtomicBoardConfig.v",
+      "sha256": "5b217650b2574c506c92d596dbb425afc2c6c4c69edff5765c1c8f0299d7bfe7"
+    },
+    {
+      "role": "blackbox",
+      "path": "rtl/cpu/tcpu_core.v",
+      "sha256": "09449b24e64440f745134e7c98ddff1009667087bf438f03381a0228c40fafc9"
+    },
+    {
+      "role": "blackbox",
+      "path": "rtl/cpu/tcpu_csr.v",
+      "sha256": "0a5722962012f54a22740d7f207311e4264f46e11074b38f71097035b6005a2a"
+    },
+    {
+      "role": "blackbox",
+      "path": "rtl/cpu/tcpu_regfile.v",
+      "sha256": "40334e9cf0c7a247bc587cd486f59d7206131f121b6e1c6a6f254eeda3452350"
+    },
+    {
+      "role": "blackbox",
+      "path": "rtl/cpu/tcpu_muldiv.v",
+      "sha256": "5e85de1d474ad63ff33aa78944ce60b9da579a47d5db0dc43c32c80fa7d8607f"
+    },
+    {
+      "role": "blackbox",
+      "path": "rtl/cpu/tcpu_cdecode.v",
+      "sha256": "7ea0ee368aebae35d962c09e83df0a41282fb47ddbfeff46fe37b27d3e837139"
+    },
+    {
+      "role": "blackbox",
+      "path": "rtl/cpu/tcpu_ptw.v",
+      "sha256": "8a36ea44338c86c07fd4e6f78015cebafd6eca8c14e2b3d38b5abe352eb10d12"
+    },
+    {
+      "role": "support",
+      "path": "boards/pynq-z1/frozen/AsyncResetReg.v",
+      "sha256": "90af647728313f1a9586b4b46042fc522a895727d5d62ac233cdfe9ca483335e"
+    },
+    {
+      "role": "support",
+      "path": "boards/pynq-z1/frozen/plusarg_reader.v",
+      "sha256": "5afcca017b4a6ca89dbc9ae86e688a73604d4503e07997d7b32006013ae419d3"
+    },
+    {
+      "role": "xdc",
+      "path": "boards/pynq-z1/frozen/base.xdc",
+      "sha256": "b9a05afdf3edfa1d4939558521302faa4855a7645a8a28351f240d4a0b763b0d"
+    },
+    {
+      "role": "bd-tcl",
+      "path": "boards/pynq-z1/frozen/pynqz1_bd.tcl",
+      "sha256": "e50dbbea52f8e2cf7cdf8e88ceb2766d9326e1b80cedd93f1fb0943e579d7b66"
+    }
+  ],
+  "intended_delta": {
+    "file": "boards/pynq-z1/frozen/clocking.vh",
+    "change": "`define RC_CLK_DIVIDE 25.0 -> 40.0",
+    "sha256_before": "d0fd087a156a336433edadf559d18c23046ed1931f96d5918f5970d9928365e8",
+    "sha256_after": "aeade14c7756f8bcc23a4ea9dcc2fba3b5fefc6c1dad78bbb11761c797a470f3",
+    "nominal_hz_before": 40000000,
+    "nominal_hz_after": 25000000,
+    "derivation": "125 MHz oscillator on pin H16 x RC_CLK_MULT(8.0) / RC_CLK_DIVIDE"
+  },
+  "unchanged": "every other input, all constraints, all RTL, and the probe binaries",
+  "timing_expectation": "NOT asserted. The accepted 40 MHz implementation reports WNS +0.779 ns on host_clk_i, but slack at 25 MHz must be read off THIS build's own reports, not predicted from that one; and no claim is made here about whether 50 MHz is reachable.",
+  "status": "inputs staged; build not yet run"
+}

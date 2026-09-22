@@ -1,0 +1,11 @@
+tool: 2025.2.1
+part: xc7z020clg400-1
+synth_1 STATUS: synth_design Complete!
+synth_1 PROGRESS: 100%
+impl_1 STATUS: write_bitstream Complete!
+impl_1 PROGRESS: 100%
+WNS: 13.395657
+TNS: 0.000000
+WHS: 0.064347
+THS: 0.000000
+bitstream: /home/engineer/fpga/riscv-lab/experiments/E1-clock-scaling/build/reports/rocketchip_wrapper.bit
