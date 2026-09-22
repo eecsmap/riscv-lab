@@ -16,7 +16,16 @@
   "frozen_inputs_verified": 15,
   "inputs_unchanged_except_one": true,
   "tools": {
-    "vivado": "Tool Version Limit: 2025.11",
+    "vivado": "vivado v2025.2.1 (64-bit)",
+    "vivado_version": "2025.2.1",
+    "banner": [
+      "vivado v2025.2.1 (64-bit)",
+      "Tool Version Limit: 2025.11",
+      "SW Build 6403652 on Thu Mar 19 13:47:00 MDT 2026",
+      "IP Build 6403511 on Thu Mar 19 12:41:45 MDT 2026",
+      "SharedData Build 6403650 on Thu Mar 19 14:02:13 MDT 2026"
+    ],
+    "note": "Corrected after Codex review. The earlier value was 'Tool Version Limit: 2025.11', which is a license version limit, not the tool version; my extraction matched a line beginning 'Tool Version' instead of the banner line, which begins with a lowercase 'vivado'. The original environment capture in build/environment.txt is unmodified and remains the source of record.",
     "container": "vivado-env via /home/engineer/vivado-docker/vdocker",
     "environment_capture": "build/environment.txt"
   },
