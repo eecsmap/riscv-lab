@@ -35,6 +35,7 @@ want(r.returncode == 0, "the patch applies cleanly to a scratch copy", r.stdout 
 
 sys.path.insert(0, os.path.join(mod, "tools/xv6-boot/scripts"))
 import xv6_console as XC
+UnknownProfile = XC.UnknownProfile
 
 print("== 1. the default is untouched")
 exp, stages = XC.profile("default")
@@ -57,12 +58,12 @@ print("== 3. there is no arbitrary-command escape hatch")
 try:
     XC.profile("rm -rf /")
     no("an arbitrary command cannot be passed as a profile", "it was accepted")
-except KeyError as e:
+except UnknownProfile as e:
     want("unknown workload profile" in str(e), "an arbitrary command cannot be passed as a profile", str(e))
 try:
     XC.profile("nonexistent")
     no("an unknown profile name is refused", "it was accepted")
-except KeyError:
+except UnknownProfile:
     ok("an unknown profile name is refused")
 want(all(isinstance(k, str) for k in XC.PROFILES),
      "  the interface takes a NAME; commands live only in the profile table")

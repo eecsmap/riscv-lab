@@ -1,4 +1,4 @@
-.PHONY: check board-project xv6 bench-selftest bench-metrics bench-check
+.PHONY: check board-project xv6 bench-selftest bench-metrics bench-check bench-profile-cli
 check:
 	python3 tools/check.py
 board-project:
@@ -20,3 +20,5 @@ bench-check: bench-selftest
 	  python3 benchmarks/tools/gen_metrics.py "$$d" >/dev/null; \
 	done
 	python3 benchmarks/tools/gen_comparisons.py --check
+bench-profile-cli:
+	bash benchmarks/workload-profiles/cli_selftest.sh $(or $(OUT),/tmp/b0-profile-cli)
