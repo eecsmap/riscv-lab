@@ -15,6 +15,26 @@ set -o pipefail
 here=$(cd "$(dirname "$0")" && pwd)
 ROOT=$(cd "$here/../.." && pwd)
 out=${1:?usage: cli_selftest.sh <fresh dir>}
+
+# ---- isolation, before anything else -----------------------------------------------------------------
+# /var/lock/teaching-fesvr.lock is the PRODUCTION host lock: a real board run may take it at any moment.
+# An earlier version of this file checked once that it was absent and then removed it unconditionally at
+# exit -- so a board run that started while this test was running would have had its lock deleted by a
+# test that never owned it. That is the very rule this project enforces everywhere else.
+#
+# So the test re-executes itself inside a mount namespace with a PRIVATE /var/lock bind-mounted over the
+# shared one. The production code path is unchanged -- it still uses /var/lock/teaching-fesvr.lock -- but
+# the directory it reaches cannot be the host's.
+if [ "${B0_PROFILE_ISOLATED:-}" != "1" ]; then
+  priv=$(mktemp -d)
+  unshare -Urm --map-root-user bash -c \
+    'mount --bind "$1" /var/lock && shift && exec "$@"' _ "$priv" \
+    env B0_PROFILE_ISOLATED=1 bash "$0" "$@"
+  rc=$?
+  rm -rf "$priv"
+  exit $rc
+fi
+
 [ -e "$out" ] && { echo "REFUSE: $out exists"; exit 2; }
 mkdir -p "$out"
 
@@ -23,11 +43,29 @@ ok() { pass=$((pass+1)); echo "  ok   : $1"; }
 no() { fail=$((fail+1)); echo "  FAIL : $1 -- $2"; }
 
 PROD_LOCK=/var/lock/teaching-fesvr.lock
-[ -e "$PROD_LOCK" ] && { echo "REFUSE: $PROD_LOCK exists; not touching it"; exit 2; }
+[ -e "$PROD_LOCK" ] && { echo "REFUSE: $PROD_LOCK exists even in the private namespace"; exit 2; }
+OURS="$out/our-runner-pids.txt"; : > "$OURS"
+
+# Ownership-aware even inside the namespace, as defence in depth and so the discipline is testable.
+# The transport's owner token is "<pid>-<unixtime>-<hex>" where <pid> is the runner process we launched;
+# a lock whose owner does not begin with one of OUR pids is not ours to remove, whatever else is true.
+lock_is_ours() {
+  local tok; tok=$(cat "$PROD_LOCK/owner" 2>/dev/null) || return 1
+  [ -n "$tok" ] || return 1
+  local pid=${tok%%-*}
+  grep -qxF "$pid" "$OURS" 2>/dev/null
+}
 BOARDPID=""; cleanup() {
   [ -n "$BOARDPID" ] && kill "$BOARDPID" 2>/dev/null
-  rm -f "$PROD_LOCK"/owner "$PROD_LOCK"/pid "$PROD_LOCK"/exit 2>/dev/null
-  rmdir "$PROD_LOCK" 2>/dev/null; return 0; }
+  if [ -d "$PROD_LOCK" ]; then
+    if lock_is_ours; then
+      rm -f "$PROD_LOCK"/owner "$PROD_LOCK"/pid "$PROD_LOCK"/exit 2>/dev/null
+      rmdir "$PROD_LOCK" 2>/dev/null
+    else
+      echo "  (left $PROD_LOCK alone: owner $(cat $PROD_LOCK/owner 2>/dev/null || echo '<none>') is not ours)"
+    fi
+  fi
+  return 0; }
 trap cleanup EXIT
 
 # ---- the patched copy
@@ -116,7 +154,8 @@ run_b0() {   # run_b0 <outdir> <mode>; sets RUNRC and leaves ST pointing at the 
     --disk "$ST/root/fs-run.img" --evidence-dir "$out/fixtures/safe-256" \
     --expect "$ST/root/fesvr-teaching-static=$H" --expect "$ST/root/kernel-128mib=$K" \
     --expect "$ST/root/fs-run.img=$D" --bitstream-sha $BIT --workload b0apps \
-    --stage-timeout 25 --startup-timeout 25 --stop-timeout 15 > "$1.txt" 2>&1
+    --stage-timeout 25 --startup-timeout 25 --stop-timeout 15 > "$1.txt" 2>&1 &
+  local rp=$!; echo "$rp" >> "$OURS"; wait "$rp"
   RUNRC=$?
 }
 
@@ -151,6 +190,25 @@ python3 "$CHECKER" "$out/run-dup" --require-commands > "$out/check-dup.txt" 2>&1
   && no "two conflicting workload headers are refused" "it accepted" \
   || { grep -q "workload headers" "$out/check-dup.txt" && ok "two conflicting workload headers are refused" \
        || no "two conflicting workload headers are refused" "refused for another reason: $(tail -2 $out/check-dup.txt|tr '\n' ' ')"; }
+
+echo "== 6. a foreign lock appearing AFTER the initial check is left alone"
+# The failure this guards against: a real board run taking the production lock while the test is in
+# flight. The initial existence check cannot see that, so cleanup must decide on ownership, not on what
+# was true at startup.
+mkdir -p "$PROD_LOCK"
+printf '%s' "999999-1700000000-deadbeef" > "$PROD_LOCK/owner"     # a pid we never launched
+if lock_is_ours; then
+  no "a foreign lock is not recognised as ours" "lock_is_ours said yes"
+else
+  ok "a foreign lock is not recognised as ours"
+fi
+cleanup >/dev/null 2>&1
+if [ -d "$PROD_LOCK" ] && [ "$(cat $PROD_LOCK/owner 2>/dev/null)" = "999999-1700000000-deadbeef" ]; then
+  ok "  and cleanup leaves it untouched"
+else
+  no "  and cleanup leaves it untouched" "it was removed or altered"
+fi
+rm -f "$PROD_LOCK"/owner; rmdir "$PROD_LOCK" 2>/dev/null
 
 echo "CLI_PROFILE_SELFTEST pass=$pass fail=$fail"
 [ "$fail" = 0 ]
