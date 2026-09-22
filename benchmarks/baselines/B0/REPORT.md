@@ -8,24 +8,37 @@ no counters, no cache, no TLB and no RTL change.
 
 ## Baseline table — microbenchmarks
 
-Board figures are the median of **5 samples**; the simulator is deterministic and verified so over
-**3 samples**. Spread is `(max − min) / median`.
+<!-- BEGIN GENERATED baseline-table -->
 
-| workload / ROI | board CPI (median of 5) | spread | simulator CPI (3, deterministic) | derived IPS (board) |
+Board figures are the median of **5 samples**; the simulator is deterministic and verified so
+over **3 samples**. Spread is `(max - min) / median`. Derived IPS is `40,000,000 / CPI` and is **model-derived**, never measured throughput.
+
+| workload / ROI | board CPI | spread | simulator CPI | derived IPS (board) |
 | --- | --- | --- | --- | --- |
 | `perf01_cpi` / `alu` | **40.34** | 0.100% | 19.39 | 0.992 M |
 | `perf01_cpi` / `load` | **46.68** | 0.077% | 21.84 | 0.857 M |
 | `perf01_cpi` / `store` | **46.18** | 0.093% | 21.84 | 0.866 M |
 | `perf02_sv39` / `bare_alu` | **40.33** | 0.066% | 19.39 | 0.992 M |
 | `perf02_sv39` / `bare_load` | **46.84** | 0.049% | 21.84 | 0.854 M |
-| `perf02_sv39` / `mega_alu` | **82.62** | 0.034% | 39.84 | 0.484 M |
-| `perf02_sv39` / `mega_load` | **96.22** | 0.074% | 45.35 | 0.416 M |
 | `perf02_sv39` / `k4_alu` | **161.30** | 0.034% | 73.09 | 0.248 M |
 | `perf02_sv39` / `k4_load` | **188.15** | 0.030% | 84.23 | 0.213 M |
-| `perf03_fetch` / `insn32` | **40.33** | 0.037% | 19.39 | 0.992 M |
+| `perf02_sv39` / `mega_alu` | **82.62** | 0.034% | 39.84 | 0.484 M |
+| `perf02_sv39` / `mega_load` | **96.22** | 0.074% | 45.35 | 0.416 M |
 | `perf03_fetch` / `insn16` | **21.64** | 0.093% | 11.08 | 1.848 M |
-| `perf04_where` / `load_dram` | **46.68** | 0.079% | 21.84 | 0.857 M |
+| `perf03_fetch` / `insn32` | **40.33** | 0.037% | 19.39 | 0.992 M |
 | `perf04_where` / `load_clint` | **42.83** | 0.138% | 21.74 | 0.934 M |
+| `perf04_where` / `load_dram` | **46.68** | 0.079% | 21.84 | 0.857 M |
+| `perf05_size` / `alu` | **40.35** | 0.049% | — *not in the sampled sim run* | 0.991 M |
+| `perf05_size` / `load_1b` | **46.79** | 0.393% | — *not in the sampled sim run* | 0.855 M |
+| `perf05_size` / `load_2b` | **46.81** | 0.386% | — *not in the sampled sim run* | 0.855 M |
+| `perf05_size` / `load_4b` | **46.86** | 0.415% | — *not in the sampled sim run* | 0.854 M |
+| `perf05_size` / `load_8b` | **46.80** | 0.492% | — *not in the sampled sim run* | 0.855 M |
+| `perf05_size` / `store_1b` | **46.18** | 0.064% | — *not in the sampled sim run* | 0.866 M |
+| `perf05_size` / `store_8b` | **46.20** | 0.095% | — *not in the sampled sim run* | 0.866 M |
+
+**20 ROIs across 5 probes on the board; 13 of them also in the sampled simulator run.** Generated from `metrics.json` by `benchmarks/tools/gen_baseline_table.py`; `make bench-check` fails if it drifts.
+
+<!-- END GENERATED baseline-table -->
 
 **Do not divide a board column by a simulator column.** The simulator models no PS or DDR path at all —
 `perf04` shows a DRAM load and a PL-internal CLINT load costing the same there (7.33 vs 7.04) and very

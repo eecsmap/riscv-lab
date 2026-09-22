@@ -18,8 +18,12 @@ make bench-check        # regenerates comparisons.csv into a temp file and diffs
 | run id | platform | what | sample policy |
 | --- | --- | --- | --- |
 | `2026-09-21-board-s3-historical` | board | the original single run of each probe, imported verbatim | **not met** — 1 sample, 5 required |
-| `2026-09-21-board-s3-b0` | board | five samples of each probe, same boot session | met |
-| `2026-09-21-sim-boot3` | simulator | three samples of each probe; determinism verified | met (3, deterministic platform) |
+| `2026-09-21-board-s3-b0` | board | five samples of each of **five** probes — `perf01`–`perf05`, **20 ROIs** | met |
+| `2026-09-21-sim-boot3` | simulator | three samples of `perf01`–`perf04`, **13 ROIs**; determinism verified | met (3, deterministic platform) |
+
+`perf05_size` was added after the sampled simulator run. It has **20 board ROIs against 13 sampled
+simulator ROIs**, so its rows show `—` in the simulator column: an unsampled observation is not a
+sampled result and is not presented as one.
 
 Both board runs share boot id `ebeab8a6-…`: they are **same-session repeats**. No figure here is reproduced
 across independent cold boots.
@@ -30,5 +34,8 @@ across independent cold boots.
 * `derived_ips_median` is `configured_hz / CPI` and is marked `model-derived`. It is **not** measured
   throughput. See `benchmarks/metrics.md` §4.
 * an empty metric cell means **null** — no successful samples — and never zero.
+* the baseline table in `benchmarks/baselines/B0/REPORT.md` is **generated** from these metrics by
+  `benchmarks/tools/gen_baseline_table.py`, and `make bench-check` fails if it drifts. It drifted once:
+  written by hand at 13 ROIs, it stayed there when `perf05_size` added seven more.
 * board and simulator rows are both present and must not be divided by one another; the simulator models
   no PS or DDR path. `gen_comparisons.py:ratio()` refuses such comparisons.
