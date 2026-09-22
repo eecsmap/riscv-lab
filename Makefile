@@ -21,5 +21,6 @@ bench-check: bench-selftest
 	done
 	python3 benchmarks/tools/gen_comparisons.py --check
 	python3 benchmarks/tools/gen_baseline_table.py --check
+	python3 benchmarks/tools/verify_identities.py
 bench-profile-cli:
 	bash benchmarks/workload-profiles/cli_selftest.sh $(or $(OUT),/tmp/b0-profile-cli)

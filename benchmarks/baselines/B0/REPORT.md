@@ -121,6 +121,25 @@ with results from the accepted disk as though they were the same workload.
 declaring a 1 MHz timebase — out by **2.5×**. Inherited from the baseline platform, not introduced by this
 CPU.
 
+## Measurement identities
+
+`benchmarks/tools/verify_identities.py`, run by `make bench-check`, checks every identity it can reach
+from inside the repository and **names the rest with the reason they are out of reach** — an identity
+that cannot be checked from here has to be checked elsewhere, and saying so is not the same as verifying
+it.
+
+| | |
+| --- | --- |
+| verified against the repository's own release bundle | the **bitstream**, the **raw payload**, the **host binary** |
+| verified against committed sources | all **eight workload sources** |
+| **structurally verified** | every workload with samples has a recorded ELF identity |
+| unchecked, with reasons stated | probe ELFs and the simulator binary — build artefacts, not committed |
+
+That structural check found a real gap: `perf05_size` was added to the board run after its manifest was
+written, so the run carried five sampled workloads while the manifest named four ELFs. Its identity is
+now recorded, and the check fails if it happens again — verified by removing it, which turns the check
+red.
+
 ## Reproducing the analysis
 
 From this repository, no hardware and no absolute paths:

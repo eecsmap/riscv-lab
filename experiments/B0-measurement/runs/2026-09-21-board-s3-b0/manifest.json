@@ -34,11 +34,13 @@
       "perf01_cpi.elf": "e5250f5035787a26b41389e20a932890d4c4e116fc87c403c4cea5826925df96",
       "perf02_sv39.elf": "bc6185566c5de9da7a4dbce1942262dbeb68b1c8e556ac8f72f15fc1465596ab",
       "perf03_fetch.elf": "6498f89970d429e92a944036d91b20801410be8b14df88f7f59d6512efff05b5",
-      "perf04_where.elf": "235f2318149ed2064904c92d4cab6849115d576fe80f478eea603e77c067315d"
+      "perf04_where.elf": "235f2318149ed2064904c92d4cab6849115d576fe80f478eea603e77c067315d",
+      "perf05_size.elf": "4790cc882d20ddac7e13d5fa1895dc34310eaf22fa82c1d95af113df8ef0b24a"
     },
     "kernel_sha256": null,
     "disk_sha256": null,
-    "note": "kernel and disk are not used by bare-metal probes"
+    "note": "kernel and disk are not used by bare-metal probes",
+    "probe_elf_note": "perf05_size.elf was added to this run after the manifest was first written and its hash was recorded only in the probe build's own sha256 file. That was an identity gap: the run carried perf05 samples while the manifest named four ELFs. Added here; benchmarks/tools/verify_identities.py now fails if a workload has samples but no recorded ELF."
   },
   "tools": {
     "host": "fesvr-teaching-static on the board's ARM",
