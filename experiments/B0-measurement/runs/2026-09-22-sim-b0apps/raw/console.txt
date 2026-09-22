@@ -1,0 +1,17 @@
+
+xv6 kernel is booting
+
+blkdev: 4000 sectors (1 MB), max request 16 sectors
+init: starting sh
+$ b0compute
+B0-COMPUTE-CHECKSUM=5ADF55920BF7696
+B0-COMPUTE-DONE
+$ b0array
+B0-ARRAY-CHECKSUM=88133D5BD386DB60
+B0-ARRAY-DONE
+$ b0file
+Completed after 2186121117 cycles
+AXI ar=255582060 r=255607596 rlast=255582060 aw=5628409 w=5635577 wlast=5628409 b=5628409
+RD2HOST restarts_requested=0 restarts_completed=0
+RD2HOST FINAL aWaits=59763516 aFires=237120514 dFires=237120514 epoch=1 injections=0 boot_ready=0 boot_timeout=0 bdev_queued=0
+CYCLES total=2186121117 host_done_at=2186121063 drained=55

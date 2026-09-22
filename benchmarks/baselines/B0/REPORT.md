@@ -192,3 +192,44 @@ and not because it moves 4 bytes instead of 2.
 one single-beat request at a time and cannot express a burst, so this probe cannot test it. The estimate
 that a 32-byte line would cost ≈32 B / (470 + 3×25) ns remains a **model-derived hypothesis**, not a
 measurement, and would need an RTL change to test.
+
+---
+
+## Addendum: the application workloads have now run — in simulation, and partially
+
+`experiments/B0-measurement/runs/2026-09-22-sim-b0apps/`. **First execution of these workloads on any
+platform.** Driven through the **production lifecycle** — `board-runner.py` with `--workload b0apps`,
+the delta applied — against the accepted simulator standing in as the board-side host.
+
+| workload | result | checksum observed |
+| --- | --- | --- |
+| `b0compute` | **completed** | `5ADF55920BF7696` — expected |
+| `b0array` | **completed** | `88133D5BD386DB60` — expected |
+| `b0file` | **did not finish** | — |
+
+`b0file` hit the **7200 s per-stage timeout while still progressing**: cycles were advancing when the
+deadline fired. **It did not fail and it did not finish**, and it is recorded as neither. It is
+I/O-bound — 64 blocks written through xv6's log and read back — and in simulation every block crosses the
+harness's block-device model.
+
+### Two things this run got wrong, recorded rather than hidden
+
+**The expected checksums were the wrong case.** They were computed on the host with C's `%lx`, which is
+lowercase; xv6's `printf` uses `"0123456789ABCDEF"`. The first attempt produced
+`B0-COMPUTE-CHECKSUM=5ADF55920BF7696` — **exactly the right value** — and failed its check on case alone,
+stopping the driver after one command. Fixed with an inline `(?i)` and a regression that asserts an
+uppercase transcript is accepted. **Running it found this; reading the expected strings never would
+have.**
+
+**The disk was not fresh.** B0's own policy is that the file workload gets a fresh copy of the same
+initial image per sample. This run reused a disk an earlier attempt had written to, so `# disk at start`
+reads `7aa2796553d9…` rather than the pristine `6bdd8148…`. The record shows it. `b0file` creates and
+unlinks its own file so the workload is self-cleaning, but the policy was not honoured and **this run
+does not meet the sample policy on that ground alone**, independently of the timeout.
+
+### What these numbers are not
+
+Wall time here is **simulator** wall time: it measures the simulator, not the CPU. Application metrics
+stay **null**, as the metrics contract requires. Nothing here is a board result, and **board execution
+remains outstanding** — it is gated on Codex's check of the delta, which is his condition, not an
+inference of mine.

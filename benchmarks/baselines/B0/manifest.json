@@ -38,11 +38,13 @@
     "applications": {
       "defined": 3,
       "built": true,
-      "measured": 0,
-      "status": "pending",
-      "blocker": "The accepted production lifecycle (board-runner.py -> board_run.py -> xv6_console.py) drives a FIXED four-command workload: EXPECTED is a module-level constant, not a parameter. Hardware repetitions in this task are authorised only through that lifecycle, and extending it is host/driver redesign, which this task excludes. The simulator route is also impractical: the accepted xv6 simulation run took 12054 s (3.35 h) for one session, so three samples of three workloads is a multi-day campaign, not a task step.",
-      "what_exists": "the three programs, an xv6 image containing them, recorded identities, and expected checksums computed independently on the host",
-      "what_is_missing": "any execution on any platform, therefore any timing"
+      "executed_on_simulator": 2,
+      "executed_on_board": 0,
+      "status": "partial",
+      "detail": "First execution on any platform, 2026-09-22, in simulation through the production lifecycle with the workload-profile delta applied. b0compute and b0array completed with the expected checksums; b0file hit the 7200 s per-stage timeout while still progressing -- it did not fail, it did not finish. Metrics remain null: simulator wall time measures the simulator, not the target, and target-side cycles for user programs are deferred by the metrics contract.",
+      "sample_policy_met": false,
+      "policy_violation": "the disk was not a fresh copy: this run reused one an earlier attempt had written to, so 'disk at start' differs from the pristine B0 image. Recorded, not hidden.",
+      "run": "experiments/B0-measurement/runs/2026-09-22-sim-b0apps"
     }
   },
   "limits": [
@@ -56,6 +58,7 @@
   "findings_added_after_first_draft": [
     "perf05_size: within a single 64-bit beat, access SIZE does not affect cost. A 1-byte load costs 19.32 cycles and an 8-byte load 19.36 -- 0.2% apart. Stores: 17.49 vs 17.56, 0.4% apart.",
     "Stores are about 10% cheaper than loads (17.5 vs 19.4 cycles), consistent with a write being acknowledged before a read could return data.",
-    "Sub-word writes carry NO read-modify-write penalty: sb costs the same as sd, so byte strobes are being used rather than a read-modify-write below."
+    "Sub-word writes carry NO read-modify-write penalty: sb costs the same as sd, so byte strobes are being used rather than a read-modify-write below.",
+    "The expected application checksums were computed on the host with C's %lx (lowercase) while xv6's printf uses \"0123456789ABCDEF\". A run that produced exactly the right value failed its check on case alone. Fixed with an inline (?i) and a regression; found by running it."
   ]
 }

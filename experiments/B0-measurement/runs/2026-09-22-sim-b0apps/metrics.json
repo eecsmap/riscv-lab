@@ -1,0 +1,12 @@
+{
+  "generated_from": "manifest.json + raw/ by benchmarks/tools/gen_metrics.py",
+  "run_id": "2026-09-22-sim-b0apps",
+  "platform": "simulator",
+  "status": "reported",
+  "frequency": {
+    "hz": 40000000,
+    "source": "configured",
+    "caution": "simulator cycles are not board time; these application results are WALL TIME on the simulator and are not a performance figure for the target"
+  },
+  "results": []
+}

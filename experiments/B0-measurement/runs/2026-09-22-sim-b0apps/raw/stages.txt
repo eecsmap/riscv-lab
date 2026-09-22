@@ -1,0 +1,21 @@
+ok	4.3	kernel banner
+ok	1324.3	init started / first prompt
+ok	1910.8	shell prompt
+ok	3464.6	command b0compute
+ok	5297.3	command b0array
+FAILED	12497.4	command b0file
+# driver: v3
+# platform: board
+# workload: b0apps
+# channel: multiplexed
+# console device: none (multiplexed)
+# bitstream sha256: 2cd8a9927cfa2f51da16bc6ba4865a407e985d00bf2accbb046f48c81c0fda52
+# host binary sha256: f50020f5be37c8be6ffc0960245a0986026312a1335ec3bc629d16b6d4f328a4
+# kernel sha256: 6ad5c2338a31d59e5fb3fab74365c7f0334cf46e928f3baa20bf40e2df4a6a88
+# disk at start sha256: 7aa2796553d9b7823384dcf3c6a00f6f280deb58325f46312e6bf507ac5f2818
+# memory evidence session: 815c1e46-e6b5-43c7-9e0b-b0548015ae71
+# memory evidence digest: ddf3dca415c9f526c31f0d4e6f8cd0ff8823af92fae594f44139cbd19ce7fc11
+# board boot id: 815c1e46-e6b5-43c7-9e0b-b0548015ae71
+# host exit: 0
+# stop: stopped-after-failed-command:b0file
+# remote exit confirmed: yes
