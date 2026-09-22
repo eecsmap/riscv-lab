@@ -14,7 +14,7 @@ What must hold:
 
   profile_selftest.py
 """
-import os, re, shutil, subprocess, sys, tempfile
+import os, pathlib, re, shutil, subprocess, sys, tempfile
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 PATCH = os.path.join(ROOT, "benchmarks/workload-profiles/xv6-workload-profiles.patch")
@@ -30,8 +30,16 @@ for f in ("tools/xv6-boot/scripts/xv6_console.py", "tools/xv6-boot/scripts/check
           "tools/board/scripts/board_run.py", "tools/board/scripts/board-runner.py"):
     os.makedirs(os.path.join(mod, os.path.dirname(f)), exist_ok=True)
     shutil.copy(os.path.join(ROOT, f), os.path.join(mod, f))
-r = subprocess.run(["patch", "-p1", "-s", "-d", mod, "-i", PATCH], capture_output=True, text=True)
-want(r.returncode == 0, "the patch applies cleanly to a scratch copy", r.stdout + r.stderr)
+# The delta may or may not have been applied to the repository yet. These tests must hold either way:
+# before it is applied they patch a scratch copy, after it is applied the copy already carries it. A
+# suite that only worked in one of those states would go red the moment the delta landed -- which is
+# exactly what happened the first time.
+already = "PROFILES" in (pathlib.Path(ROOT) / "tools/xv6-boot/scripts/xv6_console.py").read_text()
+if already:
+    ok("the delta is already applied in the repository; the scratch copy carries it")
+else:
+    r = subprocess.run(["patch", "-p1", "-s", "-d", mod, "-i", PATCH], capture_output=True, text=True)
+    want(r.returncode == 0, "the patch applies cleanly to a scratch copy", r.stdout + r.stderr)
 
 sys.path.insert(0, os.path.join(mod, "tools/xv6-boot/scripts"))
 import xv6_console as XC

@@ -79,8 +79,15 @@ for f in tools/board/scripts/transport.py tools/board/scripts/board_gate.py \
          tools/board/scripts/mem-preflight.py tools/xv6-boot/scripts/fakesim.py; do
   cp "$ROOT/$f" "$mod/$f" 2>/dev/null || true
 done
-patch -p1 -s -d "$mod" -i "$here/xv6-workload-profiles.patch" || { echo "  patch failed"; exit 2; }
-ok "the patch applies to a scratch copy"
+# Works whether or not the delta has been applied to the repository: before, the scratch copy is
+# patched; after, it already carries it. A suite that only held in one state would go red the moment the
+# delta landed.
+if grep -q "^PROFILES" "$ROOT/tools/xv6-boot/scripts/xv6_console.py"; then
+  ok "the delta is already applied in the repository; the scratch copy carries it"
+else
+  patch -p1 -s -d "$mod" -i "$here/xv6-workload-profiles.patch" || { echo "  patch failed"; exit 2; }
+  ok "the patch applies to a scratch copy"
+fi
 RUNNER="$mod/tools/board/scripts/board-runner.py"
 CHECKER="$mod/tools/xv6-boot/scripts/check-xv6.py"
 
