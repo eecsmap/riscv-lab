@@ -24,6 +24,43 @@ EXPECTED = [                       # (name, the command as typed, a regex its ow
 STAGES = ['kernel banner', 'init started / first prompt', 'shell prompt',
           'command echo', 'command ls', 'command cat', 'command pipe']
 
+#: Named workload profiles. EXPECTED and STAGES above are unchanged and remain the default, so a run that
+#: names no profile behaves exactly as before, byte for byte.
+#:
+#: A profile is (name, command as typed, regex its own output must satisfy). The SAME profile is used by
+#: the driver to decide what to send and by the checker to decide what to accept. There is deliberately
+#: no way to pass an arbitrary command: a caller selects a NAME, and anything not named here cannot run.
+#:
+#: The checksums match case-insensitively, via an inline (?i). They were computed on the host with C's
+#: %lx, which is lowercase, while xv6's own printf uses "0123456789ABCDEF". A run that produced exactly
+#: the right value therefore failed its check on case alone -- found by running it, not by reading it.
+PROFILES = {
+    'default': EXPECTED,
+    'b0apps': [
+        ('b0compute', 'b0compute', r'(?i)B0-COMPUTE-CHECKSUM=5adf55920bf7696\b'),
+        ('b0array',   'b0array',   r'(?i)B0-ARRAY-CHECKSUM=88133d5bd386db60\b'),
+        ('b0file',    'b0file',    r'(?i)B0-FILE-CHECKSUM=62e55f5326378000\b'),
+    ],
+}
+
+
+class UnknownProfile(Exception):
+    """A workload name that is not in PROFILES. Raised early, and converted to a refusal by callers."""
+
+
+def profile(name='default'):
+    """The named workload and the stage names that go with it. Unknown names are refused.
+
+    Callers must resolve this BEFORE constructing a transport, taking a lease or launching a host: an
+    unknown name that is only noticed inside the command loop has already started something on the board.
+    """
+    if name is None:
+        name = 'default'
+    if name not in PROFILES:
+        raise UnknownProfile(f"unknown workload profile {name!r}; known: {sorted(PROFILES)}")
+    exp = PROFILES[name]
+    return exp, (STAGES[:3] + [f'command {n}' for n, _, _ in exp])
+
 
 def segments(text):
     """Split a console into (echoed command line, its output) pairs, one per prompt."""

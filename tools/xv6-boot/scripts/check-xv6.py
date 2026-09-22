@@ -13,12 +13,38 @@ of how the run ended must be present.
 import sys, os, re, signal, argparse
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 # One implementation of "what is this command's output", shared with the driver: see xv6_console.py.
-from xv6_console import (EXPECTED, STAGES, COMPATIBLE, DELIBERATE,
+from xv6_console import (EXPECTED, STAGES, COMPATIBLE, DELIBERATE, profile, UnknownProfile,
                          segments, command_output, output_matches)
 
 ap = argparse.ArgumentParser()
 ap.add_argument('rundir'); ap.add_argument('--require-commands', action='store_true')
 a = ap.parse_args()
+
+# The workload comes from the RECORD BEING CHECKED, not from a flag, so the checker cannot be pointed at
+# a different workload than the one that ran. More than one workload header, or conflicting ones, is a
+# corrupt record: taking the first silently would check a transcript against a workload it may not have
+# run.
+def _workload_name(rundir):
+    sp = os.path.join(rundir, 'stages.txt')
+    names = []
+    if os.path.exists(sp):
+        for ln in open(sp):
+            if ln.startswith('# workload:'):
+                names.append(ln.split(':', 1)[1].strip())
+    if len(names) > 1:
+        uniq = sorted(set(names))
+        raise UnknownProfile(
+            f"the record carries {len(names)} workload headers ({uniq}); a transcript states its "
+            f"workload once or not at all")
+    return names[0] if names else 'default'
+
+
+try:
+    _profile_expected, _profile_stages = profile(_workload_name(a.rundir))
+except UnknownProfile as e:
+    print(f'  FAIL: {e}')
+    print('XV6_CHECK fails=1')
+    sys.exit(1)
 con_path = os.path.join(a.rundir, 'console.txt')
 if not os.path.exists(con_path):
     print(f'XV6_CHECK fails=1\n  FAIL: no console.txt in {a.rundir}'); sys.exit(1)
@@ -39,7 +65,7 @@ segs = segments(con)
 if a.require_commands:
     # each command must own a segment, in order, and its output must be inside that segment
     pos = 0
-    for name, cmd, out_rx in EXPECTED:
+    for name, cmd, out_rx in _profile_expected:
         found, body = command_output(con, cmd, after=pos)
         if found is None:
             bad(f'command {name}: no prompt segment whose echoed line is exactly "{cmd}" '
@@ -67,7 +93,7 @@ else:
     bad_stages = [s for s in stages if s[0] != 'ok']
     if bad_stages: bad('stage(s) not ok: ' + ', '.join(f'{s[2]}={s[0]}' for s in bad_stages))
     if a.require_commands:
-        want = [n for n in STAGES]
+        want = [n for n in _profile_stages]
         have = [n for n in names]
         missing = [w for w in want if not any(w in h for h in have)]
         if missing: bad(f'stage record is incomplete: missing {missing}')

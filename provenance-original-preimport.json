@@ -942,7 +942,7 @@
   {
     "source": "experiments/teaching-cpu/xv6-board-prep/scripts/board-runner.py",
     "path": "tools/board/scripts/board-runner.py",
-    "sha256": "c81d02cae721acf4596b632b8ff00bf7f18c38e2e18af3130743d149b91a1645"
+    "sha256": "e5a08cd52d585bdef88e099da40fb6b15027e0fc30ab940bcdee0d00117512f8"
   },
   {
     "source": "experiments/teaching-cpu/xv6-board-prep/scripts/board-safety-selftest.sh",
@@ -957,7 +957,7 @@
   {
     "source": "experiments/teaching-cpu/xv6-board-prep/scripts/board_run.py",
     "path": "tools/board/scripts/board_run.py",
-    "sha256": "bbe4b30bed2802c626e90becdc3b1a5644950d8e98df45e679e99f9367c675c0"
+    "sha256": "1639fea593c5d93f90b4962dde3cb5ba07e83ff175ee4babe7b1ca35f7493dec"
   },
   {
     "source": "experiments/teaching-cpu/xv6-board-prep/scripts/build-atomic.sh",
@@ -1057,7 +1057,7 @@
   {
     "source": "experiments/teaching-cpu/xv6-boot/scripts/check-xv6.py",
     "path": "tools/xv6-boot/scripts/check-xv6.py",
-    "sha256": "97fd56af4dfb84c5d87ee3c2d2a2910658091e72d791fee54e47d296557880f3"
+    "sha256": "ced6ea10ce59fd9e2ec24a3431cf92efc1bc0df94970c93375e5aab004bae65c"
   },
   {
     "source": "experiments/teaching-cpu/xv6-boot/scripts/console-selftest.py",
@@ -1087,7 +1087,7 @@
   {
     "source": "experiments/teaching-cpu/xv6-boot/scripts/xv6_console.py",
     "path": "tools/xv6-boot/scripts/xv6_console.py",
-    "sha256": "15d83c54901684050e52096b415b6375af0023a2459462eacd03ecf8a9d36e26"
+    "sha256": "d879f46dfac223230398381fcf6b5ab10de89f7bab30c950cb40aa543ce98218"
   },
   {
     "source": "experiments/teaching-cpu/xv6-board-run/scripts/capture-evidence.py",

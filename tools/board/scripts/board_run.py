@@ -16,6 +16,7 @@ sys.path.insert(0, os.path.join(HERE, "..", "..", "xv6-boot", "scripts"))
 from transport import BoardTransport, TransportError, UncertainState   # noqa: E402
 from board_gate import gate, GateError                            # noqa: E402
 from xv6_console import (DRIVER_VERSION, EXPECTED, PROMPT, PARTIAL_EVENT_OK,  # noqa: E402
+                         profile, UnknownProfile,
                          command_output, output_matches)
 
 
@@ -119,6 +120,16 @@ class ConsolePump:
 def run(a, tp, expect):
     """Drive the board and write the transcript. `a` is the parsed arguments; `tp` an started-less
     transport. Returns the process exit code."""
+    # The workload is resolved HERE, at the shared entry, before the output directory exists and before
+    # anything is asked of the board -- not inside the command loop, where an unknown name would already
+    # have cost a transport, a lease, a remote lock and a launched host. Non-CLI callers reach this path
+    # too, so the check cannot live in the CLI alone.
+    try:
+        workload, _ = profile(getattr(a, "workload", None))
+    except UnknownProfile as e:
+        print(f"REFUSE: {e}")
+        print("No host was launched.")
+        return 2
     os.makedirs(a.outdir, exist_ok=True)
     rawlog = open(os.path.join(a.outdir, "run.log"), "w")
     conlog = open(os.path.join(a.outdir, "console.txt"), "w")
@@ -231,7 +242,7 @@ def run(a, tp, expect):
         else:
             result["stopped"] = "deliberate-stop-after-all-commands"
             done = 0
-            for name, cmd, out_rx in EXPECTED:
+            for name, cmd, out_rx in workload:   # resolved at entry, above
                 before = text().count(PROMPT)
                 send(cmd)
                 deadline = time.monotonic() + a.stage_timeout
@@ -292,6 +303,7 @@ def run(a, tp, expect):
     with open(os.path.join(a.outdir, "stages.txt"), "w") as f:
         for name, t, st in stages: f.write(f"{st}\t{t}\t{name}\n")
         f.write(f"# driver: {DRIVER_VERSION}\n# platform: board\n")
+        f.write(f"# workload: {getattr(a, 'workload', None) or 'default'}\n")
         # How the board was actually driven. Session 2's record could not show this: the run was launched
         # with --channel exclusive and driven multiplexed, and nothing anywhere said so. The effective
         # values are read off the transport, not off the arguments, so the record reflects what happened
