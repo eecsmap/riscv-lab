@@ -1,6 +1,6 @@
 diff -ru orig/tools/board/scripts/board-runner.py mod/tools/board/scripts/board-runner.py
---- orig/tools/board/scripts/board-runner.py	2026-09-22 06:35:23.098813972 +0000
-+++ mod/tools/board/scripts/board-runner.py	2026-09-22 06:35:23.117108701 +0000
+--- orig/tools/board/scripts/board-runner.py	2026-09-22 15:48:12.138700943 +0000
++++ mod/tools/board/scripts/board-runner.py	2026-09-22 15:48:12.145283393 +0000
 @@ -16,6 +16,8 @@
  HERE = os.path.dirname(os.path.abspath(__file__))
  sys.path.insert(0, HERE)
@@ -36,8 +36,8 @@ diff -ru orig/tools/board/scripts/board-runner.py mod/tools/board/scripts/board-
      expect = board_run.parse_expect(a.expect)
  except ValueError as e:
 diff -ru orig/tools/board/scripts/board_run.py mod/tools/board/scripts/board_run.py
---- orig/tools/board/scripts/board_run.py	2026-09-22 06:35:23.090293705 +0000
-+++ mod/tools/board/scripts/board_run.py	2026-09-22 06:35:23.117046186 +0000
+--- orig/tools/board/scripts/board_run.py	2026-09-22 15:48:12.123637936 +0000
++++ mod/tools/board/scripts/board_run.py	2026-09-22 15:48:12.145430651 +0000
 @@ -16,6 +16,7 @@
  from transport import BoardTransport, TransportError, UncertainState   # noqa: E402
  from board_gate import gate, GateError                            # noqa: E402
@@ -81,8 +81,8 @@ diff -ru orig/tools/board/scripts/board_run.py mod/tools/board/scripts/board_run
          # with --channel exclusive and driven multiplexed, and nothing anywhere said so. The effective
          # values are read off the transport, not off the arguments, so the record reflects what happened
 diff -ru orig/tools/xv6-boot/scripts/check-xv6.py mod/tools/xv6-boot/scripts/check-xv6.py
---- orig/tools/xv6-boot/scripts/check-xv6.py	2026-09-22 06:35:23.082143867 +0000
-+++ mod/tools/xv6-boot/scripts/check-xv6.py	2026-09-22 06:35:23.117169237 +0000
+--- orig/tools/xv6-boot/scripts/check-xv6.py	2026-09-22 15:48:12.110408661 +0000
++++ mod/tools/xv6-boot/scripts/check-xv6.py	2026-09-22 15:48:12.145595514 +0000
 @@ -13,12 +13,38 @@
  import sys, os, re, signal, argparse
  sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -142,9 +142,9 @@ diff -ru orig/tools/xv6-boot/scripts/check-xv6.py mod/tools/xv6-boot/scripts/che
          missing = [w for w in want if not any(w in h for h in have)]
          if missing: bad(f'stage record is incomplete: missing {missing}')
 diff -ru orig/tools/xv6-boot/scripts/xv6_console.py mod/tools/xv6-boot/scripts/xv6_console.py
---- orig/tools/xv6-boot/scripts/xv6_console.py	2026-09-22 06:35:23.074099654 +0000
-+++ mod/tools/xv6-boot/scripts/xv6_console.py	2026-09-22 06:35:23.116941253 +0000
-@@ -24,6 +24,39 @@
+--- orig/tools/xv6-boot/scripts/xv6_console.py	2026-09-22 15:48:12.100457776 +0000
++++ mod/tools/xv6-boot/scripts/xv6_console.py	2026-09-22 15:48:12.176553163 +0000
+@@ -24,6 +24,43 @@
  STAGES = ['kernel banner', 'init started / first prompt', 'shell prompt',
            'command echo', 'command ls', 'command cat', 'command pipe']
  
@@ -154,12 +154,16 @@ diff -ru orig/tools/xv6-boot/scripts/xv6_console.py mod/tools/xv6-boot/scripts/x
 +#: A profile is (name, command as typed, regex its own output must satisfy). The SAME profile is used by
 +#: the driver to decide what to send and by the checker to decide what to accept. There is deliberately
 +#: no way to pass an arbitrary command: a caller selects a NAME, and anything not named here cannot run.
++#:
++#: The checksums match case-insensitively, via an inline (?i). They were computed on the host with C's
++#: %lx, which is lowercase, while xv6's own printf uses "0123456789ABCDEF". A run that produced exactly
++#: the right value therefore failed its check on case alone -- found by running it, not by reading it.
 +PROFILES = {
 +    'default': EXPECTED,
 +    'b0apps': [
-+        ('b0compute', 'b0compute', r'B0-COMPUTE-CHECKSUM=5adf55920bf7696\b'),
-+        ('b0array',   'b0array',   r'B0-ARRAY-CHECKSUM=88133d5bd386db60\b'),
-+        ('b0file',    'b0file',    r'B0-FILE-CHECKSUM=62e55f5326378000\b'),
++        ('b0compute', 'b0compute', r'(?i)B0-COMPUTE-CHECKSUM=5adf55920bf7696\b'),
++        ('b0array',   'b0array',   r'(?i)B0-ARRAY-CHECKSUM=88133d5bd386db60\b'),
++        ('b0file',    'b0file',    r'(?i)B0-FILE-CHECKSUM=62e55f5326378000\b'),
 +    ],
 +}
 +

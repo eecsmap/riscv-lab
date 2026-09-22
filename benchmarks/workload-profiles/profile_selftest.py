@@ -132,6 +132,19 @@ r = check(d)
 want(r.returncode == 0 and "fails=0" in r.stdout,
      "a correct b0apps transcript is accepted", (r.stdout + r.stderr)[-300:])
 
+print("== 5b. the case xv6 actually prints")
+# xv6's printf uses "0123456789ABCDEF"; the expected checksums were computed on the host with C's %lx,
+# which is lowercase. A real run produced exactly the right value and failed its check on case alone.
+UPPER = [(n, o.replace(o.split("=")[1].split(chr(10))[0], o.split("=")[1].split(chr(10))[0].upper()))
+         for n, o in GOOD]
+r = check(make_run(os.path.join(work, "upper"), "b0apps", UPPER))
+want(r.returncode == 0 and "fails=0" in r.stdout,
+     "a transcript with UPPERCASE checksums is accepted, as xv6 actually prints them",
+     (r.stdout + r.stderr)[-200:])
+want(any("(?i)" in rx for _, _, rx in XC.PROFILES["b0apps"]),
+     "  and the profile says so explicitly with an inline (?i)",
+     f"{[rx for _,_,rx in XC.PROFILES['b0apps']]}")
+
 print("== 6. negatives")
 bad = [("b0compute", "B0-COMPUTE-CHECKSUM=deadbeefdeadbeef\nB0-COMPUTE-DONE")] + GOOD[1:]
 refused(check(make_run(os.path.join(work, "wrongsum"), "b0apps", bad)),
