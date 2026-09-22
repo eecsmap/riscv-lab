@@ -1,0 +1,135 @@
+Only in mod/tools/board/scripts: __pycache__
+diff -ru orig/tools/board/scripts/board-runner.py mod/tools/board/scripts/board-runner.py
+--- orig/tools/board/scripts/board-runner.py	2026-09-22 05:14:50.306145732 +0000
++++ mod/tools/board/scripts/board-runner.py	2026-09-22 05:14:50.324449117 +0000
+@@ -39,6 +39,10 @@
+ ap.add_argument("--serial-device", default=None,
+                 help="the console device, for exclusive runs. It is locked for the duration and passed to "
+                      "the transport shim, so the owner and the shim are demonstrably the same line")
++ap.add_argument("--workload", default="default",
++                help="a NAMED workload profile from xv6_console.PROFILES. There is no way to pass an "
++                     "arbitrary command: an unknown name is refused, and the default is the accepted "
++                     "four-command workload")
+ ap.add_argument("--stage-timeout", type=float, default=300.0)
+ ap.add_argument("--startup-timeout", type=float, default=180.0)
+ ap.add_argument("--stop-timeout", type=float, default=60.0)
+diff -ru orig/tools/board/scripts/board_run.py mod/tools/board/scripts/board_run.py
+--- orig/tools/board/scripts/board_run.py	2026-09-22 05:14:50.298171995 +0000
++++ mod/tools/board/scripts/board_run.py	2026-09-22 05:14:50.324387289 +0000
+@@ -15,7 +15,7 @@
+ sys.path.insert(0, os.path.join(HERE, "..", "..", "xv6-boot", "scripts"))
+ from transport import BoardTransport, TransportError, UncertainState   # noqa: E402
+ from board_gate import gate, GateError                            # noqa: E402
+-from xv6_console import (DRIVER_VERSION, EXPECTED, PROMPT, PARTIAL_EVENT_OK,  # noqa: E402
++from xv6_console import (DRIVER_VERSION, EXPECTED, PROMPT, PARTIAL_EVENT_OK, profile,  # noqa: E402
+                          command_output, output_matches)
+ 
+ 
+@@ -231,7 +231,9 @@
+         else:
+             result["stopped"] = "deliberate-stop-after-all-commands"
+             done = 0
+-            for name, cmd, out_rx in EXPECTED:
++            # the named profile, defaulting to EXPECTED so an unnamed run is unchanged
++            workload, _ = profile(getattr(a, "workload", "default") or "default")
++            for name, cmd, out_rx in workload:
+                 before = text().count(PROMPT)
+                 send(cmd)
+                 deadline = time.monotonic() + a.stage_timeout
+@@ -292,6 +294,7 @@
+     with open(os.path.join(a.outdir, "stages.txt"), "w") as f:
+         for name, t, st in stages: f.write(f"{st}\t{t}\t{name}\n")
+         f.write(f"# driver: {DRIVER_VERSION}\n# platform: board\n")
++        f.write(f"# workload: {getattr(a, 'workload', 'default') or 'default'}\n")
+         # How the board was actually driven. Session 2's record could not show this: the run was launched
+         # with --channel exclusive and driven multiplexed, and nothing anywhere said so. The effective
+         # values are read off the transport, not off the arguments, so the record reflects what happened
+Only in mod/tools/xv6-boot/scripts: __pycache__
+diff -ru orig/tools/xv6-boot/scripts/check-xv6.py mod/tools/xv6-boot/scripts/check-xv6.py
+--- orig/tools/xv6-boot/scripts/check-xv6.py	2026-09-22 05:14:50.290080085 +0000
++++ mod/tools/xv6-boot/scripts/check-xv6.py	2026-09-22 05:16:47.219501351 +0000
+@@ -13,12 +13,31 @@
+ import sys, os, re, signal, argparse
+ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+ # One implementation of "what is this command's output", shared with the driver: see xv6_console.py.
+-from xv6_console import (EXPECTED, STAGES, COMPATIBLE, DELIBERATE,
++from xv6_console import (EXPECTED, STAGES, COMPATIBLE, DELIBERATE, profile,
+                          segments, command_output, output_matches)
+ 
+ ap = argparse.ArgumentParser()
+ ap.add_argument('rundir'); ap.add_argument('--require-commands', action='store_true')
+ a = ap.parse_args()
++
++# The workload profile comes from the RECORD BEING CHECKED, not from a flag: the driver writes
++# "# workload:" into stages.txt and the checker looks up the same named profile, so execution and
++# checking cannot be pointed at different workloads. A record naming an unknown profile is refused.
++def _workload_name(rundir):
++    sp = os.path.join(rundir, 'stages.txt')
++    if os.path.exists(sp):
++        for ln in open(sp):
++            if ln.startswith('# workload:'):
++                return ln.split(':', 1)[1].strip()
++    return 'default'
++
++
++try:
++    _profile_expected, _profile_stages = profile(_workload_name(a.rundir))
++except KeyError as e:
++    print(f'  FAIL: {e}')
++    print('XV6_CHECK fails=1')
++    sys.exit(1)
+ con_path = os.path.join(a.rundir, 'console.txt')
+ if not os.path.exists(con_path):
+     print(f'XV6_CHECK fails=1\n  FAIL: no console.txt in {a.rundir}'); sys.exit(1)
+@@ -39,7 +58,7 @@
+ if a.require_commands:
+     # each command must own a segment, in order, and its output must be inside that segment
+     pos = 0
+-    for name, cmd, out_rx in EXPECTED:
++    for name, cmd, out_rx in _profile_expected:
+         found, body = command_output(con, cmd, after=pos)
+         if found is None:
+             bad(f'command {name}: no prompt segment whose echoed line is exactly "{cmd}" '
+@@ -67,7 +86,7 @@
+     bad_stages = [s for s in stages if s[0] != 'ok']
+     if bad_stages: bad('stage(s) not ok: ' + ', '.join(f'{s[2]}={s[0]}' for s in bad_stages))
+     if a.require_commands:
+-        want = [n for n in STAGES]
++        want = [n for n in _profile_stages]
+         have = [n for n in names]
+         missing = [w for w in want if not any(w in h for h in have)]
+         if missing: bad(f'stage record is incomplete: missing {missing}')
+diff -ru orig/tools/xv6-boot/scripts/xv6_console.py mod/tools/xv6-boot/scripts/xv6_console.py
+--- orig/tools/xv6-boot/scripts/xv6_console.py	2026-09-22 05:14:50.273219739 +0000
++++ mod/tools/xv6-boot/scripts/xv6_console.py	2026-09-22 05:14:50.324279394 +0000
+@@ -24,6 +24,30 @@
+ STAGES = ['kernel banner', 'init started / first prompt', 'shell prompt',
+           'command echo', 'command ls', 'command cat', 'command pipe']
+ 
++#: Named workload profiles. EXPECTED and STAGES above are unchanged and remain the default, so a run that
++#: names no profile behaves exactly as before, byte for byte.
++#:
++#: A profile is (name, command as typed, regex its own output must satisfy). The SAME profile is used by
++#: the driver to decide what to send and by the checker to decide what to accept -- that sharing is the
++#: point. There is deliberately no way to pass an arbitrary command: a caller selects a named profile, and
++#: anything not named here cannot be run.
++PROFILES = {
++    'default': EXPECTED,
++    'b0apps': [
++        ('b0compute', 'b0compute', r'B0-COMPUTE-CHECKSUM=5adf55920bf7696\b'),
++        ('b0array',   'b0array',   r'B0-ARRAY-CHECKSUM=88133d5bd386db60\b'),
++        ('b0file',    'b0file',    r'B0-FILE-CHECKSUM=62e55f5326378000\b'),
++    ],
++}
++
++
++def profile(name='default'):
++    """The named workload, and the stage names that go with it. Unknown names are refused."""
++    if name not in PROFILES:
++        raise KeyError(f"unknown workload profile {name!r}; known: {sorted(PROFILES)}")
++    exp = PROFILES[name]
++    return exp, (STAGES[:3] + [f'command {n}' for n, _, _ in exp])
++
+ 
+ def segments(text):
+     """Split a console into (echoed command line, its output) pairs, one per prompt."""

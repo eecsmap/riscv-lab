@@ -9,6 +9,7 @@ xv6:
 # --- B0 performance baseline (additive; existing targets above are unchanged) ---
 bench-selftest:
 	python3 benchmarks/tools/selftest.py
+	python3 benchmarks/workload-profiles/profile_selftest.py
 bench-metrics:
 	@for d in experiments/B0-measurement/runs/*/; do \
 	  python3 benchmarks/tools/gen_metrics.py "$$d"; \
