@@ -16,6 +16,8 @@ import argparse, os, sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 from transport import TransportError                    # noqa: E402
+sys.path.insert(0, os.path.join(HERE, '..', '..', 'xv6-boot', 'scripts'))
+from xv6_console import profile, UnknownProfile         # noqa: E402
 import board_run                                        # noqa: E402
 
 ap = argparse.ArgumentParser()
@@ -39,10 +41,23 @@ ap.add_argument("--channel", choices=("multiplexed", "exclusive"), required=True
 ap.add_argument("--serial-device", default=None,
                 help="the console device, for exclusive runs. It is locked for the duration and passed to "
                      "the transport shim, so the owner and the shim are demonstrably the same line")
+ap.add_argument("--workload", default="default",
+                help="a NAMED workload profile from xv6_console.PROFILES. There is no way to pass an "
+                     "arbitrary command: an unknown name is refused before anything is constructed, and "
+                     "the default is the accepted four-command workload")
 ap.add_argument("--stage-timeout", type=float, default=300.0)
 ap.add_argument("--startup-timeout", type=float, default=180.0)
 ap.add_argument("--stop-timeout", type=float, default=60.0)
 a = ap.parse_args()
+
+# Before the expectations are parsed, before a transport exists, before any lease, lock, remote command or
+# host launch: an unknown workload name is a refusal here, not a traceback from inside the command loop.
+try:
+    profile(a.workload)
+except UnknownProfile as e:
+    print(f"REFUSE: {e}")
+    print("No host was launched.")
+    sys.exit(2)
 
 try:
     expect = board_run.parse_expect(a.expect)
