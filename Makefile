@@ -27,6 +27,7 @@ bench-check: bench-selftest
 # The E1 hardware procedure, rehearsed offline against a scripted fake. Opens no device.
 e1-rehearsal:
 	bash experiments/E1-clock-scaling/scripts/rehearsal.sh
+	bash experiments/E1-clock-scaling/scripts/entrypoint-rehearsal.sh
 
 bench-profile-cli:
 	bash benchmarks/workload-profiles/cli_selftest.sh $(or $(OUT),/tmp/b0-profile-cli)

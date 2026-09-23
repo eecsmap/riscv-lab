@@ -1,44 +1,49 @@
 #!/usr/bin/env bash
 # Run this BEFORE the user powers the board down.
 #
-# It pins the CURRENT boot id to a file. The install and restore sessions then prove a power cycle by
-# comparing against that recorded value. Without this, "the boot id changed" has nothing to change from,
-# and the cold-cycle gate degenerates into taking someone's word for it.
-set -u
+# Checks every local artefact first -- a missing file found here costs nothing, found after the power
+# cycle it costs a cold cycle of somebody's time -- then pins the CURRENT boot id to a file.
+#
+# Leases are claimed BEFORE any transport call, including this one.
+set -euo pipefail
 cd "$(dirname "$0")"; . ./lib-e1.sh; . ./artefacts.sh
-O=$R/riscv-lab/experiments/E1-clock-scaling; mkdir -p $O/state
-PIN=$O/state/${1:?usage: e1-precycle.sh <phase: install|restore>}-pin.txt
+O=${E1_OUT:-$R/riscv-lab/experiments/E1-clock-scaling}; mkdir -p $O/state
+phase=${1:?usage: e1-precycle.sh <install|restore>}
+PIN=$O/state/$phase-pin.txt
+trap release_owned_leases EXIT
 
-# Every local artefact, checked BEFORE the user is asked to power anything down. A missing file or a
-# wrong hash found at this point costs nothing; found after the power cycle it costs a cold cycle of
-# somebody's time and leaves the board holding whichever bitstream it happens to hold.
 say "== local artefacts"
 bad=0
-check() { local f=$1 want=${2:-}
-    if [ ! -f "$f" ]; then say "  MISSING : $f"; bad=1; return; fi
-    if [ -n "$want" ]; then local g; g=$(sha256sum "$f" | cut -d' ' -f1)
-        if [ "$g" != "$want" ]; then say "  WRONG HASH: $f = ${g:0:16}… wanted ${want:0:16}…"; bad=1; return; fi
+check() { local f=$1 want=${2:-} g
+    if [ ! -f "$f" ]; then say "  MISSING : $f"; bad=1; return 0; fi
+    if [ -n "$want" ]; then g=$(sha256sum "$f" | cut -d' ' -f1)
+        if [ "$g" != "$want" ]; then say "  WRONG HASH: $f = ${g:0:16}… wanted ${want:0:16}…"; bad=1; return 0; fi
         say "  ok (hash) : $f"; else say "  ok        : $f"; fi
 }
 check "$E1_PAYLOAD"        "$E1_PAYLOAD_SHA"
 check "$ACCEPTED_PAYLOAD"  "$ACCEPTED_PAYLOAD_SHA"
-check "$HOSTBIN"
-check "$SEND"
-for f in $GATES $PERF_PROBES; do check "$(elf_path $f)"; done
+check "$HOSTBIN"; check "$SEND"
+for f in $GATES $PERF_PROBES; do check "$(elf_path "$f")"; done
+[ -s markers.tsv ] || { say "  MISSING : markers.tsv (run gen-markers.sh)"; bad=1; }
 [ $bad -eq 0 ] || die $EX_HASH "local artefacts are not ready; fix these BEFORE any power cycle"
 say "  all local artefacts present and the two payloads hash correctly"
 
+say "== leases, before any transport"
+claim_leases board serial
+
 say "== the board's timeout builtin (the probes are run bounded)"
-# NOT grep -oE 'HAVE|NONE': the shim echoes the command, so both words are already in the output and a
-# first-match parse reads the question instead of the answer. Every parse here is "last KEY=value".
-t=$(board "echo TMO=\$(command -v timeout >/dev/null && echo yes || echo no)" | sed -n 's/^TMO=//p' | tail -1)
-if [ "$t" = yes ]; then say "  the board has timeout; probes will be bounded on the board as well as here"
+board_must "probing for timeout" "echo TMO=\$(command -v timeout >/dev/null && echo yes || echo no)"
+if [ "$(field TMO)" = yes ]; then say "  the board has timeout; probes are bounded on the board as well as here"
 else say "  the board has NO timeout: set E1_TIMEOUT='' and rely on the host-side bound"; fi
 
 say "== pinning the current boot id"
-bid=$(board "cat /proc/sys/kernel/random/boot_id" | grep -oE '^[0-9a-f-]{36}$' | tail -1)
+board_must "reading the boot id" "cat /proc/sys/kernel/random/boot_id"
+bid=$(grep -oE '^[0-9a-f-]{36}$' <<<"$BOARD_OUT" | tail -1 || true)
 [ -n "$bid" ] || die $EX_PIN "could not read the current boot id; refusing to pin an empty value"
 printf '%s\n' "$bid" > "$PIN"
-say "pinned pre-cycle boot id for phase '$1': $bid"
+say "pinned pre-cycle boot id for phase '$phase': $bid"
 say "  -> $PIN"
-say "NOW the user may power the board down and up. Nothing else here touches the board."
+say ""
+say "NOW: the user physically removes power, restores it, and runs:"
+say "    ./e1-record-power-cycle.sh $phase"
+say "Then run e1-$( [ "$phase" = install ] && echo install || echo restore ).sh"
