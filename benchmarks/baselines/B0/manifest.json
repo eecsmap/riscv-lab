@@ -38,13 +38,14 @@
     "applications": {
       "defined": 3,
       "built": true,
-      "executed_on_simulator": 2,
+      "executed_on_simulator": 3,
       "executed_on_board": 0,
-      "status": "partial",
-      "detail": "First execution on any platform, 2026-09-22, in simulation through the production lifecycle with the workload-profile delta applied. b0compute and b0array completed with the expected checksums; b0file hit the 7200 s per-stage timeout while still progressing -- it did not fail, it did not finish. Metrics remain null: simulator wall time measures the simulator, not the target, and target-side cycles for user programs are deferred by the metrics contract.",
+      "status": "complete in simulation; board pending",
+      "detail": "All three completed 2026-09-23 with the expected checksums, through the production lifecycle with the delta applied, disk fresh, clean deliberate stop, remote exit confirmed, and the delta-aware checker reporting fails=0. Metrics remain null: simulator wall time measures the simulator, not the target.",
       "sample_policy_met": false,
-      "policy_violation": "the disk was not a fresh copy: this run reused one an earlier attempt had written to, so 'disk at start' differs from the pristine B0 image. Recorded, not hidden.",
-      "run": "experiments/B0-measurement/runs/2026-09-22-sim-b0apps"
+      "sample_policy_note": "one sample. A second costs another ~6.4 h of simulation and has not been done.",
+      "run": "experiments/B0-measurement/runs/2026-09-23-sim-b0apps-complete",
+      "superseded_partial_run": "experiments/B0-measurement/runs/2026-09-22-sim-b0apps (retained: it timed out on b0file and its disk was not fresh)"
     }
   },
   "limits": [

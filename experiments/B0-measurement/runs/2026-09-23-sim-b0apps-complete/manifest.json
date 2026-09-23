@@ -1,0 +1,50 @@
+{
+  "run_id": "2026-09-23-sim-b0apps-complete",
+  "platform": "simulator",
+  "status": "reported",
+  "created": "2026-09-23T01:48:50.443443+00:00",
+  "description": "All three B0 application workloads under xv6, complete, driven through the PRODUCTION lifecycle with the workload-profile delta applied, against the accepted simulator standing in as the board-side host. Supersedes the partial run of 2026-09-22, which is retained: it timed out on b0file and its disk was not fresh.",
+  "supersedes": "2026-09-22-sim-b0apps",
+  "source_revision": {
+    "repo": "riscv-lab",
+    "commit": "19823a39849ab029e06aa895325f0b77875f3828",
+    "branch": "b0-profile-applied"
+  },
+  "artifacts": {
+    "kernel_sha256": "6ad5c2338a31d59e5fb3fab74365c7f0334cf46e928f3baa20bf40e2df4a6a88",
+    "disk_at_start_sha256": "6bdd8148b79e5983ecaad04e394327f970e893a4c756a627b7e47da6e31c82ec",
+    "disk_pristine_b0_sha256": "6bdd8148b79e5983ecaad04e394327f970e893a4c756a627b7e47da6e31c82ec",
+    "simulator_sha256": "fa8c59db3654bff95ca7bb81a28f2f75163d342a7d36bb99e4bf6f5d48b1c6e2",
+    "bitstream_sha256": null,
+    "note": "the kernel is byte-identical to the accepted simulation run's; only the disk carries the three extra user programs"
+  },
+  "disk_freshness": {
+    "policy": "each sample gets a fresh copy of the same initial disk image",
+    "honoured": true,
+    "detail": "the runner copies the pristine image before each sample; disk at start equals the pristine B0 hash"
+  },
+  "frequency": {
+    "hz": 40000000,
+    "source": "configured",
+    "caution": "wall time here is SIMULATOR wall time and measures the simulator, not the CPU"
+  },
+  "sample_policy": {
+    "min_samples": 3,
+    "met": false,
+    "shortfall_note": "one sample. A second would cost another ~6.4 h of simulation; the policy is met by repetition, which has not been done."
+  },
+  "timeouts": {
+    "stage_seconds": 28800,
+    "startup_seconds": 28800,
+    "max_cycles": 6000000000,
+    "wall_seconds": 43200,
+    "set_before_run": true,
+    "sizing": "taken from the measured partial run, which reached 45% of b0file in 7200 s"
+  },
+  "termination": {
+    "stop": "deliberate-stop-after-all-commands",
+    "remote_exit_confirmed": "yes",
+    "total_cycles": 4040788880
+  },
+  "metrics_note": "target-side cycles are null for application workloads by contract; a user program cannot read mcycle without kernel changes made for measurement convenience"
+}

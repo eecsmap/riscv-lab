@@ -195,11 +195,38 @@ measurement, and would need an RTL change to test.
 
 ---
 
-## Addendum: the application workloads have now run — in simulation, and partially
+## Addendum: all three application workloads complete, in simulation
 
-`experiments/B0-measurement/runs/2026-09-22-sim-b0apps/`. **First execution of these workloads on any
-platform.** Driven through the **production lifecycle** — `board-runner.py` with `--workload b0apps`,
-the delta applied — against the accepted simulator standing in as the board-side host.
+`experiments/B0-measurement/runs/2026-09-23-sim-b0apps-complete/`, through the **production lifecycle**
+with the delta applied, against the accepted simulator as the board-side host, **with a fresh disk**.
+
+| workload | result | checksum | simulator wall |
+| --- | --- | --- | --- |
+| `b0compute` | **completed** | `5ADF55920BF7696` | 1 567 s |
+| `b0array` | **completed** | `88133D5BD386DB60` | 1 832 s |
+| `b0file` | **completed** | `62E55F5326378000` | **15 730 s** |
+
+All six stages `ok`, `# stop: deliberate-stop-after-all-commands`, remote exit confirmed, and the
+**delta-aware checker reports `fails=0`**. `# disk at start` is the pristine `6bdd8148…`.
+
+The **unapplied** checker refuses the same transcript — it does not know `b0apps` and checks against the
+four-command default. That is correct behaviour, and it is why the workload name is read from the record
+rather than passed as a flag.
+
+`b0file` took **4.4 hours of simulation** for 64 KiB of file I/O: every block crosses the harness's
+block-device model. On hardware it is seconds. The bounds for this run were sized from the previous
+attempt, which had reached 45 % of `b0file` when its 7200 s stage timeout fired.
+
+### Still not a sample
+
+**One run.** A second costs another ~6.4 h and has not been done, so the sample policy of three is **not
+met**. Wall time here is **simulator** wall time: it measures the simulator, not the CPU. Application
+cycle metrics stay **null** by contract, and **board execution remains outstanding**.
+
+## Superseded: the partial run of 2026-09-22
+
+Retained, not deleted: `experiments/B0-measurement/runs/2026-09-22-sim-b0apps/`. The **first** execution
+of these workloads on any platform, and it got two things wrong that the complete run above fixed.
 
 | workload | result | checksum observed |
 | --- | --- | --- |
