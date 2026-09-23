@@ -1,0 +1,52 @@
+{
+  "pre_registered": true,
+  "registered_before": "any E1 measurement exists; the E1 bitstream has never been on the board",
+  "generated_from": "experiments/B0-measurement/runs/2026-09-21-board-s3-b0/metrics.json",
+  "source_run": "2026-09-21-board-s3-b0",
+  "source_frequency_hz": 40000000,
+  "target_frequency_hz": 25000000,
+  "note": "Derived, not typed. If the 40 MHz record changes, regenerate and the prediction changes with it -- which is why the generator is committed alongside the result.",
+  "control_roi": "load_clint",
+  "predictions": [
+    {
+      "roi": "alu",
+      "kind": "fabric-only",
+      "workload": "perf01_cpi",
+      "cycles_at_40mhz": 1210343,
+      "observed_spread_at_40mhz": 1205,
+      "predicted_cycles_at_25mhz": 1210343,
+      "tolerance_cycles": 1205,
+      "basis": "it never leaves the PL, so the model says its cycle count does not depend on the design clock. A reading outside the 40 MHz run's own spread falsifies either the model or the claim that this ROI stays in the fabric.",
+      "falsifies_if": "the reading differs by more than the 40 MHz spread"
+    },
+    {
+      "roi": "load_clint",
+      "kind": "fabric-only",
+      "workload": "perf04_where",
+      "cycles_at_40mhz": 1285026,
+      "observed_spread_at_40mhz": 1777,
+      "predicted_cycles_at_25mhz": 1285026,
+      "tolerance_cycles": 1777,
+      "basis": "it never leaves the PL, so the model says its cycle count does not depend on the design clock. A reading outside the 40 MHz run's own spread falsifies either the model or the claim that this ROI stays in the fabric.",
+      "falsifies_if": "the reading differs by more than the 40 MHz spread"
+    },
+    {
+      "roi": "load_dram",
+      "kind": "ps-ddr",
+      "workload": "perf04_where",
+      "cycles_at_40mhz": 1400538,
+      "observed_spread_at_40mhz": 1104,
+      "excess_over_control_cycles": 115512,
+      "bracket_cycles_at_25mhz": [
+        1357221,
+        1400538
+      ],
+      "bracket_meaning": {
+        "low": "every cycle of the excess is fixed time in the PS/DDR path, so at 25 MHz it costs 0.625 of the cycles it costs at 40 MHz",
+        "high": "none of it is fixed time; the excess is design-clock work and the cycle count is unchanged"
+      },
+      "basis": "the DRAM load's excess over the CLINT load is the part that leaves the fabric. The two ends of the bracket are the two pure hypotheses; the measurement falls between them and its position IS T_fixed.",
+      "falsifies_if": "the reading falls outside the bracket by more than the two runs' spreads, which would mean the excess is neither fixed time nor design-clock work"
+    }
+  ]
+}
