@@ -1,0 +1,175 @@
+{
+  "run_id": "2026-09-23-board-b0apps",
+  "platform": "board",
+  "status": "reported",
+  "created": "2026-09-23T17:01:47.775707+00:00",
+  "description": "The three B0 application workloads on the PYNQ-Z1, through the production runner with --workload b0apps, on the unchanged accepted 40 MHz bitstream. Three samples, a fresh copy of the pristine B0 disk verified on the board before each.",
+  "source_revision": {
+    "repo": "riscv-lab",
+    "commit": "caef16d8a494f89b6f0b5791526810b4ed5e8ae7",
+    "branch": "main"
+  },
+  "configured_identity": {
+    "method": "not assumed. Boot id ebeab8a6-... is unchanged from the session in which the accepted bitstream was programmed (uptime 57.7 h continuous), prog_done=1, the deployed teaching.bit.bin still hashes 20fae71e..., and all EIGHT startup probes passed immediately before the campaign.",
+    "boot_id": "ebeab8a6-0ac9-474a-84c3-bd6e0b357d3b",
+    "bitstream_sha256": "2cd8a9927cfa2f51da16bc6ba4865a407e985d00bf2accbb046f48c81c0fda52",
+    "raw_payload_sha256": "20fae71e4661c6c93a9826397594e058ef4bf6dc01071a41809ebb3a312c9f5a",
+    "startup_probes": "8/8"
+  },
+  "artifacts": {
+    "kernel_sha256": "e990fb31fad483b805aaeae77ecaebb3111abcec012d70447c620c9e9b289c2c",
+    "host_binary_sha256": "c050eab30f80a21a7c92c8688faa2f043c67aa2900fbc08b80f3dd8de2ba1fb9",
+    "disk_pristine_b0_sha256": "6bdd8148b79e5983ecaad04e394327f970e893a4c756a627b7e47da6e31c82ec"
+  },
+  "disk_freshness": {
+    "policy": "a fresh copy of the pristine image per sample",
+    "honoured": true,
+    "detail": "the campaign copies the pristine image and VERIFIES its hash on the board before each sample; all three read 6bdd8148..."
+  },
+  "frequency": {
+    "hz": 40000000,
+    "source": "configured"
+  },
+  "sample_policy": {
+    "min_samples": 3,
+    "met": true
+  },
+  "timeouts": {
+    "stage_seconds": 1800,
+    "startup_seconds": 600,
+    "stop_seconds": 60,
+    "set_before_run": true,
+    "sizing": "from a measured failure: a 300 s stage bound was too short for b0file, which takes ~357 s. That aborted run is retained under aborted-300s/."
+  },
+  "aggregate": {
+    "b0compute": {
+      "n": 3,
+      "median": 44.3,
+      "min": 44.2,
+      "max": 44.5,
+      "spread_pct": 0.677,
+      "checksum": "5ADF55920BF7696",
+      "checksum_identical_across_samples": true
+    },
+    "b0array": {
+      "n": 3,
+      "median": 52.4,
+      "min": 52.3,
+      "max": 52.4,
+      "spread_pct": 0.191,
+      "checksum": "88133D5BD386DB60",
+      "checksum_identical_across_samples": true
+    },
+    "b0file": {
+      "n": 3,
+      "median": 356.8,
+      "min": 356.7,
+      "max": 356.8,
+      "spread_pct": 0.028,
+      "checksum": "62E55F5326378000",
+      "checksum_identical_across_samples": true
+    }
+  },
+  "samples": [
+    {
+      "sample": 1,
+      "disk_at_start": "6bdd8148b79e5983ecaad04e394327f970e893a4c756a627b7e47da6e31c82ec",
+      "stop": "deliberate-stop-after-all-commands",
+      "remote_exit_confirmed": "yes",
+      "host_exit": "0",
+      "applications": [
+        {
+          "workload": "b0compute",
+          "status": "completed",
+          "wall_seconds": 44.5,
+          "observed_checksum": "5ADF55920BF7696"
+        },
+        {
+          "workload": "b0array",
+          "status": "completed",
+          "wall_seconds": 52.4,
+          "observed_checksum": "88133D5BD386DB60"
+        },
+        {
+          "workload": "b0file",
+          "status": "completed",
+          "wall_seconds": 356.8,
+          "observed_checksum": "62E55F5326378000"
+        }
+      ]
+    },
+    {
+      "sample": 2,
+      "disk_at_start": "6bdd8148b79e5983ecaad04e394327f970e893a4c756a627b7e47da6e31c82ec",
+      "stop": "deliberate-stop-after-all-commands",
+      "remote_exit_confirmed": "yes",
+      "host_exit": "0",
+      "applications": [
+        {
+          "workload": "b0compute",
+          "status": "completed",
+          "wall_seconds": 44.3,
+          "observed_checksum": "5ADF55920BF7696"
+        },
+        {
+          "workload": "b0array",
+          "status": "completed",
+          "wall_seconds": 52.4,
+          "observed_checksum": "88133D5BD386DB60"
+        },
+        {
+          "workload": "b0file",
+          "status": "completed",
+          "wall_seconds": 356.7,
+          "observed_checksum": "62E55F5326378000"
+        }
+      ]
+    },
+    {
+      "sample": 3,
+      "disk_at_start": "6bdd8148b79e5983ecaad04e394327f970e893a4c756a627b7e47da6e31c82ec",
+      "stop": "deliberate-stop-after-all-commands",
+      "remote_exit_confirmed": "yes",
+      "host_exit": "0",
+      "applications": [
+        {
+          "workload": "b0compute",
+          "status": "completed",
+          "wall_seconds": 44.2,
+          "observed_checksum": "5ADF55920BF7696"
+        },
+        {
+          "workload": "b0array",
+          "status": "completed",
+          "wall_seconds": 52.3,
+          "observed_checksum": "88133D5BD386DB60"
+        },
+        {
+          "workload": "b0file",
+          "status": "completed",
+          "wall_seconds": 356.8,
+          "observed_checksum": "62E55F5326378000"
+        }
+      ]
+    }
+  ],
+  "metrics_note": "wall time here is HOST-side and covers the whole command including console transport and the TSI round-trips fesvr serves for block I/O; it is not a target-cycle figure. Target-side cycles remain null by contract.",
+  "final_board_state": {
+    "captured": "after the campaign, over the same exclusive serial channel",
+    "evidence_file": "final-board-state.txt",
+    "boot_id": "ebeab8a6-0ac9-474a-84c3-bd6e0b357d3b",
+    "uptime_seconds": 210751,
+    "boot_id_unchanged": true,
+    "prog_done": "1",
+    "fesvr_processes": 0,
+    "ownership_lock": "NO_LOCK",
+    "loadavg": "0.01 0.40 0.71",
+    "mem_available_kb": 223040,
+    "xdcfg_status_f8007014": "0x40000F30",
+    "xdcfg_int_sts_f800700c": "0x00020004",
+    "dmesg": "tail is still boot-time only; the ARM logged nothing during the campaign",
+    "artefact_hashes": "kernel, host binary and pristine disk all re-read and unchanged",
+    "correction": "an earlier narrative of mine cited a devcfg status of 0x001C2800. That value is in no stored record; the only prior reading of 0xF8007014 in this repo is 0x00004A30 from a 2024.1 log, in a different context. It is not carried forward. The configured-fabric evidence is prog_done=1 together with the eight startup probes."
+  },
+  "leases": "serial claimed per sample and for the state capture; released"
+}

@@ -1,0 +1,14 @@
+{
+  "run_id": "2026-09-23-board-b0apps/aborted-300s/sample-1",
+  "platform": "board",
+  "status": "reported",
+  "outcome": "FAILED and retained deliberately, not replaced",
+  "cause": "the stage timeout was set to 300 s; b0file needs ~356.8 s, so it was cut off at 300.2 s while still running. The failure is in the bound, not in the target or the workload.",
+  "artifacts": {
+    "disk_at_start_sha256": "6bdd8148b79e5983ecaad04e394327f970e893a4c756a627b7e47da6e31c82ec",
+    "disk_pristine_b0_sha256": "6bdd8148b79e5983ecaad04e394327f970e893a4c756a627b7e47da6e31c82ec"
+  },
+  "stop": "stopped-after-failed-command:b0file",
+  "host_exit": "0",
+  "remote_exit_confirmed": "yes"
+}

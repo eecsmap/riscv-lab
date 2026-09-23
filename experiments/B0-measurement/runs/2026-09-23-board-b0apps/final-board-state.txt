@@ -1,0 +1,16 @@
+BOOTID=ebeab8a6-0ac9-474a-84c3-bd6e0b357d3b
+UPTIME_S=210751
+cat: can't open '/sys/devices/soc0/amba/f8007000.devcfg/prog_done': No such file or directory
+PROG_DONE=
+FESVR_N=0
+LOCK=NO_LOCK
+LOAD=0.01 0.40 0.71
+MEMAVAIL_KB=223040
+e990fb31fad483b805aaeae77ecaebb3111abcec012d70447c620c9e9b289c2c  /root/xv6run/kernel-128mib
+c050eab30f80a21a7c92c8688faa2f043c67aa2900fbc08b80f3dd8de2ba1fb9  /root/xv6run/fesvr-teaching-static
+6bdd8148b79e5983ecaad04e394327f970e893a4c756a627b7e47da6e31c82ec  /root/xv6run/fs-b0-pristine.img
+PROG_DONE=1
+DEVCFG_STATUS=0x00020004
+DMESG_TAIL_NEW=mmcblk0: mmc0:1234 SA02G 1.83 GiB | mmcblk0: p1|random: nonblocking pool is initialized|
+XDCFG_STATUS_F8007014=0x40000F30
+XDCFG_INT_STS_F800700C=0x00020004

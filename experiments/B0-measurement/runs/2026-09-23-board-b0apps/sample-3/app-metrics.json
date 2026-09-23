@@ -1,0 +1,55 @@
+{
+  "generated_from": "manifest.json + raw/ by benchmarks/tools/gen_app_metrics.py",
+  "expectation_source": "xv6_console.PROFILES (the delta is applied)",
+  "run_id": "2026-09-23-board-b0apps/sample-3",
+  "platform": "board",
+  "status": "reported",
+  "workload_profile": "b0apps",
+  "disk_at_start": "6bdd8148b79e5983ecaad04e394327f970e893a4c756a627b7e47da6e31c82ec",
+  "disk_pristine": "6bdd8148b79e5983ecaad04e394327f970e893a4c756a627b7e47da6e31c82ec",
+  "disk_was_fresh": true,
+  "completed": 3,
+  "defined": 3,
+  "all_checksums_match": true,
+  "applications": [
+    {
+      "workload": "b0compute",
+      "status": "completed",
+      "wall_seconds": 44.2,
+      "cumulative_seconds": 134.1,
+      "observed_checksum": "5ADF55920BF7696",
+      "expected_pattern": "(?i)B0-COMPUTE-CHECKSUM=5adf55920bf7696\\b",
+      "checksum_matches": true,
+      "cycles": null,
+      "cpi": null,
+      "metrics_note": "cycles and CPI are null by contract: a user program cannot read mcycle without kernel changes made for measurement convenience",
+      "wall_measures": "the host-side command, including console transport"
+    },
+    {
+      "workload": "b0array",
+      "status": "completed",
+      "wall_seconds": 52.3,
+      "cumulative_seconds": 186.4,
+      "observed_checksum": "88133D5BD386DB60",
+      "expected_pattern": "(?i)B0-ARRAY-CHECKSUM=88133d5bd386db60\\b",
+      "checksum_matches": true,
+      "cycles": null,
+      "cpi": null,
+      "metrics_note": "cycles and CPI are null by contract: a user program cannot read mcycle without kernel changes made for measurement convenience",
+      "wall_measures": "the host-side command, including console transport"
+    },
+    {
+      "workload": "b0file",
+      "status": "completed",
+      "wall_seconds": 356.8,
+      "cumulative_seconds": 543.2,
+      "observed_checksum": "62E55F5326378000",
+      "expected_pattern": "(?i)B0-FILE-CHECKSUM=62e55f5326378000\\b",
+      "checksum_matches": true,
+      "cycles": null,
+      "cpi": null,
+      "metrics_note": "cycles and CPI are null by contract: a user program cannot read mcycle without kernel changes made for measurement convenience",
+      "wall_measures": "the host-side command, including console transport"
+    }
+  ]
+}

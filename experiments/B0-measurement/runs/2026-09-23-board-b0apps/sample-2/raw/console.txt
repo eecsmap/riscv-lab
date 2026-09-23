@@ -1,0 +1,16 @@
+teaching: ready after 50 ms; status=0x00253311 cpu_restart_safe=1 pl_reconfig_safe=0 draining=0 drain_timeout=0 boot_ready=1 boot_timeout=0 epoch=51 ndrained=37
+
+xv6 kernel is booting
+
+blkdev: 4000 sectors (1 MB), max request 16 sectors
+init: starting sh
+$ b0compute
+B0-COMPUTE-CHECKSUM=5ADF55920BF7696
+B0-COMPUTE-DONE
+$ b0array
+B0-ARRAY-CHECKSUM=88133D5BD386DB60
+B0-ARRAY-DONE
+$ b0file
+B0-FILE-CHECKSUM=62E55F5326378000
+B0-FILE-DONE
+$ 

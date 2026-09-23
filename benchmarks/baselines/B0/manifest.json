@@ -19,6 +19,12 @@
     "2026-09-21-sim-boot3": {
       "platform": "simulator",
       "status": "reported"
+    },
+    "2026-09-23-board-b0apps": {
+      "platform": "board",
+      "status": "reported",
+      "role": "application execution on hardware",
+      "samples": 3
     }
   },
   "primary_run": "2026-09-21-board-s3-b0",
@@ -39,13 +45,39 @@
       "defined": 3,
       "built": true,
       "executed_on_simulator": 3,
-      "executed_on_board": 0,
-      "status": "complete in simulation; board pending",
+      "executed_on_board": 3,
+      "status": "complete in simulation and on the board",
       "detail": "All three completed 2026-09-23 with the expected checksums, through the production lifecycle with the delta applied, disk fresh, clean deliberate stop, remote exit confirmed, and the delta-aware checker reporting fails=0. Metrics remain null: simulator wall time measures the simulator, not the target.",
-      "sample_policy_met": false,
-      "sample_policy_note": "one sample. A second costs another ~6.4 h of simulation and has not been done.",
+      "sample_policy_met": true,
+      "sample_policy_note": "board: 3 samples, policy met. Simulator: still one sample; a second costs another ~6.4 h and has not been done.",
       "run": "experiments/B0-measurement/runs/2026-09-23-sim-b0apps-complete",
-      "superseded_partial_run": "experiments/B0-measurement/runs/2026-09-22-sim-b0apps (retained: it timed out on b0file and its disk was not fresh)"
+      "superseded_partial_run": "experiments/B0-measurement/runs/2026-09-22-sim-b0apps (retained: it timed out on b0file and its disk was not fresh)",
+      "board": {
+        "run": "experiments/B0-measurement/runs/2026-09-23-board-b0apps",
+        "samples": 3,
+        "sample_policy_met": true,
+        "detail": "All three workloads completed in all three samples with the expected checksums, through the production lifecycle with --workload b0apps, on the unchanged accepted 40 MHz bitstream. A fresh copy of the pristine B0 disk was copied AND hash-verified on the board before each sample. The delta-aware checker reports fails=0 for each (segments=4 prompts=4 stages=6).",
+        "wall_seconds_median": {
+          "b0compute": 44.3,
+          "b0array": 52.4,
+          "b0file": 356.8
+        },
+        "spread_pct": {
+          "b0compute": 0.677,
+          "b0array": 0.191,
+          "b0file": 0.028
+        },
+        "retained_failure": {
+          "run": "experiments/B0-measurement/runs/2026-09-23-board-b0apps/aborted-300s/sample-1",
+          "what": "a fourth run, kept and not replaced: a 300 s stage bound cut b0file off at 300.2 s. Its b0compute (44.4 s) and b0array (52.2 s) agree with the three successes, so it corroborates them rather than merely recording a mistake."
+        },
+        "metrics_note": "wall time is HOST-side and includes console transport and the TSI round-trips fesvr serves for block I/O. Target cycles and CPI stay null by contract: a user program cannot read mcycle without kernel changes made for measurement convenience.",
+        "not_established": [
+          "no cold-boot repeatability: all four runs share boot id ebeab8a6-... (uptime 58.5 h continuous)",
+          "wall time is not a target-performance figure and must not be compared against the simulator's",
+          "b0file is dominated by fesvr-served block I/O over TSI, not by the CPU"
+        ]
+      }
     }
   },
   "limits": [
@@ -60,6 +92,7 @@
     "perf05_size: within a single 64-bit beat, access SIZE does not affect cost. A 1-byte load costs 19.32 cycles and an 8-byte load 19.36 -- 0.2% apart. Stores: 17.49 vs 17.56, 0.4% apart.",
     "Stores are about 10% cheaper than loads (17.5 vs 19.4 cycles), consistent with a write being acknowledged before a read could return data.",
     "Sub-word writes carry NO read-modify-write penalty: sb costs the same as sd, so byte strobes are being used rather than a read-modify-write below.",
-    "The expected application checksums were computed on the host with C's %lx (lowercase) while xv6's printf uses \"0123456789ABCDEF\". A run that produced exactly the right value failed its check on case alone. Fixed with an inline (?i) and a regression; found by running it."
+    "The expected application checksums were computed on the host with C's %lx (lowercase) while xv6's printf uses \"0123456789ABCDEF\". A run that produced exactly the right value failed its check on case alone. Fixed with an inline (?i) and a regression; found by running it.",
+    "The board application campaign needed its stage bound sized from measurement, not from the simulator: b0file takes ~357 s and a 300 s bound failed it. The failing run is retained."
   ]
 }
