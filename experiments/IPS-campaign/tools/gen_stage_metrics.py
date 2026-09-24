@@ -42,8 +42,15 @@ def main():
     a = ap.parse_args()
     desc = descriptors()
 
+    # The aggregator extracts the probe's output inline now; the stage-1 archive was recovered
+    # afterwards into console-recovered.txt, so both names are accepted and neither is preferred
+    # silently -- whichever exists is the one that run produced.
+    def consoles(run):
+        found = sorted(glob.glob(os.path.join(run, "runs", "*", "console.txt")))
+        return found or sorted(glob.glob(os.path.join(run, "runs", "*", "console-recovered.txt")))
+
     rows, refused = [], []
-    for c in sorted(glob.glob(os.path.join(a.run, "runs", "*", "console-recovered.txt"))):
+    for c in consoles(a.run):
         core, prog = os.path.basename(os.path.dirname(c)).split("-", 1)
         w = desc.get(prog)
         if not w:
@@ -77,7 +84,7 @@ def main():
         r["gain_vs_baseline"] = (b["cycles"] / r["cycles"]) if b and b is not r else (1.0 if b is r else None)
 
     axi = {}
-    for c in sorted(glob.glob(os.path.join(a.run, "runs", "*", "console-recovered.txt"))):
+    for c in consoles(a.run):
         core, prog = os.path.basename(os.path.dirname(c)).split("-", 1)
         m = re.search(r"^AXI ar=(\d+) r=(\d+)", open(c, errors="replace").read(), re.M)
         if m:
