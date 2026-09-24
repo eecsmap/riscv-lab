@@ -1,0 +1,5 @@
+POWER_REMOVED=yes
+AT=2026-09-24T04:23:42Z
+PHASE=install
+BY=engineer
+MEANS=attested by the user, not measured. This host cannot distinguish a power cycle from a warm reboot.

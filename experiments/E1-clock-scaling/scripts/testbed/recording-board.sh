@@ -11,6 +11,9 @@ CMD="$1"
 # The real console ends lines with CRLF. Emitting bare LF here hid a defect that made the cold-cycle
 # gate inert on hardware, so everything this stand-in prints goes through crlf().
 crlf() { sed 's/$/\r/'; }
+# The real console emits stray NUL bytes; the production mem-preflight refuses a capture containing one.
+# The stand-in emits one too, so that refusal is reachable from the tests instead of only from hardware.
+nul() { if [ "${FAKE_NUL:-1}" = 1 ]; then sed 's/^/\x00/'; else cat; fi; }
 printf '%s\n' "BOARD $CMD" >> "${E1_REC:?E1_REC must be set}"
 : "${FAKE_BID:=11111111-2222-3333-4444-555555555555}"
 : "${FAKE_UP:=42}" ; : "${FAKE_N:=0}" ; : "${FAKE_F:=0}" ; : "${FAKE_L:=NO_LOCK}"
@@ -35,7 +38,9 @@ S=0                                        # the remote status this reply will r
 
 emit_evidence() {
   case "$CMD" in
-    *boot_id*)        echo "$FAKE_SESSION" ;;
+    # NO trailing newline, because /proc/sys/kernel/random/boot_id has none on this board and the
+    # marker ends up glued to the value. Emitting a tidy line here is what hid the defect.
+    *boot_id*)        printf '%s' "$FAKE_SESSION" ;;
     *proc/iomem*)     printf '00000000-0fffffff : System RAM\n  00008000-006168fb : Kernel code\ne0000000-e0000ffe : xuartps\n' ;;
     *meminfo*)        printf 'MemTotal:         252956 kB\nMemFree:          237772 kB\n' ;;
     *address-cells*)  echo " 00 00 00 01" ;;
@@ -66,7 +71,7 @@ case "$CMD" in
   *PROG_RC=*) echo "PROG_RC=$FAKE_PROGRC" ;;
   *PD=*)      echo "PD=$FAKE_PROGDONE"; echo "BOOTID=$FAKE_BID"; echo "UP=$FAKE_UP"
               echo "LOAD=0.0 0.0 0.0"; echo "FESVR_N=0"; echo "LOCK=NO_LOCK" ;;
-  *__E1B__*)  echo "__E1B__"; emit_evidence; echo "__E1S__=$S"; echo "__E1E__" ;;
+  *__E1B__*)  echo "__E1B__"; emit_evidence; echo; echo "__E1S__=$S"; echo "__E1E__" ;;
   *boot_id*)  # a BARE boot-id read: what e1-precycle.sh does when it pins. This branch was missing,
               # so the pin step was never rehearsed at all -- the stand-in answered "(fake: unhandled)".
               if [ -n "${FAKE_PIN_UNREADABLE:-}" ]; then echo "cat: can't open"; else echo "$FAKE_BID"; fi ;;
@@ -93,11 +98,11 @@ case "$CMD" in
   *) echo "(fake: unhandled)" ;;
 esac
 }
-# The transport-failure check is at TOP LEVEL, not inside respond(): `respond | crlf` runs respond in a
+# The transport-failure check is at TOP LEVEL, not inside respond(): `respond | nul | crlf` runs respond in a
 # pipeline subshell, so an `exit 9` there would exit only that subshell and the script would still
 # report success. Same class of defect as the one this whole review started with.
 if [ -n "$FAKE_TRANSPORT_FAIL" ]; then
   case "$CMD" in *"$FAKE_TRANSPORT_FAIL"*) printf 'transport error\r\n'; exit 9 ;; esac
 fi
-respond | crlf
+respond | nul | crlf
 exit 0

@@ -37,9 +37,18 @@ class CaptureFailed(Exception):
 
 def ask(cmd):
     """Run one command on the board. Returns (body, remote_status). Raises on transport trouble."""
-    full = f"echo {B}; {cmd}; echo {SMARK}=$?; echo {E}"
+    # The status is captured BEFORE the separating newline is emitted, because `echo` would overwrite
+    # $?. The separator exists because a command's output need not end in a newline:
+    # /proc/sys/kernel/random/boot_id does not, so the reply came back as
+    #   23981968-...-c328b780cbcf__E1S__=0
+    # with the marker glued to the data and no line start for an anchored pattern to find.
+    full = f"echo {B}; {cmd}; __e1s=$?; echo; echo {SMARK}=$__e1s; echo {E}"
     p = subprocess.run(CMD.split() + [full], capture_output=True, text=True)
-    out = p.stdout + p.stderr
+    # This console emits NUL bytes. They are not data: the production mem-preflight refuses a capture
+    # containing one -- "this capture is corrupt, not merely terminated" -- which is how this was found,
+    # correctly, by the tool downstream rather than by anything here. lib-e1.sh strips them at its own
+    # transport boundary; this helper talks to the shim directly and has to do the same.
+    out = (p.stdout + p.stderr).replace("\x00", "")
     if p.returncode != 0:
         raise CaptureFailed(f"the transport failed (exit {p.returncode}) running: {cmd}\n{out[-200:]}")
     starts = [m.end() for m in re.finditer(re.escape(B), out)]
@@ -51,8 +60,8 @@ def ask(cmd):
         raise CaptureFailed(f"unterminated reply to: {cmd}\n{out[-200:]}")
     block = tail[:end]
     m = None
-    for m in re.finditer(rf"^{re.escape(SMARK)}=(-?\d+)\s*$", block, re.M):
-        pass                                    # the LAST one: the echo of the command matches too
+    for m in re.finditer(rf"{re.escape(SMARK)}=(-?\d+)", block):
+        pass            # the LAST one; not anchored, because the marker may be glued to the output
     if m is None:
         raise CaptureFailed(f"the board did not report a status for: {cmd}")
     body = block[:m.start()].strip("\r\n")

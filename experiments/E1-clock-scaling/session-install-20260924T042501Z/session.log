@@ -1,0 +1,15 @@
+=== E1 install, session /home/engineer/fpga/riscv-lab/experiments/E1-clock-scaling/session-install-20260924T042501Z
+  board has 'timeout' (recorded by the precheck): probes bounded on both sides
+== leases, before any transport
+  claimed lease: board
+  claimed lease: serial
+== step 1: the cold cycle
+  power removal: ATTESTED by the user at 2026-09-24T04:23:42Z (attested, not measured)
+  boot id now    : 23981968-4c31-4818-9f93-c328b780cbcf
+  pinned before  : 336004e0-c570-470c-9237-76139c3cdf37
+  uptime         : 101 s;  /root/xv6run entries: 0;  fesvr: 0;  lock: NO_LOCK
+  boot evidence consistent with a cold start (new boot id 23981968-4c31-4818-9f93-c328b780cbcf)
+== step 2: this boot's memory evidence, then the production preflight
+REFUSE(61): could not capture this boot's memory evidence
+  released lease: board
+  released lease: serial
