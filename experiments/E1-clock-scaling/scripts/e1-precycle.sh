@@ -56,7 +56,7 @@ say "  -> $O/state/$phase-timeout.txt"
 
 say "== pinning the current boot id"
 board_must "reading the boot id" "cat /proc/sys/kernel/random/boot_id"
-bid=$(grep -oE '^[0-9a-f-]{36}$' <<<"$BOARD_OUT" | tail -1 || true)
+bid=$(tr -d '\r' <<<"$BOARD_OUT" | grep -oE '^[0-9a-f-]{36}$' | tail -1 || true)
 [ -n "$bid" ] || die $EX_PIN "could not read the current boot id; refusing to pin an empty value"
 printf '%s\n' "$bid" > "$PIN"
 say "pinned pre-cycle boot id for phase '$phase': $bid"

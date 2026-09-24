@@ -91,7 +91,13 @@ board_must() {
 }
 # last KEY=value, never the first: the shim echoes the command and the terminal WRAPS that echo, so a
 # line can begin with KEY= and still be the question rather than the answer.
-field() { sed -n "s/^$1=//p" <<<"$BOARD_OUT" | tail -1; }
+#
+# `tr -d '\r'` is not cosmetic. The console's line ending is CRLF, so every value came back as "yes\r",
+# "0\r", "<uuid>\r". Comparisons against a literal then always failed -- and, far worse, the cold-cycle
+# gate compared field BID (with CR) against the pin file (without), which can never be equal, so
+# "the boot id is UNCHANGED" could not fire on real hardware. The single most important gate in the
+# procedure was inert, and the mocks hid it because the stand-in emitted bare LF. It emits CRLF now.
+field() { sed -n "s/^$1=//p" <<<"$BOARD_OUT" | tail -1 | tr -d '\r'; }
 
 # --- leases: claimed BEFORE any transport call, released only if we own them ----------------------
 E1_OWNED_LEASES=""

@@ -8,6 +8,9 @@
 # because they matched on ".elf". A stand-in that accepts what hardware would reject is worse than none.
 set -u
 CMD="$1"
+# The real console ends lines with CRLF. Emitting bare LF here hid a defect that made the cold-cycle
+# gate inert on hardware, so everything this stand-in prints goes through crlf().
+crlf() { sed 's/$/\r/'; }
 printf '%s\n' "BOARD $CMD" >> "${E1_REC:?E1_REC must be set}"
 : "${FAKE_BID:=11111111-2222-3333-4444-555555555555}"
 : "${FAKE_UP:=42}" ; : "${FAKE_N:=0}" ; : "${FAKE_F:=0}" ; : "${FAKE_L:=NO_LOCK}"
@@ -15,6 +18,7 @@ printf '%s\n' "BOARD $CMD" >> "${E1_REC:?E1_REC must be set}"
 : "${FAKE_TRANSPORT_FAIL:=}" ; : "${FAKE_MARKER_MISSING:=}" ; : "${FAKE_SAMPLE_BAD:=}"
 : "${FAKE_TMO:=yes}" ; : "${FAKE_RESV:=absent}" ; : "${FAKE_SESSION:=$FAKE_BID}"
 
+respond() {
 if [ "${FAKE_WRAP:-0}" = 1 ]; then
     # The real shim's echo is WRAPPED by the terminal; the run-2 logs show commands broken mid-word. A
     # wrap just after "echo " puts the next line at column 0, so even an anchored ^BID= can match the
@@ -24,7 +28,7 @@ if [ "${FAKE_WRAP:-0}" = 1 ]; then
 else
     printf '%s\n' "$CMD"
 fi
-[ -n "$FAKE_TRANSPORT_FAIL" ] && case "$CMD" in *"$FAKE_TRANSPORT_FAIL"*) echo "transport error"; exit 9 ;; esac
+
 
 marker_of() { awk -v p="$1" '$1==p {print $2}' "$(dirname "$0")/../markers.tsv"; }
 S=0                                        # the remote status this reply will report
@@ -88,4 +92,12 @@ case "$CMD" in
       else echo "$(marker_of "$probe")"; echo "RC=0"; fi ;;
   *) echo "(fake: unhandled)" ;;
 esac
+}
+# The transport-failure check is at TOP LEVEL, not inside respond(): `respond | crlf` runs respond in a
+# pipeline subshell, so an `exit 9` there would exit only that subshell and the script would still
+# report success. Same class of defect as the one this whole review started with.
+if [ -n "$FAKE_TRANSPORT_FAIL" ]; then
+  case "$CMD" in *"$FAKE_TRANSPORT_FAIL"*) printf 'transport error\r\n'; exit 9 ;; esac
+fi
+respond | crlf
 exit 0
