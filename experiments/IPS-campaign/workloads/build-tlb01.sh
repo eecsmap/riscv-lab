@@ -24,7 +24,7 @@ riscv64-unknown-elf-objdump -d -M no-aliases $OUT/tlb01_sfence.elf > $OUT/tlb01_
 # Scope: a probe that claims to test invalidation must contain sfence.vma AND a satp write AND a trap
 # handler, or it is testing something else.
 fail=0
-for pair in "sfence\.vma:sfence.vma" "csrrw.*satp:a satp write" "csrr[wsc].*stvec:an stvec write" "sret:sret"; do
+for pair in "sfence\.vma:sfence.vma" "csrr[wsc].*medeleg:a medeleg write" "csrrw.*satp:a satp write" "csrr[wsc].*stvec:an stvec write" "sret:sret"; do
   rx=${pair%%:*}; what=${pair#*:}
   n=$(grep -cE "\b$rx" "$OUT/tlb01_sfence.dis" || true)
   if [ "$n" = "0" ]; then echo "  SCOPE FAIL: no $what in the disassembly"; fail=1

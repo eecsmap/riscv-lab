@@ -54,6 +54,21 @@ _start: la      sp, _stack_top
         sd      zero, 0(t4)             # the alias is not mapped in address space 2
         fence
 
+        # ---- delegate the page faults to S-mode, or none of this works
+        #
+        # Without this, a page fault taken in S-mode goes to M-mode's mtvec, which nothing here sets,
+        # and the machine restarts from _start. That is exactly what happened on the first run: the
+        # trace ended with COMMIT pc=0x80000000, on EVERY core including the baseline, which is how it
+        # was clear the defect was the probe's and not the TLB's.
+        #
+        # medeleg is masked to 0xB3FF by tcpu_csr, so bits 12 (instruction), 13 (load) and 15 (store)
+        # page fault are all delegatable. The write is read back and checked: a probe that silently
+        # failed to delegate would trap to the wrong place and look like a hang.
+        li      t1, (1 << 12) | (1 << 13) | (1 << 15)
+        csrw    medeleg, t1
+        csrr    t2, medeleg
+        bne     t2, t1, fail
+
         # ---- S-mode with Sv39 on root1
         la      t0, cont
         csrw    mepc, t0

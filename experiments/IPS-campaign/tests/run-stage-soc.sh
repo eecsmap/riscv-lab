@@ -55,9 +55,13 @@ done
 
 cycles_for() {
   case "$1" in
-    perf06_iws) echo 12000000 ;;
-    perf02_sv39|perf03_fetch|perf04_where) echo 8000000 ;;
-    tlb01_sfence) echo 4000000 ;;
+    # Sized from the SLOWEST core, which is the baseline. perf02_sv39 walks a page table per access
+    # and the board measured it at CPI 161 for 4 KiB pages; 8 M was sized from the faster cores and
+    # the baseline ran out. A bound that only the fast cores fit is not a bound, it is a filter.
+    perf02_sv39) echo 40000000 ;;
+    perf06_iws)  echo 12000000 ;;
+    perf03_fetch|perf04_where) echo 8000000 ;;
+    tlb01_sfence) echo 8000000 ;;
     *) echo 2000000 ;;
   esac
 }
@@ -88,14 +92,20 @@ done
 
 echo "== every probe's own verdict must AGREE across cores"
 for p in $PROGS; do
-  ref=""; agree=1
+  # EVERY core must report a marker, and they must all be the same. An earlier version took the first
+  # core's marker as the reference with `[ -z "$ref" ] && ref=$m`, which does nothing when that core
+  # reported NOTHING -- so a core with no marker at all was skipped and the check said "agree". It did
+  # exactly that for perf02_sv39, where the baseline had timed out and printed nothing.
+  ref=""; agree=1; missing=""
   for l in $LABELS; do
     m=$(grep -oE 'TEACHING-[A-Z0-9-]+-(OK|FAIL)|M3-[A-Z0-9-]+-(OK|FAIL)' "$OUT/runs/$l-$p/console.txt" 2>/dev/null | head -1)
+    if [ -z "$m" ]; then missing="$missing $l"; agree=0; continue; fi
     [ -z "$ref" ] && ref=$m
     [ "$m" = "$ref" ] || agree=0
   done
-  if [ -n "$ref" ] && [ $agree = 1 ]; then ok "$p: every core reports $ref"
-  else no "$p verdicts agree" "first='$ref' and at least one core differs"; fi
+  if [ -n "$missing" ]; then no "$p verdicts agree" "no marker at all from:$missing"
+  elif [ -n "$ref" ] && [ $agree = 1 ]; then ok "$p: every core reports $ref"
+  else no "$p verdicts agree" "cores disagree; first='$ref'"; fi
 done
 echo "STAGE_SOC fails=$fails"
 [ $fails = 0 ]
