@@ -1,0 +1,47 @@
+{
+  "stage": "fetch32",
+  "timing": {
+    "wns_ns": "0.733",
+    "tns_ns": "0.000",
+    "setup_failing": "0",
+    "setup_endpoints": "20383",
+    "whs_ns": "0.020",
+    "ths_ns": "0.000",
+    "hold_failing": "0",
+    "hold_endpoints": "20383"
+  },
+  "utilisation": {
+    "luts": {
+      "used": 13841,
+      "available": 53200,
+      "pct": 26.02
+    },
+    "ffs": {
+      "used": 5880,
+      "available": 106400,
+      "pct": 5.53
+    },
+    "bram": {
+      "used": 0,
+      "available": 140,
+      "pct": 0.0
+    },
+    "dsps": {
+      "used": 0,
+      "available": 220,
+      "pct": 0.0
+    }
+  },
+  "critical_warnings": {
+    "post_route_drc.rpt": 0,
+    "post_route_methodology.rpt": 0,
+    "post_route_cdc.rpt": 0
+  },
+  "bitstream": {
+    "path": "reports/rocketchip_wrapper.bit",
+    "sha256": "0cf25aee6b9ed56428c5747c6a62c4633dee3919c45d60e10f1279a444687451",
+    "bytes": 4045696
+  },
+  "vivado": "vivado v2025.2.1 (64-bit)",
+  "note": "setup and hold slack are both non-negative with zero failing endpoints, and DRC, methodology and CDC report no critical warnings. Utilisation was produced from the post-route checkpoint afterwards: run_impl.tcl does not emit it."
+}

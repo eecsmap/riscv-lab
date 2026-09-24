@@ -1,0 +1,11 @@
+tool: 2025.2.1
+part: xc7z020clg400-1
+synth_1 STATUS: synth_design Complete!
+synth_1 PROGRESS: 100%
+impl_1 STATUS: write_bitstream Complete!
+impl_1 PROGRESS: 100%
+WNS: 0.733074
+TNS: 0.000000
+WHS: 0.020239
+THS: 0.000000
+bitstream: /home/engineer/fpga/worktrees/ips-fetch32/experiments/IPS-campaign/build-fetch32/reports/rocketchip_wrapper.bit
