@@ -65,11 +65,30 @@ response pass-through was gated on `mine`, which depends on `c_req_valid` — dr
 request is accepted — so during a refill the core would have been handed **our own beats** as its
 response and would have consumed half a line as an instruction.
 
+## Self-modifying code, at the core boundary
+
+`cache01_smc.S` calls a small function sixteen times so its line is certainly resident, overwrites the
+two instructions that produce its return value — as whole words, from templates the assembler produced,
+rather than by patching bits — issues `fence` then `fence.i`, and calls it again. The new value must
+come back.
+
+Nothing is asserted about the behaviour **without** `fence.i`: the architecture says nothing there, and
+a test that pinned it down would be testing this implementation rather than the contract.
+
+| core | result |
+| --- | --- |
+| `tlb`, `cache`, `cacheoff` | **OK** |
+| `cache` with `fence.i` disconnected (mutant) | **FAIL — "after fence.i the STALE instruction still ran"** |
+
+Passing on `tlb` and `cacheoff` proves nothing by itself — they have no cache. The mutant is what
+establishes the probe tests the invalidation, and it still passes `boot01_marker` and `perf03_fetch`,
+so the probe is specific rather than merely sensitive.
+
 ## Not done
 
-* `fence.i` is tested at the component level; a **self-modifying-code probe** at the core boundary is
-  not written. Codex's stage 3 list requires one, and its absence is stated rather than glossed.
-* An in-flight refill surviving `fence.i` is not separately tested.
+* An in-flight refill surviving `fence.i` is not separately tested. The design abandons such a refill
+  by construction — `valid` is written only on the last beat, and `invalidate` clears every line in the
+  same cycle — but that is an argument, not a measurement.
 * xv6 with the frozen application profile has not been run on this core.
 * Nothing is BUILD-VERIFIED, BOARD-VERIFIED or PERFORMANCE-MEASURED.
 

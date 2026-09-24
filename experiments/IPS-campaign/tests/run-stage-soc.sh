@@ -36,7 +36,7 @@ for p in ext01_m ext02_c ext04_sv39; do cp $PREP/probes/build/$p.elf "$OUT/elf/"
 for p in perf02_sv39 perf03_fetch perf04_where; do cp $PREP/probes/build-perf/$p.elf "$OUT/elf/"; done
 bash "$CAMP/workloads/build-perf06.sh" "$OUT/b-perf06" > "$OUT/logs/perf06-build.log" 2>&1 \
   && cp "$OUT/b-perf06/perf06_iws.elf" "$OUT/elf/" || no "perf06 built" "see logs/perf06-build.log"
-for t in tlb01 tlb02; do
+for t in tlb01 tlb02 cache01; do
   [ -f "$CAMP/workloads/build-$t.sh" ] || continue
   bash "$CAMP/workloads/build-$t.sh" "$OUT/b-$t" > "$OUT/logs/$t-build.log" 2>&1 \
     && cp "$OUT/b-$t"/*.elf "$OUT/elf/" || no "$t built" "see logs/$t-build.log"
@@ -63,6 +63,7 @@ cycles_for() {
     perf06_iws)  echo 12000000 ;;
     perf03_fetch|perf04_where) echo 8000000 ;;
     tlb01_sfence|tlb02_canonical) echo 8000000 ;;
+    cache01_smc) echo 4000000 ;;
     *) echo 2000000 ;;
   esac
 }
