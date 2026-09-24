@@ -635,7 +635,11 @@ module tcpu_core #(
               // monitor, or real fabric need not. Only the FIRST parcel (xl_kind==0) widens: the
               // second-parcel path is the unaligned fallback and stays at one parcel.
               core_req_valid <= 1'b1; core_req_addr <= ptw_pa[31:0]; core_req_write <= 1'b0;
-              core_req_size  <= (xl_kind == 2'd0 && pc_word_aligned) ? 2'd2 : 2'd1;
+              // MUTANT -- this is the ACTUAL first-version defect, reintroduced deliberately. The
+              // post-walk issue asks for two bytes while the wide-consumption flag is still set, so
+              // S_IF_WAIT takes four bytes out of a two-byte request. Against a memory that returns a
+              // full word regardless this is invisible; against poisoned lanes it must fail.
+              core_req_size  <= 2'd1;
               fetch_wide_req <= (xl_kind == 2'd0 && pc_word_aligned);
               core_req_wdata <= 64'd0; core_req_wmask <= 8'd0; core_req_amo <= 4'd0; core_req_lrsc <= 2'd0;
               state <= (xl_kind == 2'd0) ? S_IF_WAIT : S_IF2_WAIT;
