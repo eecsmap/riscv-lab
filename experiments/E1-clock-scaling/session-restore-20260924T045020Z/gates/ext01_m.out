@@ -1,0 +1,3 @@
+teaching: ready after 50 ms; status=0x00040411 cpu_restart_safe=1 pl_reconfig_safe=0 draining=0 drain_timeout=0 boot_ready=1 boot_timeout=0 epoch=4 ndrained=4
+TEACHING-EXT-M-OK
+RC=0

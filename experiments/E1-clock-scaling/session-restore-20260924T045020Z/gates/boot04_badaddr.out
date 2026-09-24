@@ -1,0 +1,3 @@
+teaching: ready after 50 ms; status=0x00030311 cpu_restart_safe=1 pl_reconfig_safe=0 draining=0 drain_timeout=0 boot_ready=1 boot_timeout=0 epoch=3 ndrained=3
+M3-BADADDR-OK
+RC=0

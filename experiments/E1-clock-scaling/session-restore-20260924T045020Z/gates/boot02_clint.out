@@ -1,0 +1,3 @@
+teaching: ready after 50 ms; status=0x00010111 cpu_restart_safe=1 pl_reconfig_safe=0 draining=0 drain_timeout=0 boot_ready=1 boot_timeout=0 epoch=1 ndrained=1
+M3-CLINT-OK
+RC=0

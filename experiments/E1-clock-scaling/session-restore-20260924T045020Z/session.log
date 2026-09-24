@@ -1,0 +1,54 @@
+=== E1 restore, session /home/engineer/fpga/riscv-lab/experiments/E1-clock-scaling/session-restore-20260924T045020Z
+  board has 'timeout' (recorded by the precheck): probes bounded on both sides
+== leases, before any transport
+  claimed lease: board
+  claimed lease: serial
+== step 8: the second cold cycle
+  power removal: ATTESTED by the user at 2026-09-24T04:49:57Z (attested, not measured)
+  boot id now    : 85f052b7-af56-4c29-a09c-9528c67cbe26
+  pinned before  : 23981968-4c31-4818-9f93-c328b780cbcf
+  uptime         : 36 s;  /root/xv6run entries: 0;  fesvr: 0;  lock: NO_LOCK
+  boot evidence consistent with a cold start (new boot id 85f052b7-af56-4c29-a09c-9528c67cbe26)
+== the same evidence chain as install
+  captured memory evidence for session 85f052b7-af56-4c29-a09c-9528c67cbe26
+## evidence: /home/engineer/fpga/riscv-lab/experiments/E1-clock-scaling/session-restore-20260924T045020Z/memory
+   session 85f052b7-af56-4c29-a09c-9528c67cbe26
+   #address-cells=1 #size-cells=1
+   DT memory: 0x00000000 + 0x10000000 (256 MiB)
+   no reserved-memory captured (absent is acceptable; unreadable is not)
+   iomem System RAM: 0x00000000-0x0fffffff
+   MemTotal 247 MiB
+## target window: 0x10000000-0x1fffffff
+MEM_PREFLIGHT OK refusals=0
+  MEM_PREFLIGHT passed for session 85f052b7-af56-4c29-a09c-9528c67cbe26
+== step 9: deploy and verify the ACCEPTED payload
+  deployed+verified: /root/xv6run/teaching.bit.bin
+  deployed+verified: /root/xv6run/fesvr-teaching-static
+  deployed+verified: /root/xv6run/boot01_marker.elf
+  deployed+verified: /root/xv6run/boot02_clint.elf
+  deployed+verified: /root/xv6run/boot03_ddr.elf
+  deployed+verified: /root/xv6run/boot04_badaddr.elf
+  deployed+verified: /root/xv6run/ext01_m.elf
+  deployed+verified: /root/xv6run/ext02_c.elf
+  deployed+verified: /root/xv6run/ext03_a.elf
+  deployed+verified: /root/xv6run/ext04_sv39.elf
+  executable mode set
+== step 10: program the accepted bitstream
+  programming /root/xv6run/teaching.bit.bin
+  programming reported rc=0 and prog_done=1
+== step 11: the eight gates again. The session is not closed until they pass
+  gate boot01_marker: ok (TEACHING-CPU-M3-OK)
+  gate boot02_clint: ok (M3-CLINT-OK)
+  gate boot03_ddr: ok (M3-DDR-OK)
+  gate boot04_badaddr: ok (M3-BADADDR-OK)
+  gate ext01_m: ok (TEACHING-EXT-M-OK)
+  gate ext02_c: ok (TEACHING-EXT-C-OK)
+  gate ext03_a: ok (TEACHING-EXT-A-OK)
+  gate ext04_sv39: ok (TEACHING-EXT-SV39-OK)
+  STARTUP GATES 8/8
+  adapter status recorded: status=0x00000011 cpu_restart_safe=1 pl_reconfig_safe=0 draining=0 dra
+== step 12: final state, then release
+E1_RESTORE_DONE  session=/home/engineer/fpga/riscv-lab/experiments/E1-clock-scaling/session-restore-20260924T045020Z
+The board holds the ACCEPTED 40 MHz bitstream again, with 8/8 gates re-verified.
+  released lease: board
+  released lease: serial

@@ -1,0 +1,5 @@
+BOOTID=85f052b7-af56-4c29-a09c-9528c67cbe26
+PD=1
+FESVR_N=0
+LOCK=NO_LOCK
+20fae71e4661c6c93a9826397594e058ef4bf6dc01071a41809ebb3a312c9f5a  /root/xv6run/teaching.bit.bin
