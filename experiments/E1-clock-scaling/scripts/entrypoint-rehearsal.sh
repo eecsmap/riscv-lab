@@ -139,6 +139,28 @@ else
   grep -q "E1_RESTORE_DONE" "$OUT/stderr.txt" && ok "  and it reports E1_RESTORE_DONE" || no "completion" "no marker"
 fi
 
+echo "== N. the probes are TARGET ELFs and must go through fesvr"
+setup; rc=$(runscript e1-install.sh)
+[ "$rc" = 0 ] || no "install completes (for the fesvr assertions)" "exit $rc"
+# assert the COMMAND, not a count: the stand-in also refuses a bare ./probe.elf, so a regression shows
+# up twice -- once as a wrong command here and once as REJECTED-NO-FESVR in the recording.
+bare=$(grep -c 'REJECTED-NO-FESVR' "$REC" 2>/dev/null || true)
+[ "$bare" = 0 ] && ok "no target ELF was invoked without fesvr" || no "bare ELF invocation" "$bare of them"
+want='BOARD cd /root/xv6run && timeout 120 ./fesvr-teaching-static ./boot01_marker.elf 2>&1; echo RC=$?'
+grep -qxF "$want" "$REC" && ok "  the gate command is exactly the production form"   || no "gate command form" "recorded: $(grep -m1 'boot01_marker' "$REC")"
+want='BOARD cd /root/xv6run && timeout 120 ./fesvr-teaching-static ./perf03_fetch.elf 2>&1; echo RC=$?'
+grep -qxF "$want" "$REC" && ok "  the perf command is exactly the production form"   || no "perf command form" "recorded: $(grep -m1 'perf03_fetch' "$REC")"
+n=$(grep -c 'fesvr-teaching-static \./' "$REC" 2>/dev/null || true)
+[ "$n" = 18 ] && ok "  all 18 probe runs went through fesvr" || no "fesvr count" "got $n, wanted 18"
+
+echo "== O. with the bound disabled the command is still a command"
+setup; rc=$(E1_TIMEOUT= runscript e1-install.sh)
+[ "$rc" = 0 ] && ok "install completes with E1_TIMEOUT empty" || no "empty E1_TIMEOUT" "exit $rc: $(tail -1 "$OUT/stderr.txt")"
+want='BOARD cd /root/xv6run && ./fesvr-teaching-static ./boot01_marker.elf 2>&1; echo RC=$?'
+grep -qxF "$want" "$REC" && ok "  and carries no stray numeric argument where the program belongs"   || no "empty-timeout command form" "recorded: $(grep -m1 'BOARD.*boot01_marker' "$REC")"
+bare=$(grep -c 'REJECTED-NO-FESVR' "$REC" 2>/dev/null || true)
+[ "$bare" = 0 ] && ok "  and still goes through fesvr" || no "fesvr with empty timeout" "$bare bare invocations"
+
 echo "== M. leases are released on every path, and only ours"
 setup; rc=$(FAKE_BID=aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee runscript e1-install.sh)
 rel=$(grep -c '^COORD release' "$REC" 2>/dev/null || echo 0)

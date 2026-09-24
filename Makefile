@@ -28,6 +28,7 @@ bench-check: bench-selftest
 e1-rehearsal:
 	bash experiments/E1-clock-scaling/scripts/rehearsal.sh
 	bash experiments/E1-clock-scaling/scripts/entrypoint-rehearsal.sh
+	bash experiments/E1-clock-scaling/scripts/capture-rehearsal.sh
 
 bench-profile-cli:
 	bash benchmarks/workload-profiles/cli_selftest.sh $(or $(OUT),/tmp/b0-profile-cli)

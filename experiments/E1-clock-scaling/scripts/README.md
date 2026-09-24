@@ -13,7 +13,8 @@ device.
 | `e1-install.sh` | after the first cold cycle — steps 1–7 |
 | `e1-restore.sh` | after the second cold cycle — steps 8–12 |
 | `rehearsal.sh` | offline: the gate FUNCTIONS refuse, 27 checks |
-| `entrypoint-rehearsal.sh` | offline: the REAL scripts stop, 29 checks |
+| `entrypoint-rehearsal.sh` | offline: the REAL scripts stop, and the commands are the production ones, 36 checks |
+| `capture-rehearsal.sh` | offline: capture → the REAL `mem-preflight.py`, 21 checks |
 | `gen-markers.sh` | regenerates `markers.tsv` from the ELFs that will be deployed |
 
 ## What the first version got wrong
@@ -106,6 +107,41 @@ operations were issued — read off a recording of everything the script actuall
 The positive path matters as much: install deploys 12 artefacts, programs the PL **exactly once**, runs
 18 probes (8 gates + 2 × 5 samples) and reports `E1_INSTALL_DONE`; restore deploys 10, programs once,
 re-runs the 8 gates and takes no samples.
+
+## The second review: three runtime defects the mocks could not see
+
+Codex accepted the stop and lease corrections, independently reran 27/27 and 29/29, and found three more.
+All three were real.
+
+**The probes are RISC-V TARGET ELFs.** `run_startup_gates` and `run_perf_samples` invoked
+`./boot01_marker.elf` directly on the ARM, where it cannot execute at all. The board flow runs them under
+`./fesvr-teaching-static`, which the run-2/run-3 logs record and which I had written a comment about
+without applying it to these two functions. The mocks accepted it because they matched on `.elf`. The
+recording stand-in now **refuses** a target ELF that is not passed to fesvr, and the tests assert the
+exact command string rather than a count.
+
+**The default `E1_BOARD_CMD` never reached `capture_evidence.py`.** `: "${VAR:=...}"` creates a shell
+variable, not an environment one, so every production run would have failed with `E1_BOARD_CMD is not
+set`; the rehearsal passed it as env and so never exercised the default. It is exported now, and passed
+explicitly at the call, and section 8 of the capture rehearsal drives the default-initialisation path
+through an isolated stand-in shim.
+
+**Reserved-memory failures were silently omitted.** `mem-preflight.py` permits a reserved node to be
+absent and says so in its own output — it does not permit one to exist and be unreadable. The capture
+used `|| true` and skipped anything whose bytes did not come back. Now the transport status and the
+remote command status are kept apart, an absent directory is distinguished from a failed listing, an
+unreadable `reg` is fail-closed, and `od` output is parsed strictly instead of being sifted for anything
+that looks like hex.
+
+Two more came out of testing those: `${E1_TIMEOUT:=timeout }` substitutes for an **empty** value too, so
+`E1_TIMEOUT=''` — which `e1-precycle.sh` tells the user to set when the board has no `timeout` — was
+silently turned back into `timeout `; the advice would not have worked. And `SHIM` was assigned
+unconditionally, the third override in these scripts defeated that way, and in the worst direction: the
+fallback is the real serial device, so the failure mode is a test that opens hardware and hangs. Every
+invocation in the capture rehearsal is bounded now, so a hang is a FAIL rather than a hang.
+
+A mutant putting the bare `./probe.elf` form back is caught **13 ways**, including the stand-in's own
+refusal.
 
 Two defects in my own test harness came out of writing this: `grep -c` prints `0` **and exits 1**, so
 `|| echo 0` made every count read `"0\n0"`; and `artefacts.sh` reassigned `SEND` unconditionally after

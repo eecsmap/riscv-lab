@@ -19,10 +19,21 @@
 # ---------------------------------------------------------------------------------------------------
 
 R=/home/engineer/fpga
-SHIM=$R/experiments/teaching-cpu/xv6-board-run/scripts/serial-transport.py
+# `: "${SHIM:=...}"`, not a plain assignment. This is the third place in these scripts where an
+# unconditional assignment silently defeated an override (SEND in artefacts.sh was the second), and it
+# defeats it in the worst direction: the fallback is the REAL serial device, so the failure mode is a
+# test that opens hardware and hangs rather than one that errors.
+: "${SHIM:=$R/experiments/teaching-cpu/xv6-board-run/scripts/serial-transport.py}"
 : "${E1_BOARD_CMD:=timeout 200 python3 $SHIM}"
+# EXPORTED: `: "${VAR:=...}"` creates a shell variable, not an environment one, so capture_evidence.py
+# saw nothing whenever the caller had not set it itself -- which is every production run. The rehearsal
+# passed it as env and so never exercised the default. Codex reproduced it.
+export E1_BOARD_CMD
 : "${E1_LOG:=}"
-: "${E1_TIMEOUT:=timeout }"
+# `${VAR=default}`, NOT `${VAR:=default}`: the colon form substitutes for an empty value too, so
+# E1_TIMEOUT='' -- which precycle tells the user to set when the board has no `timeout` -- was silently
+# turned back into "timeout ". The advice would not have worked. Found by asserting the command.
+: "${E1_TIMEOUT=timeout }"
 # Overridable so the ENTRYPOINT rehearsal can drive the real scripts without a board, a coord daemon or
 # a file transfer. Defaults are the production paths; the rehearsal substitutes recording stubs.
 : "${E1_COORD:=$R/coord}"
@@ -133,7 +144,7 @@ verify_cold_cycle() {
 capture_memory_evidence() {
     local dest=$1 expect_session=$2
     mkdir -p "$dest/dt"
-    python3 "$(dirname "${BASH_SOURCE[0]}")/capture_evidence.py" --dest "$dest" \
+    E1_BOARD_CMD="$E1_BOARD_CMD" python3 "$(dirname "${BASH_SOURCE[0]}")/capture_evidence.py" --dest "$dest" \
         || die $EX_MEM "could not capture this boot's memory evidence"
     local got; got=$(cat "$dest/session-id" 2>/dev/null | tr -d ' \n')
     [ "$got" = "$expect_session" ] || die $EX_MEM "the captured evidence belongs to session '${got:-<none>}', not the live boot '$expect_session'"
@@ -188,13 +199,26 @@ GATES="boot01_marker boot02_clint boot03_ddr boot04_badaddr ext01_m ext02_c ext0
 PERF_PROBES="perf03_fetch perf04_where"
 marker_for() { awk -v p="$1" '$1==p {print $2}' "$(dirname "${BASH_SOURCE[0]}")/markers.tsv"; }
 
+# The probes are RISC-V TARGET ELFs. They cannot execute on the ARM at all: they run under
+# ./fesvr-teaching-static, exactly as the run-2/run-3 board flow does. An earlier version invoked
+# ./probe.elf directly -- the mocks accepted it because they matched on ".elf", which is why the
+# recording stand-in now REFUSES a target ELF that is not passed to fesvr.
+#
+# The bound is optional: with E1_TIMEOUT empty the command must still be a command, not a bare number
+# left where the program should be.
+probe_cmd() {
+    local elf=$1 t=$2 pre=""
+    [ -n "$E1_TIMEOUT" ] && pre="${E1_TIMEOUT}${t} "
+    printf 'cd /root/xv6run && %s./fesvr-teaching-static ./%s.elf 2>&1; echo RC=$?' "$pre" "$elf"
+}
+
 run_startup_gates() {
     local outdir=$1 timeout_s=${2:-120} n=0 g
     mkdir -p "$outdir"
     for g in $GATES; do
         local want; want=$(marker_for "$g")
         [ -n "$want" ] || die $EX_GATE "no completion marker recorded for $g; run gen-markers.sh"
-        if ! board "cd /root/xv6run && ${E1_TIMEOUT}$timeout_s ./$g.elf 2>&1; echo RC=\$?"; then
+        if ! board "$(probe_cmd "$g" "$timeout_s")"; then
             printf '%s\n' "$BOARD_OUT" > "$outdir/$g.out"
             die $EX_GATE "the transport failed while running gate $g; the board's state is unknown"
         fi
@@ -218,7 +242,7 @@ run_perf_samples() {
     for probe in $PERF_PROBES; do
         ok=0
         for n in $(seq 1 "$want_n"); do
-            if ! board "cd /root/xv6run && ${E1_TIMEOUT}$timeout_s ./$probe.elf 2>&1; echo RC=\$?"; then
+            if ! board "$(probe_cmd "$probe" "$timeout_s")"; then
                 printf '%s\n' "$BOARD_OUT" > "$outdir/$probe.$n.out"
                 die $EX_TRANSPORT "the transport failed during $probe sample $n; the board's state is unknown"
             fi
