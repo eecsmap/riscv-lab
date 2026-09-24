@@ -18,7 +18,14 @@ import json
 import re
 import sys
 
-EV = re.compile(r"^(EVA?H?) +(\d+) +(\w+)")
+# The trace does NOT own whole lines. The probe writes its console one character at a time through
+# HTIF, and each character lands in the stdout stream wherever it happens to fall -- so a line reads
+# "TEVA  1564 R id=0 ...", where the leading T is the probe and the rest is the trace. Matching only
+# `^EV` therefore classified the probe's own output as console text one character per line, which is
+# true but useless, and a marker spread over eight lines matched nothing.
+#
+# So: find the trace ANYWHERE in the line. What precedes it is the probe's, verbatim.
+EV = re.compile(r"(EVA?H?)\s+(\d+)\s+(\w+).*$")
 
 
 def main():
@@ -33,7 +40,8 @@ def main():
     last_cycle = 0
     total = 0
     for line in sys.stdin:
-        m = EV.match(line)
+        line = line.rstrip("\n")
+        m = EV.search(line)
         if m:
             total += 1
             counts[f"{m.group(1)}:{m.group(3)}"] += 1
@@ -41,12 +49,12 @@ def main():
                 last_cycle = max(last_cycle, int(m.group(2)))
             except ValueError:
                 pass
-            if len(head) < a.keep:
-                head.append(line)
-            else:
-                tail.append(line)
+            raw = line[m.start():] + "\n"
+            (head if len(head) < a.keep else tail).append(raw)
+            if m.start():                       # the probe's characters, before the trace
+                console.append(line[:m.start()])
         else:
-            console.append(line)
+            console.append(line + "\n")
 
     with open(f"{a.out}/console.txt", "w") as f:
         f.writelines(console)

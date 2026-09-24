@@ -1,0 +1,4 @@
+M3-CLINT-OK
+Completed after 125243 cycles
+AXI ar=14110 r=14110 rlast=14110 aw=188 w=188 wlast=188 b=188
+CYCLES total=125243 host_done_at=125236 drained=8
