@@ -1,0 +1,6 @@
+case D (a SAME-VALUE satp write did not invalidate)
+TEACHING-TLB-SFENCE-FAIL
+*** FAILED *** (tohost = 1)
+*** FAILED *** (code = 1, seed 1786935916) after 47285 cycles
+AXI ar=2087 r=2087 rlast=2087 aw=1348 w=1348 wlast=1348 b=1348
+CYCLES total=47285 host_done_at=47280 drained=6

@@ -1,0 +1,5 @@
+Verilator 5.022 2024-02-24 rev conda-forge build 1
+gcc: riscv64-unknown-elf-gcc (gc891d8dc23e) 13.2.0
+2026-09-24T21:38:26Z
+cpu rtl dir: /home/engineer/fpga/worktrees/ips-tlb/experiments/IPS-campaign/rtl-tlb-disabled
+e9e7a6ab51e1b5bd83d26d6a211e1437cd96e96baa3bc1a8a1e96676f07b220b  /home/engineer/fpga/worktrees/ips-tlb/experiments/IPS-campaign/rtl-tlb-disabled/tcpu_core.v
