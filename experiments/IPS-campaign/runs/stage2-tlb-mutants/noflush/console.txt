@@ -1,0 +1,6 @@
+case A (sfence.vma did not invalidate a cached entry)
+TEACHING-TLB-SFENCE-FAIL
+*** FAILED *** (tohost = 1)
+*** FAILED *** (code = 1, seed 1786907385) after 47278 cycles
+AXI ar=1973 r=1973 rlast=1973 aw=1324 w=1324 wlast=1324 b=1324
+CYCLES total=47278 host_done_at=47275 drained=4

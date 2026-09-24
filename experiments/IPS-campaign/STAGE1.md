@@ -128,10 +128,41 @@ That is the same approach `xv6-drive.py` already takes, which is reassuring — 
 reading of this stream, not an invention. No simulation was repeated: the data was recoverable from
 what had already been written.
 
+## xv6 with the frozen `b0apps` profile — PASSED
+
+Driven through the **production** runner (`board-runner.py --workload b0apps`), same kernel
+`6ad5c233…` and same pristine disk `6bdd8148…` as the accepted 2026-09-23 simulator record, hashes
+checked rather than assumed, with a fresh copy of the disk for the sample.
+
+```
+ok  4.2      kernel banner
+ok  2745.4   init started / first prompt
+ok  3193.7   shell prompt
+ok  4406.8   command b0compute
+ok  5844.7   command b0array
+ok  18481.5  command b0file
+BOARD_RUN stages=6 failed=0 host_exit=0 (deliberate-stop-after-all-commands)
+```
+
+| workload | checksum | board |
+| --- | --- | --- |
+| `b0compute` | `5ADF55920BF7696` | same |
+| `b0array` | `88133D5BD386DB60` | same |
+| `b0file` | `62E55F5326378000` | same |
+
+All three match the hardware results from the 2026-09-23 board campaign exactly. The production checker
+reports `XV6_CHECK segments=4 prompts=4 stages=6 fails=0`. 3,244,693,508 target cycles.
+
+**Those wall times are the SIMULATOR's** and measure the simulator, not the CPU — 18,481 s here against
+356.8 s on the board for `b0file`. The checksums are the result; the times are not.
+
+The simulator binary necessarily differs from the accepted record's, which is recorded as the confound
+it is; the software side is identical by hash.
+
 ## Status
 
-**IMPLEMENTED**, and **SIM-VERIFIED** at port level and at SoC level with metrics.
+**IMPLEMENTED** and **SIM-VERIFIED**: port level, SoC level with metrics, and xv6 with the frozen
+application profile.
 
-Not done: xv6 with the frozen `b0apps` profile (running), and the baseline xv6 comparison. Nothing is
-BUILD-VERIFIED, BOARD-VERIFIED or PERFORMANCE-MEASURED — no bitstream has been built and no hardware
-has been touched by this campaign.
+Not done: the baseline xv6 comparison. Nothing is BUILD-VERIFIED, BOARD-VERIFIED or
+PERFORMANCE-MEASURED — no bitstream has been built and no hardware has been touched by this campaign.

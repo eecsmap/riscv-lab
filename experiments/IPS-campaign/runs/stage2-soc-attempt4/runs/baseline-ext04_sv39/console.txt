@@ -1,0 +1,4 @@
+TEACHING-EXT-SV39-OK
+Completed after 28321 cycles
+AXI ar=1855 r=1855 rlast=1855 aw=630 w=630 wlast=630 b=630
+CYCLES total=28321 host_done_at=28288 drained=34

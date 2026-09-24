@@ -1,0 +1,4 @@
+TEACHING-EXT-M-OK
+Completed after 9379 cycles
+AXI ar=842 r=842 rlast=842 aw=94 w=94 wlast=94 b=94
+CYCLES total=9379 host_done_at=9376 drained=4

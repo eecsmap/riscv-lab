@@ -1,0 +1,4 @@
+TEACHING-EXT-SV39-OK
+Completed after 21100 cycles
+AXI ar=993 r=993 rlast=993 aw=630 w=630 wlast=630 b=630
+CYCLES total=21100 host_done_at=21092 drained=9
