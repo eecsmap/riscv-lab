@@ -100,9 +100,26 @@ module tcpu_xlate #(
   wire [55:0] hit_pa = (tlb_level == 2'd2) ? {tlb_ppn[43:18], look_va[29:0]} :
                        (tlb_level == 2'd1) ? {tlb_ppn[43:9],  look_va[20:0]} : {tlb_ppn, look_va[11:0]};
   wire [3:0]  hit_pf_cause = (look_type == 2'd0) ? 4'd12 : (look_type == 2'd1) ? 4'd13 : 4'd15;
-  // a non-canonical VA is the walker's business; it is never cached, so a hit cannot be non-canonical
 
-  wire ptw_start_w = start & ~tlb_hit;
+  // CANONICALITY. The comment that used to sit here said a hit cannot be non-canonical because a
+  // non-canonical VA is never cached. That was false and Codex reproduced it: tcpu_tlb compares only
+  // va[38:12], so an entry filled by a CANONICAL address is hit by a later NON-CANONICAL alias with
+  // the same low VPN and different upper bits, and the hit path skipped the walker's
+  // `va[63:39] == {25{va[38]}}` check entirely. Observed fault=0 cause=0 hit=1 where a load page fault
+  // was required.
+  //
+  // The repair does not duplicate the check or the fault. A non-canonical VA simply may not USE a
+  // cached entry, so it goes to the walker -- which rejects it in its IDLE state, before issuing any
+  // request, with the cause the architecture requires and the tval the core already reports. No
+  // physical access happens on an invalid hit because the walker never makes one for a
+  // non-canonical address.
+  //
+  // With TLB_ENTRIES = 0, tlb_hit is constant 0, so `tlb_hit & canonical` is constant 0 too and the
+  // disabled-TLB timing control is untouched.
+  wire        canonical  = (look_va[63:39] == {25{look_va[38]}});
+  wire        hit_usable = tlb_hit & canonical;
+
+  wire ptw_start_w = start & ~hit_usable;
   tcpu_ptw #(.FAULT_PTW_NO_PERM(FAULT_PTW_NO_PERM)) ptw (
     .clk(clk), .rst(rst), .start(ptw_start_w), .va(va), .acc_type(acc_type), .eff_priv(eff_priv),
     .sum(sum), .mxr(mxr), .root_ppn(root_ppn),
@@ -135,7 +152,7 @@ module tcpu_xlate #(
     end else begin
       if (start) begin
         va_r <= va; type_r <= acc_type; priv_r <= eff_priv; sum_r <= sum; mxr_r <= mxr;
-        if (tlb_hit) begin
+        if (hit_usable) begin
           o_hit    <= 1'b1;
           hit_done <= 1'b1;
           if (hit_perm_ok) hit_pa_r <= hit_pa;

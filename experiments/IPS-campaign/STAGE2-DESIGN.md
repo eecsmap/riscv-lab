@@ -65,6 +65,22 @@ reproducible and a regression legible. The cost is that a pathological access pa
 entry; with 8 fully associative entries and the workloads frozen for this campaign, that is a trade
 worth stating rather than hiding.
 
+## Canonicality
+
+**Every translation is checked, including a hit.** `tcpu_tlb` compares only `va[38:12]`, so an entry
+filled by a canonical address would otherwise be hit by a later **non-canonical** alias with the same
+low VPN and different upper bits. Codex reproduced exactly that against the delivered RTL:
+`fault=0 cause=0 hit=1` where a load page fault was required.
+
+An earlier comment in `tcpu_xlate.v` claimed a hit could not be non-canonical because a non-canonical
+VA is never cached. That was false: the *fill* is canonical, the *lookup* need not be.
+
+The repair does not duplicate the check or the fault. A non-canonical VA simply may not **use** a
+cached entry — `hit_usable = tlb_hit & canonical` — so it goes to the walker, which rejects it in its
+IDLE state with the architecture's cause and the core's own `tval`, **before issuing any request**.
+No physical access occurs on an invalid hit. With `TLB_ENTRIES = 0`, `tlb_hit` is constant 0, so the
+expression is constant 0 too and the disabled-TLB timing control is untouched.
+
 ## Where the permission check happens
 
 In the core, on the hit path, using the **same expressions** as `tcpu_ptw.v` — not a copy that can
@@ -79,8 +95,16 @@ A/D is part of that check: A/D are software-managed here, so an entry with `A=0`
 
 ## Invalidation
 
-**Conservative full flush.** Every `sfence.vma`, whatever its `rs1`/`rs2`, and every write to `satp`,
-invalidate all 8 entries in one cycle.
+**Conservative full flush.** Every `sfence.vma`, whatever its `rs1`/`rs2`, and every **write** to
+`satp` — including one that writes the value already there — invalidate all 8 entries in one cycle.
+
+The first RTL watched the satp *value* and so did not flush on a same-value write. That is not an ISA
+violation on its own, because `sfence.vma` is still required, but it is not what this document said,
+and a design document that does not describe the RTL is worse than none. The flush is driven from
+`csr_we_r && csr == 0x180` — the CSR file's own write enable, so a `CSRRS`/`CSRRC` with `rs1 = x0`,
+which performs no write, correctly does not flush. `tlb01_sfence` case **D** tests exactly this: the
+page table is edited and `satp` is rewritten with the value it already holds, with **no** `sfence.vma`
+anywhere, and the access must fault.
 
 * **ASID**: not stored. A `satp` write changes the address space and flushes everything, so an entry
   can never outlive the address space it was filled in.
@@ -118,6 +142,8 @@ Written before the implementation, so they cannot be shaped to it:
 | a `satp` write does not flush | the same VA mapped differently in two address spaces |
 | a superpage entry compares the full VPN | two 4 KiB pages inside one 2 MiB superpage |
 | a failed walk fills an entry | a faulting access repeated — the second must fault for the same reason, not hit |
+| a hit skips the canonicality check | a **warmed** canonical translation reached through a non-canonical alias, on load, store and fetch, in both sign-extension halves, at 4 KiB, 2 MiB and 1 GiB |
+| a same-value `satp` write does not flush | a page-table edit followed by rewriting `satp` with the value it already has, and no `sfence.vma` |
 
 ## Implementation
 

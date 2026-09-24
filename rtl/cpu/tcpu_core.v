@@ -469,11 +469,14 @@ module tcpu_core #(
   // so a write that changes nothing changes no mapping -- and a write that changes the root is exactly
   // what must flush. An sfence that traps also flushes, which is over-flushing, which is the safe
   // direction: the failure mode of over-flushing is a slower machine and of under-flushing a wrong one.
-  reg  [44:0] satp_seen;
-  wire [44:0] satp_now = {csr_satp_mode, csr_satp_ppn};
-  wire        satp_changed = (satp_seen != satp_now);
-  wire        tlb_flush = satp_changed || ((state == S_ARCH) && is_sfence);
-  always @(posedge clk) if (rst) satp_seen <= 45'd0; else satp_seen <= satp_now;
+  // EVERY write to satp, not only one that changes it. The first version watched the VALUE, so a
+  // same-value write did not flush -- which is not an ISA violation on its own, since sfence.vma is
+  // still required, but it is not what STAGE2-DESIGN.md promised and a design document that does not
+  // describe the RTL is worse than no document. csr_we_r is the actual write enable the CSR file acts
+  // on, so this covers same-value writes and excludes a CSRRS/CSRRC with rs1=x0, which performs no
+  // write at all.
+  wire        satp_write = csr_we_r && (csr == 12'h180);
+  wire        tlb_flush  = satp_write || ((state == S_ARCH) && is_sfence);
 
   wire xlate_hit, xlate_miss;      // observation only; nothing architectural reads these
   tcpu_xlate #(.TLB_ENTRIES(TLB_ENTRIES), .FAULT_PTW_NO_PERM(FAULT_PTW_NO_PERM)) ptw (

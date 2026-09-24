@@ -19,6 +19,11 @@ cat "$OUT/identities.txt"
 timeout 300 "$OUT/obj/tb" > "$OUT/run.txt" 2>&1
 rc=$?
 cat "$OUT/run.txt"
+# EVERY non-zero status fails, even when the success text is present. The bench prints TLB_TB_OK and
+# then $finish, so a non-zero exit after it means something happened that the bench did not report --
+# an assertion elsewhere, a signal, a crash during teardown. Trusting the marker over the status is
+# how a suite comes to agree with whatever arrives.
 [ $rc -eq 124 ] && { echo "TLB_TB TIMED OUT (a timeout is a result, not a pass)"; exit 1; }
+[ $rc -ne 0 ] && { echo "TLB_TB exited $rc; a non-zero status is a failure whatever the output says"; exit 1; }
 grep -q TLB_TB_OK "$OUT/run.txt" || { echo "TLB_TB did not report success (rc=$rc)"; exit 1; }
 exit 0

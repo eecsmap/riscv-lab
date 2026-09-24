@@ -172,11 +172,57 @@ cont:   la      t0, handler
         li      t2, 1
         bne     s6, t2, fail_C
 
+        # ================= D: a SAME-VALUE satp write must invalidate too =================
+        #
+        # STAGE2-DESIGN.md promises a flush on EVERY satp write. The first RTL watched the satp VALUE,
+        # so a write that changed nothing flushed nothing -- not an ISA violation on its own, since
+        # sfence.vma is still required, but not what the document said either. Codex asked for the
+        # promise to be implemented and tested rather than quietly narrowed. This is the test: the
+        # page table is edited and satp is rewritten with the value it already has, with NO
+        # sfence.vma anywhere. Only a per-write flush makes the edit visible.
+        srli    t3, s2, 12                 # back to address space 1 (this write does change satp)
+        li      t6, 8
+        slli    t6, t6, 60
+        or      t6, t6, t3
+        csrw    satp, t6
+        sfence.vma
+        li      t4, 1*8                    # full permissions again
+        add     t4, s2, t4
+        sd      s3, 0(t4)
+        fence
+        sfence.vma
+        li      s5, 0
+        li      s6, 0
+        ld      t1, 0(s7)                  # WARM the alias with W present
+        bne     s6, zero, fail_D
+
+        li      t4, 1*8                    # drop W, and deliberately do NOT sfence
+        add     t4, s2, t4
+        li      t6, PTE_V|PTE_R|PTE_X|PTE_A|PTE_D
+        li      t5, 0x80000000
+        srli    t5, t5, 12
+        slli    t5, t5, 10
+        or      t5, t5, t6
+        sd      t5, 0(t4)
+        fence
+
+        csrr    t0, satp
+        csrw    satp, t0                   # <-- a SAME-VALUE write, and nothing else
+        li      s5, 0
+        li      s6, 0
+        sd      t1, 0(s7)                  # must FAULT: the stale entry must be gone
+        li      t2, 15
+        bne     s5, t2, fail_D
+        li      t2, 1
+        bne     s6, t2, fail_D
+
         la      a0, marker
         call    htif_puts
         li      a0, 0
         call    htif_exit
 
+fail_D: la      a0, fmD
+        j       failout
 fail_A: la      a0, fmA
         j       failout
 fail_B: la      a0, fmB
@@ -205,6 +251,7 @@ failmark: .asciz "TEACHING-TLB-SFENCE-FAIL\n"
 fmA:      .asciz "case A (sfence.vma did not invalidate a cached entry)\n"
 fmB:      .asciz "case B (a hit ignored A/D)\n"
 fmC:      .asciz "case C (a satp write did not invalidate)\n"
+fmD:      .asciz "case D (a SAME-VALUE satp write did not invalidate)\n"
 
         .section .data, "aw", @progbits
         .align 12
