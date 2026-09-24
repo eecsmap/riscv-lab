@@ -17,5 +17,6 @@ command -v verilator >/dev/null || { echo "REFUSE: verilator unavailable"; exit 
 timeout 300 "$OUT/obj/tb" > "$OUT/run.txt" 2>&1; rc=$?
 cat "$OUT/run.txt"
 [ $rc -eq 124 ] && { echo "ICACHE_TB TIMED OUT (a timeout is a result, not a pass)"; exit 1; }
+[ $rc -ne 0 ] && { echo "ICACHE_TB exited $rc; a non-zero status is a failure whatever the output says"; exit 1; }
 grep -q ICACHE_TB_OK "$OUT/run.txt" || { echo "ICACHE_TB did not report success (rc=$rc)"; exit 1; }
 exit 0
