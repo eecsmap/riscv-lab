@@ -108,6 +108,38 @@ Named before the implementation exists:
 | the cache is indexed before the permission check | an unmapped page adjacent to a resident line, fetched after a `sfence.vma` |
 | reset does not invalidate | two programs loaded in succession, the second at the same addresses with different instructions |
 
+## Components implemented and tested
+
+| file | what |
+| --- | --- |
+| `rtl/cpu/tcpu_cacheable.v` | **new** — the cacheability decision, alone, so the DEFAULT (no) is visible and unit-testable |
+| `rtl/cpu/tcpu_icache.v` | **new** — 1 KiB, direct mapped, 16-byte lines, `BYTES=0` disables |
+
+`tests/run-icache-tb.sh <outdir>`: **21 checks, 0 fails** — cold miss, a line hitting anywhere inside
+itself and nowhere else, a 1 KiB conflict evicting, all 64 lines resident together, invalidate,
+reset, the disabled configuration, and the cacheability map including both DRAM windows, the whole
+CLINT window and three addresses nobody thought about.
+
+**"No valid partial line" is structural, not checked.** `fill` takes the whole 128-bit line in one
+cycle, so a refill that errored on its second beat simply never asserts it. There is no interface
+through which half a line could be marked valid.
+
+Checked against four mutants, each caught by the right test:
+
+| mutant | caught by |
+| --- | --- |
+| `invalidate` does nothing | the two post-invalidate checks |
+| the tag is not compared | the 1 KiB conflict — the one test that distinguishes it |
+| cacheability defaults to yes | the three addresses nobody thought about |
+| the CLINT is cacheable | `msip` and `mtime` |
+
+A first attempt at the mutant harness reported four "build failed" results. That is **not a catch**,
+and it was mine: `$PWD` inside a subshell that had already `cd`-ed elsewhere. Recorded because reading
+a build failure as a caught mutant is exactly how a test suite comes to mean nothing.
+
 ## Status
 
-**Design only.** No RTL written, no branch created.
+**Components IMPLEMENTED and SIM-VERIFIED in isolation.** Not integrated into the core: the fetch FSM
+change is larger than the TLB's was, and `ips-tlb` is not yet SoC-verified — building it on an
+unverified predecessor would risk work that has to be redone. Integration waits for the stage 1 xv6
+run to free the simulation slot and for stage 2's SoC regression to pass.
