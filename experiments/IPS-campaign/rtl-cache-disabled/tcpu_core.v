@@ -13,7 +13,9 @@
 module tcpu_core #(
   parameter [63:0] RESET_PC      = 64'h0000_0000_8000_0000, // test harness entry; real reset is 0x10040
   parameter        TLB_ENTRIES   = 8,   // IPS-campaign stage 2: 0 disables translation caching entirely
-  parameter        ICACHE_BYTES  = 1024,// IPS-campaign stage 3: 0 removes the instruction cache
+  parameter        ICACHE_BYTES  = 0,   // DISABLED CONFIGURATION: this copy exists only so the harness,
+                                       // which does not pass the parameter through, can be built with no
+                                       // instruction cache. It must be cycle-identical to ips-tlb.
   parameter        X0_WRITABLE   = 0,   // fault injection: x0 becomes an ordinary register
   parameter        NO_LOAD_SEXT  = 0,   // fault injection: loads stop sign-extending
   parameter        REQ_WITHDRAW  = 0,   // monitor self-test: withdraw a request before its handshake

@@ -13,6 +13,8 @@ module ifill_tb;
   wire [63:0] c_resp_rdata;
   wire m_req_valid, o_hit, o_miss;
   wire [31:0] m_req_addr;
+  wire [1:0]  m_req_size;
+  reg  [1:0]  c_req_size = 2'd2;
   reg  m_req_ready = 1, m_resp_valid = 0, m_resp_error = 0;
   reg  [63:0] m_resp_rdata = 0;
 
@@ -24,9 +26,9 @@ module ifill_tb;
   tcpu_ifill #(.BYTES(1024), .LINE_BYTES(16)) dut (
     .clk(clk), .rst(rst), .invalidate(invalidate),
     .c_req_valid(c_req_valid), .c_req_ready(c_req_ready), .c_req_addr(c_req_addr),
-    .c_req_write(c_req_write), .c_is_fetch(c_is_fetch),
+    .c_req_size(c_req_size), .c_req_write(c_req_write), .c_is_fetch(c_is_fetch),
     .c_resp_valid(c_resp_valid), .c_resp_rdata(c_resp_rdata), .c_resp_error(c_resp_error),
-    .m_req_valid(m_req_valid), .m_req_ready(m_req_ready), .m_req_addr(m_req_addr),
+    .m_req_valid(m_req_valid), .m_req_ready(m_req_ready), .m_req_addr(m_req_addr), .m_req_size(m_req_size),
     .m_resp_valid(m_resp_valid), .m_resp_rdata(m_resp_rdata), .m_resp_error(m_resp_error),
     .o_hit(o_hit), .o_miss(o_miss));
 
@@ -75,6 +77,12 @@ module ifill_tb;
       "  at the line base and base+8, in order");
     want(got == {32'hA5A50000, 32'h8000_0000}, "  and the core gets the 64-bit word containing its address");
 
+    // The property is that it RETURNS to PASS, not that it is in PASS the instant the response is
+    // seen -- the response is asserted a cycle before the state settles, and nothing in the protocol
+    // says otherwise. Asserting the stricter thing failed for its own reason, not the design's.
+    repeat (3) @(negedge clk);
+    want(dut.state == 2'd0, "the wrapper returns to PASS after answering");
+    want(m_req_size == 2'd2, "  and m_req_size follows the core again once the refill is over");
     $display("== 2. a second fetch in the same line makes NO external request");
     reset_ext; do_fetch(32'h8000_000C, 1, 0);
     want(ext_count == 0, "a hit produces no external transaction AT ALL");
