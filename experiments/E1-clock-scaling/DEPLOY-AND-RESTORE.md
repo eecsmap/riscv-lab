@@ -1,7 +1,9 @@
 # E1 deployment and restore checklist
 
 Prepared while awaiting the hardware gates, per `codex-review-20260922-decisions`. **Nothing here has
-been executed.** Installing this bitstream is conditional on B0 measurement-identity review, the current
+been executed.** The procedure is executable: see `scripts/README.md`. Steps 1–12 are
+`e1-precycle.sh` / `e1-record-power-cycle.sh` / `e1-install.sh` / `e1-restore.sh`, rehearsed offline
+at 27/27 + 36/36 + 21/21 and independently rerun by Codex. Installing this bitstream is conditional on B0 measurement-identity review, the current
 boot/memory/safe-state gates, and two physically coordinated cold cycles.
 
 ## Identities
@@ -37,8 +39,14 @@ That self-check is the reason to believe the E1 payload hash.
 
 ## Install (only after the gates, and only with a coordinated cold cycle)
 
-1. **user powers the board down and up.** Verified, never assumed, on the same signals as before: USB
-   re-enumeration, a new boot id, uptime near zero, `/root/xv6run` empty, no remote lock, no fesvr;
+1. **user powers the board down and up**, then runs `scripts/e1-record-power-cycle.sh install`.
+   The boot signals — a new boot id against the one pinned beforehand, uptime near zero,
+   `/root/xv6run` empty, no remote lock, no fesvr — are **necessary checks, not proof of power
+   removal**. A warm `reboot` changes every one of them and leaves the PL configured. Nothing
+   reachable from the host distinguishes the two, so power removal is **attested by the user** and is
+   labelled attested-not-measured wherever it is used. Both are required: the attestation without the
+   boot evidence proves nothing about the board's state, and the boot evidence without the
+   attestation does not establish a power cycle;
 2. claim `board` and `serial`; capture **fresh same-boot memory evidence** and pass the preflight;
 3. deploy `e1-25mhz.bit.bin` and re-verify its hash **on the board**;
 4. program from the **cold, quiescent** platform; read the adapter status and record it;
@@ -50,7 +58,10 @@ The adapter status at 25 MHz is **not predicted here**. It is read and recorded.
 
 ## Restore — required, and not authority for unsafe recovery
 
-8. **user powers the board down and up again**, verified as in step 1;
+8. **user powers the board down and up again**, then runs
+   `scripts/e1-record-power-cycle.sh restore`. Same pairing as step 1: necessary boot checks plus a
+   fresh user attestation. A record older than the pin is refused, because it attests to the earlier
+   cycle;
 9. deploy and re-verify `teaching.bit.bin` (`20fae71e…`) on the board;
 10. program the accepted bitstream from the cold platform;
 11. **re-run the eight startup gates** and record them. The session is not closed until they pass;

@@ -22,9 +22,19 @@ check() { local f=$1 want=${2:-} g
 }
 check "$E1_PAYLOAD"        "$E1_PAYLOAD_SHA"
 check "$ACCEPTED_PAYLOAD"  "$ACCEPTED_PAYLOAD_SHA"
-check "$HOSTBIN"; check "$SEND"
-for f in $GATES $PERF_PROBES; do check "$(elf_path "$f")"; done
+check "$HOSTBIN"           "$HOSTBIN_SHA"
+check "$SEND"
 [ -s markers.tsv ] || { say "  MISSING : markers.tsv (run gen-markers.sh)"; bad=1; }
+
+say "== probe identities, against the recorded ones"
+# Codex: "unchanged host/probe identities". markers.tsv records each probe's sha256 alongside its
+# completion marker, both read out of the ELF itself, so a rebuilt probe shows up here rather than on
+# the board.
+for f in $GATES $PERF_PROBES; do
+    want=$(awk -v p="$f" '$1==p {print $3}' markers.tsv)
+    if [ -z "$want" ]; then say "  NO RECORD : $f is not in markers.tsv"; bad=1; continue; fi
+    check "$(elf_path "$f")" "$want"
+done
 [ $bad -eq 0 ] || die $EX_HASH "local artefacts are not ready; fix these BEFORE any power cycle"
 say "  all local artefacts present and the two payloads hash correctly"
 

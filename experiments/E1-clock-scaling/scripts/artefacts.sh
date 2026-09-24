@@ -12,6 +12,8 @@ E1_PAYLOAD_SHA=6b5da7e786186bac97bd2156a720f4be78e4bf8e7e396bae61351ae9361c3acb
 ACCEPTED_PAYLOAD=$R/experiments/teaching-cpu/xv6-board-run/derived/teaching.bit.bin
 ACCEPTED_PAYLOAD_SHA=20fae71e4661c6c93a9826397594e058ef4bf6dc01071a41809ebb3a312c9f5a
 HOSTBIN=$P/deploy-bundle/fesvr-teaching-static
+# the host binary that the accepted B0 board campaign ran with; an identity, not a convenience
+HOSTBIN_SHA=c050eab30f80a21a7c92c8688faa2f043c67aa2900fbc08b80f3dd8de2ba1fb9
 # `: "${SEND:=...}"`, not a plain assignment: lib-e1.sh already makes this overridable and an
 # unconditional assignment here silently undid that -- the entrypoint rehearsal then called the REAL
 # send-file.py, which opened the serial device and hung. Found by the rehearsal hanging, which is the

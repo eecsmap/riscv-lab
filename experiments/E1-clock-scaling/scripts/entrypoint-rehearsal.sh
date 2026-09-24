@@ -60,6 +60,26 @@ expect_stop() {   # <label> <wanted-exit> <what may already have happened: deplo
     ok "$label (exit $want; deploy=$d program=$p probe=$b)"
 }
 
+echo "== P. e1-precycle.sh: the step that runs FIRST, and was not covered at all"
+setup; rm -f "$OUT/state/install-pin.txt"
+rc=$(runscript e1-precycle.sh install)
+[ "$rc" = 0 ] && ok "precycle completes on a healthy board" || no "precycle completes" "exit $rc: $(tail -1 "$OUT/stderr.txt")"
+[ "$(cat "$OUT/state/install-pin.txt" 2>/dev/null)" = "11111111-2222-3333-4444-555555555555" ] \
+  && ok "  and pins the board's ACTUAL boot id" || no "pin written" "got '$(cat "$OUT/state/install-pin.txt" 2>/dev/null)'"
+[ "$(n_deploy)" = 0 ] && [ "$(n_program)" = 0 ] && [ "$(n_probe)" = 0 ] \
+  && ok "  and deploys, programs and probes nothing" || no "precycle is read-only" "deploy=$(n_deploy) program=$(n_program) probe=$(n_probe)"
+grep -q "COORD claim board" "$REC" && ok "  and claims its leases before speaking to the board" || no "leases first" "no claim recorded"
+first=$(grep -nE '^(COORD|BOARD) ' "$REC" | head -1)
+case "$first" in *"COORD claim"*) ok "  the very first operation is a lease claim" ;;
+                 *) no "claim precedes transport" "first was: $first" ;; esac
+
+setup; rc=$(FAKE_PIN_UNREADABLE=1 runscript e1-precycle.sh install)
+[ "$rc" = 50 ] && ok "an unreadable boot id refuses rather than pinning an empty value" || no "unreadable pin" "exit $rc"
+
+setup; rc=$(FAKE_CLAIM_DENY=serial runscript e1-precycle.sh install)
+[ "$rc" = 60 ] && ok "a denied lease stops precycle" || no "precycle lease denial" "exit $rc"
+[ "$(n_board)" = 0 ] && ok "  with no transport call at all" || no "no transport on denial" "$(n_board)"
+
 echo "== A. the defect this file exists for: a refused cold cycle must stop the ENTRYPOINT"
 setup; rc=$(FAKE_BID=aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee runscript e1-install.sh)
 expect_stop "an UNCHANGED boot id stops install before any deploy or programming" 10 none "$rc"

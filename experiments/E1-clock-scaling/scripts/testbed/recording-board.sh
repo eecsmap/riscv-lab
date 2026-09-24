@@ -63,6 +63,9 @@ case "$CMD" in
   *PD=*)      echo "PD=$FAKE_PROGDONE"; echo "BOOTID=$FAKE_BID"; echo "UP=$FAKE_UP"
               echo "LOAD=0.0 0.0 0.0"; echo "FESVR_N=0"; echo "LOCK=NO_LOCK" ;;
   *__E1B__*)  echo "__E1B__"; emit_evidence; echo "__E1S__=$S"; echo "__E1E__" ;;
+  *boot_id*)  # a BARE boot-id read: what e1-precycle.sh does when it pins. This branch was missing,
+              # so the pin step was never rehearsed at all -- the stand-in answered "(fake: unhandled)".
+              if [ -n "${FAKE_PIN_UNREADABLE:-}" ]; then echo "cat: can't open"; else echo "$FAKE_BID"; fi ;;
   *.elf*)
       case "$CMD" in
         *"./fesvr-teaching-static ./"*) : ;;
