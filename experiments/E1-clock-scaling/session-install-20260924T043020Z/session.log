@@ -1,0 +1,44 @@
+=== E1 install, session /home/engineer/fpga/riscv-lab/experiments/E1-clock-scaling/session-install-20260924T043020Z
+  board has 'timeout' (recorded by the precheck): probes bounded on both sides
+== leases, before any transport
+  claimed lease: board
+  claimed lease: serial
+== step 1: the cold cycle
+  power removal: ATTESTED by the user at 2026-09-24T04:23:42Z (attested, not measured)
+  boot id now    : 23981968-4c31-4818-9f93-c328b780cbcf
+  pinned before  : 336004e0-c570-470c-9237-76139c3cdf37
+  uptime         : 421 s;  /root/xv6run entries: 0;  fesvr: 0;  lock: NO_LOCK
+  boot evidence consistent with a cold start (new boot id 23981968-4c31-4818-9f93-c328b780cbcf)
+== step 2: this boot's memory evidence, then the production preflight
+  captured memory evidence for session 23981968-4c31-4818-9f93-c328b780cbcf
+## evidence: /home/engineer/fpga/riscv-lab/experiments/E1-clock-scaling/session-install-20260924T043020Z/memory
+   session 23981968-4c31-4818-9f93-c328b780cbcf
+   #address-cells=1 #size-cells=1
+   DT memory: 0x00000000 + 0x10000000 (256 MiB)
+   no reserved-memory captured (absent is acceptable; unreadable is not)
+   iomem System RAM: 0x00000000-0x0fffffff
+   MemTotal 247 MiB
+## target window: 0x10000000-0x1fffffff
+MEM_PREFLIGHT OK refusals=0
+  MEM_PREFLIGHT passed for session 23981968-4c31-4818-9f93-c328b780cbcf
+== step 3: deploy, each artefact hash-verified on the board by the upload path
+  deployed+verified: /root/xv6run/e1-25mhz.bit.bin
+  deployed+verified: /root/xv6run/fesvr-teaching-static
+  deployed+verified: /root/xv6run/boot01_marker.elf
+  deployed+verified: /root/xv6run/boot02_clint.elf
+  deployed+verified: /root/xv6run/boot03_ddr.elf
+  deployed+verified: /root/xv6run/boot04_badaddr.elf
+  deployed+verified: /root/xv6run/ext01_m.elf
+  deployed+verified: /root/xv6run/ext02_c.elf
+  deployed+verified: /root/xv6run/ext03_a.elf
+  deployed+verified: /root/xv6run/ext04_sv39.elf
+  deployed+verified: /root/xv6run/perf03_fetch.elf
+  deployed+verified: /root/xv6run/perf04_where.elf
+  executable mode set
+== step 4: program from the cold, quiescent platform
+  programming /root/xv6run/e1-25mhz.bit.bin
+  programming reported rc=0 and prog_done=1
+== step 5: the eight startup gates (exact marker AND confirmed exit; a failure STOPS the session)
+REFUSE(30): startup gate boot01_marker exited 55. The session stops here; it is not skipped and not retried
+  released lease: board
+  released lease: serial

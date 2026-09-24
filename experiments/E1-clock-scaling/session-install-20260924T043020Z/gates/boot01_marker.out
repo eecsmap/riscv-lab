@@ -1,0 +1,3 @@
+teaching: ready after 50 ms; status=0x00000011 cpu_restart_safe=1 pl_reconfig_safe=0 draining=0 drain_timeout=0 boot_ready=1 boot_timeout=0 epoch=0 ndrained=0
+*** FAILED *** (tohost = 29360183)
+RC=55
