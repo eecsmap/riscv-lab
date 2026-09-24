@@ -1,0 +1,237 @@
+{
+  "campaign": "IPS-campaign",
+  "stage": "0 \u2014 identities and measurement contract",
+  "created_utc": "2026-09-24T05:24:31Z",
+  "authorisation": "codex-ips-four-stage-campaign",
+  "clock": {
+    "hz": 40000000,
+    "source": "configured",
+    "derivation": "125 MHz board oscillator on pin H16 (create_clock -period 8) through an MMCM at x8/25. Not measured by any probe.",
+    "applies_to": "every variant in this campaign; the clock is NOT a variable here"
+  },
+  "branches": {
+    "ips-baseline": {
+      "commit": "1e4e4110643d006a8b234cf0d463b56a0e21fdb1"
+    },
+    "ips-fetch32": {
+      "commit": null,
+      "unresolved": "branch does not exist yet; it will be recorded when created"
+    },
+    "ips-tlb": {
+      "commit": null,
+      "unresolved": "branch does not exist yet; it will be recorded when created"
+    },
+    "ips-cache": {
+      "commit": null,
+      "unresolved": "branch does not exist yet; it will be recorded when created"
+    }
+  },
+  "accepted_configuration": {
+    "authority": "experiments/E1-clock-scaling/INPUTS.json frozen_inputs",
+    "authority_note": "fifteen inputs frozen by hash before this campaign existed, for an unrelated purpose. Only the pre-change hashes are used, so nothing here depends on E1 having succeeded -- and it did not.",
+    "verified_by": "experiments/IPS-campaign/tools/verify_baseline_identity.py",
+    "inputs": [
+      {
+        "path": "boards/pynq-z1/frozen/clocking.vh",
+        "sha256": "d0fd087a156a336433edadf559d18c23046ed1931f96d5918f5970d9928365e8"
+      },
+      {
+        "path": "rtl/cpu/tcpu_defs.vh",
+        "sha256": "4d86ce139119a062928900f65b8f5bd38418253d5e91cf805de81329ef930920"
+      },
+      {
+        "path": "boards/pynq-z1/frozen/rocketchip_wrapper.v",
+        "sha256": "6d0b92b5f5a955a117fb80321fda227177f4e77fb4a64130e8391118b33d8fb4"
+      },
+      {
+        "path": "boards/pynq-z1/frozen/teaching_top_shim.v",
+        "sha256": "8c45fe154c3cc7a30a1b3a709e01fb35d9a1eafafe17a8317e0d2a6e00cea4bd"
+      },
+      {
+        "path": "boards/pynq-z1/frozen/RD2BoardTop.RD2AtomicBoardConfig.v",
+        "sha256": "5b217650b2574c506c92d596dbb425afc2c6c4c69edff5765c1c8f0299d7bfe7"
+      },
+      {
+        "path": "rtl/cpu/tcpu_core.v",
+        "sha256": "09449b24e64440f745134e7c98ddff1009667087bf438f03381a0228c40fafc9"
+      },
+      {
+        "path": "rtl/cpu/tcpu_csr.v",
+        "sha256": "0a5722962012f54a22740d7f207311e4264f46e11074b38f71097035b6005a2a"
+      },
+      {
+        "path": "rtl/cpu/tcpu_regfile.v",
+        "sha256": "40334e9cf0c7a247bc587cd486f59d7206131f121b6e1c6a6f254eeda3452350"
+      },
+      {
+        "path": "rtl/cpu/tcpu_muldiv.v",
+        "sha256": "5e85de1d474ad63ff33aa78944ce60b9da579a47d5db0dc43c32c80fa7d8607f"
+      },
+      {
+        "path": "rtl/cpu/tcpu_cdecode.v",
+        "sha256": "7ea0ee368aebae35d962c09e83df0a41282fb47ddbfeff46fe37b27d3e837139"
+      },
+      {
+        "path": "rtl/cpu/tcpu_ptw.v",
+        "sha256": "8a36ea44338c86c07fd4e6f78015cebafd6eca8c14e2b3d38b5abe352eb10d12"
+      },
+      {
+        "path": "boards/pynq-z1/frozen/AsyncResetReg.v",
+        "sha256": "90af647728313f1a9586b4b46042fc522a895727d5d62ac233cdfe9ca483335e"
+      },
+      {
+        "path": "boards/pynq-z1/frozen/plusarg_reader.v",
+        "sha256": "5afcca017b4a6ca89dbc9ae86e688a73604d4503e07997d7b32006013ae419d3"
+      },
+      {
+        "path": "boards/pynq-z1/frozen/base.xdc",
+        "sha256": "b9a05afdf3edfa1d4939558521302faa4855a7645a8a28351f240d4a0b763b0d"
+      },
+      {
+        "path": "boards/pynq-z1/frozen/pynqz1_bd.tcl",
+        "sha256": "e50dbbea52f8e2cf7cdf8e88ceb2766d9326e1b80cedd93f1fb0943e579d7b66"
+      }
+    ],
+    "clocking_vh_accepted": "d0fd087a156a336433edadf559d18c23046ed1931f96d5918f5970d9928365e8"
+  },
+  "toolchain": {
+    "riscv_gcc": "riscv64-linux-gnu-gcc (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+    "python": "3.14.4",
+    "vivado": "vivado v2025.2.1 (64-bit)",
+    "vivado_note": "recorded from E1-clock-scaling/BUILD.json, which read it from its own build banner. Each campaign build must record its OWN banner: a tool-version change is a documented confound, not an architecture result."
+  },
+  "board_artifacts": {
+    "bitstream_sha256": "2cd8a9927cfa2f51da16bc6ba4865a407e985d00bf2accbb046f48c81c0fda52",
+    "raw_payload": {
+      "path": "experiments/teaching-cpu/xv6-board-run/derived/teaching.bit.bin",
+      "sha256": "20fae71e4661c6c93a9826397594e058ef4bf6dc01071a41809ebb3a312c9f5a"
+    },
+    "host_binary": {
+      "path": "experiments/teaching-cpu/xv6-board-prep/deploy-bundle/fesvr-teaching-static",
+      "sha256": "c050eab30f80a21a7c92c8688faa2f043c67aa2900fbc08b80f3dd8de2ba1fb9"
+    },
+    "xv6_kernel": {
+      "path": "experiments/teaching-cpu/xv6-board-prep/deploy-bundle/kernel-128mib",
+      "sha256": "e990fb31fad483b805aaeae77ecaebb3111abcec012d70447c620c9e9b289c2c"
+    },
+    "b0_disk": {
+      "sha256": "6bdd8148b79e5983ecaad04e394327f970e893a4c756a627b7e47da6e31c82ec",
+      "built_by": "riscv-lab/benchmarks/workloads/build-xv6-b0.sh",
+      "note": "not stored in this repo. This hash was VERIFIED ON THE BOARD before each of the four samples of the 2026-09-23 application campaign; a fresh copy of the pristine image is made per sample."
+    },
+    "verified_on_board": "2026-09-24 restore session: teaching.bit.bin reads 20fae71e\u2026, 8/8 gates"
+  },
+  "probes": {
+    "boot01_marker": {
+      "path": "experiments/teaching-cpu/xv6-board-prep/deploy-bundle/boot01_marker.elf",
+      "sha256": "69ca91994567a44f9afb0303013bb8412eb6142749c28b631000e92156da61a2"
+    },
+    "boot02_clint": {
+      "path": "experiments/teaching-cpu/xv6-board-prep/deploy-bundle/boot02_clint.elf",
+      "sha256": "0c4ebbb7648a34c013bbf77b0c7a5f03f901993fbe0e690732c46f15f8fb2c0f"
+    },
+    "boot03_ddr": {
+      "path": "experiments/teaching-cpu/xv6-board-prep/deploy-bundle/boot03_ddr.elf",
+      "sha256": "3089c7e72514eded26b80b02f9dcd57c0ee74609ca42803dd800e360daff39d0"
+    },
+    "boot04_badaddr": {
+      "path": "experiments/teaching-cpu/xv6-board-prep/deploy-bundle/boot04_badaddr.elf",
+      "sha256": "fc3b16962f69e53abfa37a30ddd1490091926a47f4dda1c16fa04e37ea592380"
+    },
+    "ext01_m": {
+      "path": "experiments/teaching-cpu/xv6-board-prep/probes/build/ext01_m.elf",
+      "sha256": "b57e1b63d9d29688fd9ce3a04390d5eddf26edc6007e78fd6314da5df11d07e4"
+    },
+    "ext02_c": {
+      "path": "experiments/teaching-cpu/xv6-board-prep/probes/build/ext02_c.elf",
+      "sha256": "f8f9f75e2134c084f53561efd77ae77e8ed05f6eeaf752b52b2ff86a9711abd6"
+    },
+    "ext03_a": {
+      "path": "experiments/teaching-cpu/xv6-board-prep/probes/build/ext03_a.elf",
+      "sha256": "3d1cda4b1d6af6f8a8a3fe3a97277bfc01714a77ad4901993ca36c6addaf8ced"
+    },
+    "ext04_sv39": {
+      "path": "experiments/teaching-cpu/xv6-board-prep/probes/build/ext04_sv39.elf",
+      "sha256": "0251f1512a16cf6b9c3bf2ad98663105a82b5ce304642378a94cc3dc0bf50023"
+    },
+    "perf03_fetch": {
+      "path": "experiments/teaching-cpu/xv6-board-prep/probes/build-perf/perf03_fetch.elf",
+      "sha256": "6498f89970d429e92a944036d91b20801410be8b14df88f7f59d6512efff05b5"
+    },
+    "perf04_where": {
+      "path": "experiments/teaching-cpu/xv6-board-prep/probes/build-perf/perf04_where.elf",
+      "sha256": "235f2318149ed2064904c92d4cab6849115d576fe80f478eea603e77c067315d"
+    },
+    "perf01_cpi": {
+      "path": "experiments/teaching-cpu/xv6-board-prep/probes/build-perf/perf01_cpi.elf",
+      "sha256": "e5250f5035787a26b41389e20a932890d4c4e116fc87c403c4cea5826925df96",
+      "note": "in the frozen set only if it is rebuilt or located; see workloads below"
+    },
+    "perf02_sv39": {
+      "path": "experiments/teaching-cpu/xv6-board-prep/probes/build-perf/perf02_sv39.elf",
+      "sha256": "bc6185566c5de9da7a4dbce1942262dbeb68b1c8e556ac8f72f15fc1465596ab",
+      "note": "in the frozen set only if it is rebuilt or located; see workloads below"
+    },
+    "perf05_size": {
+      "path": "experiments/teaching-cpu/xv6-board-prep/probes/build-perf/perf05_size.elf",
+      "sha256": "4790cc882d20ddac7e13d5fa1895dc34310eaf22fa82c1d95af113df8ef0b24a",
+      "note": "in the frozen set only if it is rebuilt or located; see workloads below"
+    }
+  },
+  "sources": {
+    "perf01_cpi": {
+      "path": "experiments/teaching-cpu/xv6-board-prep/probes/perf01_cpi.S",
+      "sha256": "12191623e9f08b19fc64e523b9914d9c175ee9259ec02306ed252f6889997bb2"
+    },
+    "perf02_sv39": {
+      "path": "experiments/teaching-cpu/xv6-board-prep/probes/perf02_sv39.S",
+      "sha256": "d0d939c82557c3852fcdd2978bd38f5ff65a248b43a52aa0a8713ae2e8cd1ff5"
+    },
+    "perf03_fetch": {
+      "path": "experiments/teaching-cpu/xv6-board-prep/probes/perf03_fetch.S",
+      "sha256": "9d9e7e043ca97e5bcdb7b126793f7800b534d06f29e12e4a6c2a5bb2542bbdcb"
+    },
+    "perf04_where": {
+      "path": "experiments/teaching-cpu/xv6-board-prep/probes/perf04_where.S",
+      "sha256": "95a443f0912b093014571ab86a1b5552c0e34e57bbae35341e31a3cabf8d6cde"
+    },
+    "perf05_size": {
+      "path": "experiments/teaching-cpu/xv6-board-prep/probes/perf05_size.S",
+      "sha256": "42f256efca72ad305a0d74265fa8edd5343b6c1f20a4488c24b510648a6dbcc9"
+    },
+    "b0compute": {
+      "path": "worktrees/ips-baseline/benchmarks/workloads/src/b0compute.c",
+      "sha256": "b6c89f0d7150a3059fee87c977ccc51b6ba3e378a0b6be8a5992b2ab35954029"
+    },
+    "b0array": {
+      "path": "worktrees/ips-baseline/benchmarks/workloads/src/b0array.c",
+      "sha256": "f683ceba60dfed149fa1e2d76e3c8510f60f93bb60f4c2a3de810dd8f16afcda"
+    },
+    "b0file": {
+      "path": "worktrees/ips-baseline/benchmarks/workloads/src/b0file.c",
+      "sha256": "bc94c6932d42b8b618d3584e65cd773b1440a1b3dad7ee807ad1537b7462edcd"
+    }
+  },
+  "metrics": {
+    "primary": [
+      "delta_instret",
+      "delta_cycle",
+      "cpi = cycles/instret",
+      "ips = instret * 40e6 / cycles",
+      "roi_seconds = cycles / 40e6"
+    ],
+    "counters": "core mcycle/minstret (cycle/instret in S-mode), read either side of the ROI. They count RETIREMENT, not fetches or offered requests.",
+    "rejects": "zero, invalid or wrapped counter readings are rejected, not repaired",
+    "simulation": "simulation wall speed is NOT CPU IPS and is never reported as such",
+    "applications": "application wall time is a separate end-to-end metric. If trustworthy application ROI counters are unavailable, IPS/CPI are null with a reason and are never inferred from host waiting time.",
+    "pooling": "simulation and hardware results are never pooled",
+    "samples": ">=3 successful samples per workload/config/platform; every attempt reported; median with min/max"
+  },
+  "stage_status_vocabulary": [
+    "IMPLEMENTED",
+    "SIM-VERIFIED",
+    "BUILD-VERIFIED",
+    "BOARD-VERIFIED",
+    "PERFORMANCE-MEASURED"
+  ]
+}
