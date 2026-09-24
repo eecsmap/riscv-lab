@@ -22,6 +22,11 @@ n_probe()   { grep -cE 'BOARD cd /root/xv6run && .*\.elf'  "$REC" 2>/dev/null ||
 n_perf()    { grep -cE 'BOARD cd /root/xv6run && .*perf0' "$REC" 2>/dev/null || true; }
 n_board()   { grep -c '^BOARD '                           "$REC" 2>/dev/null || true; }
 
+attest() {                                  # the user's power-removal record, written AFTER the pin
+    { echo "POWER_REMOVED=yes"; echo "AT=now"; } > "$OUT/state/$1-power.txt"
+    touch "$OUT/state/$1-power.txt"
+}
+
 setup() {                                   # fresh output root + recording, with the pins in place
     OUT=$(mktemp -d); REC=$OUT/recording.txt; : > "$REC"
     mkdir -p "$OUT/state"
@@ -72,6 +77,32 @@ grep -q "COORD claim board" "$REC" && ok "  and claims its leases before speakin
 first=$(grep -nE '^(COORD|BOARD) ' "$REC" | head -1)
 case "$first" in *"COORD claim"*) ok "  the very first operation is a lease claim" ;;
                  *) no "claim precedes transport" "first was: $first" ;; esac
+
+# The board this runs on has NO `timeout` builtin. The default would build
+# "timeout 120 ./fesvr-teaching-static ..." and every probe would die with "timeout: not found" inside
+# the user's power-cycle window, so the precheck records what it measured and the session reads it.
+setup; rc=$(FAKE_TMO=no runscript e1-precycle.sh install)
+[ "$rc" = 0 ] && ok "precycle completes on a board with no 'timeout'" || no "precycle, no timeout" "exit $rc"
+[ "$(cat "$OUT/state/install-timeout.txt" 2>/dev/null)" = no ] \
+  && ok "  and RECORDS that the board lacks it" || no "timeout recorded" "got '$(cat "$OUT/state/install-timeout.txt" 2>/dev/null)'"
+# Re-attest AFTER the pin was refreshed -- that is the real order (precycle, power cycle, record,
+# install), and an attestation older than the pin is refused on purpose.
+attest install
+# the fake must report a DIFFERENT boot id now, or there has been no cold cycle to verify -- which the
+# gate correctly refuses, as the two previous attempts at writing this test demonstrated.
+NEWBOOT=22222222-3333-4444-5555-666666666666
+rc=$(FAKE_BID=$NEWBOOT runscript e1-install.sh)
+[ "$rc" = 0 ] && ok "  install then runs using the recorded answer" || no "install with recorded timeout" "exit $rc: $(tail -1 "$OUT/stderr.txt")"
+want='BOARD cd /root/xv6run && ./fesvr-teaching-static ./boot01_marker.elf 2>&1; echo RC=$?'
+grep -qxF "$want" "$REC" && ok "  and issues no 'timeout' the board does not have" \
+  || no "recorded timeout applied" "recorded: $(grep -m1 'BOARD.*boot01_marker' "$REC")"
+setup; rc=$(FAKE_TMO=yes runscript e1-precycle.sh install); attest install
+rc=$(FAKE_BID=$NEWBOOT runscript e1-install.sh)
+want='BOARD cd /root/xv6run && timeout 120 ./fesvr-teaching-static ./boot01_marker.elf 2>&1; echo RC=$?'
+grep -qxF "$want" "$REC" && ok "  and a board that HAS it is still bounded on both sides" \
+  || no "timeout=yes applied" "recorded: $(grep -m1 'BOARD.*boot01_marker' "$REC")"
+setup; rc=$(FAKE_TMO=maybe runscript e1-precycle.sh install)
+[ "$rc" = 62 ] && ok "  an undeterminable answer refuses rather than guessing" || no "undeterminable timeout" "exit $rc"
 
 setup; rc=$(FAKE_PIN_UNREADABLE=1 runscript e1-precycle.sh install)
 [ "$rc" = 50 ] && ok "an unreadable boot id refuses rather than pinning an empty value" || no "unreadable pin" "exit $rc"

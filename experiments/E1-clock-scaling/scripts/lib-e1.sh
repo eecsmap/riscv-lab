@@ -58,6 +58,18 @@ EX_TRANSPORT=62       # the transport itself failed; the board's state is unknow
 say()  { printf '%s\n' "$*" >&2; if [ -n "$E1_LOG" ]; then printf '%s\n' "$*" >> "$E1_LOG"; fi; }
 die()  { local c=$1; shift; say "REFUSE($c): $*"; exit "$c"; }
 
+# The bound the precycle actually measured on this board, if the caller has not chosen one. Reading it
+# here rather than in each entrypoint means install and restore cannot disagree with the precheck.
+apply_recorded_timeout() {
+    local rec=$1
+    [ -n "${E1_TIMEOUT_SET:-}" ] && return 0
+    [ -s "$rec" ] || return 0
+    case "$(cat "$rec")" in
+        no)  E1_TIMEOUT=""; say "  board has no 'timeout' (recorded by the precheck): using the host-side bound only" ;;
+        yes) E1_TIMEOUT="timeout "; say "  board has 'timeout' (recorded by the precheck): probes bounded on both sides" ;;
+    esac
+}
+
 # --- transport -----------------------------------------------------------------------------------
 #
 # board() writes the reply to $BOARD_OUT and RETURNS the remote status. It never swallows it. Callers

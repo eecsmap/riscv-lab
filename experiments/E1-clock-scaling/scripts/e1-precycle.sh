@@ -43,8 +43,16 @@ claim_leases board serial
 
 say "== the board's timeout builtin (the probes are run bounded)"
 board_must "probing for timeout" "echo TMO=\$(command -v timeout >/dev/null && echo yes || echo no)"
-if [ "$(field TMO)" = yes ]; then say "  the board has timeout; probes are bounded on the board as well as here"
-else say "  the board has NO timeout: set E1_TIMEOUT='' and rely on the host-side bound"; fi
+# RECORDED, not just reported. This board has no `timeout` builtin, so the default
+# E1_TIMEOUT="timeout " would build `timeout 120 ./fesvr-teaching-static ...` and every probe would die
+# with "timeout: not found" -- inside the user's power-cycle window, where remembering to set a variable
+# is the wrong place for this to live.
+TMO=$(field TMO)
+printf '%s\n' "${TMO:-unknown}" > "$O/state/$phase-timeout.txt"
+if [ "$TMO" = yes ]; then say "  the board HAS timeout; probes are bounded on the board as well as here"
+elif [ "$TMO" = no ]; then say "  the board has NO timeout; recorded, and the session will rely on the host-side bound"
+else die $EX_TRANSPORT "could not determine whether the board has 'timeout' (got '${TMO:-<none>}')"; fi
+say "  -> $O/state/$phase-timeout.txt"
 
 say "== pinning the current boot id"
 board_must "reading the boot id" "cat /proc/sys/kernel/random/boot_id"

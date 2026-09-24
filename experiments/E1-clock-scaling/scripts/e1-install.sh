@@ -13,6 +13,8 @@ trap release_owned_leases EXIT
 
 say "=== E1 install, session $S"
 
+apply_recorded_timeout "$O/state/install-timeout.txt"
+
 say "== leases, before any transport"
 claim_leases board serial
 

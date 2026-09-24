@@ -12,6 +12,8 @@ trap release_owned_leases EXIT
 
 say "=== E1 restore, session $S"
 
+apply_recorded_timeout "$O/state/restore-timeout.txt"
+
 say "== leases, before any transport"
 claim_leases board serial
 
