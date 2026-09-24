@@ -80,11 +80,21 @@ def main(argv):
     for p in ("perf03_fetch", "perf04_where"):
         probes[p] = entry(os.path.join(PREP, "probes/build-perf", f"{p}.elf"))
     for p in ("perf01_cpi", "perf02_sv39", "perf05_size"):
-        probes[p] = entry(os.path.join(PREP, "probes/build-perf", f"{p}.elf"),
-                          note="in the frozen set only if it is rebuilt or located; see workloads below")
+        probes[p] = entry(os.path.join(PREP, "probes/build-perf", f"{p}.elf"))
+    # perf06 is new to this campaign and lives in it. Its ELF is not committed -- it is built by
+    # workloads/build-perf06.sh, which verifies the footprints against the frozen cache geometry and
+    # the retirement counts against the disassembly, and is byte-reproducible.
+    probes["perf06_iws"] = dict(
+        path="riscv-lab/experiments/IPS-campaign/workloads/perf06_iws.S",
+        built_by="riscv-lab/experiments/IPS-campaign/workloads/build-perf06.sh",
+        elf_sha256="e6be12db60bd76683f9c5286c759316466cc68c4e79eac9e3d1a3985ccb8d64a",
+        elf_note="reproduced byte for byte across two independent builds",
+        source_sha256=sha(os.path.join(ROOT, "experiments/IPS-campaign/workloads/perf06_iws.S")),
+        descriptor="riscv-lab/experiments/IPS-campaign/workloads/perf06_iws.json")
 
     sources = {p: entry(os.path.join(PREP, "probes", f"{p}.S"))
                for p in ("perf01_cpi", "perf02_sv39", "perf03_fetch", "perf04_where", "perf05_size")}
+    sources["perf06_iws"] = entry(os.path.join(ROOT, "experiments/IPS-campaign/workloads/perf06_iws.S"))
     for a in ("b0compute", "b0array", "b0file"):
         sources[a] = entry(os.path.join(ROOT, "benchmarks/workloads/src", f"{a}.c"))
 
@@ -142,6 +152,13 @@ def main(argv):
             pooling="simulation and hardware results are never pooled",
             samples=">=3 successful samples per workload/config/platform; every attempt reported; "
                     "median with min/max"),
+        geometry=dict(
+            tlb=dict(entries=8, organisation="fully associative, shared instruction and data",
+                     frozen=True),
+            icache=dict(bytes=1024, organisation="direct mapped", line_bytes=16,
+                        refill="sequential, over the existing interface", frozen=True),
+            note="frozen before any comparative run; no geometry sweep is part of this campaign"),
+        roi_policy="riscv-lab/experiments/IPS-campaign/ROI-POLICY.md",
         stage_status_vocabulary=["IMPLEMENTED", "SIM-VERIFIED", "BUILD-VERIFIED", "BOARD-VERIFIED",
                                  "PERFORMANCE-MEASURED"],
     )
@@ -149,11 +166,15 @@ def main(argv):
         os.path.join(ROOT, "experiments/IPS-campaign/manifest.json")
     with open(dest, "w") as f:
         json.dump(man, f, indent=2); f.write("\n")
-    unresolved = [k for k, v in {**probes, **sources}.items() if v.get("sha256") is None]
+    # perf06 records `elf_sha256` rather than `sha256`: its ELF is built, not committed. Use .get on
+    # both so a differently-shaped entry is counted, not crashed on.
+    def has_hash(v):
+        return bool(v.get("sha256") or v.get("elf_sha256"))
+    unresolved = [k for k, v in {**probes, **sources}.items() if not has_hash(v)]
     print(f"MANIFEST_OK {os.path.relpath(dest, ROOT)}")
     print(f"  accepted-config inputs frozen : {len(man['accepted_configuration']['inputs'])}")
-    print(f"  probes recorded               : {sum(1 for v in probes.values() if v['sha256'])}/{len(probes)}")
-    print(f"  sources recorded              : {sum(1 for v in sources.values() if v['sha256'])}/{len(sources)}")
+    print(f"  probes recorded               : {sum(1 for v in probes.values() if has_hash(v))}/{len(probes)}")
+    print(f"  sources recorded              : {sum(1 for v in sources.values() if has_hash(v))}/{len(sources)}")
     if unresolved:
         print(f"  UNRESOLVED (recorded as such, not invented): {', '.join(sorted(unresolved))}")
     return 0

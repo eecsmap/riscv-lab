@@ -1,7 +1,7 @@
 {
   "campaign": "IPS-campaign",
   "stage": "0 \u2014 identities and measurement contract",
-  "created_utc": "2026-09-24T05:24:31Z",
+  "created_utc": "2026-09-24T14:51:43Z",
   "authorisation": "codex-ips-four-stage-campaign",
   "clock": {
     "hz": 40000000,
@@ -11,7 +11,7 @@
   },
   "branches": {
     "ips-baseline": {
-      "commit": "1e4e4110643d006a8b234cf0d463b56a0e21fdb1"
+      "commit": "32609e98fe403119e264d7537488c37017024be2"
     },
     "ips-fetch32": {
       "commit": null,
@@ -164,18 +164,23 @@
     },
     "perf01_cpi": {
       "path": "experiments/teaching-cpu/xv6-board-prep/probes/build-perf/perf01_cpi.elf",
-      "sha256": "e5250f5035787a26b41389e20a932890d4c4e116fc87c403c4cea5826925df96",
-      "note": "in the frozen set only if it is rebuilt or located; see workloads below"
+      "sha256": "e5250f5035787a26b41389e20a932890d4c4e116fc87c403c4cea5826925df96"
     },
     "perf02_sv39": {
       "path": "experiments/teaching-cpu/xv6-board-prep/probes/build-perf/perf02_sv39.elf",
-      "sha256": "bc6185566c5de9da7a4dbce1942262dbeb68b1c8e556ac8f72f15fc1465596ab",
-      "note": "in the frozen set only if it is rebuilt or located; see workloads below"
+      "sha256": "bc6185566c5de9da7a4dbce1942262dbeb68b1c8e556ac8f72f15fc1465596ab"
     },
     "perf05_size": {
       "path": "experiments/teaching-cpu/xv6-board-prep/probes/build-perf/perf05_size.elf",
-      "sha256": "4790cc882d20ddac7e13d5fa1895dc34310eaf22fa82c1d95af113df8ef0b24a",
-      "note": "in the frozen set only if it is rebuilt or located; see workloads below"
+      "sha256": "4790cc882d20ddac7e13d5fa1895dc34310eaf22fa82c1d95af113df8ef0b24a"
+    },
+    "perf06_iws": {
+      "path": "riscv-lab/experiments/IPS-campaign/workloads/perf06_iws.S",
+      "built_by": "riscv-lab/experiments/IPS-campaign/workloads/build-perf06.sh",
+      "elf_sha256": "e6be12db60bd76683f9c5286c759316466cc68c4e79eac9e3d1a3985ccb8d64a",
+      "elf_note": "reproduced byte for byte across two independent builds",
+      "source_sha256": "b38d414eb6f169e3ccef6f7d80205f3e931e9c5352b95a5f8b9366ec4d6704c3",
+      "descriptor": "riscv-lab/experiments/IPS-campaign/workloads/perf06_iws.json"
     }
   },
   "sources": {
@@ -198,6 +203,10 @@
     "perf05_size": {
       "path": "experiments/teaching-cpu/xv6-board-prep/probes/perf05_size.S",
       "sha256": "42f256efca72ad305a0d74265fa8edd5343b6c1f20a4488c24b510648a6dbcc9"
+    },
+    "perf06_iws": {
+      "path": "worktrees/ips-baseline/experiments/IPS-campaign/workloads/perf06_iws.S",
+      "sha256": "b38d414eb6f169e3ccef6f7d80205f3e931e9c5352b95a5f8b9366ec4d6704c3"
     },
     "b0compute": {
       "path": "worktrees/ips-baseline/benchmarks/workloads/src/b0compute.c",
@@ -227,6 +236,22 @@
     "pooling": "simulation and hardware results are never pooled",
     "samples": ">=3 successful samples per workload/config/platform; every attempt reported; median with min/max"
   },
+  "geometry": {
+    "tlb": {
+      "entries": 8,
+      "organisation": "fully associative, shared instruction and data",
+      "frozen": true
+    },
+    "icache": {
+      "bytes": 1024,
+      "organisation": "direct mapped",
+      "line_bytes": 16,
+      "refill": "sequential, over the existing interface",
+      "frozen": true
+    },
+    "note": "frozen before any comparative run; no geometry sweep is part of this campaign"
+  },
+  "roi_policy": "riscv-lab/experiments/IPS-campaign/ROI-POLICY.md",
   "stage_status_vocabulary": [
     "IMPLEMENTED",
     "SIM-VERIFIED",
