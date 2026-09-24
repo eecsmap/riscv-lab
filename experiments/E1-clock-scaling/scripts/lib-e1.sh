@@ -76,7 +76,13 @@ apply_recorded_timeout() {
 # that care about the status -- which is all of them at a safety boundary -- check it.
 BOARD_OUT=""
 board() {
-    BOARD_OUT=$($E1_BOARD_CMD "$1" 2>&1)
+    # NULs are stripped at the boundary. The console emits them (bash warns "ignored null byte in
+    # input" and drops them anyway); doing it here keeps that warning out of the session log during the
+    # user's power-cycle window, and means no value can be silently truncated by one.
+    # `set -o pipefail` INSIDE the substitution: after `VAR=$(...)`, PIPESTATUS describes the
+    # assignment, not the pipeline inside it, so the transport's status was being thrown away -- which
+    # the suite caught immediately (a transport failure came back as exit 10 instead of 62).
+    BOARD_OUT=$(set -o pipefail; $E1_BOARD_CMD "$1" 2>&1 | tr -d '\000')
     return $?
 }
 # board_must: any transport or remote failure ends the session. Used wherever "it did not work" and
