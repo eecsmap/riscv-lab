@@ -87,7 +87,11 @@ _start: la      sp, _stack_top
 cont:   la      t0, handler
         csrw    stvec, t0
         li      s5, 0                   # s5 = the cause the handler last recorded
-        li      s6, 0                   # s6 = how many traps were taken
+        li      s6, 0                   # s6 = traps taken SINCE THIS CASE BEGAN.
+                                        # Both are reset at the start of every case. The first version
+                                        # reset only s5, so case B saw case A's trap still counted and
+                                        # failed before doing anything -- on every core including the
+                                        # baseline, which is how it was clear the fault was the probe's.
 
         # the alias VA of `scratch`
         li      t6, 0x80000000
@@ -115,6 +119,7 @@ cont:   la      t0, handler
         sfence.vma                      # <-- the thing under test
 
         li      s5, 0
+        li      s6, 0                   # the COUNT is per-case too; case A's own trap is not case B's
         sd      t1, 0(s7)               # must FAULT: store page fault, cause 15
         li      t2, 15
         bne     s5, t2, fail_A
@@ -134,6 +139,7 @@ cont:   la      t0, handler
         sfence.vma
 
         li      s5, 0
+        li      s6, 0
         ld      t1, 0(s7)               # a LOAD succeeds and caches the entry (A=1, R=1)
         bne     s6, zero, fail_B        # it must not have trapped
         sd      t1, 0(s7)               # a STORE on the cached entry must fault: D is clear
@@ -149,6 +155,7 @@ cont:   la      t0, handler
         fence
         sfence.vma
         li      s5, 0
+        li      s6, 0
         ld      t1, 0(s7)               # caches the alias again, fully permitted
         bne     s6, zero, fail_C
 
@@ -158,6 +165,7 @@ cont:   la      t0, handler
         or      t6, t6, t3
         csrw    satp, t6                # <-- the thing under test; NO sfence.vma here on purpose
         li      s5, 0
+        li      s6, 0
         ld      t1, 0(s7)               # must FAULT: load page fault, cause 13
         li      t2, 13
         bne     s5, t2, fail_C
