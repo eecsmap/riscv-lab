@@ -1,0 +1,4 @@
+TEACHING-CPU-M3-OK
+Completed after 6386 cycles
+AXI ar=245 r=245 rlast=245 aw=72 w=72 wlast=72 b=72
+CYCLES total=6386 host_done_at=6386 drained=1

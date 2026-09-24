@@ -1,0 +1,636 @@
+{
+  "stage": "icache",
+  "platform": "simulator",
+  "clock_hz": 40000000,
+  "counters": "the probe's own cycle/instret reads, bounding the ROI",
+  "caution": "IPS and roi_seconds are computed at 40 MHz from SIMULATED cycles. The simulated memory system is not the board's PS DDR -- perf03's 32-bit ROI reads CPI 19.0 here and 40.34 on hardware -- so these are not board figures and are never pooled with board results.",
+  "rows": [
+    {
+      "platform": "simulator",
+      "stage": "icache",
+      "core": "cache",
+      "workload": "perf02_sv39",
+      "roi": "bare_alu",
+      "cycles": 180026,
+      "retired": 30002,
+      "cpi": 6.00046663555763,
+      "ips_at_40mhz": 6666148.223034451,
+      "roi_seconds": 0.00450065,
+      "gain_vs_baseline": null
+    },
+    {
+      "platform": "simulator",
+      "stage": "icache",
+      "core": "cache",
+      "workload": "perf02_sv39",
+      "roi": "bare_load",
+      "cycles": 250119,
+      "retired": 30002,
+      "cpi": 8.336744217052196,
+      "ips_at_40mhz": 4798036.134799835,
+      "roi_seconds": 0.006252975,
+      "gain_vs_baseline": null
+    },
+    {
+      "platform": "simulator",
+      "stage": "icache",
+      "core": "cache",
+      "workload": "perf02_sv39",
+      "roi": "mega_alu",
+      "cycles": 240016,
+      "retired": 30002,
+      "cpi": 8.0,
+      "ips_at_40mhz": 5000000.0,
+      "roi_seconds": 0.0060004,
+      "gain_vs_baseline": null
+    },
+    {
+      "platform": "simulator",
+      "stage": "icache",
+      "core": "cache",
+      "workload": "perf02_sv39",
+      "roi": "mega_load",
+      "cycles": 330017,
+      "retired": 30002,
+      "cpi": 10.999833344443704,
+      "ips_at_40mhz": 3636418.729944215,
+      "roi_seconds": 0.008250425,
+      "gain_vs_baseline": null
+    },
+    {
+      "platform": "simulator",
+      "stage": "icache",
+      "core": "cache",
+      "workload": "perf02_sv39",
+      "roi": "k4_alu",
+      "cycles": 240016,
+      "retired": 30002,
+      "cpi": 8.0,
+      "ips_at_40mhz": 5000000.0,
+      "roi_seconds": 0.0060004,
+      "gain_vs_baseline": null
+    },
+    {
+      "platform": "simulator",
+      "stage": "icache",
+      "core": "cache",
+      "workload": "perf02_sv39",
+      "roi": "k4_load",
+      "cycles": 330017,
+      "retired": 30002,
+      "cpi": 10.999833344443704,
+      "ips_at_40mhz": 3636418.729944215,
+      "roi_seconds": 0.008250425,
+      "gain_vs_baseline": null
+    },
+    {
+      "platform": "simulator",
+      "stage": "icache",
+      "core": "cache",
+      "workload": "perf03_fetch",
+      "roi": "insn32",
+      "cycles": 180026,
+      "retired": 30002,
+      "cpi": 6.00046663555763,
+      "ips_at_40mhz": 6666148.223034451,
+      "roi_seconds": 0.00450065,
+      "gain_vs_baseline": null
+    },
+    {
+      "platform": "simulator",
+      "stage": "icache",
+      "core": "cache",
+      "workload": "perf03_fetch",
+      "roi": "insn16",
+      "cycles": 180029,
+      "retired": 30002,
+      "cpi": 6.0005666288914075,
+      "ips_at_40mhz": 6666037.138461025,
+      "roi_seconds": 0.004500725,
+      "gain_vs_baseline": null
+    },
+    {
+      "platform": "simulator",
+      "stage": "icache",
+      "core": "cache",
+      "workload": "perf04_where",
+      "roi": "load_dram",
+      "cycles": 250119,
+      "retired": 30002,
+      "cpi": 8.336744217052196,
+      "ips_at_40mhz": 4798036.134799835,
+      "roi_seconds": 0.006252975,
+      "gain_vs_baseline": null
+    },
+    {
+      "platform": "simulator",
+      "stage": "icache",
+      "core": "cache",
+      "workload": "perf04_where",
+      "roi": "load_clint",
+      "cycles": 250012,
+      "retired": 30002,
+      "cpi": 8.333177788147458,
+      "ips_at_40mhz": 4800089.595699406,
+      "roi_seconds": 0.0062503,
+      "gain_vs_baseline": null
+    },
+    {
+      "platform": "simulator",
+      "stage": "icache",
+      "core": "cache",
+      "workload": "perf06_iws",
+      "roi": "iws_resident",
+      "cycles": 420132,
+      "retired": 70001,
+      "cpi": 6.001799974286081,
+      "ips_at_40mhz": 6664667.2950406065,
+      "roi_seconds": 0.0105033,
+      "gain_vs_baseline": null
+    },
+    {
+      "platform": "simulator",
+      "stage": "icache",
+      "core": "cache",
+      "workload": "perf06_iws",
+      "roi": "iws_exceeds",
+      "cycles": 625967,
+      "retired": 65729,
+      "cpi": 9.523452357406928,
+      "ips_at_40mhz": 4200157.516290795,
+      "roi_seconds": 0.015649175,
+      "gain_vs_baseline": null
+    },
+    {
+      "platform": "simulator",
+      "stage": "icache",
+      "core": "cacheoff",
+      "workload": "perf02_sv39",
+      "roi": "bare_alu",
+      "cycles": 330022,
+      "retired": 30002,
+      "cpi": 11.0,
+      "ips_at_40mhz": 3636363.6363636362,
+      "roi_seconds": 0.00825055,
+      "gain_vs_baseline": null
+    },
+    {
+      "platform": "simulator",
+      "stage": "icache",
+      "core": "cacheoff",
+      "workload": "perf02_sv39",
+      "roi": "bare_load",
+      "cycles": 400562,
+      "retired": 30002,
+      "cpi": 13.351176588227451,
+      "ips_at_40mhz": 2995990.6331604095,
+      "roi_seconds": 0.01001405,
+      "gain_vs_baseline": null
+    },
+    {
+      "platform": "simulator",
+      "stage": "icache",
+      "core": "cacheoff",
+      "workload": "perf02_sv39",
+      "roi": "mega_alu",
+      "cycles": 390204,
+      "retired": 30002,
+      "cpi": 13.005932937804147,
+      "ips_at_40mhz": 3075519.471865998,
+      "roi_seconds": 0.0097551,
+      "gain_vs_baseline": null
+    },
+    {
+      "platform": "simulator",
+      "stage": "icache",
+      "core": "cacheoff",
+      "workload": "perf02_sv39",
+      "roi": "mega_load",
+      "cycles": 480669,
+      "retired": 30002,
+      "cpi": 16.021231917872143,
+      "ips_at_40mhz": 2496686.9092868483,
+      "roi_seconds": 0.012016725,
+      "gain_vs_baseline": null
+    },
+    {
+      "platform": "simulator",
+      "stage": "icache",
+      "core": "cacheoff",
+      "workload": "perf02_sv39",
+      "roi": "k4_alu",
+      "cycles": 390203,
+      "retired": 30002,
+      "cpi": 13.005899606692887,
+      "ips_at_40mhz": 3075527.353710761,
+      "roi_seconds": 0.009755075,
+      "gain_vs_baseline": null
+    },
+    {
+      "platform": "simulator",
+      "stage": "icache",
+      "core": "cacheoff",
+      "workload": "perf02_sv39",
+      "roi": "k4_load",
+      "cycles": 480673,
+      "retired": 30002,
+      "cpi": 16.021365242317177,
+      "ips_at_40mhz": 2496666.13269312,
+      "roi_seconds": 0.012016825,
+      "gain_vs_baseline": null
+    },
+    {
+      "platform": "simulator",
+      "stage": "icache",
+      "core": "cacheoff",
+      "workload": "perf03_fetch",
+      "roi": "insn32",
+      "cycles": 330029,
+      "retired": 30002,
+      "cpi": 11.000233317778815,
+      "ips_at_40mhz": 3636286.508155344,
+      "roi_seconds": 0.008250725,
+      "gain_vs_baseline": null
+    },
+    {
+      "platform": "simulator",
+      "stage": "icache",
+      "core": "cacheoff",
+      "workload": "perf03_fetch",
+      "roi": "insn16",
+      "cycles": 330033,
+      "retired": 30002,
+      "cpi": 11.000366642223852,
+      "ips_at_40mhz": 3636242.4363624244,
+      "roi_seconds": 0.008250825,
+      "gain_vs_baseline": null
+    },
+    {
+      "platform": "simulator",
+      "stage": "icache",
+      "core": "cacheoff",
+      "workload": "perf04_where",
+      "roi": "load_dram",
+      "cycles": 400370,
+      "retired": 30002,
+      "cpi": 13.344777014865675,
+      "ips_at_40mhz": 2997427.379673802,
+      "roi_seconds": 0.01000925,
+      "gain_vs_baseline": null
+    },
+    {
+      "platform": "simulator",
+      "stage": "icache",
+      "core": "cacheoff",
+      "workload": "perf04_where",
+      "roi": "load_clint",
+      "cycles": 400366,
+      "retired": 30002,
+      "cpi": 13.34464369042064,
+      "ips_at_40mhz": 2997457.3265462103,
+      "roi_seconds": 0.01000915,
+      "gain_vs_baseline": null
+    },
+    {
+      "platform": "simulator",
+      "stage": "icache",
+      "core": "cacheoff",
+      "workload": "perf06_iws",
+      "roi": "iws_resident",
+      "cycles": 770013,
+      "retired": 70001,
+      "cpi": 11.000028571020414,
+      "ips_at_40mhz": 3636354.1914227423,
+      "roi_seconds": 0.019250325,
+      "gain_vs_baseline": null
+    },
+    {
+      "platform": "simulator",
+      "stage": "icache",
+      "core": "cacheoff",
+      "workload": "perf06_iws",
+      "roi": "iws_exceeds",
+      "cycles": 723019,
+      "retired": 65729,
+      "cpi": 11.0,
+      "ips_at_40mhz": 3636363.6363636362,
+      "roi_seconds": 0.018075475,
+      "gain_vs_baseline": null
+    },
+    {
+      "platform": "simulator",
+      "stage": "icache",
+      "core": "tlb",
+      "workload": "perf02_sv39",
+      "roi": "bare_alu",
+      "cycles": 330022,
+      "retired": 30002,
+      "cpi": 11.0,
+      "ips_at_40mhz": 3636363.6363636362,
+      "roi_seconds": 0.00825055,
+      "gain_vs_baseline": null
+    },
+    {
+      "platform": "simulator",
+      "stage": "icache",
+      "core": "tlb",
+      "workload": "perf02_sv39",
+      "roi": "bare_load",
+      "cycles": 400562,
+      "retired": 30002,
+      "cpi": 13.351176588227451,
+      "ips_at_40mhz": 2995990.6331604095,
+      "roi_seconds": 0.01001405,
+      "gain_vs_baseline": null
+    },
+    {
+      "platform": "simulator",
+      "stage": "icache",
+      "core": "tlb",
+      "workload": "perf02_sv39",
+      "roi": "mega_alu",
+      "cycles": 390204,
+      "retired": 30002,
+      "cpi": 13.005932937804147,
+      "ips_at_40mhz": 3075519.471865998,
+      "roi_seconds": 0.0097551,
+      "gain_vs_baseline": null
+    },
+    {
+      "platform": "simulator",
+      "stage": "icache",
+      "core": "tlb",
+      "workload": "perf02_sv39",
+      "roi": "mega_load",
+      "cycles": 480669,
+      "retired": 30002,
+      "cpi": 16.021231917872143,
+      "ips_at_40mhz": 2496686.9092868483,
+      "roi_seconds": 0.012016725,
+      "gain_vs_baseline": null
+    },
+    {
+      "platform": "simulator",
+      "stage": "icache",
+      "core": "tlb",
+      "workload": "perf02_sv39",
+      "roi": "k4_alu",
+      "cycles": 390203,
+      "retired": 30002,
+      "cpi": 13.005899606692887,
+      "ips_at_40mhz": 3075527.353710761,
+      "roi_seconds": 0.009755075,
+      "gain_vs_baseline": null
+    },
+    {
+      "platform": "simulator",
+      "stage": "icache",
+      "core": "tlb",
+      "workload": "perf02_sv39",
+      "roi": "k4_load",
+      "cycles": 480673,
+      "retired": 30002,
+      "cpi": 16.021365242317177,
+      "ips_at_40mhz": 2496666.13269312,
+      "roi_seconds": 0.012016825,
+      "gain_vs_baseline": null
+    },
+    {
+      "platform": "simulator",
+      "stage": "icache",
+      "core": "tlb",
+      "workload": "perf03_fetch",
+      "roi": "insn32",
+      "cycles": 330029,
+      "retired": 30002,
+      "cpi": 11.000233317778815,
+      "ips_at_40mhz": 3636286.508155344,
+      "roi_seconds": 0.008250725,
+      "gain_vs_baseline": null
+    },
+    {
+      "platform": "simulator",
+      "stage": "icache",
+      "core": "tlb",
+      "workload": "perf03_fetch",
+      "roi": "insn16",
+      "cycles": 330033,
+      "retired": 30002,
+      "cpi": 11.000366642223852,
+      "ips_at_40mhz": 3636242.4363624244,
+      "roi_seconds": 0.008250825,
+      "gain_vs_baseline": null
+    },
+    {
+      "platform": "simulator",
+      "stage": "icache",
+      "core": "tlb",
+      "workload": "perf04_where",
+      "roi": "load_dram",
+      "cycles": 400370,
+      "retired": 30002,
+      "cpi": 13.344777014865675,
+      "ips_at_40mhz": 2997427.379673802,
+      "roi_seconds": 0.01000925,
+      "gain_vs_baseline": null
+    },
+    {
+      "platform": "simulator",
+      "stage": "icache",
+      "core": "tlb",
+      "workload": "perf04_where",
+      "roi": "load_clint",
+      "cycles": 400366,
+      "retired": 30002,
+      "cpi": 13.34464369042064,
+      "ips_at_40mhz": 2997457.3265462103,
+      "roi_seconds": 0.01000915,
+      "gain_vs_baseline": null
+    },
+    {
+      "platform": "simulator",
+      "stage": "icache",
+      "core": "tlb",
+      "workload": "perf06_iws",
+      "roi": "iws_resident",
+      "cycles": 770013,
+      "retired": 70001,
+      "cpi": 11.000028571020414,
+      "ips_at_40mhz": 3636354.1914227423,
+      "roi_seconds": 0.019250325,
+      "gain_vs_baseline": null
+    },
+    {
+      "platform": "simulator",
+      "stage": "icache",
+      "core": "tlb",
+      "workload": "perf06_iws",
+      "roi": "iws_exceeds",
+      "cycles": 723019,
+      "retired": 65729,
+      "cpi": 11.0,
+      "ips_at_40mhz": 3636363.6363636362,
+      "roi_seconds": 0.018075475,
+      "gain_vs_baseline": null
+    }
+  ],
+  "refused": [],
+  "axi_reads": {
+    "cache/boot01_marker": {
+      "ar": 245,
+      "r": 245
+    },
+    "cache/boot02_clint": {
+      "ar": 662,
+      "r": 662
+    },
+    "cache/boot03_ddr": {
+      "ar": 396,
+      "r": 396
+    },
+    "cache/boot04_badaddr": {
+      "ar": 225,
+      "r": 225
+    },
+    "cache/ext01_m": {
+      "ar": 244,
+      "r": 244
+    },
+    "cache/ext02_c": {
+      "ar": 177,
+      "r": 177
+    },
+    "cache/ext04_sv39": {
+      "ar": 222,
+      "r": 222
+    },
+    "cache/perf02_sv39": {
+      "ar": 50421,
+      "r": 50421
+    },
+    "cache/perf03_fetch": {
+      "ar": 5118,
+      "r": 5118
+    },
+    "cache/perf04_where": {
+      "ar": 17076,
+      "r": 17076
+    },
+    "cache/perf06_iws": {
+      "ar": 46104,
+      "r": 46104
+    },
+    "cache/tlb01_sfence": {
+      "ar": 335,
+      "r": 335
+    },
+    "cache/tlb02_canonical": {
+      "ar": 320,
+      "r": 320
+    },
+    "cacheoff/boot01_marker": {
+      "ar": 581,
+      "r": 581
+    },
+    "cacheoff/boot02_clint": {
+      "ar": 7271,
+      "r": 7271
+    },
+    "cacheoff/boot03_ddr": {
+      "ar": 1678,
+      "r": 1678
+    },
+    "cacheoff/boot04_badaddr": {
+      "ar": 508,
+      "r": 508
+    },
+    "cacheoff/ext01_m": {
+      "ar": 603,
+      "r": 603
+    },
+    "cacheoff/ext02_c": {
+      "ar": 769,
+      "r": 769
+    },
+    "cacheoff/ext04_sv39": {
+      "ar": 606,
+      "r": 606
+    },
+    "cacheoff/perf02_sv39": {
+      "ar": 248937,
+      "r": 248937
+    },
+    "cacheoff/perf03_fetch": {
+      "ar": 74407,
+      "r": 74407
+    },
+    "cacheoff/perf04_where": {
+      "ar": 83272,
+      "r": 83272
+    },
+    "cacheoff/perf06_iws": {
+      "ar": 156607,
+      "r": 156607
+    },
+    "cacheoff/tlb01_sfence": {
+      "ar": 827,
+      "r": 827
+    },
+    "cacheoff/tlb02_canonical": {
+      "ar": 994,
+      "r": 994
+    },
+    "tlb/boot01_marker": {
+      "ar": 581,
+      "r": 581
+    },
+    "tlb/boot02_clint": {
+      "ar": 7271,
+      "r": 7271
+    },
+    "tlb/boot03_ddr": {
+      "ar": 1678,
+      "r": 1678
+    },
+    "tlb/boot04_badaddr": {
+      "ar": 508,
+      "r": 508
+    },
+    "tlb/ext01_m": {
+      "ar": 603,
+      "r": 603
+    },
+    "tlb/ext02_c": {
+      "ar": 769,
+      "r": 769
+    },
+    "tlb/ext04_sv39": {
+      "ar": 606,
+      "r": 606
+    },
+    "tlb/perf02_sv39": {
+      "ar": 248937,
+      "r": 248937
+    },
+    "tlb/perf03_fetch": {
+      "ar": 74407,
+      "r": 74407
+    },
+    "tlb/perf04_where": {
+      "ar": 83272,
+      "r": 83272
+    },
+    "tlb/perf06_iws": {
+      "ar": 156607,
+      "r": 156607
+    },
+    "tlb/tlb01_sfence": {
+      "ar": 827,
+      "r": 827
+    },
+    "tlb/tlb02_canonical": {
+      "ar": 994,
+      "r": 994
+    }
+  }
+}
