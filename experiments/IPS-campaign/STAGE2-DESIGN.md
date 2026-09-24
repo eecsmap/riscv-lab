@@ -119,6 +119,56 @@ Written before the implementation, so they cannot be shaped to it:
 | a superpage entry compares the full VPN | two 4 KiB pages inside one 2 MiB superpage |
 | a failed walk fills an entry | a faulting access repeated — the second must fault for the same reason, not hit |
 
+## Implementation
+
+| file | what |
+| --- | --- |
+| `rtl/cpu/tcpu_permcheck.v` | **new** — the Sv39 leaf permission check, in one place |
+| `rtl/cpu/tcpu_tlb.v` | **new** — 8 entries, fully associative, round-robin, `ENTRIES=0` disables |
+| `rtl/cpu/tcpu_xlate.v` | **new** — the TLB in front of the walker, presenting the **walker's own interface** |
+| `rtl/cpu/tcpu_ptw.v` | uses `tcpu_permcheck`; exposes the leaf PTE it used, written only on a successful walk |
+| `rtl/cpu/tcpu_core.v` | instantiates `tcpu_xlate`, adds `TLB_ENTRIES` and the flush condition |
+
+**`S_XLATE` in the core is unchanged.** It still pulses `start`, waits for `done`, and reads
+`fault`/`cause`/`pa`; a hit simply answers in one cycle without touching the memory port. That keeps
+the stage's blast radius at the translation unit rather than the state machine.
+
+The extraction of `tcpu_permcheck` from `tcpu_ptw` was proved **exhaustively equivalent over all 4096
+inputs** — `tests/tlb-tb/permcheck_equiv_tb.v`, whose reference is a transcription of the original
+expression and must never be edited to match the module. A mutated module is caught at input 12.
+
+## Component tests — PASSED
+
+`tests/run-tlb-tb.sh <outdir>`: **31 checks, 0 fails**, covering 4 KiB / 2 MiB / 1 GiB matching,
+the permission bits coming back rather than a verdict, flush, round-robin eviction order, the disabled
+configuration, and the permission truth table including SUM, MXR and A/D.
+
+Checked against five mutants, each caught by the right test:
+
+| mutant | caught by |
+| --- | --- |
+| the A/D check dropped | store with `D=0`, store with `A=0`, load with `A=0` |
+| SUM allowed to permit a fetch | "S never executes a U page" |
+| a superpage compares the full VPN | a 4 KiB page 1.3 MiB inside a 2 MiB entry |
+| flush does not clear | a previously hitting address after flush |
+| replacement always writes entry 0 | twelve checks, starting with the superpage cases |
+
+## Targeted probe — built
+
+`workloads/tlb01_sfence.S`, built by `workloads/build-tlb01.sh`, which checks the disassembly actually
+contains `sfence.vma`, a `satp` write, an `stvec` write and `sret` rather than trusting the source.
+
+Each case is built so only a defect in the **hit path** can pass it:
+
+* **A** — a page is cached by a successful load, its PTE is edited to drop W, `sfence.vma` is issued,
+  and a store must now fault. A flush that did nothing leaves a stale entry that still says W.
+* **B** — a page with `A=1, D=0` is cached by a successful **load**; a **store** must then fault. The
+  walker cannot catch this: the walk already happened and already passed, for a load.
+* **C** — `satp` is pointed at a second root table where the alias is **invalid**, with no
+  `sfence.vma`. An access must fault; a stale entry from the first address space would hit.
+
 ## Status
 
-**Design only.** No RTL has been written. `ips-tlb` is currently identical to `ips-fetch32`.
+**IMPLEMENTED**, component-level **SIM-VERIFIED**. The SoC regression, the targeted probe's execution,
+the disabled-configuration equivalence and the walk-count observation have not been run — one heavy
+simulation at a time, and the stage 1 xv6 run holds that slot.

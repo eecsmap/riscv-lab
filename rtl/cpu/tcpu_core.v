@@ -12,6 +12,7 @@
 
 module tcpu_core #(
   parameter [63:0] RESET_PC      = 64'h0000_0000_8000_0000, // test harness entry; real reset is 0x10040
+  parameter        TLB_ENTRIES   = 8,   // IPS-campaign stage 2: 0 disables translation caching entirely
   parameter        X0_WRITABLE   = 0,   // fault injection: x0 becomes an ordinary register
   parameter        NO_LOAD_SEXT  = 0,   // fault injection: loads stop sign-extending
   parameter        REQ_WITHDRAW  = 0,   // monitor self-test: withdraw a request before its handshake
@@ -460,12 +461,29 @@ module tcpu_core #(
   wire [1:0] eff_priv_data = csr_mprv ? csr_mpp : priv;
   wire xlate_fetch = csr_satp_mode && (priv != 2'd3);
   wire xlate_data  = csr_satp_mode && (eff_priv_data != 2'd3);
-  tcpu_ptw #(.FAULT_PTW_NO_PERM(FAULT_PTW_NO_PERM)) ptw (
-    .clk(clk), .rst(rst), .start(ptw_start), .va(ptw_va), .acc_type(ptw_type), .eff_priv(ptw_priv),
+
+  // IPS-campaign stage 2 -- the TLB's invalidation, deliberately more than the architecture requires.
+  //
+  // Any sfence.vma, whatever its rs1/rs2, flushes everything; so does any CHANGE of satp. satp's value
+  // is watched rather than its write strobe because the CSR file owns the write and ASIDLEN is 0 here,
+  // so a write that changes nothing changes no mapping -- and a write that changes the root is exactly
+  // what must flush. An sfence that traps also flushes, which is over-flushing, which is the safe
+  // direction: the failure mode of over-flushing is a slower machine and of under-flushing a wrong one.
+  reg  [44:0] satp_seen;
+  wire [44:0] satp_now = {csr_satp_mode, csr_satp_ppn};
+  wire        satp_changed = (satp_seen != satp_now);
+  wire        tlb_flush = satp_changed || ((state == S_ARCH) && is_sfence);
+  always @(posedge clk) if (rst) satp_seen <= 45'd0; else satp_seen <= satp_now;
+
+  wire xlate_hit, xlate_miss;      // observation only; nothing architectural reads these
+  tcpu_xlate #(.TLB_ENTRIES(TLB_ENTRIES), .FAULT_PTW_NO_PERM(FAULT_PTW_NO_PERM)) ptw (
+    .clk(clk), .rst(rst), .flush(tlb_flush),
+    .start(ptw_start), .va(ptw_va), .acc_type(ptw_type), .eff_priv(ptw_priv),
     .sum(csr_sum), .mxr(csr_mxr), .root_ppn(csr_satp_ppn),
     .req_valid(ptw_req_valid), .req_ready(req_ready), .req_addr(ptw_req_addr),
     .resp_valid(resp_valid), .resp_rdata(resp_rdata), .resp_error(resp_error),
-    .busy(ptw_busy), .done(ptw_done), .fault(ptw_fault), .cause(ptw_cause), .pa(ptw_pa));
+    .busy(ptw_busy), .done(ptw_done), .fault(ptw_fault), .cause(ptw_cause), .pa(ptw_pa),
+    .o_hit(xlate_hit), .o_miss(xlate_miss));
   tcpu_csr #(.MISA_A(MISA_A), .TRAP_BAD_MEPC(TRAP_BAD_MEPC), .TRAP_COUNTS_RET(TRAP_COUNTS_RET),
              .ALLOW_RO_WRITE(ALLOW_RO_WRITE), .FAULT_NO_DELEG(FAULT_NO_DELEG),
              .FAULT_S_IRQ_IN_M(FAULT_S_IRQ_IN_M), .FAULT_SRET_SPP(FAULT_SRET_SPP)) csrfile (

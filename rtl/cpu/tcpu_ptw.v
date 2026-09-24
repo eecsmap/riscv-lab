@@ -30,7 +30,18 @@ module tcpu_ptw #(
   output reg        done,
   output reg        fault,
   output reg [3:0]  cause,           // 12/13/15 page fault or 1/5/7 access fault, by acc_type
-  output reg [55:0] pa
+  output reg [55:0] pa,
+  // IPS-campaign stage 2: the leaf PTE this walk used, so a TLB can cache the BITS rather than the
+  // verdict. Written only when the walk succeeds; a faulting walk leaves them alone and nothing
+  // downstream may fill from them.
+  output reg [43:0] leaf_ppn,
+  output reg [1:0]  leaf_level,
+  output reg        leaf_r,
+  output reg        leaf_w,
+  output reg        leaf_x,
+  output reg        leaf_u,
+  output reg        leaf_a,
+  output reg        leaf_d
 );
   localparam IDLE = 2'd0, REQ = 2'd1, WAIT = 2'd2;
   reg [1:0]  state;
@@ -53,15 +64,19 @@ module tcpu_ptw #(
   wire        pte_reserved = |resp_rdata[63:54];
   wire        pte_leaf = pte_r | pte_x;
   wire        misaligned_super = (level == 2'd2 && pte_ppn[17:0] != 18'd0) || (level == 2'd1 && pte_ppn[8:0] != 9'd0);
-  // CPU-A: an AMO both reads and writes, so it needs R and W together; MXR does not apply to it (it
-  // substitutes for a *load*'s read permission only). An SC only writes. This is Rocket's rule.
-  wire        perm_rwx = (type_r == 2'd0) ? pte_x :
-                         (type_r == 2'd1) ? (pte_r | (mxr_r & pte_x)) :
-                         (type_r == 2'd3) ? (pte_r & pte_w) : pte_w;
-  wire        perm_u   = (priv_r == 2'd0) ? pte_u :
-                         (type_r == 2'd0) ? !pte_u : (!pte_u | sum_r);   // S never executes a U page
+  // IPS-campaign stage 2: this check now lives in tcpu_permcheck, because a TLB hit must reach the
+  // SAME verdict and a second copy of the expression is a second thing to keep in step. The extraction
+  // was proved exhaustively equivalent over all 4096 inputs against the expression as it stood here --
+  // see experiments/IPS-campaign/tests/tlb-tb/permcheck_equiv_tb.v, whose reference is a transcription
+  // of the original and must never be edited to match the module.
+  wire        perm_full;
+  tcpu_permcheck ptw_perm (
+    .acc_type(type_r), .eff_priv(priv_r), .sum(sum_r), .mxr(mxr_r),
+    .pte_r(pte_r), .pte_w(pte_w), .pte_x(pte_x), .pte_u(pte_u), .pte_a(pte_a), .pte_d(pte_d),
+    .ok(perm_full));
+  // kept for the fault-injection path, which skips R/W/X/U/SUM/MXR but never A/D
   wire        perm_ad  = pte_a && ((type_r != 2'd2 && type_r != 2'd3) || pte_d);
-  wire        perm_ok  = (FAULT_PTW_NO_PERM != 0) ? perm_ad : (perm_rwx && perm_u && perm_ad);
+  wire        perm_ok  = (FAULT_PTW_NO_PERM != 0) ? perm_ad : perm_full;
   wire [55:0] leaf_pa  = (level == 2'd2) ? {pte_ppn[43:18], va_r[29:0]} :
                          (level == 2'd1) ? {pte_ppn[43:9],  va_r[20:0]} : {pte_ppn, va_r[11:0]};
 
@@ -70,6 +85,8 @@ module tcpu_ptw #(
     if (rst) begin
       state <= IDLE; busy <= 1'b0; req_valid <= 1'b0; req_addr <= 32'd0; level <= 2'd2; a <= 56'd0;
       va_r <= 64'd0; type_r <= 2'd0; priv_r <= 2'd0; sum_r <= 1'b0; mxr_r <= 1'b0; cause <= 4'd0; pa <= 56'd0;
+      leaf_ppn <= 44'd0; leaf_level <= 2'd0;
+      leaf_r <= 1'b0; leaf_w <= 1'b0; leaf_x <= 1'b0; leaf_u <= 1'b0; leaf_a <= 1'b0; leaf_d <= 1'b0;
     end else case (state)
       IDLE: if (start) begin
         va_r <= va; type_r <= acc_type; priv_r <= eff_priv; sum_r <= sum; mxr_r <= mxr;
@@ -107,6 +124,9 @@ module tcpu_ptw #(
             done <= 1'b1; fault <= 1'b1; cause <= pf_cause; busy <= 1'b0; state <= IDLE;
           end else begin
             done <= 1'b1; pa <= leaf_pa; busy <= 1'b0; state <= IDLE;
+            leaf_ppn <= pte_ppn; leaf_level <= level;
+            leaf_r <= pte_r; leaf_w <= pte_w; leaf_x <= pte_x;
+            leaf_u <= pte_u; leaf_a <= pte_a; leaf_d <= pte_d;
           end
         end
       end
