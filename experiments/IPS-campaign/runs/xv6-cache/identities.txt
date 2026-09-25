@@ -1,0 +1,2 @@
+96586a6f2261ae2c6c1d950d76b5023304037258899798674853eb1458a8961b  /home/engineer/fpga/worktrees/ips-cache/rtl/cpu/tcpu_core.v
+5d09a89c697f344e0672a9c6aaed19f3e3e62d6ed4b26dff9cb777f6fe34915e  /tmp/ips-xv6-cache/sim/obj_dir/sim

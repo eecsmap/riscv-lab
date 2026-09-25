@@ -52,9 +52,16 @@ it was built. It is kept, renamed, and must not be programmed.
 
 | core | result |
 | --- | --- |
-| `fetch32` | **complete** — all three checksums matching the board, `BOARD_RUN stages=6 failed=0`, checker `fails=0`, 3,244,693,508 cycles |
-| `cache` | **running** (`ips-xv6-cache-v2`, 6 h bound). An earlier launch used an 8 h bound without amendment and was stopped; a second was stopped because its RTL was superseded by the discard fix. Neither is claimed. |
-| `tlb` | **not run** |
+| `fetch32` | **complete** — 3,244,693,508 cycles |
+| `tlb` | **complete** — 728,106,109 cycles, **4.456x** |
+| `cache` | **complete** — 463,881,498 cycles, **6.995x** |
+
+All three: every checksum matching the board, `BOARD_RUN stages=6 failed=0 host_exit=0`, production
+checker `fails=0`. See `XV6-COMPARISON.md`.
+
+Two cache attempts were stopped and are **not** claimed: the first used an 8 h bound where the campaign
+allows 6 h, with no amendment documented; the second was on RTL superseded by the discard-on-invalidate
+fix.
 | `baseline` | **not run** in this campaign; the accepted 2026-09-23 simulator record exists but its simulator binary differs, which is recorded as the confound it is |
 
 ## Not established
