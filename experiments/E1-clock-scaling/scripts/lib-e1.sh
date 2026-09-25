@@ -220,7 +220,10 @@ program_payload() {
 
 # --- the eight startup gates: exact marker AND confirmed exit. A failure stops the session ---------
 GATES="boot01_marker boot02_clint boot03_ddr boot04_badaddr ext01_m ext02_c ext03_a ext04_sv39"
-PERF_PROBES="perf03_fetch perf04_where"
+# Overridable: the IPS campaign measures perf02/03/04/06, E1 measured perf03/04. The GATES list is NOT
+# overridable -- all eight run on every variant, and ext03_a's simulation limitation is not a hardware
+# waiver.
+: "${PERF_PROBES:=perf03_fetch perf04_where}"
 marker_for() { awk -v p="$1" '$1==p {print $2}' "$(dirname "${BASH_SOURCE[0]}")/markers.tsv"; }
 
 # The probes are RISC-V TARGET ELFs. They cannot execute on the ARM at all: they run under
