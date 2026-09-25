@@ -132,6 +132,31 @@ module ifill_tb;
     reset_ext; do_fetch(32'h8000_3000, 1, 1);
     want(ext_count == 1, "a write makes exactly one external request and reads no line");
 
+    $display("== 9. an invalidate DURING a refill discards it");
+    // The core cannot reach this overlap -- it is sequential with one outstanding access, so it cannot
+    // retire a fence.i while a fetch is in flight. The bench can, because it drives the signals
+    // directly, and the guard must hold whether or not the core needs it today.
+    @(negedge clk); invalidate = 1; @(negedge clk); invalidate = 0;   // start from empty
+    reset_ext;
+    fork
+      do_fetch(32'h8000_0C00, 1, 0);
+      begin : kill
+        // wait for the refill to be under way, then invalidate mid-flight
+        while (dut.state != 2'd1 && dut.state != 2'd2) @(negedge clk);
+        @(negedge clk); invalidate = 1; @(negedge clk); invalidate = 0;
+      end
+    join
+    want(ext_count == 2, "the refill still issues both beats: no memory traffic is withdrawn");
+    want(got == {32'hA5A50000, 32'h8000_0C00}, "  and the requesting access still gets its data");
+    reset_ext; do_fetch(32'h8000_0C00, 1, 0);
+    want(ext_count == 2, "  but the line was DISCARDED: the next fetch misses and refills again");
+
+    $display("== 10. with no invalidate, the same sequence DOES fill -- so case 9 is not vacuous");
+    reset_ext; do_fetch(32'h8000_0D00, 1, 0);
+    want(ext_count == 2, "a clean refill fetches the line");
+    reset_ext; do_fetch(32'h8000_0D00, 1, 0);
+    want(ext_count == 0, "  and it is resident afterwards");
+
     $display("IFILL_TB checks=%0d fails=%0d", checks, fails);
     if (fails != 0) $fatal(1, "IFILL_TB FAILED");
     $display("IFILL_TB_OK");

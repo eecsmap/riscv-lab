@@ -17,6 +17,21 @@
 // `valid` is written on the LAST beat and only when NEITHER beat reported an error, so a failed refill
 // leaves no line. The requesting access keeps its own error: the core sees resp_error exactly as it
 // would have without a cache.
+//
+// AND a refill that was in flight when `invalidate` arrived is DISCARDED. Last-beat-valid alone does
+// not give that: `invalidate` clears the array, the refill then completes, and `ic_fill` writes a line
+// read BEFORE the fence.i into a cache that is supposed to be empty after it. Codex found that the
+// claim "abandons by construction" was an argument, not a mechanism.
+//
+// The mechanism is `killed`, latched on any `invalidate` while filling and cleared only when the next
+// refill starts. No memory traffic is withdrawn -- both beats are still issued and consumed, and the
+// requesting access still gets its data, which is correct because it was requested before the
+// fence.i. Only the FILL is suppressed.
+//
+// The interface invariant, stated because the guard must not be read as evidence the core needs it:
+// this core is sequential with ONE outstanding access, so it cannot retire a fence.i while an
+// instruction fetch is in flight, and the overlap is unreachable from tcpu_core. The guard is here
+// because relying on that remaining true is not the same as being right.
 `timescale 1ns/1ps
 module tcpu_ifill #(
   parameter BYTES      = 1024,
@@ -67,6 +82,7 @@ module tcpu_ifill #(
     .pa(state == PASS ? c_req_addr : held_addr), .hit(ic_hit), .line_data(ic_line),
     .fill(ic_fill), .fill_pa(fill_addr), .fill_data(fill_data));
 
+  reg        killed;         // an invalidate arrived while this refill was in flight
   reg [1:0]  state;
   reg [31:0] held_addr;
   reg        ans_valid, ans_error;
@@ -101,9 +117,10 @@ module tcpu_ifill #(
     ic_fill <= 1'b0; ans_valid <= 1'b0; o_hit <= 1'b0; o_miss <= 1'b0;
     if (rst) begin
       state <= PASS; held_addr <= 32'd0; fill_data <= 128'd0; fill_error <= 1'b0;
-      fill_addr <= 32'd0; ans_error <= 1'b0; ans_data <= 64'd0; issued <= 1'b0;
+      fill_addr <= 32'd0; ans_error <= 1'b0; ans_data <= 64'd0; issued <= 1'b0; killed <= 1'b0;
     end else begin
       if (m_req_valid && m_req_ready) issued <= 1'b1;
+      if (invalidate && (state == FILL0 || state == FILL1)) killed <= 1'b1;
       case (state)
       PASS: if (mine && c_req_ready) begin
         held_addr <= c_req_addr;
@@ -116,6 +133,7 @@ module tcpu_ifill #(
           o_miss     <= 1'b1;
           fill_error <= 1'b0;
           issued     <= 1'b0;
+          killed     <= invalidate;   // an invalidate in this very cycle kills the refill too
           state      <= FILL0;
         end
       end
@@ -129,7 +147,7 @@ module tcpu_ifill #(
         fill_data[127:64] <= m_resp_rdata;
         state             <= ANSWER;
         // valid on the LAST beat, and only if NEITHER beat errored: there is no way to leave half a line
-        if (!(fill_error | m_resp_error)) begin
+        if (!(fill_error | m_resp_error) && !(killed | invalidate)) begin
           ic_fill   <= 1'b1;
           fill_addr <= held_addr;
         end
