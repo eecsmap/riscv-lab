@@ -1,0 +1,46 @@
+{
+  "stage": "tlb",
+  "timing": {
+    "wns_ns": "0.273",
+    "tns_ns": "0.000",
+    "setup_failing": "0",
+    "setup_endpoints": "22079",
+    "whs_ns": "0.037",
+    "ths_ns": "0.000",
+    "hold_failing": "0",
+    "hold_endpoints": "22079"
+  },
+  "utilisation": {
+    "luts": {
+      "used": 14092,
+      "available": 53200,
+      "pct": 26.49
+    },
+    "ffs": {
+      "used": 6685,
+      "available": 106400,
+      "pct": 6.28
+    },
+    "bram": {
+      "used": 0,
+      "available": 140,
+      "pct": 0.0
+    },
+    "dsps": {
+      "used": 0,
+      "available": 220,
+      "pct": 0.0
+    }
+  },
+  "critical_warnings": {
+    "post_route_drc.rpt": 0,
+    "post_route_methodology.rpt": 0,
+    "post_route_cdc.rpt": 0
+  },
+  "bitstream": {
+    "sha256": "5add000a9c6c5e862fbb4d1adfc2da5840d1fc37c5f7bb129aa7d5f11e72a1fe",
+    "bytes": 4045696
+  },
+  "vivado": "vivado v2025.2.1 (64-bit)",
+  "manifest_entries": 18
+}

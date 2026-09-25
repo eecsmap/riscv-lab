@@ -1,0 +1,118 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2026 Advanced Micro Devices, Inc. All Rights Reserved.
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2025.2.1 (lin64) Build 6403652 Thu Mar 19 13:47:00 MDT 2026
+| Date         : Thu Sep 24 23:52:46 2026
+| Host         : ubuntu running 64-bit Ubuntu 24.04.2 LTS
+| Command      : report_utilization -hierarchical -file /home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/reports/post_route_utilization_hier.rpt
+| Design       : rocketchip_wrapper
+| Device       : xc7z020clg400-1
+| Speed File   : -1
+| Design State : Routed
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Utilization Design Information
+
+Table of Contents
+-----------------
+1. Utilization by Hierarchy
+
+1. Utilization by Hierarchy
+---------------------------
+
++-----------------------------------------------------+----------------------------------------------------------------------------------------------------+------------+------------+---------+------+------+--------+--------+------------+
+|                       Instance                      |                                               Module                                               | Total LUTs | Logic LUTs | LUTRAMs | SRLs |  FFs | RAMB36 | RAMB18 | DSP Blocks |
++-----------------------------------------------------+----------------------------------------------------------------------------------------------------+------------+------------+---------+------+------+--------+--------+------------+
+| rocketchip_wrapper                                  |                                                                                              (top) |      13777 |      13014 |     762 |    1 | 5884 |      0 |      0 |          0 |
+|   (rocketchip_wrapper)                              |                                                                                              (top) |          0 |          0 |       0 |    0 |    0 |      0 |      0 |          0 |
+|   system_i                                          |                                                                                             system |        203 |        188 |      14 |    1 |  321 |      0 |      0 |          0 |
+|     axi_interconnect_1                              |                                                                        system_axi_interconnect_1_0 |        186 |        172 |      14 |    0 |  288 |      0 |      0 |          0 |
+|       s00_couplers                                  |                                                                            s00_couplers_imp_8CNLH6 |        186 |        172 |      14 |    0 |  288 |      0 |      0 |          0 |
+|         auto_pc                                     |                                                            system_axi_interconnect_1_imp_auto_pc_0 |        186 |        172 |      14 |    0 |  288 |      0 |      0 |          0 |
+|           inst                                      |      system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_axi_protocol_converter |        186 |        172 |      14 |    0 |  288 |      0 |      0 |          0 |
+|             gen_axi4_axi3.axi3_conv_inst            |                   system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_axi3_conv |        186 |        172 |      14 |    0 |  288 |      0 |      0 |          0 |
+|               (USE_READ.USE_SPLIT_R.read_addr_inst) | system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_a_axi3_conv__parameterized0 |          8 |          8 |       0 |    0 |   61 |      0 |      0 |          0 |
+|               USE_WRITE.write_addr_inst             |                 system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_a_axi3_conv |        106 |         94 |      12 |    0 |  173 |      0 |      0 |          0 |
+|                 (USE_WRITE.write_addr_inst)         |                 system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_a_axi3_conv |         13 |         13 |       0 |    0 |   71 |      0 |      0 |          0 |
+|                 USE_BURSTS.cmd_queue                |                            system_axi_interconnect_1_imp_auto_pc_0_axi_data_fifo_v2_1_36_axic_fifo |         53 |         45 |       8 |    0 |   56 |      0 |      0 |          0 |
+|                   inst                              |                             system_axi_interconnect_1_imp_auto_pc_0_axi_data_fifo_v2_1_36_fifo_gen |         53 |         45 |       8 |    0 |   56 |      0 |      0 |          0 |
+|                     fifo_gen_inst                   |                                    system_axi_interconnect_1_imp_auto_pc_0_fifo_generator_v13_2_14 |         34 |         26 |       8 |    0 |   56 |      0 |      0 |          0 |
+|                       inst_fifo_gen                 |                              system_axi_interconnect_1_imp_auto_pc_0_fifo_generator_v13_2_14_synth |         34 |         26 |       8 |    0 |   56 |      0 |      0 |          0 |
+|                         gconvfifo.rf                |                                         system_axi_interconnect_1_imp_auto_pc_0_fifo_generator_top |         34 |         26 |       8 |    0 |   56 |      0 |      0 |          0 |
+|                           grf.rf                    |                                     system_axi_interconnect_1_imp_auto_pc_0_fifo_generator_ramfifo |         34 |         26 |       8 |    0 |   56 |      0 |      0 |          0 |
+|   top                                               |                                                                                                Top |      13575 |      12827 |     748 |    0 | 5563 |      0 |      0 |          0 |
+|     teaching_board_top                              |                                                                                        RD2BoardTop |      13575 |      12827 |     748 |    0 | 5563 |      0 |      0 |          0 |
+|       adapter                                       |                                                                                     ZynqAdapterRD2 |        659 |        515 |     144 |    0 |  535 |      0 |      0 |          0 |
+|         core                                        |                                                                                 ZynqAdapterRD2Core |        443 |        299 |     144 |    0 |  380 |      0 |      0 |          0 |
+|           (core)                                    |                                                                                 ZynqAdapterRD2Core |          1 |          1 |       0 |    0 |   66 |      0 |      0 |          0 |
+|           Queue                                     |                                                                                           Queue_57 |        131 |        131 |       0 |    0 |   61 |      0 |      0 |          0 |
+|           bdev_serdes                               |                                                                                  BlockDeviceSerdes |        101 |        101 |       0 |    0 |  205 |      0 |      0 |          0 |
+|         axi4frag                                    |                                                                                     AXI4Fragmenter |        203 |        203 |       0 |    0 |  155 |      0 |      0 |          0 |
+|           (axi4frag)                                |                                                                                     AXI4Fragmenter |          0 |          0 |       0 |    0 |   52 |      0 |      0 |          0 |
+|           Queue                                     |                                                                                           Queue_59 |         96 |         96 |       0 |    0 |   33 |      0 |      0 |          0 |
+|           Queue_1                                   |                                                                                        Queue_59_47 |         80 |         80 |       0 |    0 |   33 |      0 |      0 |          0 |
+|       target                                        |                                                                                         RD2ZynqTop |      12920 |      12316 |     604 |    0 | 5028 |      0 |      0 |          0 |
+|         (target)                                    |                                                                                         RD2ZynqTop |         54 |         54 |       0 |    0 |   52 |      0 |      0 |          0 |
+|         backend                                     |                                                                                      AtomicBackend |       1132 |       1132 |       0 |    0 |  234 |      0 |      0 |          0 |
+|           (backend)                                 |                                                                                      AtomicBackend |       1125 |       1125 |       0 |    0 |  231 |      0 |      0 |          0 |
+|         bdevWatch                                   |                                                                                         RD2Watch_1 |         71 |         71 |       0 |    0 |   52 |      0 |      0 |          0 |
+|         bh                                          |                                                                                        TLBroadcast |        581 |        389 |     192 |    0 |  225 |      0 |      0 |          0 |
+|           TLBroadcastTracker_3                      |                                                                               TLBroadcastTracker_3 |        100 |         52 |      48 |    0 |   52 |      0 |      0 |          0 |
+|             o_data                                  |                                                                                            Queue_7 |         89 |         41 |      48 |    0 |    7 |      0 |      0 |          0 |
+|           TLBroadcastTracker                        |                                                                                 TLBroadcastTracker |         84 |         36 |      48 |    0 |   52 |      0 |      0 |          0 |
+|             o_data                                  |                                                                                         Queue_7_42 |         74 |         26 |      48 |    0 |    7 |      0 |      0 |          0 |
+|           TLBroadcastTracker_1                      |                                                                               TLBroadcastTracker_1 |        187 |        139 |      48 |    0 |   52 |      0 |      0 |          0 |
+|             o_data                                  |                                                                                         Queue_7_41 |        177 |        129 |      48 |    0 |    7 |      0 |      0 |          0 |
+|           TLBroadcastTracker_2                      |                                                                               TLBroadcastTracker_2 |        199 |        151 |      48 |    0 |   52 |      0 |      0 |          0 |
+|             o_data                                  |                                                                                         Queue_7_40 |        188 |        140 |      48 |    0 |    7 |      0 |      0 |          0 |
+|         bootrom                                     |                                                                                              TLROM |        365 |        365 |       0 |    0 |    0 |      0 |      0 |          0 |
+|         bridgeV2                                    |                                                                                        RD2BridgeV2 |        487 |        487 |       0 |    0 |  251 |      0 |      0 |          0 |
+|         clint                                       |                                                                                              CLINT |          3 |          3 |       0 |    0 |   64 |      0 |      0 |          0 |
+|         controller                                  |                                                                           RD2BlockDeviceController |        512 |        508 |       4 |    0 |  452 |      0 |      0 |          0 |
+|           frontend                                  |                                                                                BlockDeviceFrontend |        128 |        128 |       0 |    0 |  219 |      0 |      0 |          0 |
+|             (frontend)                              |                                                                                BlockDeviceFrontend |          0 |          0 |       0 |    0 |  129 |      0 |      0 |          0 |
+|             Queue                                   |                                                                                           Queue_47 |        128 |        128 |       0 |    0 |   90 |      0 |      0 |          0 |
+|           trackers                                  |                                                                                 BlockDeviceTracker |        204 |        204 |       0 |    0 |  112 |      0 |      0 |          0 |
+|           trackers_1                                |                                                                              BlockDeviceTracker_38 |        159 |        159 |       0 |    0 |  112 |      0 |      0 |          0 |
+|         cpuV2                                       |                                                                                      TeachingCpuV2 |       6167 |       6079 |      88 |    0 | 2330 |      0 |      0 |          0 |
+|           core                                      |                                                                                          tcpu_core |       6162 |       6074 |      88 |    0 | 2330 |      0 |      0 |          0 |
+|             (core)                                  |                                                                                          tcpu_core |        572 |        572 |       0 |    0 |  830 |      0 |      0 |          0 |
+|             csrfile                                 |                                                                                           tcpu_csr |       1091 |       1091 |       0 |    0 |  848 |      0 |      0 |          0 |
+|             muldiv                                  |                                                                                        tcpu_muldiv |       1062 |       1062 |       0 |    0 |  466 |      0 |      0 |          0 |
+|             ptw                                     |                                                                                           tcpu_ptw |        239 |        239 |       0 |    0 |  186 |      0 |      0 |          0 |
+|             rf                                      |                                                                                       tcpu_regfile |       3205 |       3117 |      88 |    0 |    0 |      0 |      0 |          0 |
+|         mbus                                        |                                                                                          MemoryBus |        287 |        287 |       0 |    0 |  393 |      0 |      0 |          0 |
+|           coupler_to_memory_controller_named_axi4   |                                                                                SimpleLazyModule_16 |        287 |        287 |       0 |    0 |  393 |      0 |      0 |          0 |
+|             axi4yank                                |                                                                                     AXI4UserYanker |        122 |        122 |       0 |    0 |  256 |      0 |      0 |          0 |
+|             tl2axi4                                 |                                                                                           TLToAXI4 |        166 |        166 |       0 |    0 |  137 |      0 |      0 |          0 |
+|               Queue_1                               |                                                                                           Queue_44 |         81 |         81 |       0 |    0 |   42 |      0 |      0 |          0 |
+|               Queue                                 |                                                                                           Queue_43 |         56 |         56 |       0 |    0 |   73 |      0 |      0 |          0 |
+|         pbus                                        |                                                                                       PeripheryBus |       1662 |       1402 |     260 |    0 |  401 |      0 |      0 |          0 |
+|           coupler_from_sbus                         |                                                                                 SimpleLazyModule_7 |        681 |        553 |     128 |    0 |  196 |      0 |      0 |          0 |
+|             atomics                                 |                                                                                   TLAtomicAutomata |        449 |        449 |       0 |    0 |  190 |      0 |      0 |          0 |
+|             buffer                                  |                                                                                       TLBuffer_5_4 |        233 |        105 |     128 |    0 |    6 |      0 |      0 |          0 |
+|               Queue                                 |                                                                                          Queue_2_5 |        173 |         95 |      78 |    0 |    3 |      0 |      0 |          0 |
+|               Queue_1                               |                                                                                          Queue_3_6 |         60 |         10 |      50 |    0 |    3 |      0 |      0 |          0 |
+|           coupler_to_slave_named_clint              |                                                                                 SimpleLazyModule_9 |        126 |        126 |       0 |    0 |   31 |      0 |      0 |          0 |
+|             fragmenter                              |                                                                                   TLFragmenter_1_2 |        126 |        126 |       0 |    0 |   31 |      0 |      0 |          0 |
+|               Repeater                              |                                                                                       Repeater_1_3 |        126 |        126 |       0 |    0 |   22 |      0 |      0 |          0 |
+|           coupler_to_slave_named_debug              |                                                                                SimpleLazyModule_10 |         75 |         75 |       0 |    0 |   27 |      0 |      0 |          0 |
+|             fragmenter                              |                                                                                     TLFragmenter_2 |         75 |         75 |       0 |    0 |   27 |      0 |      0 |          0 |
+|               Repeater                              |                                                                                         Repeater_2 |         70 |         70 |       0 |    0 |   18 |      0 |      0 |          0 |
+|           coupler_to_slave_named_rd2clint           |                                                                               SimpleLazyModule_9_1 |         63 |         63 |       0 |    0 |   31 |      0 |      0 |          0 |
+|             fragmenter                              |                                                                                     TLFragmenter_1 |         63 |         63 |       0 |    0 |   31 |      0 |      0 |          0 |
+|               Repeater                              |                                                                                         Repeater_1 |         63 |         63 |       0 |    0 |   22 |      0 |      0 |          0 |
+|           periphery_bus_xbar                        |                                                                                           TLXbar_1 |        314 |        314 |       0 |    0 |   14 |      0 |      0 |          0 |
+|           sync_xing                                 |                                                                                         TLBuffer_5 |        312 |        180 |     132 |    0 |    6 |      0 |      0 |          0 |
+|             Queue                                   |                                                                                            Queue_2 |         98 |         16 |      82 |    0 |    3 |      0 |      0 |          0 |
+|             Queue_1                                 |                                                                                            Queue_3 |        214 |        164 |      50 |    0 |    3 |      0 |      0 |          0 |
+|         plic                                        |                                                                                             TLPLIC |         47 |         47 |       0 |    0 |   63 |      0 |      0 |          0 |
+|         rd2clint                                    |                                                                                           RD2Clint |         95 |         95 |       0 |    0 |  129 |      0 |      0 |          0 |
+|         rd2serial                                   |                                                                                   RD2SerialAdapter |        560 |        560 |       0 |    0 |  231 |      0 |      0 |          0 |
+|         sbus                                        |                                                                                          SystemBus |        822 |        806 |      16 |    0 |  117 |      0 |      0 |          0 |
+|           coupler_to_slave_named_Error              |                                                                                 SimpleLazyModule_3 |         54 |         38 |      16 |    0 |    6 |      0 |      0 |          0 |
+|             buffer                                  |                                                                                         TLBuffer_1 |         54 |         38 |      16 |    0 |    6 |      0 |      0 |          0 |
+|           system_bus_xbar                           |                                                                                             TLXbar |        769 |        769 |       0 |    0 |  111 |      0 |      0 |          0 |
++-----------------------------------------------------+----------------------------------------------------------------------------------------------------+------------+------------+---------+------+------+--------+--------+------------+
+* Note: The sum of lower-level cells may be larger than their parent cells total, due to cross-hierarchy LUT combining
+
+

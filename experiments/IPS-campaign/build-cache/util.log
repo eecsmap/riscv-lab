@@ -1,0 +1,70 @@
+#-----------------------------------------------------------
+# Vivado v2025.2.1 (64-bit)
+# SW Build 6403652 on Thu Mar 19 13:47:00 MDT 2026
+# IP Build 6403511 on Thu Mar 19 12:41:45 MDT 2026
+# SharedData Build 6403650 on Thu Mar 19 14:02:13 MDT 2026
+# Start of session at: Fri Sep 25 00:10:00 2026
+# Process ID         : 97
+# Current directory  : /home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache
+# Command line       : vivado -mode batch -nojournal -log /home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/util.log -source /home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/util.tcl
+# Log file           : /home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/util.log
+# Journal file       : 
+# Running On         : ubuntu
+# Platform           : Ubuntu
+# Operating System   : Ubuntu 24.04.2 LTS
+# Processor Detail   : Intel(R) Core(TM) i7-8700B CPU @ 3.20GHz
+# CPU Frequency      : 800.000 MHz
+# CPU Physical cores : 6
+# CPU Logical cores  : 12
+# Host memory        : 32957 MB
+# Swap memory        : 8589 MB
+# Total Virtual      : 41547 MB
+# Available Virtual  : 35578 MB
+#-----------------------------------------------------------
+source /home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/util.tcl
+# open_checkpoint /home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/reports/post_route.dcp
+Command: open_checkpoint /home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/reports/post_route.dcp
+
+Starting open_checkpoint Task
+
+Time (s): cpu = 00:00:00.06 ; elapsed = 00:00:00.03 . Memory (MB): peak = 1575.438 ; gain = 0.000 ; free physical = 11508 ; free virtual = 33510
+INFO: [Device 21-403] Loading part xc7z020clg400-1
+Netlist sorting complete. Time (s): cpu = 00:00:00.13 ; elapsed = 00:00:00.12 . Memory (MB): peak = 1796.762 ; gain = 0.000 ; free physical = 11351 ; free virtual = 33354
+INFO: [Netlist 29-17] Analyzing 1141 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-479] Netlist was created with Vivado 2025.2.1
+INFO: [Project 1-570] Preparing netlist for logic optimization
+Read ShapeDB Complete: Time (s): cpu = 00:00:00.03 ; elapsed = 00:00:00.03 . Memory (MB): peak = 1902.324 ; gain = 4.000 ; free physical = 11236 ; free virtual = 33239
+INFO: [Timing 38-478] Restoring timing data from binary archive.
+INFO: [Timing 38-479] Binary timing data restore complete.
+INFO: [Project 1-856] Restoring constraints from binary archive.
+INFO: [Project 1-853] Binary constraint restore complete.
+INFO: [Designutils 20-5722] Start Reading Physical Databases.
+Reading placement.
+Read Netlist Cache: Time (s): cpu = 00:00:00.02 ; elapsed = 00:00:00.02 . Memory (MB): peak = 2492.887 ; gain = 0.000 ; free physical = 10707 ; free virtual = 32710
+Reading placer database...
+Read Device Cache: Time (s): cpu = 00:00:00.01 ; elapsed = 00:00:00.01 . Memory (MB): peak = 2492.887 ; gain = 0.000 ; free physical = 10707 ; free virtual = 32710
+Read PlaceDB: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2492.887 ; gain = 0.000 ; free physical = 10707 ; free virtual = 32710
+Read placeStorage: Time (s): cpu = 00:00:00.49 ; elapsed = 00:00:00.5 . Memory (MB): peak = 2492.887 ; gain = 0.000 ; free physical = 10700 ; free virtual = 32703
+Read PulsedLatchDB: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2492.887 ; gain = 0.000 ; free physical = 10700 ; free virtual = 32703
+Reading routing.
+Read RouteStorage: Time (s): cpu = 00:00:00.47 ; elapsed = 00:00:00.14 . Memory (MB): peak = 2505.895 ; gain = 13.008 ; free physical = 10683 ; free virtual = 32686
+Read Physdb Files: Time (s): cpu = 00:00:01 ; elapsed = 00:00:00.67 . Memory (MB): peak = 2505.895 ; gain = 13.008 ; free physical = 10683 ; free virtual = 32686
+Restored from archive | CPU: 1.040000 secs | Memory: 21.444748 MB |
+Finished XDEF File Restore: Time (s): cpu = 00:00:01 ; elapsed = 00:00:00.7 . Memory (MB): peak = 2505.895 ; gain = 19.945 ; free physical = 10683 ; free virtual = 32686
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2507.895 ; gain = 0.000 ; free physical = 10683 ; free virtual = 32686
+INFO: [Project 1-111] Unisim Transformation Summary:
+  A total of 263 instances were transformed.
+  RAM16X1D => RAM32X1D (RAMD32(x2)): 15 instances
+  RAM32M => RAM32M (RAMD32(x6), RAMS32(x2)): 182 instances
+  RAM32X1D => RAM32X1D (RAMD32(x2)): 15 instances
+  RAM64M => RAM64M (RAMD64E(x4)): 50 instances
+  RAM64X1D => RAM64X1D (RAMD64E(x2)): 1 instance 
+
+INFO: [Project 1-604] Checkpoint was created with Vivado v2025.2.1 (64-bit) build 6403652
+open_checkpoint: Time (s): cpu = 00:00:20 ; elapsed = 00:00:12 . Memory (MB): peak = 2515.930 ; gain = 940.492 ; free physical = 10683 ; free virtual = 32686
+# report_utilization -file /home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/reports/post_route_util.rpt
+# puts "UTIL_DONE"
+UTIL_DONE
+# exit
+INFO: [Common 17-206] Exiting Vivado at Fri Sep 25 00:10:14 2026...

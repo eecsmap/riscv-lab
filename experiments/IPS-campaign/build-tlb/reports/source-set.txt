@@ -1,0 +1,23 @@
+# every file Vivado has in sources_1, in compile order, as the tool reports it
+# top: rocketchip_wrapper
+# verilog_define: SYNTHESIS
+# include_dirs: /home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-tlb/inputs
+/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-tlb/inputs/teaching_top_shim.v
+/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-tlb/inputs/RD2BoardTop.RD2AtomicBoardConfig.v
+/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-tlb/inputs/rocketchip_wrapper.v
+/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-tlb/inputs/tcpu_cdecode.v
+/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-tlb/inputs/tcpu_core.v
+/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-tlb/inputs/tcpu_csr.v
+/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-tlb/inputs/tcpu_muldiv.v
+/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-tlb/inputs/tcpu_permcheck.v
+/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-tlb/inputs/tcpu_ptw.v
+/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-tlb/inputs/tcpu_regfile.v
+/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-tlb/inputs/tcpu_tlb.v
+/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-tlb/inputs/tcpu_xlate.v
+/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-tlb/inputs/AsyncResetReg.v
+/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-tlb/inputs/plusarg_reader.v
+/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-tlb/vivado-project/teaching_pynqz1.srcs/sources_1/bd/system/system.bd
+/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-tlb/vivado-project/teaching_pynqz1.srcs/sources_1/bd/system/ip/system_proc_sys_reset_0_0/system_proc_sys_reset_0_0.xci
+/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-tlb/vivado-project/teaching_pynqz1.srcs/sources_1/bd/system/ip/system_processing_system7_0_0/system_processing_system7_0_0.xci
+# constraints
+/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-tlb/inputs/base.xdc
