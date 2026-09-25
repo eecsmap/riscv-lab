@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-# xv6 with the frozen b0apps profile, on a named core, through the PRODUCTION lifecycle.
+# xv6 with the frozen b0apps profile, on any campaign core, through the PRODUCTION lifecycle.
 #
 # Same kernel and same pristine disk as the accepted 2026-09-23 simulator record -- their hashes are
 # checked here, not assumed -- so the software side of the comparison is identical and the CPU RTL is
 # the only intended difference. The simulator BINARY necessarily differs; that is recorded as the
 # confound it is.
 #
-#   run-stage1-xv6.sh <core: baseline|fetch32> <fresh outdir>
+#   run-xv6.sh <core: baseline|fetch32|tlb|cache> <fresh outdir>
 set -u
 R=/home/engineer/fpga
 CAMP=$(cd "$(dirname "$0")/.." && pwd)
@@ -15,6 +15,8 @@ OUT=${2:?outdir}
 case "$CORE" in
   baseline) RTL=$R/worktrees/ips-baseline/rtl/cpu ;;
   fetch32)  RTL=$R/worktrees/ips-fetch32/rtl/cpu ;;
+  tlb)      RTL=$R/worktrees/ips-tlb/rtl/cpu ;;
+  cache)    RTL=$R/worktrees/ips-cache/rtl/cpu ;;
   *) echo "REFUSE: unknown core '$CORE'"; exit 2 ;;
 esac
 GEN=$R/teaching-cpu-work/fpga-zynq/simulation/src/verilog/RD2Harness.RD2AtomicXv6FastConfig.v
