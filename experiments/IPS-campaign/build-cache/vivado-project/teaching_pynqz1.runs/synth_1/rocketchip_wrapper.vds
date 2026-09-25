@@ -3,8 +3,8 @@
 # SW Build 6403652 on Thu Mar 19 13:47:00 MDT 2026
 # IP Build 6403511 on Thu Mar 19 12:41:45 MDT 2026
 # SharedData Build 6403650 on Thu Mar 19 14:02:13 MDT 2026
-# Start of session at: Fri Sep 25 00:03:32 2026
-# Process ID         : 1921
+# Start of session at: Fri Sep 25 01:40:12 2026
+# Process ID         : 1924
 # Current directory  : /home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/vivado-project/teaching_pynqz1.runs/synth_1
 # Command line       : vivado -log rocketchip_wrapper.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source rocketchip_wrapper.tcl
 # Log file           : /home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/vivado-project/teaching_pynqz1.runs/synth_1/rocketchip_wrapper.vds
@@ -13,13 +13,13 @@
 # Platform           : Ubuntu
 # Operating System   : Ubuntu 24.04.2 LTS
 # Processor Detail   : Intel(R) Core(TM) i7-8700B CPU @ 3.20GHz
-# CPU Frequency      : 4394.018 MHz
+# CPU Frequency      : 4299.326 MHz
 # CPU Physical cores : 6
 # CPU Logical cores  : 12
 # Host memory        : 32957 MB
 # Swap memory        : 8589 MB
 # Total Virtual      : 41547 MB
-# Available Virtual  : 34960 MB
+# Available Virtual  : 34664 MB
 #-----------------------------------------------------------
 source rocketchip_wrapper.tcl -notrace
 INFO: [IP_Flow 19-234] Refreshing IP repositories
@@ -32,41 +32,41 @@ INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7z020
 INFO: [Device 21-403] Loading part xc7z020clg400-1
 INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 7 processes.
 INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
-INFO: [Synth 8-7075] Helper process launched with PID 1967
+INFO: [Synth 8-7075] Helper process launched with PID 1970
 ---------------------------------------------------------------------------------
-Starting RTL Elaboration : Time (s): cpu = 00:00:03 ; elapsed = 00:00:04 . Memory (MB): peak = 2257.238 ; gain = 482.875 ; free physical = 9707 ; free virtual = 31890
+Starting RTL Elaboration : Time (s): cpu = 00:00:04 ; elapsed = 00:00:04 . Memory (MB): peak = 2256.551 ; gain = 482.188 ; free physical = 8415 ; free virtual = 31591
 ---------------------------------------------------------------------------------
 WARNING: [Synth 8-6901] identifier 'is_fencei' is used before its declaration [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/inputs/tcpu_core.v:160]
 WARNING: [Synth 8-6901] identifier 'csr_irq_pending' is used before its declaration [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/inputs/tcpu_core.v:470]
 WARNING: [Synth 8-6901] identifier 'st_mpp' is used before its declaration [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/inputs/tcpu_csr.v:94]
-INFO: [Synth 8-11241] undeclared symbol 'state', assumed default net type 'wire' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/inputs/tcpu_ifill.v:67]
-INFO: [Synth 8-11241] undeclared symbol 'held_addr', assumed default net type 'wire' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/inputs/tcpu_ifill.v:67]
-WARNING: [Synth 8-8895] 'state' is already implicitly declared on line 67 [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/inputs/tcpu_ifill.v:70]
-WARNING: [Synth 8-8895] 'held_addr' is already implicitly declared on line 67 [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/inputs/tcpu_ifill.v:71]
+INFO: [Synth 8-11241] undeclared symbol 'state', assumed default net type 'wire' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/inputs/tcpu_ifill.v:82]
+INFO: [Synth 8-11241] undeclared symbol 'held_addr', assumed default net type 'wire' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/inputs/tcpu_ifill.v:82]
+WARNING: [Synth 8-8895] 'state' is already implicitly declared on line 82 [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/inputs/tcpu_ifill.v:86]
+WARNING: [Synth 8-8895] 'held_addr' is already implicitly declared on line 82 [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/inputs/tcpu_ifill.v:87]
 INFO: [Synth 8-11241] undeclared symbol 'M_AXI_rresp', assumed default net type 'wire' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/inputs/rocketchip_wrapper.v:301]
 INFO: [Synth 8-11241] undeclared symbol 'M_AXI_bresp', assumed default net type 'wire' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/inputs/rocketchip_wrapper.v:308]
 INFO: [Synth 8-6157] synthesizing module 'rocketchip_wrapper' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/inputs/rocketchip_wrapper.v:4]
 INFO: [Synth 8-6157] synthesizing module 'system' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/vivado-project/teaching_pynqz1.gen/sources_1/bd/system/synth/system.v:665]
 INFO: [Synth 8-6157] synthesizing module 'system_axi_interconnect_0_0' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/vivado-project/teaching_pynqz1.gen/sources_1/bd/system/synth/system.v:1332]
 INFO: [Synth 8-6157] synthesizing module 's00_couplers_imp_Y9JEWS' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/vivado-project/teaching_pynqz1.gen/sources_1/bd/system/synth/system.v:339]
-INFO: [Synth 8-6157] synthesizing module 'system_axi_interconnect_0_imp_auto_pc_0' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/vivado-project/teaching_pynqz1.runs/synth_1/.Xil/Vivado-1921-ubuntu/realtime/system_axi_interconnect_0_imp_auto_pc_0_stub.v:6]
-INFO: [Synth 8-6155] done synthesizing module 'system_axi_interconnect_0_imp_auto_pc_0' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/vivado-project/teaching_pynqz1.runs/synth_1/.Xil/Vivado-1921-ubuntu/realtime/system_axi_interconnect_0_imp_auto_pc_0_stub.v:6]
+INFO: [Synth 8-6157] synthesizing module 'system_axi_interconnect_0_imp_auto_pc_0' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/vivado-project/teaching_pynqz1.runs/synth_1/.Xil/Vivado-1924-ubuntu/realtime/system_axi_interconnect_0_imp_auto_pc_0_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'system_axi_interconnect_0_imp_auto_pc_0' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/vivado-project/teaching_pynqz1.runs/synth_1/.Xil/Vivado-1924-ubuntu/realtime/system_axi_interconnect_0_imp_auto_pc_0_stub.v:6]
 INFO: [Synth 8-6155] done synthesizing module 's00_couplers_imp_Y9JEWS' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/vivado-project/teaching_pynqz1.gen/sources_1/bd/system/synth/system.v:339]
 INFO: [Synth 8-6155] done synthesizing module 'system_axi_interconnect_0_0' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/vivado-project/teaching_pynqz1.gen/sources_1/bd/system/synth/system.v:1332]
 INFO: [Synth 8-6157] synthesizing module 'system_axi_interconnect_1_0' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/vivado-project/teaching_pynqz1.gen/sources_1/bd/system/synth/system.v:1666]
 INFO: [Synth 8-6157] synthesizing module 's00_couplers_imp_8CNLH6' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/vivado-project/teaching_pynqz1.gen/sources_1/bd/system/synth/system.v:13]
-INFO: [Synth 8-6157] synthesizing module 'system_axi_interconnect_1_imp_auto_pc_0' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/vivado-project/teaching_pynqz1.runs/synth_1/.Xil/Vivado-1921-ubuntu/realtime/system_axi_interconnect_1_imp_auto_pc_0_stub.v:6]
-INFO: [Synth 8-6155] done synthesizing module 'system_axi_interconnect_1_imp_auto_pc_0' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/vivado-project/teaching_pynqz1.runs/synth_1/.Xil/Vivado-1921-ubuntu/realtime/system_axi_interconnect_1_imp_auto_pc_0_stub.v:6]
+INFO: [Synth 8-6157] synthesizing module 'system_axi_interconnect_1_imp_auto_pc_0' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/vivado-project/teaching_pynqz1.runs/synth_1/.Xil/Vivado-1924-ubuntu/realtime/system_axi_interconnect_1_imp_auto_pc_0_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'system_axi_interconnect_1_imp_auto_pc_0' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/vivado-project/teaching_pynqz1.runs/synth_1/.Xil/Vivado-1924-ubuntu/realtime/system_axi_interconnect_1_imp_auto_pc_0_stub.v:6]
 INFO: [Synth 8-6155] done synthesizing module 's00_couplers_imp_8CNLH6' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/vivado-project/teaching_pynqz1.gen/sources_1/bd/system/synth/system.v:13]
 INFO: [Synth 8-6155] done synthesizing module 'system_axi_interconnect_1_0' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/vivado-project/teaching_pynqz1.gen/sources_1/bd/system/synth/system.v:1666]
-INFO: [Synth 8-6157] synthesizing module 'system_proc_sys_reset_0_0' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/vivado-project/teaching_pynqz1.runs/synth_1/.Xil/Vivado-1921-ubuntu/realtime/system_proc_sys_reset_0_0_stub.v:6]
-INFO: [Synth 8-6155] done synthesizing module 'system_proc_sys_reset_0_0' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/vivado-project/teaching_pynqz1.runs/synth_1/.Xil/Vivado-1921-ubuntu/realtime/system_proc_sys_reset_0_0_stub.v:6]
+INFO: [Synth 8-6157] synthesizing module 'system_proc_sys_reset_0_0' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/vivado-project/teaching_pynqz1.runs/synth_1/.Xil/Vivado-1924-ubuntu/realtime/system_proc_sys_reset_0_0_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'system_proc_sys_reset_0_0' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/vivado-project/teaching_pynqz1.runs/synth_1/.Xil/Vivado-1924-ubuntu/realtime/system_proc_sys_reset_0_0_stub.v:6]
 WARNING: [Synth 8-7071] port 'mb_reset' of module 'system_proc_sys_reset_0_0' is unconnected for instance 'proc_sys_reset_0' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/vivado-project/teaching_pynqz1.gen/sources_1/bd/system/synth/system.v:1218]
 WARNING: [Synth 8-7071] port 'bus_struct_reset' of module 'system_proc_sys_reset_0_0' is unconnected for instance 'proc_sys_reset_0' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/vivado-project/teaching_pynqz1.gen/sources_1/bd/system/synth/system.v:1218]
 WARNING: [Synth 8-7071] port 'peripheral_reset' of module 'system_proc_sys_reset_0_0' is unconnected for instance 'proc_sys_reset_0' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/vivado-project/teaching_pynqz1.gen/sources_1/bd/system/synth/system.v:1218]
 WARNING: [Synth 8-7023] instance 'proc_sys_reset_0' of module 'system_proc_sys_reset_0_0' has 10 connections declared, but only 7 given [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/vivado-project/teaching_pynqz1.gen/sources_1/bd/system/synth/system.v:1218]
-INFO: [Synth 8-6157] synthesizing module 'system_processing_system7_0_0' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/vivado-project/teaching_pynqz1.runs/synth_1/.Xil/Vivado-1921-ubuntu/realtime/system_processing_system7_0_0_stub.v:6]
-INFO: [Synth 8-6155] done synthesizing module 'system_processing_system7_0_0' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/vivado-project/teaching_pynqz1.runs/synth_1/.Xil/Vivado-1921-ubuntu/realtime/system_processing_system7_0_0_stub.v:6]
+INFO: [Synth 8-6157] synthesizing module 'system_processing_system7_0_0' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/vivado-project/teaching_pynqz1.runs/synth_1/.Xil/Vivado-1924-ubuntu/realtime/system_processing_system7_0_0_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'system_processing_system7_0_0' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/vivado-project/teaching_pynqz1.runs/synth_1/.Xil/Vivado-1924-ubuntu/realtime/system_processing_system7_0_0_stub.v:6]
 WARNING: [Synth 8-7071] port 'USB0_PORT_INDCTL' of module 'system_processing_system7_0_0' is unconnected for instance 'processing_system7_0' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/vivado-project/teaching_pynqz1.gen/sources_1/bd/system/synth/system.v:1226]
 WARNING: [Synth 8-7071] port 'USB0_VBUS_PWRSELECT' of module 'system_processing_system7_0_0' is unconnected for instance 'processing_system7_0' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/vivado-project/teaching_pynqz1.gen/sources_1/bd/system/synth/system.v:1226]
 WARNING: [Synth 8-7071] port 'S_AXI_HP0_RCOUNT' of module 'system_processing_system7_0_0' is unconnected for instance 'processing_system7_0' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/vivado-project/teaching_pynqz1.gen/sources_1/bd/system/synth/system.v:1226]
@@ -267,7 +267,7 @@ INFO: [Common 17-14] Message 'Synth 8-6155' appears 100 times and further instan
 	Parameter LINE_BYTES bound to: 16 - type: integer 
 	Parameter BYTES bound to: 1024 - type: integer 
 	Parameter LINE_BYTES bound to: 16 - type: integer 
-INFO: [Synth 8-226] default block is never used [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/inputs/tcpu_ifill.v:107]
+INFO: [Synth 8-226] default block is never used [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/inputs/tcpu_ifill.v:124]
 	Parameter FAULT_C_IMM bound to: 0 - type: integer 
 	Parameter FAULT_C_REG bound to: 0 - type: integer 
 	Parameter X0_WRITABLE bound to: 0 - type: integer 
@@ -633,18 +633,18 @@ WARNING: [Synth 8-7129] Port pa[4] in module tcpu_cacheable is either unconnecte
 WARNING: [Synth 8-7129] Port pa[3] in module tcpu_cacheable is either unconnected or has no load
 INFO: [Common 17-14] Message 'Synth 8-7129' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
 ---------------------------------------------------------------------------------
-Finished RTL Elaboration : Time (s): cpu = 00:00:21 ; elapsed = 00:00:22 . Memory (MB): peak = 3064.879 ; gain = 1290.516 ; free physical = 8960 ; free virtual = 31156
+Finished RTL Elaboration : Time (s): cpu = 00:00:21 ; elapsed = 00:00:22 . Memory (MB): peak = 3065.191 ; gain = 1290.828 ; free physical = 7729 ; free virtual = 30918
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Handling Custom Attributes
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Handling Custom Attributes : Time (s): cpu = 00:00:22 ; elapsed = 00:00:24 . Memory (MB): peak = 3064.879 ; gain = 1290.516 ; free physical = 8960 ; free virtual = 31156
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:23 ; elapsed = 00:00:24 . Memory (MB): peak = 3065.191 ; gain = 1290.828 ; free physical = 7757 ; free virtual = 30945
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:22 ; elapsed = 00:00:24 . Memory (MB): peak = 3064.879 ; gain = 1290.516 ; free physical = 8960 ; free virtual = 31156
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:23 ; elapsed = 00:00:24 . Memory (MB): peak = 3065.191 ; gain = 1290.828 ; free physical = 7757 ; free virtual = 30945
 ---------------------------------------------------------------------------------
-Netlist sorting complete. Time (s): cpu = 00:00:00.75 ; elapsed = 00:00:00.75 . Memory (MB): peak = 3064.879 ; gain = 0.000 ; free physical = 8975 ; free virtual = 31171
+Netlist sorting complete. Time (s): cpu = 00:00:00.77 ; elapsed = 00:00:00.78 . Memory (MB): peak = 3065.191 ; gain = 0.000 ; free physical = 7783 ; free virtual = 30972
 INFO: [Netlist 29-17] Analyzing 2 Unisim elements for replacement
 WARNING: [Netlist 29-432] The IBUFG primitive 'ibufg_gclk' has been retargeted to an IBUF primitive only. No BUFG will be added. If a global buffer is intended, please instantiate an available global clock primitive from the current architecture.
 INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
@@ -669,30 +669,30 @@ Finished Parsing XDC File [/home/engineer/fpga/worktrees/ips-cache/experiments/I
 INFO: [Timing 38-2] Deriving generated clocks
 Completed Processing XDC Constraints
 
-Netlist sorting complete. Time (s): cpu = 00:00:00.01 ; elapsed = 00:00:00.01 . Memory (MB): peak = 3160.555 ; gain = 0.000 ; free physical = 8972 ; free virtual = 31168
+Netlist sorting complete. Time (s): cpu = 00:00:00.02 ; elapsed = 00:00:00.01 . Memory (MB): peak = 3160.867 ; gain = 0.000 ; free physical = 7765 ; free virtual = 30953
 INFO: [Project 1-111] Unisim Transformation Summary:
   A total of 2 instances were transformed.
   IBUFG => IBUF: 1 instance 
   MMCME2_BASE => MMCME2_ADV: 1 instance 
 
-Constraint Validation Runtime : Time (s): cpu = 00:00:00.15 ; elapsed = 00:00:00.14 . Memory (MB): peak = 3172.477 ; gain = 0.000 ; free physical = 8960 ; free virtual = 31156
+Constraint Validation Runtime : Time (s): cpu = 00:00:00.14 ; elapsed = 00:00:00.14 . Memory (MB): peak = 3172.789 ; gain = 0.000 ; free physical = 7758 ; free virtual = 30947
 WARNING: [Timing 38-316] Clock period '40.000' specified during out-of-context synthesis of instance 'system_i/proc_sys_reset_0' at clock pin 'slowest_sync_clk' is different from the actual clock period '25.000', this can lead to different synthesis results.
 WARNING: [Timing 38-316] Clock period '40.000' specified during out-of-context synthesis of instance 'system_i/axi_interconnect_1/s00_couplers/auto_pc' at clock pin 'aclk' is different from the actual clock period '25.000', this can lead to different synthesis results.
 ---------------------------------------------------------------------------------
-Finished Constraint Validation : Time (s): cpu = 00:00:42 ; elapsed = 00:00:41 . Memory (MB): peak = 3172.477 ; gain = 1398.113 ; free physical = 7019 ; free virtual = 29215
+Finished Constraint Validation : Time (s): cpu = 00:00:44 ; elapsed = 00:00:42 . Memory (MB): peak = 3172.789 ; gain = 1398.426 ; free physical = 5719 ; free virtual = 28908
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Loading Part and Timing Information
 ---------------------------------------------------------------------------------
 Loading part: xc7z020clg400-1
 ---------------------------------------------------------------------------------
-Finished Loading Part and Timing Information : Time (s): cpu = 00:00:42 ; elapsed = 00:00:41 . Memory (MB): peak = 3180.480 ; gain = 1406.117 ; free physical = 7019 ; free virtual = 29215
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:44 ; elapsed = 00:00:42 . Memory (MB): peak = 3180.793 ; gain = 1406.430 ; free physical = 5711 ; free virtual = 28900
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Applying 'set_property' XDC Constraints
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:43 ; elapsed = 00:00:41 . Memory (MB): peak = 3180.480 ; gain = 1406.117 ; free physical = 7004 ; free virtual = 29200
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:44 ; elapsed = 00:00:42 . Memory (MB): peak = 3180.793 ; gain = 1406.430 ; free physical = 5678 ; free virtual = 28867
 ---------------------------------------------------------------------------------
 WARNING: [Synth 8-3936] Found unconnected internal register '_T_250_0_bits_opcode_reg' and it is trimmed from '3' to '1' bits. [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:9824]
 INFO: [Synth 8-802] inferred FSM for state register 'state_reg' in module 'tcpu_ifill'
@@ -732,7 +732,7 @@ INFO: [Synth 8-3354] encoded FSM with state register 'state_reg' using encoding 
 ---------------------------------------------------------------------------------------------------
 INFO: [Synth 8-3354] encoded FSM with state register 'state_reg' using encoding 'sequential' in module 'tcpu_core'
 ---------------------------------------------------------------------------------
-Finished RTL Optimization Phase 2 : Time (s): cpu = 00:01:27 ; elapsed = 00:01:26 . Memory (MB): peak = 5544.309 ; gain = 3769.945 ; free physical = 1307 ; free virtual = 23516
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:01:30 ; elapsed = 00:01:29 . Memory (MB): peak = 5542.621 ; gain = 3768.258 ; free physical = 256 ; free virtual = 23324
 ---------------------------------------------------------------------------------
 INFO: [Synth 8-223] decloning instance 'top/teaching_board_top/target/debug_1/dmOuter/asource/AsyncQueueSource/widx_bin' (AsyncResetRegVec_w1_i0) to 'top/teaching_board_top/target/debug_1/dmOuter/asource/AsyncQueueSource/widx_gray'
 INFO: [Synth 8-223] decloning instance 'top/teaching_board_top/target/debug_1/dmOuter/asource/AsyncQueueSink/ridx_bin' (AsyncResetRegVec_w1_i0) to 'top/teaching_board_top/target/debug_1/dmOuter/asource/AsyncQueueSink/ridx_gray'
@@ -812,7 +812,7 @@ Detailed RTL Component Info :
 	                4 Bit    Registers := 26    
 	                3 Bit    Registers := 83    
 	                2 Bit    Registers := 4148  
-	                1 Bit    Registers := 473   
+	                1 Bit    Registers := 474   
 +---RAMs : 
 	               8K Bit	(64 X 128 bit)          RAMs := 1     
 	               2K Bit	(32 X 64 bit)          RAMs := 1     
@@ -887,10 +887,10 @@ Detailed RTL Component Info :
 	  11 Input    2 Bit        Muxes := 5     
 	   5 Input    2 Bit        Muxes := 2     
 	   4 Input    2 Bit        Muxes := 3     
-	   2 Input    1 Bit        Muxes := 4714  
+	   2 Input    1 Bit        Muxes := 4718  
 	   7 Input    1 Bit        Muxes := 2     
 	   6 Input    1 Bit        Muxes := 2     
-	   4 Input    1 Bit        Muxes := 28    
+	   4 Input    1 Bit        Muxes := 30    
 	   3 Input    1 Bit        Muxes := 24    
 	  11 Input    1 Bit        Muxes := 31    
 	 256 Input    1 Bit        Muxes := 1     
@@ -1223,7 +1223,7 @@ INFO: [Synth 8-7067] Removed DRAM instance sbus/bufferi_9/i_0/coupler_to_slave_n
 INFO: [Common 17-14] Message 'Synth 8-3886' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
 INFO: [Common 17-14] Message 'Synth 8-3333' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
 ---------------------------------------------------------------------------------
-Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:01:57 ; elapsed = 00:02:03 . Memory (MB): peak = 5564.234 ; gain = 3789.871 ; free physical = 356 ; free virtual = 22256
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:02:04 ; elapsed = 00:02:09 . Memory (MB): peak = 5562.547 ; gain = 3788.184 ; free physical = 296 ; free virtual = 21768
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start ROM, RAM, DSP, Shift Register and Retiming Reporting
@@ -1295,13 +1295,13 @@ Finished ROM, RAM, DSP, Shift Register and Retiming Reporting
 Start Applying XDC Timing Constraints
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Applying XDC Timing Constraints : Time (s): cpu = 00:03:12 ; elapsed = 00:02:13 . Memory (MB): peak = 5569.227 ; gain = 3794.863 ; free physical = 1871 ; free virtual = 23796
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:03:25 ; elapsed = 00:02:20 . Memory (MB): peak = 5567.539 ; gain = 3793.176 ; free physical = 1734 ; free virtual = 23253
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Timing Optimization
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Timing Optimization : Time (s): cpu = 00:03:48 ; elapsed = 00:02:50 . Memory (MB): peak = 5621.812 ; gain = 3847.449 ; free physical = 1823 ; free virtual = 23750
+Finished Timing Optimization : Time (s): cpu = 00:04:02 ; elapsed = 00:02:59 . Memory (MB): peak = 5620.125 ; gain = 3845.762 ; free physical = 1681 ; free virtual = 23204
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start ROM, RAM, DSP, Shift Register and Retiming Reporting
@@ -1375,7 +1375,7 @@ INFO: [Synth 8-7067] Removed DRAM instance targeti_4/top/teaching_board_top/targ
 INFO: [Synth 8-7067] Removed DRAM instance targeti_4/top/teaching_board_top/target/pbus/coupler_from_sbus/buffer/Queue_1/ram_error_reg_0_1_0_0 from module rocketchip_wrapper_GT0_tempName due to constant propagation
 INFO: [Synth 8-7067] Removed DRAM instance targeti_4/top/teaching_board_top/target/pbus/sync_xing/Queue_1/ram_error_reg_0_1_0_0 from module rocketchip_wrapper_GT0_tempName due to constant propagation
 ---------------------------------------------------------------------------------
-Finished Technology Mapping : Time (s): cpu = 00:03:53 ; elapsed = 00:03:01 . Memory (MB): peak = 5633.738 ; gain = 3859.375 ; free physical = 895 ; free virtual = 22823
+Finished Technology Mapping : Time (s): cpu = 00:04:07 ; elapsed = 00:03:10 . Memory (MB): peak = 5632.051 ; gain = 3857.688 ; free physical = 760 ; free virtual = 22283
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start IO Insertion
@@ -1393,37 +1393,37 @@ Start Final Netlist Cleanup
 Finished Final Netlist Cleanup
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished IO Insertion : Time (s): cpu = 00:03:58 ; elapsed = 00:03:07 . Memory (MB): peak = 5633.738 ; gain = 3859.375 ; free physical = 848 ; free virtual = 22826
+Finished IO Insertion : Time (s): cpu = 00:04:13 ; elapsed = 00:03:16 . Memory (MB): peak = 5632.051 ; gain = 3857.688 ; free physical = 713 ; free virtual = 22285
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Instances
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Instances : Time (s): cpu = 00:03:58 ; elapsed = 00:03:07 . Memory (MB): peak = 5633.738 ; gain = 3859.375 ; free physical = 848 ; free virtual = 22826
+Finished Renaming Generated Instances : Time (s): cpu = 00:04:13 ; elapsed = 00:03:16 . Memory (MB): peak = 5632.051 ; gain = 3857.688 ; free physical = 713 ; free virtual = 22285
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Rebuilding User Hierarchy
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Rebuilding User Hierarchy : Time (s): cpu = 00:04:01 ; elapsed = 00:03:09 . Memory (MB): peak = 5633.738 ; gain = 3859.375 ; free physical = 848 ; free virtual = 22825
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:04:15 ; elapsed = 00:03:19 . Memory (MB): peak = 5632.051 ; gain = 3857.688 ; free physical = 713 ; free virtual = 22285
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Ports
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Ports : Time (s): cpu = 00:04:01 ; elapsed = 00:03:09 . Memory (MB): peak = 5633.738 ; gain = 3859.375 ; free physical = 848 ; free virtual = 22825
+Finished Renaming Generated Ports : Time (s): cpu = 00:04:15 ; elapsed = 00:03:19 . Memory (MB): peak = 5632.051 ; gain = 3857.688 ; free physical = 713 ; free virtual = 22285
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Handling Custom Attributes
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Handling Custom Attributes : Time (s): cpu = 00:04:01 ; elapsed = 00:03:10 . Memory (MB): peak = 5633.738 ; gain = 3859.375 ; free physical = 848 ; free virtual = 22825
+Finished Handling Custom Attributes : Time (s): cpu = 00:04:16 ; elapsed = 00:03:19 . Memory (MB): peak = 5632.051 ; gain = 3857.688 ; free physical = 713 ; free virtual = 22285
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Nets
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Nets : Time (s): cpu = 00:04:01 ; elapsed = 00:03:10 . Memory (MB): peak = 5633.738 ; gain = 3859.375 ; free physical = 848 ; free virtual = 22825
+Finished Renaming Generated Nets : Time (s): cpu = 00:04:16 ; elapsed = 00:03:20 . Memory (MB): peak = 5632.051 ; gain = 3857.688 ; free physical = 713 ; free virtual = 22285
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Writing Synthesis Report
@@ -1450,55 +1450,53 @@ Report Cell Usage:
 |5     |BUFG                                  |     1|
 |6     |CARRY4                                |   813|
 |7     |LUT1                                  |   610|
-|8     |LUT2                                  |  1118|
-|9     |LUT3                                  |  2204|
-|10    |LUT4                                  |  2385|
-|11    |LUT5                                  |  2890|
-|12    |LUT6                                  |  6489|
+|8     |LUT2                                  |  1062|
+|9     |LUT3                                  |  2178|
+|10    |LUT4                                  |  2429|
+|11    |LUT5                                  |  2915|
+|12    |LUT6                                  |  6507|
 |13    |MMCME2_BASE                           |     1|
-|14    |MUXF7                                 |    62|
-|15    |MUXF8                                 |     2|
+|14    |MUXF7                                 |   112|
+|15    |MUXF8                                 |     4|
 |16    |RAM16X1D                              |    15|
 |17    |RAM32M                                |   179|
 |18    |RAM32X1D                              |    14|
 |19    |RAM64M                                |    50|
-|20    |RAM64X1D                              |     1|
-|21    |FDRE                                  |  6629|
-|22    |FDSE                                  |    68|
-|23    |IBUFG                                 |     1|
+|20    |FDRE                                  |  6633|
+|21    |FDSE                                  |    68|
+|22    |IBUFG                                 |     1|
 +------+--------------------------------------+------+
 ---------------------------------------------------------------------------------
-Finished Writing Synthesis Report : Time (s): cpu = 00:04:01 ; elapsed = 00:03:10 . Memory (MB): peak = 5633.738 ; gain = 3859.375 ; free physical = 848 ; free virtual = 22825
+Finished Writing Synthesis Report : Time (s): cpu = 00:04:16 ; elapsed = 00:03:20 . Memory (MB): peak = 5632.051 ; gain = 3857.688 ; free physical = 713 ; free virtual = 22285
 ---------------------------------------------------------------------------------
 Synthesis finished with 0 errors, 0 critical warnings and 174 warnings.
-Synthesis Optimization Runtime : Time (s): cpu = 00:03:48 ; elapsed = 00:03:03 . Memory (MB): peak = 5633.738 ; gain = 3751.777 ; free physical = 6982 ; free virtual = 28959
-Synthesis Optimization Complete : Time (s): cpu = 00:04:01 ; elapsed = 00:03:13 . Memory (MB): peak = 5633.738 ; gain = 3859.375 ; free physical = 6994 ; free virtual = 28963
+Synthesis Optimization Runtime : Time (s): cpu = 00:04:02 ; elapsed = 00:03:14 . Memory (MB): peak = 5632.051 ; gain = 3750.090 ; free physical = 6849 ; free virtual = 28421
+Synthesis Optimization Complete : Time (s): cpu = 00:04:16 ; elapsed = 00:03:25 . Memory (MB): peak = 5632.051 ; gain = 3857.688 ; free physical = 6856 ; free virtual = 28420
 INFO: [Project 1-571] Translating synthesized netlist
-Netlist sorting complete. Time (s): cpu = 00:00:00.17 ; elapsed = 00:00:00.17 . Memory (MB): peak = 5633.738 ; gain = 0.000 ; free physical = 7002 ; free virtual = 28971
-INFO: [Netlist 29-17] Analyzing 1138 Unisim elements for replacement
+Netlist sorting complete. Time (s): cpu = 00:00:00.18 ; elapsed = 00:00:00.19 . Memory (MB): peak = 5632.051 ; gain = 0.000 ; free physical = 6859 ; free virtual = 28423
+INFO: [Netlist 29-17] Analyzing 1189 Unisim elements for replacement
 WARNING: [Netlist 29-432] The IBUFG primitive 'ibufg_gclk' has been retargeted to an IBUF primitive only. No BUFG will be added. If a global buffer is intended, please instantiate an available global clock primitive from the current architecture.
 INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
 INFO: [Project 1-570] Preparing netlist for logic optimization
 INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 5677.840 ; gain = 0.000 ; free physical = 7001 ; free virtual = 28969
+Netlist sorting complete. Time (s): cpu = 00:00:00.01 ; elapsed = 00:00:00.01 . Memory (MB): peak = 5676.152 ; gain = 0.000 ; free physical = 6868 ; free virtual = 28433
 INFO: [Project 1-111] Unisim Transformation Summary:
-  A total of 261 instances were transformed.
+  A total of 260 instances were transformed.
   IBUFG => IBUF: 1 instance 
   MMCME2_BASE => MMCME2_ADV: 1 instance 
   RAM16X1D => RAM32X1D (RAMD32(x2)): 15 instances
   RAM32M => RAM32M (RAMD32(x6), RAMS32(x2)): 179 instances
   RAM32X1D => RAM32X1D (RAMD32(x2)): 14 instances
   RAM64M => RAM64M (RAMD64E(x4)): 50 instances
-  RAM64X1D => RAM64X1D (RAMD64E(x2)): 1 instance 
 
-Synth Design complete | Checksum: 3cab606a
+Synth Design complete | Checksum: 323acc84
 INFO: [Common 17-83] Releasing license: Synthesis
 513 Infos, 220 Warnings, 0 Critical Warnings and 0 Errors encountered.
 synth_design completed successfully
-synth_design: Time (s): cpu = 00:04:11 ; elapsed = 00:03:22 . Memory (MB): peak = 5677.875 ; gain = 4038.371 ; free physical = 7002 ; free virtual = 28970
-INFO: [Common 17-2834] synth_design peak Physical Memory [PSS] (MB): overall = 11622.450; main = 4751.933; forked = 7166.309
-INFO: [Common 17-2834] synth_design peak Virtual Memory [VSS] (MB): overall = 20788.332; main = 5677.844; forked = 15228.004
-Write ShapeDB Complete: Time (s): cpu = 00:00:00.06 ; elapsed = 00:00:00.02 . Memory (MB): peak = 5701.852 ; gain = 0.000 ; free physical = 7001 ; free virtual = 28971
+synth_design: Time (s): cpu = 00:04:26 ; elapsed = 00:03:34 . Memory (MB): peak = 5676.188 ; gain = 4036.684 ; free physical = 6872 ; free virtual = 28437
+INFO: [Common 17-2834] synth_design peak Physical Memory [PSS] (MB): overall = 11558.322; main = 4745.307; forked = 7110.115
+INFO: [Common 17-2834] synth_design peak Virtual Memory [VSS] (MB): overall = 20712.711; main = 5676.156; forked = 15154.070
+Write ShapeDB Complete: Time (s): cpu = 00:00:00.06 ; elapsed = 00:00:00.02 . Memory (MB): peak = 5700.164 ; gain = 0.000 ; free physical = 6870 ; free virtual = 28437
 INFO: [Common 17-1381] The checkpoint '/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/vivado-project/teaching_pynqz1.runs/synth_1/rocketchip_wrapper.dcp' has been generated.
 INFO: [Vivado 12-24828] Executing command : report_utilization -file rocketchip_wrapper_utilization_synth.rpt -pb rocketchip_wrapper_utilization_synth.pb
-INFO: [Common 17-206] Exiting Vivado at Fri Sep 25 00:07:03 2026...
+INFO: [Common 17-206] Exiting Vivado at Fri Sep 25 01:43:56 2026...

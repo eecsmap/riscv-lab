@@ -1,14 +1,14 @@
 <?xml version="1.0"?>
 <Runs Version="1" Minor="0">
-	<Run Id="system_axi_interconnect_0_imp_auto_pc_0_synth_1" LaunchDir="/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/vivado-project/teaching_pynqz1.runs/system_axi_interconnect_0_imp_auto_pc_0_synth_1" FlowId="Vivado_Synthesis" FromStepId="vivado" ToStepId="vivado"/>
-	<Run Id="system_axi_interconnect_1_imp_auto_pc_0_synth_1" LaunchDir="/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/vivado-project/teaching_pynqz1.runs/system_axi_interconnect_1_imp_auto_pc_0_synth_1" FlowId="Vivado_Synthesis" FromStepId="vivado" ToStepId="vivado"/>
 	<Run Id="system_proc_sys_reset_0_0_synth_1" LaunchDir="/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/vivado-project/teaching_pynqz1.runs/system_proc_sys_reset_0_0_synth_1" FlowId="Vivado_Synthesis" FromStepId="vivado" ToStepId="vivado"/>
 	<Run Id="system_processing_system7_0_0_synth_1" LaunchDir="/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/vivado-project/teaching_pynqz1.runs/system_processing_system7_0_0_synth_1" FlowId="Vivado_Synthesis" FromStepId="vivado" ToStepId="vivado"/>
+	<Run Id="system_axi_interconnect_0_imp_auto_pc_0_synth_1" LaunchDir="/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/vivado-project/teaching_pynqz1.runs/system_axi_interconnect_0_imp_auto_pc_0_synth_1" FlowId="Vivado_Synthesis" FromStepId="vivado" ToStepId="vivado"/>
+	<Run Id="system_axi_interconnect_1_imp_auto_pc_0_synth_1" LaunchDir="/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/vivado-project/teaching_pynqz1.runs/system_axi_interconnect_1_imp_auto_pc_0_synth_1" FlowId="Vivado_Synthesis" FromStepId="vivado" ToStepId="vivado"/>
 	<Run Id="synth_1" LaunchDir="/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/vivado-project/teaching_pynqz1.runs/synth_1" FlowId="Vivado_Synthesis" FromStepId="vivado" ToStepId="vivado">
-		<Parent Id="system_axi_interconnect_0_imp_auto_pc_0_synth_1"/>
-		<Parent Id="system_axi_interconnect_1_imp_auto_pc_0_synth_1"/>
 		<Parent Id="system_proc_sys_reset_0_0_synth_1"/>
 		<Parent Id="system_processing_system7_0_0_synth_1"/>
+		<Parent Id="system_axi_interconnect_0_imp_auto_pc_0_synth_1"/>
+		<Parent Id="system_axi_interconnect_1_imp_auto_pc_0_synth_1"/>
 	</Run>
 	<Parameters>
 		<Parameter Name="runs.monitorLSFJobs" Val="true" Type="bool"/>

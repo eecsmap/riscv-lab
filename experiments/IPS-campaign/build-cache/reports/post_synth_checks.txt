@@ -4,4 +4,4 @@ cells matching *cpu/core* : 0
 cells matching *tcpu* : 0
 
 # the teaching CPU's own registers, by hierarchy
-regs under the CPU: 7197
+regs under the CPU: 7201

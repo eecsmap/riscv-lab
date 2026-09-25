@@ -4,8 +4,8 @@ synth_1 STATUS: synth_design Complete!
 synth_1 PROGRESS: 100%
 impl_1 STATUS: write_bitstream Complete!
 impl_1 PROGRESS: 100%
-WNS: 0.354298
+WNS: 0.423910
 TNS: 0.000000
-WHS: 0.035406
+WHS: 0.036071
 THS: 0.000000
 bitstream: /home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-cache/reports/rocketchip_wrapper.bit
