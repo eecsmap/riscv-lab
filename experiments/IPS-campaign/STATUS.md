@@ -1,62 +1,66 @@
 # IPS campaign status
 
-Updated 2026-09-24. Vocabulary is fixed: **IMPLEMENTED / SIM-VERIFIED / BUILD-VERIFIED /
-BOARD-VERIFIED / PERFORMANCE-MEASURED**. A stage claims only what it has evidence for.
+Updated 2026-09-25. Vocabulary: **IMPLEMENTED / SIM-VERIFIED / BUILD-VERIFIED / BOARD-VERIFIED /
+PERFORMANCE-MEASURED**. A stage claims only what it has evidence for.
 
 | stage | branch | commit | status |
 | --- | --- | --- | --- |
-| 0 identities & contract | `ips-baseline` | `66a3122` | **complete** |
-| 1 fetch32 | `ips-fetch32` | `6462b67` | **IMPLEMENTED + SIM-VERIFIED** (port and SoC, with metrics). Handed off as `claude-ips-fetch32-ready`, **OPEN** |
-| 2 TLB | `ips-tlb` | `dcfe056` | **IMPLEMENTED**, components SIM-VERIFIED. SoC regression not run |
-| 3 I-cache | `ips-cache` | `4332cac` | components **IMPLEMENTED + SIM-VERIFIED in isolation**. Not integrated |
+| 0 identities & contract | `ips-baseline` | `66a3122` | complete |
+| 1 fetch32 | `ips-fetch32` | `60421b5` | **SIM-VERIFIED + BUILD-VERIFIED** |
+| 2 TLB | `ips-tlb` | `25b8e3f` | **SIM-VERIFIED + BUILD-VERIFIED**; the canonical fix is OPEN for review |
+| 3 I-cache | `ips-cache` | `2b97e6d` | **SIM-VERIFIED + BUILD-VERIFIED** |
 
-Nothing is BUILD-VERIFIED, BOARD-VERIFIED or PERFORMANCE-MEASURED. **No bitstream exists and this
-campaign has touched no hardware.** The board holds the accepted 40 MHz bitstream, restored on
-2026-09-24 with 8/8 gates.
+**Nothing is BOARD-VERIFIED or PERFORMANCE-MEASURED.** No bitstream has been programmed; this campaign
+is not authorised to, and each one needs independent review plus a user-coordinated physical cold
+cycle. The board holds the accepted 40 MHz bitstream, restored 2026-09-24 with 8/8 gates.
 
-## What is proved, per stage
+## Final matrix — `STAGE_SOC fails=0`
 
-**Stage 0.** The baseline reproduces the accepted 40 MHz configuration, executably: 15/15 frozen inputs
-match with `clocking.vh` on the accepted side, against E1's `INPUTS.json`, which recorded those hashes
-before this campaign existed and for an unrelated purpose. Workload set frozen, including the new
-`perf06_iws` whose footprints (192 B and 4140 B) and retirement counts (70001 and 65729) are both
-**derived from the disassembly**, not asserted.
+Four cores, one harness, 14 frozen binaries, all exiting 0 with identical verdicts. **48 metric rows,
+0 refused.** See `FINAL-COMPARISON.md`.
 
-**Stage 1.** Port regression `fails=0` across accepted / fetch32 / mutant, the mutant failing after
-reaching the translated path. SoC: seven runnable gates and three probes exit 0 on both cores; 12
-metric rows, 0 refused.
+| ROI | baseline | fetch32 | tlb | **cache** | vs baseline |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| `perf02/k4_alu` | 71.04 | 37.04 | 13.01 | **8.00** | **8.880x** |
+| `perf02/k4_load` | 82.12 | 48.06 | 16.02 | **11.00** | **7.465x** |
+| `perf03/insn32` | 19.02 | 11.00 | 11.00 | **6.00** | 3.170x |
+| `perf03/insn16` | 11.00 | 11.00 | 11.00 | **6.00** | 1.833x |
+| `perf06/iws_resident` | 19.02 | 11.00 | 11.00 | **6.00** | 3.169x |
+| `perf06/iws_exceeds` | 19.02 | 11.00 | 11.00 | **9.52** | 1.997x |
 
-| ROI | baseline CPI | fetch32 CPI | gain |
-| --- | ---: | ---: | ---: |
-| `perf03 insn16` | 11.00 | 11.00 | **1.000x** |
-| `perf03 insn32` | 19.02 | 11.00 | **1.729x** |
-| `perf04 load_*` | 21.36 | 13.34 | 1.601x |
-| `perf06 both ROIs` | 19.02 | 11.00 | 1.729x |
+External AXI reads fall **95.3%** on `perf02` and **95.2%** on `perf03` from baseline to cache.
 
-Simulator cycles. The same ROI reads 40.34 CPI on hardware; never pooled.
+Simulator CPI throughout. The same `perf03` 32-bit ROI reads **40.34 on hardware**; these are never
+pooled with board figures.
 
-**Stage 2.** `tcpu_permcheck` extracted and proved **exhaustively equivalent over all 4096 inputs**.
-`tcpu_tlb` 31/31 component checks, five mutants each caught by the right test. `tcpu_xlate` presents
-the walker's own interface, so `S_XLATE` in the core is unchanged. `tlb01_sfence.S` built and
-scope-checked; its three cases are shaped so only a hit-path defect can pass them.
+## Builds — all four close timing
 
-**Stage 3.** `tcpu_cacheable` and `tcpu_icache`, 21/21 component checks, four mutants each caught.
-"No valid partial line" is structural: `fill` takes the whole line or nothing.
+| stage | WNS | WHS | setup/hold fail | LUT | FF | critical warnings |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| baseline | +0.779 | +0.024 | 0 / 0 | 13,777 | 5,884 | 0 |
+| fetch32 | +0.733 | +0.020 | 0 / 0 | 13,841 | 5,880 | 0 |
+| tlb | +0.273 | +0.037 | 0 / 0 | 14,092 | 6,685 | 0 |
+| cache | +0.354 | +0.035 | 0 / 0 | 14,529 | 7,007 | 0 |
 
-## Running
+`fetch32` costs **+64 LUTs** for the 1.73x it gives on 32-bit fetch. The TLB is the largest timing
+cost. The cache's WNS being better than the TLB's is placement variance, not a gain from added logic.
 
-`ips-xv6-fetch32` — xv6 with the frozen `b0apps` profile on fetch32, registered, 6 h bound. At the
-time of writing it is ~490 M target cycles in and still booting, which is expected: the comparable
-baseline simulator run took **6.4 hours**. The 6 h bound may prove too short; a timeout is a result and
-will be reported as one.
+## Equivalence controls, all exact
 
-One heavy simulation at a time. That run holds the slot, which is why stage 2's SoC regression and
-stage 3's integration are waiting rather than proceeding.
+| control | result |
+| --- | --- |
+| `TLB_ENTRIES=0` vs `fetch32` | cycle-identical, **12/12 ROIs** |
+| `ICACHE_BYTES=0` vs `tlb` | cycle-identical, **12/12 ROIs** |
 
-## Next, in order
+Each took corrections that only the control could have found.
 
-1. stage 2 SoC regression across `baseline`, `fetch32`, `tlb`, and `tlb` with `TLB_ENTRIES=0` — the
-   disabled configuration must be **cycle-identical** to fetch32;
-2. `tlb01_sfence` executed, plus walk counts from the trace showing fewer walks on repeated hits and a
-   re-walk after invalidation;
-3. stage 3 integration into the fetch FSM, then the same treatment.
+## What is open, and what is missing
+
+* `claude-ips-fetch32-ready`, `claude-ips-tlb-canonical-fixed-ready`, `claude-ips-cache-ready` — all
+  **OPEN**. Nothing here assumes any of them accepted.
+* xv6 with the frozen `b0apps` profile has been run on **fetch32 only** (all three checksums matching
+  the board). Not on `tlb` or `cache`.
+* An in-flight refill surviving `fence.i` is argued from construction, not measured.
+* AMO is not covered by the canonicality probe: `ext03_a` does not complete in this SoC configuration
+  even on the baseline core.
+* No board samples, so **the hardware IPS comparison is not complete** and is not claimed to be.
