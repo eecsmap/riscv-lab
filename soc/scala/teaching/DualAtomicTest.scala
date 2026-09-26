@@ -175,6 +175,25 @@ object DualScen {
   // d12: fairness -- hart 0 streams without pause, hart 1 is intermittent; Dmax bounds the manager
   val d12cpu0 = Seq(st(X, 0)) ++ (1 to 60).flatMap(_ => Seq(amo(AmoOp.ADD, X, 1), ld(X)))
   val d12cpu1 = Seq(st(Y, 0)) ++ (1 to 12).flatMap(_ => Seq(pause(25), amo(AmoOp.ADD, Y, 1), ld(Y)))
+  // d13-d17 (codex-mc-m2a-simultaneous-kill-fix): several VALID reservations cleared in ONE cycle. Both harts
+  // hold reservations (X and X, or X and Y), then one event clears both: an external plain write (d13), an
+  // external partial write (d14), both cores' resvClear in the same cycle (d15: `until` aligns the traps), one
+  // two-beat write whose first beat's size covers both granules (d16: both kills fall in the acceptance cycle).
+  // d17: the SAME hart cleared for two reasons in one cycle (its trap and an external write to its word): one
+  // reservation, so the count must be exactly one, and the other hart's reservation must survive. The oracle
+  // counts cleared VALID reservations from its own state; the floors ask for the exact count and the SC results.
+  val d13cpu0 = Seq(st(X, 1), lr(X), until(120), sc(X, 10), ld(X))
+  val d13cpu1 = Seq(pause(20), lr(X), until(120), sc(X, 20), ld(X))
+  val d13ext1 = Seq(PutStep(0, 80, 1, X, 3, BigInt(555), 0xff))
+  val d14ext1 = Seq(PutStep(0, 80, 2, X, 3, BigInt(555), 0x0f))
+  val d15cpu0 = Seq(st(X, 1), st(Y, 2), lr(X), until(80), trap, sc(X, 10), ld(X))
+  val d15cpu1 = Seq(pause(20), lr(Y), until(80), trap, sc(Y, 20), ld(Y))
+  val d16cpu0 = Seq(st(X, 1), st(Y, 2), lr(X), until(120), sc(X, 10), ld(X))
+  val d16cpu1 = Seq(pause(20), lr(Y), until(120), sc(Y, 20), ld(Y))
+  val d16ext1 = Seq(PutStep(0, 80, 1, X, 4, BigInt(777), 0xff))            // X is 16-byte aligned: beats cover X and Y
+  val d17cpu0 = Seq(st(X, 1), lr(X), until(80), trap, until(120), sc(X, 10), ld(X))
+  val d17cpu1 = Seq(pause(20), lr(Y), until(120), sc(Y, 20), ld(Y))
+  val d17ext1 = Seq(PutStep(0, 80, 1, X, 3, BigInt(555), 0xff))
 
   // ---- random: a seeded script per hart plus seeded external writers. Deterministic at elaboration.
   val pool = Seq(X, X4, Y, Y4, Z)
@@ -247,6 +266,16 @@ class Dual10AmoContendConfig  extends Config(new WithDual(DualCfg.directed(d10cp
 class Dual11DrainConfig       extends Config(new WithDual(DualCfg.directed(d11cpu0, d11cpu1, latency = 8).copy(drainAt = 260, resetLen = 3)) ++ new Base)
 class Dual12FairConfig        extends Config(new WithDual(DualCfg.directed(d12cpu0, d12cpu1, latency = 6, aStall = 2).copy(mgrDStall = 2)) ++ new Base)
 // random seeds 1..10, plus the two topology variants of seed 1
+class Dual13ExtKillsBothConfig     extends Config(new WithDual(DualCfg.directed(d13cpu0, d13cpu1, Nil, d13ext1)) ++ new Base)
+class Dual14PartialKillsBothConfig extends Config(new WithDual(DualCfg.directed(d13cpu0, d13cpu1, Nil, d14ext1)) ++ new Base)
+class Dual15ClearBothConfig        extends Config(new WithDual(DualCfg.directed(d15cpu0, d15cpu1)) ++ new Base)
+class Dual16TwoBeatBothConfig      extends Config(new WithDual(DualCfg.directed(d16cpu0, d16cpu1, Nil, d16ext1)) ++ new Base)
+class Dual17SameHartTwoReasonsConfig extends Config(new WithDual(DualCfg.directed(d17cpu0, d17cpu1, Nil, d17ext1)) ++ new Base)
+class Dual13ExtKillsBothSwapConfig     extends Config(new WithDual(DualCfg.directed(d13cpu0, d13cpu1, Nil, d13ext1).copy(swapOrder = true)) ++ new Base)
+class Dual14PartialKillsBothSwapConfig extends Config(new WithDual(DualCfg.directed(d13cpu0, d13cpu1, Nil, d14ext1).copy(swapOrder = true)) ++ new Base)
+class Dual15ClearBothSwapConfig        extends Config(new WithDual(DualCfg.directed(d15cpu0, d15cpu1).copy(swapOrder = true)) ++ new Base)
+class Dual16TwoBeatBothSwapConfig      extends Config(new WithDual(DualCfg.directed(d16cpu0, d16cpu1, Nil, d16ext1).copy(swapOrder = true)) ++ new Base)
+class Dual17SameHartTwoReasonsSwapConfig extends Config(new WithDual(DualCfg.directed(d17cpu0, d17cpu1, Nil, d17ext1).copy(swapOrder = true)) ++ new Base)
 class DualRnd1Config  extends Config(new WithDual(DualCfg.random(1))  ++ new Base)
 class DualRnd1SmokeConfig extends Config(new WithDual(DualCfg.random(1, n = 300)) ++ new Base)   // fast reproduction of seed 1's topology
 class DualRnd2Config  extends Config(new WithDual(DualCfg.random(2))  ++ new Base)

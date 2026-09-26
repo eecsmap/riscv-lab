@@ -129,13 +129,21 @@ class AtomicBackend(faultReadErrWrites: Boolean = false, faultNoKill: Boolean = 
 
     val resvValid = RegInit(VecInit(Seq.fill(n)(false.B)))
     val resvWord  = Reg(Vec(n, UInt(29.W)))
+    // nKill = the number of VALID reservations cleared, one per hart per cycle however many reasons coincide (a
+    // hart holds one reservation, so several reasons in one cycle clear one thing). Every reason raises the
+    // hart's intent wire; the counter adds the popcount ONCE per cycle. (Review codex-mc-m2a-simultaneous-kill-fix:
+    // the previous `nKill := nKill + 1.U` inside the per-hart loop counted two harts cleared in the same cycle
+    // as one -- last connect wins.) An SC consuming its OWN reservation (success or failure) is not a kill and is
+    // not counted; the diagnostic RESV kill line is printed per hart, one per cleared reservation.
+    val killIntent = Wire(Vec(n, Bool())); killIntent.foreach(_ := false.B)
     def killResv(h: Int, why: String): Unit = {
       when (resvValid(h)) {
         if (trace) { printf(p"AT ${cyc} RESV kill hart=${h.U} word=0x${Hexadecimal(Cat(resvWord(h), 0.U(3.W)))} why=$why\n") }
-        nKill := nKill + 1.U
+        killIntent(h) := true.B
       }
       resvValid(h) := false.B
     }
+    nKill := nKill + PopCount(killIntent)
 
     // ---- classify the A offered by the inner side -------------------------------------------------------
     val a = in.a.bits
@@ -178,7 +186,8 @@ class AtomicBackend(faultReadErrWrites: Boolean = false, faultNoKill: Boolean = 
           if (trace) printf(p"AT ${cyc} RESV set hart=${h.U} word=0x${Hexadecimal(Cat(a.address(31, 3), 0.U(3.W)))}\n")
         }
       } .elsewhen (aIsSC) {
-        // consumed whatever happens; the success decision, and the kills a successful SC causes, are below
+        // the SC consumes its own reservation whatever happens (below, not a kill, not counted); the success
+        // decision, and the kills a successful SC causes on OTHER harts, are below too
       } .elsewhen (aWrites) {
         for (h <- 0 until n) when (resvValid(h) && overlaps(h)) {
           when (aIsCpu && aHart === h.U)        { killResv(h, "cpu-write") }

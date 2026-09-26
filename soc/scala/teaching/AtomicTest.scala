@@ -136,7 +136,7 @@ class V2Driver(steps: Seq[CpuStep], respStall: Int = 0, respRandom: Boolean = fa
   val n = steps.size
   val cyc = RegInit(0.U(32.W)); cyc := cyc + 1.U
   val idx = RegInit(0.U(16.W)); val inFlight = RegInit(false.B); val waitN = RegInit(0.U(32.W)); val nResp = RegInit(0.U(32.W))
-  val kindV = VecInit(steps.map(_.kind.U(3.W))); val addrV = VecInit(steps.map(_.addr.U(32.W)))
+  val kindV = VecInit(steps.map(_.kind.U(4.W))); val addrV = VecInit(steps.map(_.addr.U(32.W)))
   val sizeV = VecInit(steps.map(_.size.U(2.W))); val dataV = VecInit(steps.map(s => s.data.U(64.W)))
   val amoV = VecInit(steps.map(_.amo.U(4.W))); val argV = VecInit(steps.map(_.arg.U(32.W)))
   val k = kindV(idx); val done = idx >= n.U
@@ -166,6 +166,9 @@ class V2Driver(steps: Seq[CpuStep], respStall: Int = 0, respRandom: Boolean = fa
   when (io.hold && !RegNext(io.hold, false.B)) { printf(p"AT ${cyc} CPU_HELD hart=${hartId.U} step=${idx}\n") }
   when (!done && k === 5.U) { printf(p"AT ${cyc} CPU_TRAP hart=${hartId.U}\n"); idx := idx + 1.U }
   when (!done && k === 6.U) { when (waitN >= argV(idx)) { waitN := 0.U; idx := idx + 1.U } .otherwise { waitN := waitN + 1.U } }
+  // kind 8, until(c): the step completes in the first cycle with cyc >= c, so two drivers with the same `until`
+  // execute their NEXT steps in the same cycle (used to make two harts trap, or trap and be written, together)
+  when (!done && k === 8.U && cyc >= argV(idx)) { idx := idx + 1.U }
   io.finished := done
   io.nResp := nResp
 }
@@ -246,7 +249,7 @@ object AtomicScen {
   def amo(op: Int, a: Long, d: BigInt, sz: Int = 3) = CpuStep(2, a, sz, d, op)
   def ld(a: Long, sz: Int = 3) = CpuStep(0, a, sz); def st(a: Long, d: BigInt, sz: Int = 3) = CpuStep(1, a, sz, d)
   def lr(a: Long, sz: Int = 3) = CpuStep(3, a, sz); def sc(a: Long, d: BigInt, sz: Int = 3) = CpuStep(4, a, sz, d)
-  val trap = CpuStep(5); def wait(n: Int) = CpuStep(6, arg = n)
+  val trap = CpuStep(5); def wait(n: Int) = CpuStep(6, arg = n); def until(c: Int) = CpuStep(8, arg = c)
   val ops = Seq(AmoOp.SWAP, AmoOp.ADD, AmoOp.XOR, AmoOp.AND, AmoOp.OR, AmoOp.MIN, AmoOp.MAX, AmoOp.MINU, AmoOp.MAXU)
   // 1: every AMO w and d, no contention; the .w forms on both halves of a word; a neighbouring byte must survive
   val s1cpu: Seq[CpuStep] = Seq(st(X, BigInt("F0F0F0F080000005", 16)), st(Y, BigInt("0000000000000007", 16))) ++
