@@ -1,0 +1,71 @@
+// MC-M1: the replaceable hart wrapper.
+//
+// What RD2ZynqTop used to instantiate piecemeal on the atomic path -- the V2 CPU wrapper, the V2 bridge, the
+// CPU-side watcher and the test-only throttle -- now lives here, behind one boundary. Outside it the SoC sees
+// exactly the external contract CONTRACT.md C1-C2 names: ONE TileLink client node (the bridge's, still named
+// "teaching-phys", still IdRange(0, 1)), the bridge's drain and debug bundles unchanged, the atomic side-band
+// to the backend, the three interrupt levels, and the stable observation bundle. The multicycle core's FSM
+// state and redirect flag come out only as `impl`, which nothing outside the wrapper may read
+// (TESTPLAN T1.3).
+//
+// Deliberately NOT changed this round, by the MC-M1 terms: the client name, the single side-band, the bridge,
+// the watcher and throttle, the response latency, the TLB and I-cache sizes. This is a boundary, not a
+// behaviour change, and T1.7 checks that by comparing retirement, traps and memory effects against the SoC
+// as it was before the wrapper existed.
+package teaching
+
+import chisel3._
+import chisel3.experimental.withReset
+import freechips.rocketchip.config.Parameters
+import freechips.rocketchip.diplomacy._
+import freechips.rocketchip.tilelink._
+
+class TeachingHartIrq extends Bundle { val msip = Bool(); val mtip = Bool(); val meip = Bool() }
+
+class TeachingHart(val hartId: Int, resetPc: BigInt,
+                   bridgeFault: Int, applyCycles: Int, drainTimeout: Int,
+                   atomicRegion: Seq[AddressSet], atomicTrace: Boolean, busInstrumentation: Boolean)
+                  (implicit p: Parameters) extends LazyModule {
+  // MC-M1 supports hart 0 only. The identity of a second hart -- its client name, its side-band slot, its
+  // reservation -- migrates in MC-M2 (CONTRACT C3.1); accepting hartId = 1 here would let a configuration
+  // elaborate whose SC semantics are wrong (CONTRACT B1). So it is refused, with the number in the message.
+  require(hartId == 0, s"unsupported hart $hartId: MC-M1 implements hart 0 only; multicore identity is MC-M2")
+
+  val bridge   = LazyModule(new RD2BridgeV2(bridgeFault, applyCycles, drainTimeout, atomicRegion, atomicTrace))
+  // the watcher is an identity node; the throttle does nothing unless its plusargs are set, and is left out
+  // of the netlist entirely when the instrumentation is off (see RD2Soc for why)
+  val watch    = LazyModule(new RD2Watch("cpu", trace = busInstrumentation))
+  val throttle = if (busInstrumentation) Some(LazyModule(new RD2Throttle)) else None
+  // the same chain RD2ZynqTop built before: watch := [throttle :=] bridge
+  if (busInstrumentation) watch.node := throttle.get.node := bridge.node
+  else                    watch.node := bridge.node
+  val node = watch.node
+
+  lazy val module = new LazyModuleImp(this) {
+    val io = IO(new Bundle {
+      val irq     = Input(new TeachingHartIrq)
+      val drain   = new BridgeDrainIO          // softReset in, the phases out: the bridge's, passed through
+      val dbg     = new BridgeDebug
+      val sb      = new AtomicSideband         // to the backend at the coherence-manager hook
+      val obs     = Output(new TeachingCpuObs)
+      val physObs = Output(new PhysObs)
+      val impl    = Output(new TeachingCpuImplObs)   // implementation detail; see TeachingCpuImplObs
+    })
+    val b = bridge.module
+    b.io.drain <> io.drain
+    io.dbg     <> b.io.dbg
+    io.sb      <> b.io.sb
+
+    // The CPU is the soft domain: its reset is this module's reset OR the bridge's hold, exactly as the SoC
+    // composed it before. withReset works here because TeachingCpuV2 is a plain Chisel Module instantiated
+    // by this code, not a diplomatic child.
+    val cpu = withReset(reset.toBool || b.io.drain.cpuResetHold) { Module(new TeachingCpuV2(resetPc, hartId)) }
+    b.io.phys <> cpu.io.phys
+    cpu.io.irq.msip := io.irq.msip
+    cpu.io.irq.mtip := io.irq.mtip
+    cpu.io.irq.meip := io.irq.meip
+    io.obs     := cpu.io.obs
+    io.physObs := cpu.io.physObs
+    io.impl    := cpu.io.impl
+  }
+}

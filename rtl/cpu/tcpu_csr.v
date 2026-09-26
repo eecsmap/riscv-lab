@@ -17,6 +17,7 @@
 // writable at the M address (0x344); at the S address (0x144) only a delegated SSIP is writable.
 `timescale 1ns/1ps
 module tcpu_csr #(
+  parameter [63:0] HART_ID  = 64'd0, // MC-M1: the value mhartid reads; per instance, passed down from tcpu_core
   parameter MISA_A          = 0,   // CPU-A: 1 only where an atomic path really exists (see tcpu_core.v)
   parameter TRAP_BAD_MEPC   = 0,   // fault injection: mepc records the *next* instruction
   parameter TRAP_COUNTS_RET = 0,   // fault injection: a trap bumps minstret
@@ -162,7 +163,7 @@ module tcpu_csr #(
       CSR_MIP:      rdata = mip_value;
       CSR_MCYCLE, CSR_CYCLE:     rdata = mcycle;
       CSR_MINSTRET, CSR_INSTRET: rdata = minstret;
-      CSR_MHARTID:  rdata = 64'd0;
+      CSR_MHARTID:  rdata = HART_ID;
       CSR_SSTATUS:  rdata = sstatus_value;
       CSR_SIE:      rdata = sie_value;
       CSR_STVEC:    rdata = stvec;

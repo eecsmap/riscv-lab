@@ -50,7 +50,12 @@ case class RD2Params(
   // throttle delays nothing unless its plusargs are -- but "does nothing at run time" is not the same as
   // "is not in the netlist". Each PlusArg elaborates a plusarg_reader, and the board-proven build had
   // none at all. Defaults to on, so every existing configuration elaborates exactly as it did.
-  busInstrumentation: Boolean = true)
+  busInstrumentation: Boolean = true,
+  // MC-M1: the configuration matrix the multicore plan names, CORE_IMPL x NUM_CORES. Only multicycle/1
+  // exists this round. Anything else must be REFUSED at elaboration with the value in the message -- never
+  // silently replaced by the one implementation that exists.
+  numCores: Int = 1,
+  coreImpl: String = "multicycle")
 case object RD2Key extends Field[RD2Params](RD2Params())
 
 // What the PS can ask about the design. RD2-A fills in the CPU-side answers; the quiesce/AXI-ledger answers
@@ -108,24 +113,36 @@ class RD2ZynqTop(implicit p: Parameters) extends RocketSubsystem   // RocketTile
     Some(LazyModule(new RD1Bridge(rd2Cfg.bridgeFault, false, rd2Cfg.applyCycles, rd2Cfg.drainTimeout,
                                   legacyDrain = false)))
   // CPU-A: the accepted V2 bridge, with the same drain contract (BridgeDrainIO / BridgeDebug are shared)
-  val bridgeV2 = if (rd2Cfg.atomic)
-    Some(LazyModule(new RD2BridgeV2(rd2Cfg.bridgeFault, rd2Cfg.applyCycles, rd2Cfg.drainTimeout,
-                                    atomicRegion = Seq(AddressSet(p(ExtMem).base, p(ExtMem).size - 1)),
-                                    trace = rd2Cfg.atomicTrace))) else None
-  val bridgeNode = if (rd2Cfg.atomic) bridgeV2.get.node else bridge.get.node
+  // MC-M1: the configuration matrix is checked here, unconditionally, with the offending value in the
+  // message. Nothing else in this file may quietly substitute the one implementation that exists.
+  require(rd2Cfg.coreImpl == "multicycle",
+          s"unsupported CORE_IMPL=${rd2Cfg.coreImpl}: only 'multicycle' is implemented")
+  require(rd2Cfg.numCores == 1,
+          s"unsupported NUM_CORES=${rd2Cfg.numCores}: MC-M1 implements exactly 1 (multicore identity is MC-M2)")
   // the accepted backend, built by WithAtomicHub at the coherence-manager hook (before TLBroadcast)
   val atomicBackend = if (rd2Cfg.atomic) AtomicHub.last else None
-  // a watcher and a test-only delay point in the CPU master's path. The watcher is an identity node; the
-  // throttle does nothing at all unless its plusargs are set, and a normal run sets none of them.
-  val cpuWatch = LazyModule(new RD2Watch("cpu", trace = rd2Cfg.busInstrumentation))
-  // The throttle is a test device end to end: with no plusargs set it is a wire, and on the board it is
-  // three plusarg_readers and a delay path that nothing can ever ask for. It is left out entirely rather
-  // than disabled, so there is nothing to argue about in the netlist.
-  val throttle = if (rd2Cfg.busInstrumentation) Some(LazyModule(new RD2Throttle)) else None
-  if (rd2Cfg.busInstrumentation)
-    sbus.fromPort(Some("teaching-cpu"))() := cpuWatch.node := throttle.get.node := bridgeNode
+  // MC-M1: on the atomic path the CPU, the V2 bridge, the watcher and the throttle live inside the hart
+  // wrapper (TeachingHart.scala); this module sees one client node and the wrapper's contract. The V1 path
+  // below is left exactly as it was.
+  val harts: Seq[TeachingHart] = if (rd2Cfg.atomic) Seq.tabulate(rd2Cfg.numCores) { i =>
+    LazyModule(new TeachingHart(i, p(BootROMParams).hang, rd2Cfg.bridgeFault, rd2Cfg.applyCycles,
+                                rd2Cfg.drainTimeout,
+                                atomicRegion = Seq(AddressSet(p(ExtMem).base, p(ExtMem).size - 1)),
+                                atomicTrace = rd2Cfg.atomicTrace, busInstrumentation = rd2Cfg.busInstrumentation))
+  } else Nil
+  // V1 path (unchanged): a watcher and a test-only delay point in the CPU master's path. The watcher is an
+  // identity node; the throttle does nothing at all unless its plusargs are set, and a normal run sets none
+  // of them. It is a test device end to end: with no plusargs set it is a wire, and on the board it is three
+  // plusarg_readers and a delay path that nothing can ever ask for. It is left out entirely rather than
+  // disabled, so there is nothing to argue about in the netlist.
+  val cpuWatch = if (rd2Cfg.atomic) None else Some(LazyModule(new RD2Watch("cpu", trace = rd2Cfg.busInstrumentation)))
+  val throttle = if (!rd2Cfg.atomic && rd2Cfg.busInstrumentation) Some(LazyModule(new RD2Throttle)) else None
+  if (rd2Cfg.atomic)
+    sbus.fromPort(Some("teaching-cpu"))() := harts.head.node
+  else if (rd2Cfg.busInstrumentation)
+    sbus.fromPort(Some("teaching-cpu"))() := cpuWatch.get.node := throttle.get.node := bridge.get.node
   else
-    sbus.fromPort(Some("teaching-cpu"))() := cpuWatch.node := bridgeNode
+    sbus.fromPort(Some("teaching-cpu"))() := cpuWatch.get.node := bridge.get.node
 
 
   // the interrupts come from the RD2 copy, which sits at the architectural address; the subsystem's own
@@ -163,8 +180,8 @@ class RD2ZynqTopModule(outer: RD2ZynqTop) extends RocketSubsystemModuleImp(outer
   val statusWord = IO(Output(UInt(32.W)))
   // CPU-A: whichever bridge this configuration built -- the drain contract and the debug bundle are the
   // same types, so everything below is written once
-  val bmodDrain = if (outer.rd2Cfg.atomic) outer.bridgeV2.get.module.io.drain else outer.bridge.get.module.io.drain
-  val bmodDbg   = if (outer.rd2Cfg.atomic) outer.bridgeV2.get.module.io.dbg   else outer.bridge.get.module.io.dbg
+  val bmodDrain = if (outer.rd2Cfg.atomic) outer.harts.head.module.io.drain else outer.bridge.get.module.io.drain
+  val bmodDbg   = if (outer.rd2Cfg.atomic) outer.harts.head.module.io.dbg   else outer.bridge.get.module.io.dbg
   val drain = bmodDrain
   drain.softReset := softReset
   val bdevw = outer.bdevWatch.module
@@ -186,27 +203,32 @@ class RD2ZynqTopModule(outer: RD2ZynqTop) extends RocketSubsystemModuleImp(outer
   // withReset works here because TeachingCpu is a plain Chisel Module instantiated by this code. It does
   // *not* work for a diplomatic child (LazyModuleImp builds its children in its own constructor, before any
   // of this runs), which is why every other soft-domain instance in later stages needs an explicit port.
+  // V1 path, unchanged: the CPU is instantiated here, in the soft domain.
   val cpuV1 = if (outer.rd2Cfg.atomic) None else
     Some(withReset(reset.toBool || drain.cpuResetHold) { Module(new TeachingCpu(romParams.hang)) })
-  val cpuV2 = if (outer.rd2Cfg.atomic)
-    Some(withReset(reset.toBool || drain.cpuResetHold) { Module(new TeachingCpuV2(romParams.hang)) }) else None
+  // MC-M1 atomic path: the CPU lives inside the hart wrapper, which composes the same reset itself.
+  val hart = if (outer.rd2Cfg.atomic) Some(outer.harts.head.module) else None
+  val clintInts = outer.clintSink.in.head._1
+  // the three interrupt levels, named once: both paths take them, and the event trace prints them
+  val irqMsip = clintInts(0)
+  val irqMtip = clintInts(1)
+  val irqMeip = outer.plicSink.in.head._1(0)
   if (outer.rd2Cfg.atomic) {
-    outer.bridgeV2.get.module.io.phys <> cpuV2.get.io.phys
     // the side-band to the accepted backend at the coherence-manager hook
     outer.atomicBackend.getOrElse(throw new Exception("an atomic RD2 configuration needs WithAtomicHub"))
-         .module.io.sb <> outer.bridgeV2.get.module.io.sb
+         .module.io.sb <> hart.get.io.sb
+    hart.get.io.irq.msip := irqMsip
+    hart.get.io.irq.mtip := irqMtip
+    hart.get.io.irq.meip := irqMeip
   } else {
     outer.bridge.get.module.io.phys <> cpuV1.get.io.phys
+    cpuV1.get.io.irq.msip := irqMsip
+    cpuV1.get.io.irq.mtip := irqMtip
+    cpuV1.get.io.irq.meip := irqMeip
   }
-  // the observation view both wrappers publish, so the trace and the status word below are written once
-  val physObs = if (outer.rd2Cfg.atomic) cpuV2.get.io.physObs else cpuV1.get.io.physObs
-  val cpuIrq  = if (outer.rd2Cfg.atomic) cpuV2.get.io.irq     else cpuV1.get.io.irq
-  val cpuObs  = if (outer.rd2Cfg.atomic) cpuV2.get.io.obs     else cpuV1.get.io.obs
-
-  val clintInts = outer.clintSink.in.head._1
-  cpuIrq.msip := clintInts(0)
-  cpuIrq.mtip := clintInts(1)
-  cpuIrq.meip := outer.plicSink.in.head._1(0)
+  // the observation view both paths publish, so the trace and the status word below are written once
+  val physObs = if (outer.rd2Cfg.atomic) hart.get.io.physObs else cpuV1.get.io.physObs
+  val cpuObs  = if (outer.rd2Cfg.atomic) hart.get.io.obs     else cpuV1.get.io.obs
 
   // ---- status ----------------------------------------------------------------------------------------
   // CPU_RESTART_SAFE means: the drain finished and the CPU reset has been applied for at least one whole
@@ -360,10 +382,10 @@ class RD2ZynqTopModule(outer: RD2ZynqTop) extends RocketSubsystemModuleImp(outer
              p"cause=0x${Hexadecimal(cpuObs.trapCause)} epc=0x${Hexadecimal(cpuObs.trapEpc)} " +
              p"tval=0x${Hexadecimal(cpuObs.trapTval)}\n")
     }
-    val irqNow  = Cat(cpuIrq.meip, cpuIrq.mtip, cpuIrq.msip)
+    val irqNow  = Cat(irqMeip, irqMtip, irqMsip)
     val irqPrev = RegNext(irqNow, 0.U)
     when (logOn && irqPrev =/= irqNow) {
-      printf(p"EV ${cycle} IRQLEVEL msip=${cpuIrq.msip} mtip=${cpuIrq.mtip} meip=${cpuIrq.meip}\n")
+      printf(p"EV ${cycle} IRQLEVEL msip=${irqMsip} mtip=${irqMtip} meip=${irqMeip}\n")
     }
     // the reset sequence itself, as events, so a checker can bind them to transactions
     when (logOn && drain.cpuResetHold && !RegNext(drain.cpuResetHold, false.B)) {
@@ -757,6 +779,20 @@ class RD2AtomicXv6FastConfig extends Config(
   new WithTeachingCpu(TeachingCpuParams(traceEvents = false, extraDelay = false, bridgeFault = 0,
                                         tailIntercept = false)) ++
   new WithTeachingBootROM ++ new zynq.WithZynqAdapter ++ new freechips.rocketchip.system.DefaultConfig)
+
+// ---- MC-M1 / TESTPLAN T1.9: configurations that MUST refuse to elaborate ------------------------------
+// The same machine as RD2AtomicXv6FastConfig with one field of the CORE_IMPL x NUM_CORES matrix set to a
+// value that does not exist yet. Each must fail at elaboration with "unsupported" and the value in the
+// message -- never elaborate as multicycle/1 and pretend. (The left-hand WithRD2 wins over the one inside.)
+class MC1UnsupportedPipelineConfig extends Config(
+  new WithRD2(RD2Params(atomic = true, traceEvents = false, atomicTrace = false, coreImpl = "pipeline")) ++
+  new RD2AtomicXv6FastConfig)
+class MC1UnsupportedDualConfig extends Config(
+  new WithRD2(RD2Params(atomic = true, traceEvents = false, atomicTrace = false, numCores = 2)) ++
+  new RD2AtomicXv6FastConfig)
+class MC1UnsupportedZeroConfig extends Config(
+  new WithRD2(RD2Params(atomic = true, traceEvents = false, atomicTrace = false, numCores = 0)) ++
+  new RD2AtomicXv6FastConfig)
 
 // ---- CPU-A / xv6, board shape ------------------------------------------------------------------------
 // The same machine as RD2AtomicXv6FastConfig, generated as RD2BoardTop instead of the harness: no TileLink

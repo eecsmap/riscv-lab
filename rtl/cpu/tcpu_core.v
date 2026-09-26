@@ -14,6 +14,9 @@ module tcpu_core #(
   parameter [63:0] RESET_PC      = 64'h0000_0000_8000_0000, // test harness entry; real reset is 0x10040
   parameter        TLB_ENTRIES   = 8,   // IPS-campaign stage 2: 0 disables translation caching entirely
   parameter        ICACHE_BYTES  = 1024,// IPS-campaign stage 3: 0 removes the instruction cache
+  parameter [63:0] HART_ID       = 64'd0, // MC-M1: what mhartid reads. Was hard-wired to 0 in tcpu_csr; a
+                                          // second hart needs its own value, and the boot ROM's first
+                                          // branch is `csrr a0, mhartid; beqz a0, ...`
   parameter        X0_WRITABLE   = 0,   // fault injection: x0 becomes an ordinary register
   parameter        NO_LOAD_SEXT  = 0,   // fault injection: loads stop sign-extending
   parameter        REQ_WITHDRAW  = 0,   // monitor self-test: withdraw a request before its handshake
@@ -516,7 +519,7 @@ module tcpu_core #(
     .resp_valid(ic_resp_valid), .resp_rdata(ic_resp_rdata), .resp_error(ic_resp_error),
     .busy(ptw_busy), .done(ptw_done), .fault(ptw_fault), .cause(ptw_cause), .pa(ptw_pa),
     .o_hit(xlate_hit), .o_miss(xlate_miss));
-  tcpu_csr #(.MISA_A(MISA_A), .TRAP_BAD_MEPC(TRAP_BAD_MEPC), .TRAP_COUNTS_RET(TRAP_COUNTS_RET),
+  tcpu_csr #(.HART_ID(HART_ID), .MISA_A(MISA_A), .TRAP_BAD_MEPC(TRAP_BAD_MEPC), .TRAP_COUNTS_RET(TRAP_COUNTS_RET),
              .ALLOW_RO_WRITE(ALLOW_RO_WRITE), .FAULT_NO_DELEG(FAULT_NO_DELEG),
              .FAULT_S_IRQ_IN_M(FAULT_S_IRQ_IN_M), .FAULT_SRET_SPP(FAULT_SRET_SPP)) csrfile (
     .clk(clk), .rst(rst),
