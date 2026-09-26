@@ -18,13 +18,18 @@ object AtomicHub {
 }
 
 class WithAtomicHub(fReadErr: Boolean = false, fNoKill: Boolean = false, fWrongSrc: Boolean = false,
-                    trace: Boolean = true) extends Config((site, here, up) => {
+                    trace: Boolean = true,
+                    // MC-M2a: the harts, by exact client name (one entry per hart, slot order = hart order)
+                    cpuClientNames: Seq[String] = Seq("teaching-phys"),
+                    fNoCrossKill: Boolean = false, fSwapSideband: Boolean = false,
+                    fSwapDSource: Boolean = false, fAmoInterleave: Boolean = false) extends Config((site, here, up) => {
   case BankedL2Key => up(BankedL2Key, site).copy(coherenceManager = { subsystem =>
     implicit val p = subsystem.p
     val BroadcastParams(nTrackers, bufferless) = p(BroadcastKey)
-    val backend = LazyModule(new AtomicBackend(fReadErr, fNoKill, fWrongSrc,
+    val backend = LazyModule(new AtomicBackend(fReadErr, fNoKill, fWrongSrc, cpuClientNames,
                                                dramRegion = Seq(AddressSet(p(ExtMem).base, p(ExtMem).size - 1)),
-                                               trace = trace))
+                                               trace = trace, faultNoCrossKill = fNoCrossKill, faultSwapSideband = fSwapSideband,
+                                               faultSwapDSource = fSwapDSource, faultAmoInterleave = fAmoInterleave))
     val bh = LazyModule(new TLBroadcast(subsystem.memBusBlockBytes, nTrackers, bufferless))
     val ww = LazyModule(new TLWidthWidget(subsystem.sbus.beatBytes))
     bh.node :*= backend.node

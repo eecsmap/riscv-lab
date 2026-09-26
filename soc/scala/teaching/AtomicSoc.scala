@@ -63,7 +63,7 @@ class AtomicZynqTopModule(outer: AtomicZynqTop) extends RocketSubsystemModuleImp
   outer.bridge.module.io.phys <> drv.io.phys
   drv.io.hold := outer.bridge.module.io.drain.cpuResetHold
   outer.bridge.module.io.drain.softReset := false.B
-  outer.backend.module.io.sb <> outer.bridge.module.io.sb
+  outer.backend.module.io.sb(0) <> outer.bridge.module.io.sb
   val (tlb, _) = outer.tap.in(0)
   val aFires = RegInit(0.U(32.W)); when (tlb.a.fire()) { aFires := aFires + 1.U }
   val outst = RegInit(false.B); when (tlb.a.fire()) { outst := true.B }; when (tlb.d.fire()) { outst := false.B }

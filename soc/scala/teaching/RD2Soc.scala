@@ -216,7 +216,7 @@ class RD2ZynqTopModule(outer: RD2ZynqTop) extends RocketSubsystemModuleImp(outer
   if (outer.rd2Cfg.atomic) {
     // the side-band to the accepted backend at the coherence-manager hook
     outer.atomicBackend.getOrElse(throw new Exception("an atomic RD2 configuration needs WithAtomicHub"))
-         .module.io.sb <> hart.get.io.sb
+         .module.io.sb(0) <> hart.get.io.sb          // MC-M2a: slot 0 = the one hart; the product dual configuration stays unsupported
     hart.get.io.irq.msip := irqMsip
     hart.get.io.irq.mtip := irqMtip
     hart.get.io.irq.meip := irqMeip

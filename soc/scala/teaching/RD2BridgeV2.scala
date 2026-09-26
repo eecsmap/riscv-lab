@@ -22,10 +22,14 @@ import testchipip.TLHelper
 class RD2BridgeV2(faultMode: Int = 0, applyCycles: Int = 2, drainTimeout: Int = 50000,
                   atomicRegion: Seq[AddressSet] = Seq(AddressSet(0x80000000L, 0x0FFFFFFFL)),
                   // trace: the CPU_REQ / CPU_RESP event lines, on for the scored configurations
-                  trace: Boolean = true)(implicit p: Parameters) extends LazyModule {
-  require(Seq(0, 8, 9, 10).contains(faultMode),
-          "RD2BridgeV2: faultMode 0, 8 (SC decided early), 9 (ADD mapped as SWAP) or 10 (operand halves swapped)")
-  val node = TLHelper.makeClientNode("teaching-phys", IdRange(0, 1))
+                  trace: Boolean = true,
+                  // MC-M2a: the EXACT client name the backend binds this hart by, and the hart index printed
+                  // on every event line so the scorer can bind requests to harts. The single-core RD2 path
+                  // keeps the defaults, so it elaborates exactly as before.
+                  clientName: String = "teaching-phys", hartId: Int = 0)(implicit p: Parameters) extends LazyModule {
+  require(Seq(0, 8, 9, 10, 11).contains(faultMode),
+          "RD2BridgeV2: faultMode 0, 8 (SC decided early), 9 (ADD mapped as SWAP), 10 (operand halves swapped), 11 (request withdrawn)")
+  val node = TLHelper.makeClientNode(clientName, IdRange(0, 1))
 
   lazy val module = new LazyModuleImp(this) {
     val io = IO(new Bundle {
@@ -120,7 +124,11 @@ class RD2BridgeV2(faultMode: Int = 0, applyCycles: Int = 2, drainTimeout: Int = 
     // faultMode 8: a local reservation decides the SC here; a failing SC is answered without any TL request
     val localResv = RegInit(false.B); val localWord = Reg(UInt(29.W))
     val scEarlyFail = (faultMode == 8).B && reqIsSC && !(localResv && localWord === req.addr(31, 3))
-    tl.a.valid := state === sA
+    // faultMode 11 (negative control): an offered A is withdrawn for one cycle after a cycle it was not
+    // accepted -- the irrevocability rule broken on the TileLink side
+    val wdTick = RegInit(false.B)
+    if (faultMode == 11) { wdTick := (state === sA) && tl.a.valid && !tl.a.ready && !wdTick }
+    tl.a.valid := (state === sA) && !((faultMode == 11).B && wdTick)
     tl.a.bits  := Mux(reqIsAmo, Mux(amoIsLogical, lgBits, arBits), Mux(req.write, putBits, getBits))
     tl.d.ready := (state === sA || state === sD)
     tl.b.ready := false.B; tl.c.valid := false.B; tl.e.valid := false.B
@@ -162,7 +170,7 @@ class RD2BridgeV2(faultMode: Int = 0, applyCycles: Int = 2, drainTimeout: Int = 
       txid := txid + 1.U
       state := Mux(legal, sA, sIllegal)
       when (!legal) { nIllegal := nIllegal + 1.U }
-      if (trace) printf(p"AT ${cyc} CPU_REQ txid=${txid + 1.U} addr=0x${Hexadecimal(in.addr)} write=${in.write} size=${in.size} amo=${in.amo} lrsc=${in.lrsc} data=0x${Hexadecimal(in.wdata)} mask=0x${Hexadecimal(in.wmask)} legal=${legal}\n")
+      if (trace) printf(p"AT ${cyc} CPU_REQ hart=${hartId.U} txid=${txid + 1.U} addr=0x${Hexadecimal(in.addr)} write=${in.write} size=${in.size} amo=${in.amo} lrsc=${in.lrsc} data=0x${Hexadecimal(in.wdata)} mask=0x${Hexadecimal(in.wmask)} legal=${legal}\n")
     }
     when (state === sIllegal) {
       when (discardNow) { state := sIdle; nLocalDisc := nLocalDisc + 1.U }
@@ -192,7 +200,7 @@ class RD2BridgeV2(faultMode: Int = 0, applyCycles: Int = 2, drainTimeout: Int = 
     io.phys.resp.bits.scFail := reqIsSC && scFail
     when (state === sResp && io.phys.resp.fire()) {
       state := sIdle
-      if (trace) printf(p"AT ${cyc} CPU_RESP txid=${txid} data=0x${Hexadecimal(io.phys.resp.bits.rdata)} err=${err} scfail=${io.phys.resp.bits.scFail}\n")
+      if (trace) printf(p"AT ${cyc} CPU_RESP hart=${hartId.U} txid=${txid} data=0x${Hexadecimal(io.phys.resp.bits.rdata)} err=${err} scfail=${io.phys.resp.bits.scFail}\n")
     }
     when (discardNow && (state === sResp)) { state := sIdle; nBufDisc := nBufDisc + 1.U }
 
