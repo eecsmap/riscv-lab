@@ -34,7 +34,9 @@ class AtomicZynqTop(implicit p: Parameters) extends RocketSubsystem
     case 4 => (s4cpu, Nil, Nil); case 5 => (s5cpu, s5ext0, s5ext1); case 6 => (s6cpu, Nil, Nil)
     case 7 => (s7cpu, s7ext0, Nil)
   }
-  val bridge = LazyModule(new RD2BridgeV2(cfg.bridgeFault, atomicRegion = Seq(AddressSet(p(ExtMem).base, p(ExtMem).size - 1))))
+  // MC-M2b: the one hart's name comes from the same function the backend binds with (WithAtomicHub, None)
+  val bridge = LazyModule(new RD2BridgeV2(cfg.bridgeFault, atomicRegion = Seq(AddressSet(p(ExtMem).base, p(ExtMem).size - 1)),
+                                          clientName = TeachingHart.clientName(0), hartId = 0))
   val put0   = LazyModule(new TLPutter("ext-tsi", e0))
   val put1   = LazyModule(new TLPutter("ext-dma", e1))
   val tap    = TLIdentityNode()

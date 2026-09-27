@@ -22,19 +22,28 @@ import freechips.rocketchip.tilelink._
 
 class TeachingHartIrq extends Bundle { val msip = Bool(); val mtip = Bool(); val meip = Bool() }
 
+// MC-M2b: the ONE place a hart's TileLink client name comes from. The hart wrapper names its bridge's client
+// with it, and the backend (WithAtomicHub) binds its side-band slots with the same function over the same
+// NUM_CORES -- so hart -> source range -> side-band slot is one explicit binding by exact name (CONTRACT
+// C3.1, ruling D4), never a sort over sources and never a prefix match.
+object TeachingHart {
+  def clientName(hartId: Int): String = s"teaching-phys-$hartId"
+  def clientNames(numCores: Int): Seq[String] = Seq.tabulate(numCores)(clientName)
+}
+
 class TeachingHart(val hartId: Int, resetPc: BigInt,
                    bridgeFault: Int, applyCycles: Int, drainTimeout: Int,
                    atomicRegion: Seq[AddressSet], atomicTrace: Boolean, busInstrumentation: Boolean)
                   (implicit p: Parameters) extends LazyModule {
-  // MC-M1 supports hart 0 only. The identity of a second hart -- its client name, its side-band slot, its
-  // reservation -- migrates in MC-M2 (CONTRACT C3.1); accepting hartId = 1 here would let a configuration
-  // elaborate whose SC semantics are wrong (CONTRACT B1). So it is refused, with the number in the message.
-  require(hartId == 0, s"unsupported hart $hartId: MC-M1 implements hart 0 only; multicore identity is MC-M2")
+  // MC-M2b: any non-negative hart id. Its identity -- the exact client name, the side-band slot the backend
+  // binds by that name, its own reservation, its HART_ID parameter -- all come from this one number.
+  require(hartId >= 0, s"unsupported hart $hartId: hart ids are 0..NUM_CORES-1")
 
-  val bridge   = LazyModule(new RD2BridgeV2(bridgeFault, applyCycles, drainTimeout, atomicRegion, atomicTrace))
+  val bridge   = LazyModule(new RD2BridgeV2(bridgeFault, applyCycles, drainTimeout, atomicRegion, atomicTrace,
+                                            clientName = TeachingHart.clientName(hartId), hartId = hartId))
   // the watcher is an identity node; the throttle does nothing unless its plusargs are set, and is left out
   // of the netlist entirely when the instrumentation is off (see RD2Soc for why)
-  val watch    = LazyModule(new RD2Watch("cpu", trace = busInstrumentation))
+  val watch    = LazyModule(new RD2Watch(s"cpu$hartId", trace = busInstrumentation))
   val throttle = if (busInstrumentation) Some(LazyModule(new RD2Throttle)) else None
   // the same chain RD2ZynqTop built before: watch := [throttle :=] bridge
   if (busInstrumentation) watch.node := throttle.get.node := bridge.node
@@ -50,8 +59,15 @@ class TeachingHart(val hartId: Int, resetPc: BigInt,
       val obs     = Output(new TeachingCpuObs)
       val physObs = Output(new PhysObs)
       val impl    = Output(new TeachingCpuImplObs)   // implementation detail; see TeachingCpuImplObs
+      // MC-M2b: the longest run of cycles this hart's A stayed offered before the fabric took it (1 = taken
+      // in the cycle it was offered). Fairness evidence per hart, read at the end of a long run.
+      val maxAWait = Output(UInt(32.W))
     })
     val b = bridge.module
+    val waitRun = RegInit(0.U(32.W)); val maxAWait = RegInit(0.U(32.W))
+    when (b.io.drain.pendingA) { waitRun := waitRun + 1.U; when (waitRun + 1.U > maxAWait) { maxAWait := waitRun + 1.U } }
+    .otherwise { waitRun := 0.U }
+    io.maxAWait := maxAWait
     b.io.drain <> io.drain
     io.dbg     <> b.io.dbg
     io.sb      <> b.io.sb

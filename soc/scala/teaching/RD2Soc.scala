@@ -92,6 +92,7 @@ class RD2Status extends Bundle {
   val msip           = Output(Bool())   // cleared by the applied reset; the ROM's wake loop polls it
   val pendingA       = Output(Bool())   // the CPU's A is offered and not accepted
   val outstanding    = Output(Bool())   // the CPU's A was accepted and its D has not come back
+  val allPending     = Output(Bool())   // MC-M2b: EVERY hart has a request offered or outstanding
 }
 
 class RD2ZynqTop(implicit p: Parameters) extends RocketSubsystem   // RocketTilesKey = Nil
@@ -117,8 +118,9 @@ class RD2ZynqTop(implicit p: Parameters) extends RocketSubsystem   // RocketTile
   // message. Nothing else in this file may quietly substitute the one implementation that exists.
   require(rd2Cfg.coreImpl == "multicycle",
           s"unsupported CORE_IMPL=${rd2Cfg.coreImpl}: only 'multicycle' is implemented")
-  require(rd2Cfg.numCores == 1,
-          s"unsupported NUM_CORES=${rd2Cfg.numCores}: MC-M1 implements exactly 1 (multicore identity is MC-M2)")
+  require(rd2Cfg.numCores == 1 || rd2Cfg.numCores == 2,
+          s"unsupported NUM_CORES=${rd2Cfg.numCores}: MC-M2b implements 1 and 2 (4 is not implemented)")
+  val nHarts = if (rd2Cfg.atomic) rd2Cfg.numCores else 1
   // the accepted backend, built by WithAtomicHub at the coherence-manager hook (before TLBroadcast)
   val atomicBackend = if (rd2Cfg.atomic) AtomicHub.last else None
   // MC-M1: on the atomic path the CPU, the V2 bridge, the watcher and the throttle live inside the hart
@@ -137,8 +139,10 @@ class RD2ZynqTop(implicit p: Parameters) extends RocketSubsystem   // RocketTile
   // disabled, so there is nothing to argue about in the netlist.
   val cpuWatch = if (rd2Cfg.atomic) None else Some(LazyModule(new RD2Watch("cpu", trace = rd2Cfg.busInstrumentation)))
   val throttle = if (!rd2Cfg.atomic && rd2Cfg.busInstrumentation) Some(LazyModule(new RD2Throttle)) else None
+  // MC-M2b: one system-bus port per hart. The crossbar assigns each port its source range; the backend
+  // never sees those ranges as "hart numbers" -- it binds by the exact client name (TeachingHart.clientName)
   if (rd2Cfg.atomic)
-    sbus.fromPort(Some("teaching-cpu"))() := harts.head.node
+    harts.zipWithIndex.foreach { case (h, i) => sbus.fromPort(Some(s"teaching-cpu-$i"))() := h.node }
   else if (rd2Cfg.busInstrumentation)
     sbus.fromPort(Some("teaching-cpu"))() := cpuWatch.get.node := throttle.get.node := bridge.get.node
   else
@@ -147,10 +151,12 @@ class RD2ZynqTop(implicit p: Parameters) extends RocketSubsystem   // RocketTile
 
   // the interrupts come from the RD2 copy, which sits at the architectural address; the subsystem's own
   // CLINT is parked at an unused address by the RD2 configurations and drives nothing
-  val clintSink = IntSinkNode(IntSinkPortSimple(1, 2))
-  clintSink := rd2clint.intnode
-  val plicSink = IntSinkNode(IntSinkPortSimple(1, 1))
-  plicSink := plic.intnode
+  // MC-M2b: one sink per hart on each -- the CLINT then has msip/mtimecmp per hart (CONTRACT C8.3) and the
+  // PLIC one M-mode context per hart (C8.4; the layout xv6 will address is documented in the M2b report)
+  val clintSinks = Seq.fill(nHarts)(IntSinkNode(IntSinkPortSimple(1, 2)))
+  clintSinks.foreach(_ := rd2clint.intnode)
+  val plicSinks = Seq.fill(nHarts)(IntSinkNode(IntSinkPortSimple(1, 1)))
+  plicSinks.foreach(_ := plic.intnode)
   val dummyDebugSink = IntSinkNode(IntSinkPortSimple(1, 1))
   dummyDebugSink := IntSyncCrossingSink(3) := debug.intnode
 
@@ -178,79 +184,93 @@ class RD2ZynqTopModule(outer: RD2ZynqTop) extends RocketSubsystemModuleImp(outer
   val bdevStall  = IO(Input(Bool()))
   val status     = IO(new RD2Status)
   val statusWord = IO(Output(UInt(32.W)))
-  // CPU-A: whichever bridge this configuration built -- the drain contract and the debug bundle are the
-  // same types, so everything below is written once
-  val bmodDrain = if (outer.rd2Cfg.atomic) outer.harts.head.module.io.drain else outer.bridge.get.module.io.drain
-  val bmodDbg   = if (outer.rd2Cfg.atomic) outer.harts.head.module.io.dbg   else outer.bridge.get.module.io.dbg
-  val drain = bmodDrain
-  drain.softReset := softReset
+  // ---- the harts (MC-M2b: one or two TeachingHarts on the atomic path; the V1 path is one CPU) ----------
+  val nHarts = outer.nHarts
+  val hartMods = if (outer.rd2Cfg.atomic) outer.harts.map(_.module) else Nil
+  val drains: Seq[BridgeDrainIO] = if (outer.rd2Cfg.atomic) hartMods.map(_.io.drain) else Seq(outer.bridge.get.module.io.drain)
+  val dbgs:   Seq[BridgeDebug]   = if (outer.rd2Cfg.atomic) hartMods.map(_.io.dbg)   else Seq(outer.bridge.get.module.io.dbg)
+  // hart 0's bundle names the per-epoch fields below; with the aligned apply every hart's epoch advances in
+  // the same round, and EPOCH_SKEW is printed if that ever stops being true
+  val drain = drains.head
+  val bmodDbg = dbgs.head
+  // ---- CONTRACT C7.1: one soft reset, every bridge drains, and NO core leaves reset before every bridge is
+  // applying. Each bridge runs its own drain. A bridge that finished early sits in RESET_APPLY only while its
+  // softReset input is high, so the SoC holds that input for EVERY bridge from the first cycle a request is
+  // seen until every bridge has been applying for applyCycles cycles (holdAll); from then on the host's own
+  // level decides, as before, and the bridges leave apply together when it falls.
+  val applyingAll = drains.map(_.applying).reduce(_ && _)
+  val anyPending  = drains.map(d => d.pendingA || d.outstanding).reduce(_ || _)
+  val allPending  = drains.map(d => d.pendingA || d.outstanding).reduce(_ && _)
+  // Saturating, deliberately: the apply phase lasts as long as the request is held, and a wrapping counter
+  // made the SAFE bit drop for one cycle every 256 clocks (measured: cycles 204, 460, 716 of one held reset).
+  val applyCnt = RegInit(0.U(8.W))
+  when (applyingAll) { when (applyCnt =/= 255.U) { applyCnt := applyCnt + 1.U } } .otherwise { applyCnt := 0.U }
+  // With ONE hart there is nothing to align, and the accepted single-core behaviour is kept byte-for-byte
+  // (the M1 comparator judges the recovered console, which includes the bridge's wait statistics; the
+  // aligned hold released the core 1-2 cycles later after the host's 3-cycle load-time pulse and moved one
+  // wait cycle -- measured in runs/n1-round1). So the alignment logic is elaborated only for nHarts > 1.
+  val holdAll = RegInit(false.B)
+  if (nHarts > 1) {
+    when (softReset && !holdAll && !applyingAll) { holdAll := true.B }
+    when (holdAll && applyingAll && (applyCnt >= (outer.rd2Cfg.applyCycles - 1).U)) { holdAll := false.B }
+  }
+  drains.foreach(_.softReset := softReset || holdAll)
   val bdevw = outer.bdevWatch.module
   val ser = outer.rd2serial.module
   ser.io.quiesceReq := quiesceReq
   // the applied reset: restart state is cleared in RESET_APPLY, once, after the drain -- never while a
   // transaction is still owed
   val rd2clint = outer.rd2clint.module
-  // A one-shot at the entry to RESET_APPLY, not the level of the phase. The phase lasts as long as the reset
-  // request is held, and a level would keep clearing msip for the whole hold -- so a host that writes msip
-  // while it still holds the reset (which is exactly what fesvr does: it loads, then wakes) would lose the
-  // wake silently and the CPU would sit in the ROM loop for ever. Measured: with the level, a 600-cycle hold
-  // during the load left the program never starting. "Applied once, after the drain" is also what the
-  // contract says.
-  rd2clint.io.applyReset := drain.applying && !RegNext(drain.applying, false.B)
+  // A one-shot at the entry to the ALIGNED apply (C7.2), not the level of the phase. The phase lasts as long
+  // as the reset request is held, and a level would keep clearing msip for the whole hold -- so a host that
+  // writes msip while it still holds the reset (which is exactly what fesvr does: it loads, then wakes) would
+  // lose the wake silently and the CPU would sit in the ROM loop for ever. Measured: with the level, a
+  // 600-cycle hold during the load left the program never starting.
+  rd2clint.io.applyReset := applyingAll && !RegNext(applyingAll, false.B)
   rd2clint.io.rtcTick := outer.clint.module.io.rtcTick   // the same tick the subsystem generates
 
-  // ---- the CPU is the soft domain --------------------------------------------------------------------
-  // withReset works here because TeachingCpu is a plain Chisel Module instantiated by this code. It does
-  // *not* work for a diplomatic child (LazyModuleImp builds its children in its own constructor, before any
-  // of this runs), which is why every other soft-domain instance in later stages needs an explicit port.
-  // V1 path, unchanged: the CPU is instantiated here, in the soft domain.
+  // ---- the CPUs are the soft domain --------------------------------------------------------------------
+  // V1 path, unchanged: the CPU is instantiated here, in the soft domain (withReset works for a plain Module).
   val cpuV1 = if (outer.rd2Cfg.atomic) None else
     Some(withReset(reset.toBool || drain.cpuResetHold) { Module(new TeachingCpu(romParams.hang)) })
-  // MC-M1 atomic path: the CPU lives inside the hart wrapper, which composes the same reset itself.
-  val hart = if (outer.rd2Cfg.atomic) Some(outer.harts.head.module) else None
-  val clintInts = outer.clintSink.in.head._1
-  // the three interrupt levels, named once: both paths take them, and the event trace prints them
-  val irqMsip = clintInts(0)
-  val irqMtip = clintInts(1)
-  val irqMeip = outer.plicSink.in.head._1(0)
+  // the three interrupt levels PER HART: sink i is hart i's (CLINT msip_i / mtimecmp_i, PLIC context i)
+  val irqMsipAll = Seq.tabulate(nHarts)(i => outer.clintSinks(i).in.head._1(0))
+  val irqMtipAll = Seq.tabulate(nHarts)(i => outer.clintSinks(i).in.head._1(1))
+  val irqMeipAll = Seq.tabulate(nHarts)(i => outer.plicSinks(i).in.head._1(0))
   if (outer.rd2Cfg.atomic) {
-    // the side-band to the accepted backend at the coherence-manager hook
-    outer.atomicBackend.getOrElse(throw new Exception("an atomic RD2 configuration needs WithAtomicHub"))
-         .module.io.sb(0) <> hart.get.io.sb          // MC-M2a: slot 0 = the one hart; the product dual configuration stays unsupported
-    hart.get.io.irq.msip := irqMsip
-    hart.get.io.irq.mtip := irqMtip
-    hart.get.io.irq.meip := irqMeip
+    val backend = outer.atomicBackend.getOrElse(throw new Exception("an atomic RD2 configuration needs WithAtomicHub"))
+    // the side-band slot i is the slot the backend bound to TeachingHart.clientName(i): same function, same
+    // NUM_CORES, so the hart, its client name, its source range and its slot are one binding
+    require(backend.numHarts == nHarts,
+            s"AtomicBackend binds ${backend.numHarts} hart(s) but the SoC builds $nHarts: WithAtomicHub and RD2Params disagree")
+    hartMods.zipWithIndex.foreach { case (h, i) =>
+      backend.module.io.sb(i) <> h.io.sb
+      h.io.irq.msip := irqMsipAll(i); h.io.irq.mtip := irqMtipAll(i); h.io.irq.meip := irqMeipAll(i)
+    }
   } else {
     outer.bridge.get.module.io.phys <> cpuV1.get.io.phys
-    cpuV1.get.io.irq.msip := irqMsip
-    cpuV1.get.io.irq.mtip := irqMtip
-    cpuV1.get.io.irq.meip := irqMeip
+    cpuV1.get.io.irq.msip := irqMsipAll(0)
+    cpuV1.get.io.irq.mtip := irqMtipAll(0)
+    cpuV1.get.io.irq.meip := irqMeipAll(0)
   }
-  // the observation view both paths publish, so the trace and the status word below are written once
-  val physObs = if (outer.rd2Cfg.atomic) hart.get.io.physObs else cpuV1.get.io.physObs
-  val cpuObs  = if (outer.rd2Cfg.atomic) hart.get.io.obs     else cpuV1.get.io.obs
+  // the observation view, per hart; hart 0's keeps the names the single-core tools read
+  val physObsAll: Seq[PhysObs]        = if (outer.rd2Cfg.atomic) hartMods.map(_.io.physObs) else Seq(cpuV1.get.io.physObs)
+  val cpuObsAll:  Seq[TeachingCpuObs] = if (outer.rd2Cfg.atomic) hartMods.map(_.io.obs)     else Seq(cpuV1.get.io.obs)
+  val maxAWaitAll: Seq[UInt]          = if (outer.rd2Cfg.atomic) hartMods.map(_.io.maxAWait) else Seq(0.U(32.W))
+  val physObs = physObsAll.head
+  val cpuObs  = cpuObsAll.head
 
   // ---- status ----------------------------------------------------------------------------------------
-  // CPU_RESTART_SAFE means: the drain finished and the CPU reset has been applied for at least one whole
-  // cycle, so deasserting the request now restarts a CPU that owes nothing. It is built from the bridge's
-  // conditions, not from a debug counter, and the apply cycle is counted here rather than by changing the
-  // accepted RD1 bridge.
-  // Saturating, deliberately. The apply phase lasts as long as the reset request is held, so a wrapping
-  // counter makes the SAFE bit drop for one cycle every 256 clocks even though nothing has changed -- which
-  // is exactly what a polling PS would eventually sample. (Measured on the previous build: SAFE rose again
-  // at cycles 204, 460 and 716 of a single held reset.) It is cleared only when the phase ends, which is the
-  // round boundary.
-  val applyCnt = RegInit(0.U(8.W))
-  when (drain.applying) { when (applyCnt =/= 255.U) { applyCnt := applyCnt + 1.U } }
-  .otherwise { applyCnt := 0.U }
-  val pendingWork = drain.pendingA || drain.outstanding
-  status.cpuRestartSafe := drain.applying && (applyCnt >= 1.U) && !pendingWork
+  // CPU_RESTART_SAFE means: EVERY bridge drained, the aligned apply has lasted at least one whole cycle, and
+  // no hart owes anything -- so deasserting the request now restarts cores that owe nothing. Built from the
+  // bridges' conditions, not from a debug counter. Nothing here reports hart 0's progress as everyone's:
+  // pending/draining/timeout are ORs over the harts, nDrained is the sum, epoch is hart 0's (aligned).
+  val pendingWork = anyPending
+  status.cpuRestartSafe := applyingAll && (applyCnt >= 1.U) && !pendingWork
   // RD2-D owns this one. Until the AXI ledger and the block device's own refusal exist, the honest value is
-  // 0: a bit named SAFE does not get to mean "probably". The serial adapter's half of the condition is
-  // already real (it refuses new commands under the lock and reports when it is finished), and it is
-  // reported separately so the gap is visible rather than hidden inside a 0.
+  // 0: a bit named SAFE does not get to mean "probably".
   status.plReconfigSafe := false.B
-  status.msip        := rd2clint.io.msip
+  status.msip        := rd2clint.io.msip    // hart 0's msip (C7.3, ruling D5): "the host has woken hart 0", no more
   status.serialIdle  := !ser.io.status.pendingWork
   status.serialFrame := ser.io.status.frameActive
   status.serialTlOutstanding := ser.io.status.tlOutstanding
@@ -264,19 +284,15 @@ class RD2ZynqTopModule(outer: RD2ZynqTop) extends RocketSubsystemModuleImp(outer
   // only then -- say the program may be put back. A device that never finishes trips a sticky timeout and
   // the ready bit is never asserted; nothing is cleared to make it look idle.
   val ctl = outer.controller.module
-  // the device's current operation (direction and sector), not merely "busy" -- see RD2BlockDevice.scala
   status.bdevWriteInflight := ctl.io.rboot.writeInflight
   status.bdevReadInflight  := ctl.io.rboot.readInflight
   status.bdevWriteSector   := ctl.io.rboot.writeSector
-  // rbFailed is terminal: only a cold reset leaves it. Once the deadline has passed, a device that finally
-  // answers may finish its own handshakes (the hold stays on, nothing is flushed or cleared), but READY is
-  // never asserted -- readiness after a reported failure is not something the design gets to manufacture.
   val rbIdle :: rbDrain :: rbFlush :: rbReady :: rbFailed :: Nil = Enum(5)
   val rb = RegInit(rbIdle)
   val rbCnt = RegInit(0.U(32.W))
   val rbTimeout = RegInit(false.B)
   val bdevIdle = ctl.io.rboot.trackersIdle && !bdevw.io.status.outstanding && !bdevw.io.status.pendingA
-  val cpuDone = drain.applying && !pendingWork              // the bridge drained and the CPU reset applied
+  val cpuDone = applyingAll && !pendingWork              // every bridge drained and the CPU reset applied
   ctl.io.rboot.hold  := softReset || (rb =/= rbIdle)
   ctl.io.rboot.flush := rb === rbFlush
   ctl.io.rboot.stallDevice := bdevStall
@@ -284,7 +300,6 @@ class RD2ZynqTopModule(outer: RD2ZynqTop) extends RocketSubsystemModuleImp(outer
     is (rbIdle)  { when (softReset) { rb := rbDrain; rbCnt := 0.U } }
     is (rbDrain) {
       rbCnt := rbCnt + 1.U
-      // precedence: completion observed at or before the deadline cycle wins; after it, failure is latched
       when (bdevIdle && cpuDone) { rb := rbFlush; rbCnt := 0.U }
       .elsewhen (rbCnt >= outer.rd2Cfg.rbootTimeout.U) { rbTimeout := true.B; rb := rbFailed }
     }
@@ -302,41 +317,33 @@ class RD2ZynqTopModule(outer: RD2ZynqTop) extends RocketSubsystemModuleImp(outer
   status.bootRestartTimeout := rbTimeout
   status.bdevQueued    := ctl.io.rboot.queuedCompletions
   status.bdevDiscarded := ctl.io.rboot.nDiscarded
-  // most of this CPU's traffic is instruction fetch, so "reset while something is in flight" lands on a read
-  // unless the condition says otherwise. This is what lets the three write-boundary scenarios be aimed.
-  val inflightWrite = RegEnable(physObs.write, false.B, physObs.reqFire)
-  // and to DRAM specifically: the first write in flight is often an MMIO one (the CLINT), which is not
-  // memory the checker models, so a scenario aimed at "a modelled write in flight" has to say so
-  val inflightDram = RegEnable(physObs.addr(31, 28) === 0x8.U, false.B, physObs.reqFire)
-  status.writeInFlight := inflightWrite
-  status.dramWriteInFlight := inflightWrite && inflightDram
-  status.aWaits := bmodDbg.aWaits
-  status.aFires := bmodDbg.aFires
-  status.dFires := bmodDbg.dFires
+  // "a write in flight" / "a DRAM write in flight": true if ANY hart's in-flight transaction is one
+  val inflightWriteAll = physObsAll.map(o => RegEnable(o.write, false.B, o.reqFire))
+  val inflightDramAll  = physObsAll.map(o => RegEnable(o.addr(31, 28) === 0x8.U, false.B, o.reqFire))
+  status.writeInFlight := inflightWriteAll.reduce(_ || _)
+  status.dramWriteInFlight := (inflightWriteAll zip inflightDramAll).map { case (w, d) => w && d }.reduce(_ || _)
+  status.aWaits := dbgs.map(_.aWaits).reduce(_ + _)
+  status.aFires := dbgs.map(_.aFires).reduce(_ + _)
+  status.dFires := dbgs.map(_.dFires).reduce(_ + _)
   status.quiesceReq  := quiesceReq
-  status.draining    := drain.draining
-  status.timeout     := drain.timeout
+  status.draining    := drains.map(_.draining).reduce(_ || _)
+  status.timeout     := drains.map(_.timeout).reduce(_ || _)
   status.epoch       := drain.epoch
-  status.nDrained    := drain.nDrained
+  status.nDrained    := drains.map(_.nDrained).reduce(_ + _)
   status.pendingWork := pendingWork
-  status.pendingA    := drain.pendingA
-  status.outstanding := drain.outstanding
+  status.pendingA    := drains.map(_.pendingA).reduce(_ || _)
+  status.outstanding := drains.map(_.outstanding).reduce(_ || _)
+  status.allPending  := allPending
 
   // ---- the 32-bit status word the PS reads at 0x14 -----------------------------------------------------
-  // All bits are from the cycle the read is answered. Bits 0-2 are levels, bit 3 is sticky to cold reset.
-  // Bit 1 is the one that is allowed to be pessimistic and never optimistic.
-  statusWord := Cat(drain.nDrained(15, 0), drain.epoch(7, 0), 0.U(2.W),
+  statusWord := Cat(status.nDrained(15, 0), status.epoch(7, 0), 0.U(2.W),
                     status.bootRestartTimeout, status.bootRestartReady,
-                    drain.timeout, drain.draining, status.plReconfigSafe, status.cpuRestartSafe)
+                    status.timeout, status.draining, status.plReconfigSafe, status.cpuRestartSafe)
 
   // ---- instrumentation (simulation configurations only) ----------------------------------------------
   val cycle = RegInit(0.U(48.W)); cycle := cycle + 1.U
   val logOn = !reset.toBool
 
-  // One line per accepted block-device operation, and one when it completes -- deliberately *outside* the
-  // event-trace block, because it is a handful of lines per disk transfer rather than per cycle, and it is
-  // the only way to tell "the device never took the request" from "it took it and never finished" in a run
-  // long enough that a per-cycle trace is impossible.
   if (outer.rd2Cfg.bdevTrace) {
     when (ctl.io.rboot.opAccepted) {
       printf(p"RBOOT ${cycle} BDEV_OP dir=${Mux(ctl.io.rboot.opWrite, 1.U, 0.U)} " +
@@ -349,69 +356,76 @@ class RD2ZynqTopModule(outer: RD2ZynqTop) extends RocketSubsystemModuleImp(outer
   }
 
   // The event format is the accepted one, field for field, so the M3 checker applies to these logs
-  // unchanged; `epoch` is appended rather than replacing anything. The sequence number is assigned on the
-  // test side exactly as before -- one outstanding transaction, so a request and the next response belong
-  // together by construction.
-  val seq    = RegInit(0.U(32.W))
-  val curSeq = RegInit(0.U(32.W))
-  val outstandingEv = RegInit(false.B)
-  when (physObs.reqFire)  { outstandingEv := true.B }
-  when (physObs.respFire) { outstandingEv := false.B }
-  val awaitingRetire = RegInit(false.B)
-  when (physObs.respFire && !cpuObs.isFetch) { awaitingRetire := true.B }
-  when (cpuObs.commitValid || cpuObs.trapValid) { awaitingRetire := false.B }
-  when (physObs.reqFire) { seq := seq + 1.U; curSeq := seq }
+  // unchanged. MC-M2b: with more than one hart every per-hart line carries `hart=i ` right after the tag;
+  // with one hart the text is byte-identical to before (the M1 comparators read it unchanged).
+  val busyAll = Wire(Vec(nHarts, Bool()))
+  for (i <- 0 until nHarts) {
+    val po = physObsAll(i); val co = cpuObsAll(i); val d = drains(i); val dbg = dbgs(i)
+    val ht: Printable = if (nHarts > 1) p"hart=${i.U} " else p""
+    val seq    = RegInit(0.U(32.W))
+    val curSeq = RegInit(0.U(32.W))
+    val outstandingEv = RegInit(false.B)
+    when (po.reqFire)  { outstandingEv := true.B }
+    when (po.respFire) { outstandingEv := false.B }
+    val awaitingRetire = RegInit(false.B)
+    when (po.respFire && !co.isFetch) { awaitingRetire := true.B }
+    when (co.commitValid || co.trapValid) { awaitingRetire := false.B }
+    when (po.reqFire) { seq := seq + 1.U; curSeq := seq }
+    busyAll(i) := po.reqValid || outstandingEv || awaitingRetire
+    if (cfg.traceEvents) {
+      when (logOn && po.reqFire) {
+        printf(p"EV ${cycle} REQ " + ht + p"seq=${seq} pc=0x${Hexadecimal(co.pc)} " +
+               p"fetch=${co.isFetch} addr=0x${Hexadecimal(po.addr)} " +
+               p"write=${po.write} size=${po.size} " +
+               p"wdata=0x${Hexadecimal(po.wdata)} wmask=0x${Hexadecimal(po.wmask)} " +
+               p"epoch=${d.epoch}\n")
+      }
+      when (logOn && po.respFire) {
+        printf(p"EV ${cycle} RESP " + ht + p"seq=${curSeq} rdata=0x${Hexadecimal(po.rdata)} " +
+               p"error=${po.error} epoch=${d.epoch}\n")
+      }
+      when (logOn && co.commitValid) {
+        printf(p"EV ${cycle} COMMIT " + ht + p"pc=0x${Hexadecimal(co.commitPc)} " +
+               p"insn=0x${Hexadecimal(co.commitInsn)}\n")
+      }
+      when (logOn && co.trapValid) {
+        printf(p"EV ${cycle} TRAP " + ht + p"interrupt=${co.trapInterrupt} " +
+               p"cause=0x${Hexadecimal(co.trapCause)} epc=0x${Hexadecimal(co.trapEpc)} " +
+               p"tval=0x${Hexadecimal(co.trapTval)}\n")
+      }
+      val irqNow  = Cat(irqMeipAll(i), irqMtipAll(i), irqMsipAll(i))
+      val irqPrev = RegNext(irqNow, 0.U)
+      when (logOn && irqPrev =/= irqNow) {
+        printf(p"EV ${cycle} IRQLEVEL " + ht + p"msip=${irqMsipAll(i)} mtip=${irqMtipAll(i)} meip=${irqMeipAll(i)}\n")
+      }
+      // the reset sequence itself, as events, per hart, so a checker can bind them to transactions
+      when (logOn && d.cpuResetHold && !RegNext(d.cpuResetHold, false.B)) {
+        printf(p"RD2 ${cycle} HOLD_ASSERT " + ht + p"epoch=${d.epoch} pendingA=${d.pendingA} " +
+               p"outstanding=${d.outstanding}\n")
+      }
+      when (logOn && !d.cpuResetHold && RegNext(d.cpuResetHold, false.B)) {
+        printf(p"RD2 ${cycle} HOLD_RELEASE " + ht + p"epoch=${d.epoch} nDrained=${d.nDrained} " +
+               p"nLocal=${d.nLocalDisc} nBuf=${d.nBufDisc} serialCmds=${ser.io.status.nCmds} " +
+               p"serialRefusedCycles=${ser.io.status.nRefusedCycles} " +
+               p"serialOrphan=${ser.io.status.nOrphan} " +
+               p"serialSameCyc=${ser.io.status.nSameCyc} serialMinLat=${ser.io.status.minLat} " +
+               p"cpuAWaits=${dbg.aWaits} " +
+               p"cpuSameCyc=${dbg.sameCyc} " +
+               p"clintApplies=${rd2clint.io.nApplied} bdevInflight=${bdevw.io.status.inflight} " +
+               p"bdevA=${bdevw.io.status.nA} bdevD=${bdevw.io.status.nD} " +
+               p"bdevMax=${bdevw.io.status.maxInflight}\n")
+      }
+      when (logOn && d.drainDone) {
+        printf(p"RD2 ${cycle} DRAIN_DONE " + ht + p"epoch=${d.epoch} nDrained=${d.nDrained} " +
+               p"nLocal=${d.nLocalDisc} nBuf=${d.nBufDisc}\n")
+      }
+    }
+  }
   if (cfg.traceEvents) {
-    when (logOn && physObs.reqFire) {
-      printf(p"EV ${cycle} REQ seq=${seq} pc=0x${Hexadecimal(cpuObs.pc)} " +
-             p"fetch=${cpuObs.isFetch} addr=0x${Hexadecimal(physObs.addr)} " +
-             p"write=${physObs.write} size=${physObs.size} " +
-             p"wdata=0x${Hexadecimal(physObs.wdata)} wmask=0x${Hexadecimal(physObs.wmask)} " +
-             p"epoch=${drain.epoch}\n")
-    }
-    when (logOn && physObs.respFire) {
-      printf(p"EV ${cycle} RESP seq=${curSeq} rdata=0x${Hexadecimal(physObs.rdata)} " +
-             p"error=${physObs.error} epoch=${drain.epoch}\n")
-    }
-    when (logOn && cpuObs.commitValid) {
-      printf(p"EV ${cycle} COMMIT pc=0x${Hexadecimal(cpuObs.commitPc)} " +
-             p"insn=0x${Hexadecimal(cpuObs.commitInsn)}\n")
-    }
-    when (logOn && cpuObs.trapValid) {
-      printf(p"EV ${cycle} TRAP interrupt=${cpuObs.trapInterrupt} " +
-             p"cause=0x${Hexadecimal(cpuObs.trapCause)} epc=0x${Hexadecimal(cpuObs.trapEpc)} " +
-             p"tval=0x${Hexadecimal(cpuObs.trapTval)}\n")
-    }
-    val irqNow  = Cat(irqMeip, irqMtip, irqMsip)
-    val irqPrev = RegNext(irqNow, 0.U)
-    when (logOn && irqPrev =/= irqNow) {
-      printf(p"EV ${cycle} IRQLEVEL msip=${irqMsip} mtip=${irqMtip} meip=${irqMeip}\n")
-    }
-    // the reset sequence itself, as events, so a checker can bind them to transactions
-    when (logOn && drain.cpuResetHold && !RegNext(drain.cpuResetHold, false.B)) {
-      printf(p"RD2 ${cycle} HOLD_ASSERT epoch=${drain.epoch} pendingA=${drain.pendingA} " +
-             p"outstanding=${drain.outstanding}\n")
-    }
-    when (logOn && !drain.cpuResetHold && RegNext(drain.cpuResetHold, false.B)) {
-      printf(p"RD2 ${cycle} HOLD_RELEASE epoch=${drain.epoch} nDrained=${drain.nDrained} " +
-             p"nLocal=${drain.nLocalDisc} nBuf=${drain.nBufDisc} serialCmds=${ser.io.status.nCmds} " +
-             p"serialRefusedCycles=${ser.io.status.nRefusedCycles} " +
-             p"serialOrphan=${ser.io.status.nOrphan} " +
-             p"serialSameCyc=${ser.io.status.nSameCyc} serialMinLat=${ser.io.status.minLat} " +
-             p"cpuAWaits=${bmodDbg.aWaits} " +
-             p"cpuSameCyc=${bmodDbg.sameCyc} " +
-             p"clintApplies=${rd2clint.io.nApplied} bdevInflight=${bdevw.io.status.inflight} " +
-             p"bdevA=${bdevw.io.status.nA} bdevD=${bdevw.io.status.nD} " +
-             p"bdevMax=${bdevw.io.status.maxInflight}\n")
-    }
-    when (logOn && drain.drainDone) {
-      printf(p"RD2 ${cycle} DRAIN_DONE epoch=${drain.epoch} nDrained=${drain.nDrained} " +
-             p"nLocal=${drain.nLocalDisc} nBuf=${drain.nBufDisc}\n")
-    }
-    when (logOn && drain.applying && !RegNext(drain.applying, false.B)) {
+    when (logOn && applyingAll && !RegNext(applyingAll, false.B)) {
       printf(p"RD2 ${cycle} RESET_APPLY epoch=${drain.epoch}\n")
     }
-    when (logOn && drain.applying && !RegNext(drain.applying, false.B)) {
+    when (logOn && applyingAll && !RegNext(applyingAll, false.B)) {
       printf(p"RD2 ${cycle} CLINT_APPLIED epoch=${drain.epoch} msip_before=${rd2clint.io.msip} " +
              p"serialFrame=${ser.io.status.frameActive} serialTL=${ser.io.status.tlOutstanding} " +
              p"serialCmds=${ser.io.status.nCmds} serialOrphan=${ser.io.status.nOrphan}\n")
@@ -420,7 +434,11 @@ class RD2ZynqTopModule(outer: RD2ZynqTop) extends RocketSubsystemModuleImp(outer
     // asserted and no new work, that is the counter-wrap fault, and it is an event rather than a silence
     when (logOn && !status.cpuRestartSafe && RegNext(status.cpuRestartSafe, false.B) && softReset) {
       printf(p"RD2 ${cycle} SAFE_DROP epoch=${drain.epoch} pendingWork=${pendingWork} " +
-             p"applying=${drain.applying}\n")
+             p"applying=${applyingAll}\n")
+    }
+    if (nHarts > 1) {
+      val skew = drains.map(_.epoch =/= drain.epoch).reduce(_ || _)
+      when (logOn && skew && !RegNext(skew, false.B)) { printf(p"RD2 ${cycle} EPOCH_SKEW epochs=${VecInit(drains.map(_.epoch))}\n") }
     }
     when (logOn && rb === rbDrain && RegNext(rb, rbIdle) === rbIdle) {
       printf(p"RBOOT ${cycle} DRAIN_START trackersIdle=${ctl.io.rboot.trackersIdle} " +
@@ -433,8 +451,6 @@ class RD2ZynqTopModule(outer: RD2ZynqTop) extends RocketSubsystemModuleImp(outer
     when (logOn && rb === rbReady && RegNext(rb, rbIdle) === rbFlush) {
       printf(p"RBOOT ${cycle} READY discarded=${ctl.io.rboot.nDiscarded}\n")
     }
-    // the device answering *after* the deadline: recorded so the scenario can show it happened, and that it
-    // changed nothing
     val lateSeen = RegInit(false.B)
     when (rb === rbFailed && bdevIdle && !lateSeen) {
       lateSeen := true.B
@@ -479,12 +495,17 @@ class RD2ZynqTopModule(outer: RD2ZynqTop) extends RocketSubsystemModuleImp(outer
   when (axi.w.fire())  { nW  := nW  + 1.U; when (axi.w.bits.last) { nWlast := nWlast + 1.U } }
   when (axi.b.fire())  { nB  := nB  + 1.U }
 
-  val obs = IO(Output(new TeachingCpuObs)); obs := cpuObs
-  val halted = IO(Output(Bool())); halted := cpuObs.halted
-  // the same definition as the accepted configuration: a request offered but not accepted is a commitment,
-  // and a data response is not finished until its instruction retires
+  val obs = IO(Output(new TeachingCpuObs)); obs := cpuObs          // hart 0's, the name the single-core tools read
+  val halted = IO(Output(Bool())); halted := cpuObsAll.map(_.halted).reduce(_ && _)   // every hart halted
+  // the same definition as the accepted configuration, per hart: a request offered but not accepted is a
+  // commitment, and a data response is not finished until its instruction retires; the SoC is busy if ANY is
   val busy = IO(Output(Bool()))
-  busy := physObs.reqValid || outstandingEv || awaitingRetire
+  busy := busyAll.reduce(_ || _)
+  // MC-M2b: every hart's observation, fairness and epoch, for the harness's per-hart evidence
+  val obsAll = IO(Output(Vec(nHarts, new TeachingCpuObs))); obsAll := VecInit(cpuObsAll)
+  val maxAWaitOut = IO(Output(Vec(nHarts, UInt(32.W)))); maxAWaitOut := VecInit(maxAWaitAll)
+  val aWaitsOut = IO(Output(Vec(nHarts, UInt(32.W)))); aWaitsOut := VecInit(dbgs.map(_.aWaits))
+  val epochOut = IO(Output(Vec(nHarts, UInt(16.W)))); epochOut := VecInit(drains.map(_.epoch))
   val axiStats = IO(Output(new Bundle {
     val ar = UInt(32.W); val r = UInt(32.W); val rlast = UInt(32.W)
     val aw = UInt(32.W); val w = UInt(32.W); val wlast = UInt(32.W); val b = UInt(32.W) }))
@@ -538,7 +559,16 @@ class RD2Harness(implicit val p: Parameters) extends Module {
   // a def, not a constructor parameter: the generator instantiates the top by reflection with exactly one
   // Parameters argument, and a def is already overridden by the time the constructor body below runs
   protected def legacyReset: Boolean = false
+  val nH = if (p(RD2Key).atomic) p(RD2Key).numCores else 1
   val io = IO(new Bundle {
+    // MC-M2b: per-hart evidence for a run without the per-event trace (the host prints these at the end)
+    val obsRetiredH   = Output(Vec(nH, UInt(64.W)))
+    val obsPcH        = Output(Vec(nH, UInt(64.W)))
+    val obsTrapsH     = Output(Vec(nH, UInt(64.W)))
+    val obsTrapCauseH = Output(Vec(nH, UInt(64.W)))
+    val maxAWaitH     = Output(Vec(nH, UInt(32.W)))
+    val aWaitsH       = Output(Vec(nH, UInt(32.W)))
+    val epochH        = Output(Vec(nH, UInt(16.W)))
     val success = Output(Bool())
     val halted  = Output(Bool())
     val busy    = Output(Bool())
@@ -623,7 +653,8 @@ class RD2Harness(implicit val p: Parameters) extends Module {
     6.U -> (dut.status.pendingA && dut.status.writeInFlight),
     7.U -> (dut.status.outstanding && !dut.status.pendingA && dut.status.writeInFlight),
     8.U -> (dut.status.pendingA && dut.status.dramWriteInFlight),
-    9.U -> (dut.status.outstanding && !dut.status.pendingA && dut.status.dramWriteInFlight)))
+    9.U -> (dut.status.outstanding && !dut.status.pendingA && dut.status.dramWriteInFlight),
+    10.U -> dut.status.allPending))                       // MC-M2b: every hart has a transaction in flight
   val iHit = iArmed && !iHold && (iAt =/= 0.U) && (icyc >= iAt) && (iFired < iN) && cond
   when (iHit) {
     iHold := true.B; iCnt := 0.U; iFired := iFired + 1.U; iArmed := false.B
@@ -694,6 +725,14 @@ class RD2Harness(implicit val p: Parameters) extends Module {
   io.dFires := dut.status.dFires
   io.epoch := dut.status.epoch
   io.axi := dut.axiStats
+  for (i <- 0 until nH) {
+    val r = RegInit(0.U(64.W)); when (dut.obsAll(i).commitValid) { r := r + 1.U }; io.obsRetiredH(i) := r
+    io.obsPcH(i) := dut.obsAll(i).pc
+    val t = RegInit(0.U(64.W)); val c = RegInit(0.U(64.W))
+    when (dut.obsAll(i).trapValid) { t := t + 1.U; c := dut.obsAll(i).trapCause }
+    io.obsTrapsH(i) := t; io.obsTrapCauseH(i) := c
+    io.maxAWaitH(i) := dut.maxAWaitOut(i); io.aWaitsH(i) := dut.aWaitsOut(i); io.epochH(i) := dut.epochOut(i)
+  }
 }
 
 class WithRD2(rd2: RD2Params = RD2Params()) extends Config((site, here, up) => {
@@ -787,9 +826,29 @@ class RD2AtomicXv6FastConfig extends Config(
 class MC1UnsupportedPipelineConfig extends Config(
   new WithRD2(RD2Params(atomic = true, traceEvents = false, atomicTrace = false, coreImpl = "pipeline")) ++
   new RD2AtomicXv6FastConfig)
-class MC1UnsupportedDualConfig extends Config(
-  new WithRD2(RD2Params(atomic = true, traceEvents = false, atomicTrace = false, numCores = 2)) ++
+// MC-M2b: NUM_CORES = 2 is implemented, so M1's "dual must refuse" configuration is gone; the matrix entry
+// that must still refuse is 4 (with pipeline and 0)
+class MC2UnsupportedQuadConfig extends Config(
+  new WithRD2(RD2Params(atomic = true, traceEvents = false, atomicTrace = false, numCores = 4)) ++
   new RD2AtomicXv6FastConfig)
+
+// ---- MC-M2b: two real TeachingHarts on the RD2 chain ---------------------------------------------------
+// The same machine as RD2AtomicBootConfig / RD2AtomicXv6FastConfig with numCores = 2: two harts (HART_ID 0
+// and 1, each its own TLB and I-cache), two system-bus ports, a CLINT with msip/mtimecmp per hart, a PLIC
+// with one M-mode context per hart, the backend binding both by exact client name, one aligned drain.
+class RD2DualBootConfig extends Config(
+  new WithAtomicHub() ++
+  new WithRD2(RD2Params(atomic = true, numCores = 2)) ++
+  new WithTeachingCpu(TeachingCpuParams(traceEvents = true, extraDelay = false, bridgeFault = 0,
+                                        tailIntercept = false)) ++
+  new WithTeachingBootROM ++ new zynq.WithZynqAdapter ++ new freechips.rocketchip.system.DefaultConfig)
+class RD2DualXv6FastConfig extends Config(
+  new freechips.rocketchip.subsystem.WithoutTLMonitors ++
+  new WithAtomicHub(trace = false) ++
+  new WithRD2(RD2Params(atomic = true, traceEvents = false, atomicTrace = false, numCores = 2)) ++
+  new WithTeachingCpu(TeachingCpuParams(traceEvents = false, extraDelay = false, bridgeFault = 0,
+                                        tailIntercept = false)) ++
+  new WithTeachingBootROM ++ new zynq.WithZynqAdapter ++ new freechips.rocketchip.system.DefaultConfig)
 class MC1UnsupportedZeroConfig extends Config(
   new WithRD2(RD2Params(atomic = true, traceEvents = false, atomicTrace = false, numCores = 0)) ++
   new RD2AtomicXv6FastConfig)

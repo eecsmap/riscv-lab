@@ -134,7 +134,10 @@ class AtomicBackend(faultReadErrWrites: Boolean = false, faultNoKill: Boolean = 
     // hart's intent wire; the counter adds the popcount ONCE per cycle. (Review codex-mc-m2a-simultaneous-kill-fix:
     // the previous `nKill := nKill + 1.U` inside the per-hart loop counted two harts cleared in the same cycle
     // as one -- last connect wins.) An SC consuming its OWN reservation (success or failure) is not a kill and is
-    // not counted; the diagnostic RESV kill line is printed per hart, one per cleared reservation.
+    // not counted. The diagnostic RESV kill line is printed by every reason that fires while the reservation
+    // is valid, so ONE hart cleared for two reasons in the same cycle prints TWO lines (trap + external write,
+    // DualAtomicTest d17); the count is the popcount above, and the oracle counts from its own state -- the
+    // diagnostic lines are not the count (review note on M2a).
     val killIntent = Wire(Vec(n, Bool())); killIntent.foreach(_ := false.B)
     def killResv(h: Int, why: String): Unit = {
       when (resvValid(h)) {
