@@ -569,10 +569,13 @@ class RD2Harness(implicit val p: Parameters) extends Module {
     val maxAWaitH     = Output(Vec(nH, UInt(32.W)))
     val aWaitsH       = Output(Vec(nH, UInt(32.W)))
     val epochH        = Output(Vec(nH, UInt(16.W)))
-    // MC-M3: per-hart proof of USER-mode work under an OS without the per-event trace. userRetiredH counts
-    // commits whose PC is below 0x8000_0000 (xv6 maps user space there and the kernel above it); rangeRetiredH
-    // counts commits inside [+rd2_range_lo, +rd2_range_hi) -- e.g. the kernel's scheduler() -- so "both harts
-    // reached the scheduler" and "both harts ran user code" are read from the hardware, not from strings.
+    // MC-M3: per-hart activity evidence under an OS without the per-event trace. userRetiredH is a LOW-ADDRESS
+    // RETIRE PROXY: it counts commits whose PC is below 0x8000_0000. Under xv6 that is user space -- but it is
+    // NOT a privilege-mode count: the boot ROM at 0x10000 is also below 0x8000_0000 (a few hundred commits per
+    // boot), and a kernel executing at a low address would be counted too. It is evidence that a hart executed
+    // low-address (user-space) code, not an exact U-mode instret (M4 review). rangeRetiredH counts commits inside
+    // [+rd2_range_lo, +rd2_range_hi) -- e.g. the kernel's scheduler() -- so "both harts reached the scheduler"
+    // is read from the hardware, not from strings.
     val userRetiredH  = Output(Vec(nH, UInt(64.W)))
     val rangeRetiredH = Output(Vec(nH, UInt(64.W)))
     val success = Output(Bool())
@@ -871,6 +874,21 @@ class MC1UnsupportedZeroConfig extends Config(
 // no BDEV trace either, because every printf here would be elaborated into a netlist that is going to be
 // synthesised. Nothing above is edited: bdevTrace defaults to true, so every existing configuration
 // elaborates exactly as it did.
+// ---- MC-M4: the dual-core board shape -------------------------------------------------------------------
+// RD2DualXv6FastConfig generated as RD2BoardTop: numCores = 2, no monitors, no traces, no bus instrumentation
+// (nothing here may elaborate a printf or a plusarg_reader into a netlist that is going to be synthesised).
+// Everything the dual-core simulation ran -- two TeachingHarts (HART_ID 0/1, each its own 8-entry TLB and 1 KiB
+// I-cache, no D-cache), two system-bus ports, the one shared serial AtomicBackend, a CLINT with msip/mtimecmp per
+// hart, a PLIC with one M-mode context per hart and no device sources, the aligned drain -- is what is built.
+class RD2DualBoardConfig extends Config(
+  new freechips.rocketchip.subsystem.WithoutTLMonitors ++
+  new WithAtomicHub(trace = false) ++
+  new WithRD2(RD2Params(atomic = true, traceEvents = false, atomicTrace = false, bdevTrace = false,
+                        busInstrumentation = false, numCores = 2)) ++
+  new WithTeachingCpu(TeachingCpuParams(traceEvents = false, extraDelay = false, bridgeFault = 0,
+                                        tailIntercept = false)) ++
+  new WithTeachingBootROM ++ new zynq.WithZynqAdapter ++ new freechips.rocketchip.system.DefaultConfig)
+
 class RD2AtomicBoardConfig extends Config(
   new freechips.rocketchip.subsystem.WithoutTLMonitors ++
   new WithAtomicHub(trace = false) ++
