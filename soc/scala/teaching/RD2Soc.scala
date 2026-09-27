@@ -569,6 +569,12 @@ class RD2Harness(implicit val p: Parameters) extends Module {
     val maxAWaitH     = Output(Vec(nH, UInt(32.W)))
     val aWaitsH       = Output(Vec(nH, UInt(32.W)))
     val epochH        = Output(Vec(nH, UInt(16.W)))
+    // MC-M3: per-hart proof of USER-mode work under an OS without the per-event trace. userRetiredH counts
+    // commits whose PC is below 0x8000_0000 (xv6 maps user space there and the kernel above it); rangeRetiredH
+    // counts commits inside [+rd2_range_lo, +rd2_range_hi) -- e.g. the kernel's scheduler() -- so "both harts
+    // reached the scheduler" and "both harts ran user code" are read from the hardware, not from strings.
+    val userRetiredH  = Output(Vec(nH, UInt(64.W)))
+    val rangeRetiredH = Output(Vec(nH, UInt(64.W)))
     val success = Output(Bool())
     val halted  = Output(Bool())
     val busy    = Output(Bool())
@@ -725,8 +731,14 @@ class RD2Harness(implicit val p: Parameters) extends Module {
   io.dFires := dut.status.dFires
   io.epoch := dut.status.epoch
   io.axi := dut.axiStats
+  val rangeLo = PlusArg("rd2_range_lo", 0, "count per-hart commits with PC >= this (0 = off)")
+  val rangeHi = PlusArg("rd2_range_hi", 0, "... and PC < this")
   for (i <- 0 until nH) {
     val r = RegInit(0.U(64.W)); when (dut.obsAll(i).commitValid) { r := r + 1.U }; io.obsRetiredH(i) := r
+    val u = RegInit(0.U(64.W)); when (dut.obsAll(i).commitValid && dut.obsAll(i).commitPc < 0x80000000L.U) { u := u + 1.U }; io.userRetiredH(i) := u
+    val g = RegInit(0.U(64.W))
+    when (dut.obsAll(i).commitValid && (rangeLo =/= 0.U) && dut.obsAll(i).commitPc >= rangeLo && dut.obsAll(i).commitPc < rangeHi) { g := g + 1.U }
+    io.rangeRetiredH(i) := g
     io.obsPcH(i) := dut.obsAll(i).pc
     val t = RegInit(0.U(64.W)); val c = RegInit(0.U(64.W))
     when (dut.obsAll(i).trapValid) { t := t + 1.U; c := dut.obsAll(i).trapCause }
