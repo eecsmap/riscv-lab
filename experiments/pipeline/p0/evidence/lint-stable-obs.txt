@@ -1,0 +1,4 @@
+== T1.3 stable observation interface  (dir: soc/scala/teaching)
+  ok   : no SoC-layer reference to impl.state / dbg_state / dbg_redirect / obs.state
+  ok   : negative control: a planted reference is caught (1 hit)
+LINT_STABLE_OBS fails=0

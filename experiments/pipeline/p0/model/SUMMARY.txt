@@ -1,0 +1,25 @@
+| scenario | design | result | first reason |
+|---|---|---|---|
+| wb-once | correct | PASS | 5 retirements, 18 cycles |
+| wb-once | mutation NO_ONESHOT | FAIL (expected) | c7: pc 0 retired 2 times (I8) |
+| wb-once | mutation NO_REDIR_ONESHOT | FAIL (expected) | c7: branch pc 2 redirected 2 times (I8) |
+| two-flush | correct | PASS | 9 retirements, 66 cycles |
+| two-flush | mutation EPOCH1 | FAIL (expected) | event 3: got ('C', 4), architecture says ('C', 60) (I1) |
+| walker-deadlock | correct | PASS | 4 retirements, 43 cycles |
+| walker-deadlock | mutation NONPREEMPT | FAIL (expected) | c251: no retirement for 250 cycles: deadlock (I5) |
+| irq-no-input | correct | PASS | 8 retirements, 51 cycles |
+| irq-no-input | mutation IRQ_EPC_FE | FAIL (expected) | event 2: interrupt epc 4 != architectural next pc 2 (I1) |
+| irq-vs-older-fault | correct | PASS | 10 retirements, 38 cycles |
+| frontend | correct | PASS | 9 retirements, 31 cycles |
+| serial-drain-T2 | correct | PASS | 6 retirements, 32 cycles |
+| serial-drain-T6 | correct | PASS | 6 retirements, 52 cycles |
+| serial-drain-T18 | correct | PASS | 6 retirements, 112 cycles |
+| store-under-trap | correct | PASS | 7 retirements, 28 cycles |
+| store-under-trap | mutation MEM_SPEC | FAIL (expected) | c10: data response for pc 2 has no requester in MEM (I3) |
+| load-use | correct | PASS | 4 retirements, 27 cycles |
+| load-use | mutation NO_LOADUSE | FAIL (expected) | c15: pc 1 committed a value read before its producer load answered |
+| spec-uncached-fetch | correct | PASS | 4 retirements, 13 cycles |
+| spec-uncached-fetch | mutation SPEC_NC | FAIL (expected) | c4: uncached fetch of word 1 issued speculatively (I6) |
+| retire-assoc | correct | PASS | 6 retirements, 21 cycles |
+
+MODEL_DONE surprises=0
