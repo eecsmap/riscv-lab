@@ -9,6 +9,7 @@
 #   E  monitor self-tests and the existing core fault injections, on the pipeline
 #   F  ROI performance, both implementations
 #   G  shared / multicycle sources unchanged against the tag
+# Exit status: 0 only if p1verdict.py accepts the run (see the end); 2 = refused, 3 = a program did not compile.
 set -u
 SIMS=${1:?sims dir}; OUT=${2:?outdir}; NHZ=${3:-40}
 [ -e "$OUT" ] && { echo "REFUSE: $OUT exists"; exit 2; }
@@ -87,7 +88,7 @@ bok=0; bfail=0
 for prof in $PROFILES; do
   for t in $BSET; do
     run m-$prof $t $OUT/B/$t-$prof-m; run p-$prof $t $OUT/B/$t-$prof-p
-    r=$(python3 $SC/p1diff.py $OUT/B/$t-$prof-m $OUT/B/$t-$prof-p); rc=$?
+    r=$(python3 $SC/p1diff.py --require-complete $OUT/B/$t-$prof-m $OUT/B/$t-$prof-p); rc=$?   # every B program must finish
     echo "$prof $t $r" >> $OUT/B/results.txt
     if [ $rc = 0 ]; then bok=$((bok+1)); else bfail=$((bfail+1)); echo "  FAIL $prof $t: $r" | tee -a $OUT/B.txt; fi
   done
@@ -116,7 +117,7 @@ for spec in $Cspec; do
       run m-$prof $t $pre-m +irq-at-retire=$np
       km=$(awk '/^TRP.*irq=1/{print n; exit} /^CMT/{n++}' n=0 $pre-m.log)
       if [ "$km" = "$k" ]; then
-        r=$(python3 $SC/p1diff.py $pre-m $pre-p); [ $? = 0 ] && { al="aligned(N'=$np): $r"; aok=$((aok+1)); } || { al="aligned(N'=$np) BUT $r"; anon=$((anon+1)); }
+        r=$(python3 $SC/p1diff.py --require-complete $pre-m $pre-p); [ $? = 0 ] && { al="aligned(N'=$np): $r"; aok=$((aok+1)); } || { al="aligned(N'=$np) BUT $r"; anon=$((anon+1)); }
         break
       fi
     done
@@ -180,16 +181,13 @@ for f in $SIMS/src/rtl/*.v $SIMS/src/rtl/*.vh; do b=$(basename $f)
 done
 echo "  $(grep -c unchanged $OUT/G.txt) shared/multicycle RTL files byte-identical to the tag; $(grep -c CHANGED $OUT/G.txt) changed" | tee -a $OUT/G.txt
 
-# ---------------------------------------------------------------- coverage over every pipeline run
-python3 - $OUT <<'PY' | tee $OUT/coverage.txt
-import sys, re, glob, collections
-tot = collections.Counter(); n = 0
-for f in glob.glob(sys.argv[1] + '/[ABC]/*-p.log') + glob.glob(sys.argv[1] + '/B/*-p.log'):
-    m = re.search(r'PIPE COVERAGE (.*)', open(f, errors='replace').read())
-    if m:
-        n += 1
-        for k, v in re.findall(r'(\w+)=(\d+)', m.group(1)): tot[k] += int(v)
-print(f'== pipeline coverage summed over {n} runs (A, B, C)')
-for k, v in tot.items(): print(f'  {k} = {v}')
-PY
-echo "RUN_P1_DONE"
+# ---------------------------------------------------------------- coverage over every pipeline run (each log once)
+python3 $SC/p1coverage.py $OUT | tee $OUT/coverage.txt
+
+# ---------------------------------------------------------------- verdict: the exit status of this script
+# p1verdict.py names the only tolerated positive-test failures (A baseline exceptions) and fails the run on anything
+# else: an unexpected failure, missing output, an uncaught negative control, a changed shared source, zero coverage.
+echo "== verdict" | tee $OUT/verdict.txt
+python3 $SC/p1verdict.py $OUT --nhz $NHZ | tee -a $OUT/verdict.txt; v=${PIPESTATUS[0]}
+echo "RUN_P1_DONE verdict_rc=$v"
+exit $v

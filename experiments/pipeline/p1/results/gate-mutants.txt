@@ -1,0 +1,29 @@
+caught   id-rc0: SELFTEST_IDCHECK 8/9; red: build-succeeds-with-message 
+caught   id-rc124: SELFTEST_IDCHECK 8/9; red: timeout-124 
+caught   id-regex: SELFTEST_IDCHECK 6/9; red: unrelated-error near-miss-module aggregation 
+caught   d-exit: SELFTEST_P1DIFF 5/7; red: tmo samefail 
+caught   d-done: SELFTEST_P1DIFF 6/7; red: nodone 
+caught   d-empty: SELFTEST_P1DIFF 6/7; red: empty 
+caught   d-strict: SELFTEST_P1DIFF 3/7; red: tmo empty nodone samefail 
+caught   d-stream: SELFTEST_P1DIFF 6/7; red: diff 
+caught   v-exc-exact: SELFTEST_VERDICT 22/24; red: A-exception-other A-exception-passes 
+caught   v-pos-pass: SELFTEST_VERDICT 22/24; red: A-positive-fails A-errors-suffix 
+caught   v-a-missing: SELFTEST_VERDICT 23/24; red: A-missing-program 
+caught   v-a-extra: SELFTEST_VERDICT 23/24; red: A-extra-program 
+caught   v-b-count: SELFTEST_VERDICT 23/24; red: B-missing-result 
+caught   v-b-exit: SELFTEST_VERDICT 23/24; red: B-same-nonzero-exit 
+caught   v-b-total: SELFTEST_VERDICT 23/24; red: B-total-line 
+caught   v-c-pass: SELFTEST_VERDICT 23/24; red: C-selfcheck-fails 
+caught   v-c-align: SELFTEST_VERDICT 23/24; red: C-alignment-differs 
+caught   v-c-na: SELFTEST_VERDICT 23/24; red: C-na-not-cancel 
+caught   v-c-count: SELFTEST_VERDICT 23/24; red: C-missing-case 
+caught   v-d-caught: SELFTEST_VERDICT 23/24; red: D-knob-not-caught 
+caught   v-d-missing: SELFTEST_VERDICT 23/24; red: D-knob-missing 
+caught   v-d-ctl: SELFTEST_VERDICT 23/24; red: D-control-fails 
+caught   v-e-caught: SELFTEST_VERDICT 23/24; red: E-monitor-silent 
+caught   v-f-count: SELFTEST_VERDICT 23/24; red: F-roi-missing 
+caught   v-g-changed: SELFTEST_VERDICT 23/24; red: G-source-changed 
+caught   v-cov-zero: SELFTEST_VERDICT 23/24; red: cov-counter-zero 
+caught   v-cov-header: SELFTEST_VERDICT 23/24; red: cov-double-count 
+caught   v-exit: SELFTEST_VERDICT 1/24; red: A-positive-fails A-errors-suffix A-exception-other A-exception-passes A-missing-program A-extra-program A-file-missing B-diff-fail B-same-nonzero-exit B-missing-result B-total-line C-selfcheck-fails C-alignment-differs C-na-not-cancel C-missing-case D-knob-not-caught D-knob-missing D-control-fails E-monitor-silent F-roi-missing G-source-changed cov-counter-zero cov-double-count 
+GATE_MUTANTS caught 28/28

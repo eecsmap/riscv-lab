@@ -48,22 +48,16 @@ build p-mon-withdraw    p -GREADY_DELAY=2 -GRESP_DELAY=5 -GREQ_WITHDRAW=1
 build p-mon-loadpayload p -GLOAD_WDATA_LEAK=1
 build p-fault-x0        p -GX0_WRITABLE=1
 build p-fault-nosext    p -GNO_LOAD_SEXT=1
-# ---- implementation identity: each mismatch must be a build error that names the missing module / parameter
+# ---- implementation identity: each mismatch must FAIL TO BUILD for the named reason; counted in the exit status
+IDOUT=$OUT/logs; . "$(dirname "$(readlink -f "$0")")/idcheck.sh"
 {
-  echo "== define TCPU_IMPL_PIPE with the MULTICYCLE source list (must fail: tcpu_core_pipe not found)"
-  timeout 900 $VL -Mdir $OUT/id1 -o tcpu_tb -DTCPU_IMPL_PIPE $MULTI $TB > $OUT/logs/id1.log 2>&1; echo "rc=$?"
-  grep -m2 -E "%Error.*(tcpu_core_pipe|Cannot find)" $OUT/logs/id1.log
-  echo "== no define with the PIPELINE source list (must fail: tcpu_core not found)"
-  timeout 900 $VL -Mdir $OUT/id2 -o tcpu_tb -I$S/inc $S/pipeline/tcpu_core_pipe.v $S/rtl/tcpu_regfile.v $S/rtl/tcpu_csr.v $S/rtl/tcpu_icache.v $S/rtl/tcpu_cacheable.v $TB > $OUT/logs/id2.log 2>&1; echo "rc=$?"
-  grep -m2 -E "%Error.*(tcpu_core|Cannot find)" $OUT/logs/id2.log
-  echo "== pipeline with MISA_A=1 (must be refused: A is not implemented in P1)"
-  timeout 900 $VL -Mdir $OUT/id3 -o tcpu_tb -GMISA_A=1 $PIPE $TB > $OUT/logs/id3.log 2>&1; echo "rc=$?"
-  grep -m2 -E "%Error.*pipe_p1_unsupported" $OUT/logs/id3.log
-  echo "== pipeline with PIPE_FAULT=13 (must be refused: no such control)"
-  timeout 900 $VL -Mdir $OUT/id4 -o tcpu_tb -GPIPE_FAULT=13 $PIPE $TB > $OUT/logs/id4.log 2>&1; echo "rc=$?"
-  grep -m2 -E "%Error.*pipe_p1_unsupported" $OUT/logs/id4.log
+  idcheck define-with-multicycle-list "Cannot find file containing module: 'tcpu_core_pipe'" -DTCPU_IMPL_PIPE $MULTI $TB
+  idcheck no-define-with-pipeline-list "Cannot find file containing module: 'tcpu_core'" -I$S/inc $S/pipeline/tcpu_core_pipe.v $S/rtl/tcpu_regfile.v $S/rtl/tcpu_csr.v $S/rtl/tcpu_icache.v $S/rtl/tcpu_cacheable.v $TB
+  idcheck pipeline-MISA_A-1 "pipe_p1_unsupported_MISA_A" -GMISA_A=1 $PIPE $TB
+  idcheck pipeline-PIPE_FAULT-13 "pipe_p1_unsupported_PIPE_FAULT" -GPIPE_FAULT=13 $PIPE $TB
+  echo "ID_FAILS=$ID_FAILS"
 } > $OUT/identity.txt 2>&1
-rm -rf $OUT/id1 $OUT/id2 $OUT/id3 $OUT/id4
 cat $OUT/identity.txt
-echo "BUILD_SIMS_DONE fail=$fail sims=$(wc -l < $OUT/sims.txt)"
-exit $fail
+idf=$(sed -n 's/^ID_FAILS=//p' $OUT/identity.txt); [ -n "$idf" ] || idf=1      # no count at all is a failure too
+echo "BUILD_SIMS_DONE fail=$fail identity_fails=$idf sims=$(wc -l < $OUT/sims.txt)"
+[ "$fail" = 0 ] && [ "$idf" = 0 ]

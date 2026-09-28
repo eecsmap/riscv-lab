@@ -1,0 +1,19 @@
+# end-to-end run of the gated entry points (coord job claude-pipe-p1-gates-e2e, started 2026-09-28T19:03:56Z)
+# build-sims.sh -> runs/sims-5 (finished 19:05:21), run-p1.sh runs/sims-5 -> runs/run-4 40 (finished 19:05:56)
+ID_FAILS=0
+BUILD_SIMS_DONE fail=0 identity_fails=0 sims=27
+BUILD_SIMS_RC=0
+P1_VERDICT PASS (0 failure reasons, 4 named baseline exceptions)
+RUN_P1_DONE verdict_rc=0
+RUN_P1_RC=0
+# comparison with the submitted evidence (sims-4 / run-3), which was not modified:
+compiled source snapshot: identical to sims-4
+A.txt: identical to run-3
+D.txt: identical to run-3
+E.txt: identical to run-3
+F.txt: identical to run-3
+G.txt: identical to run-3
+B/results.txt: identical to run-3 except each retired= is one lower (header no longer counted)
+C.txt: identical to run-3 except the retired= figures (same correction)
+coverage.txt: every counter identical to results/coverage-dedup-run-3.txt
+ELFs: all 81 loadable images (objcopy -O binary) identical to run-3; the ELF files differ only in metadata bytes

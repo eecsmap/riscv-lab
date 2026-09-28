@@ -1,0 +1,8 @@
+ok   good (PASS): DIFF_OK exit=0 retired=84 dreq=1
+ok   tmo (FAIL): DIFF_FAIL exit=2 retired=84 dreq=1 :: multi: exit 2, a completing program must exit 0 | multi: no completion line (tohost written, store answered and 
+ok   tmo (PASS): DIFF_OK exit=2 retired=84 dreq=1
+ok   empty (FAIL): DIFF_FAIL exit=0 retired=0 dreq=1 :: multi: empty retirement stream | pipe: empty retirement stream
+ok   nodone (FAIL): DIFF_FAIL exit=0 retired=84 dreq=1 :: multi: no completion line (tohost written, store answered and retired) | pipe: no completion line (tohost writte
+ok   samefail (FAIL): DIFF_FAIL exit=7 retired=84 dreq=1 :: multi: exit 7, a completing program must exit 0 | multi: no completion line (tohost written, store answered and 
+ok   diff (FAIL): DIFF_FAIL exit=0 retired=84 dreq=1 :: retirement stream differs at record 3: multi=0x000000008000000c 24028293 x5  0x0000000080000248 4 pipe=0x0000000
+SELFTEST_P1DIFF 7/7

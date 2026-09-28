@@ -9,9 +9,13 @@ run `runs/run-3` (both kept on disk, not committed; their summaries are in `resu
 `tcpu_core`. It is **not** an unqualified textbook five-stage pipeline. The front end is F1 (fetch-word VA; Bare, so
 translation is a range check), F2 (I-cache lookup on the registered PA, 2-beat refill engine or one direct fetch), and a
 4-instruction fetch buffer with an F2→ID bypass. The back end is ID / EX / MEM / WB with per-stage `ready = !valid || fire`.
-* **Scope (P1 as ruled):** RV64I, Zicsr, MRET, ECALL/EBREAK, FENCE / FENCE.I / WFI (serialising no-ops), machine-level traps and
-  interrupts, Bare addressing only. **Illegal in P1:** M, A, C (a compressed parcel), SRET, SFENCE.VMA. `misa` reads back
-  `0x8000000000000100` (RV64I). IALIGN = 32: a taken branch or jump to an address with bit 1 set raises cause 0.
+* **Scope (P1 as ruled):** RV64I, Zicsr, MRET, ECALL/EBREAK, FENCE / FENCE.I / WFI, machine-level traps and interrupts,
+  Bare addressing only. All three serialise: the front end freezes, the pipeline drains, and the commit in WB flushes and
+  refetches from the next instruction. FENCE and WFI do nothing else. FENCE.I also invalidates the I-cache in the cycle it
+  commits (`ic_inval = wb_commit && wb_is_fencei`), so the refetch misses. *(Corrected: the first version of this report
+  called all three "serialising no-ops", which is wrong for FENCE.I.)*
+  **Illegal in P1:** M, A, C (a compressed parcel), SRET, SFENCE.VMA. `misa` reads back `0x8000000000000100` (RV64I).
+  IALIGN = 32: a taken branch or jump to an address with bit 1 set raises cause 0.
 * **Unchanged shared RTL:** `tcpu_regfile`, `tcpu_csr` (every CSR access, trap entry and MRET happen in WB),
   `tcpu_icache` (same 1 KiB geometry), `tcpu_cacheable`, `tcpu_defs.vh`. The multicycle files `tcpu_core`, `tcpu_ifill`,
   `tcpu_tlb`, `tcpu_xlate` and `tcpu_ptw` are untouched. `results/G.txt` shows 13 files byte-identical to the tag.
@@ -34,7 +38,9 @@ snapshot and records its hashes (`results/src.sha256`), and lists every module f
 **Finding: a silent-fallback path, fixed.** The first build (`results/identity-sims-1-FOUND-FALLBACK.txt`) showed that a
 build with *no* define and *only* the pipeline sources still succeeded. Verilator treats every `-I` directory as a module
 search path too, so it silently compiled `rtl/cpu/tcpu_core.v`. The build now uses an include-only directory holding just
-`tcpu_defs.vh`. All four identity checks now fail as required (`results/identity.txt`):
+`tcpu_defs.vh`. All four identity checks now fail as required (`results/identity.txt`). *(Runner gate, §8: each check must
+now fail with a non-zero, non-timeout status and its named error, and a failed check makes `build-sims.sh` exit non-zero.
+At `ef9706f` the checks were only printed.)*
 * the define with the multicycle list fails because `tcpu_core_pipe` is not found;
 * no define with the pipeline list fails because `tcpu_core` is not found;
 * `MISA_A=1` is refused;
@@ -68,7 +74,11 @@ Programs:
   forward branches, counted loops, JAL/JALR, CSR writes, ECALL and misaligned-load traps).
 
 Profiles: min (READY 0 / RESP 1), fixed (2 / 5), random seeds 12345, 777 and 4242.
-**Result: 295 / 295 DIFF_OK**, all exiting 0. That is 183,685 retirements and 38,960 data requests compared.
+**Result: 295 / 295 DIFF_OK**, all exiting 0. That is 183,390 retirements and 38,960 data requests compared.
+*(Corrected from 183,685: at `ef9706f`, `p1diff.py` counted the commit-trace header line as a retirement, one per run, so
+every `retired=` figure in `results/B.txt`, `B-per-run.txt` and `C.txt` is one too high. The files are kept as recorded.
+The comparison itself skipped the header on both sides and is unaffected. All 295 pairs, and the 111 aligned interrupt
+pairs, also pass the stricter completion check of §8: `results/strict-rejudge-run-3.txt`.)*
 **Finding: a real deadlock, fixed.** Run-1 (`results/run-1-deadlock-finding.txt`) had 3 failures, hz22/28/29 on the min
 profile: after an ECALL the handler's first CSR instruction never left EX. Cause: a fetch response arriving in the same
 cycle as a front-end flush was treated as live by the response logic *and* killed by the flush. That left the engine killed
@@ -107,7 +117,7 @@ the raise placed so that it took the interrupt after the same number of retireme
 | 3 EPOCH_BIT | hz10 | `PIPE ASSERT fetch-delivery`. After two flushes the stale refill line is handed to F2 while it waits for the **trap handler's** line, and the program then trap-storms: CONTRACT §3.1's scenario, on real code |
 | 4 STORE_UNDER_TRAP | p1_store_trap | `PIPE ASSERT oldest-issue` (a store raised while the older ECALL traps in WB) |
 | 5 NO_LOADUSE | p1_loaduse | `PIPE ASSERT load-use` |
-| 6 / 7 / 8 NO_FWD_EXMEM / NO_FWD_MEMWB / NO_WB_BYPASS | p1_fwd | the core logs `PIPE FAULT-EFFECT` where the knob changed an operand really used. The first divergence from the reference is such a point: records 1, 18 and 62 (for knob 8, a store that trapped on a wrong address instead of retiring) |
+| 6 / 7 / 8 NO_FWD_EXMEM / NO_FWD_MEMWB / NO_WB_BYPASS | p1_fwd | the core logs `PIPE FAULT-EFFECT` where the knob changed an operand really used. The first divergence from the reference is such a point: records 1, 18 and 61, counted from 0 *(corrected from 62)* (for knob 8, a store that trapped on a wrong address instead of retiring) |
 | 9 X0_FWD | p1_fwd | check 7 (a write to x0 forwarded) |
 | 10 IRQ_EPC_FETCHPTR | p1_irq_empty, N=20 | check 1 (instructions skipped) |
 | 11 CSR_NO_DRAIN | p1_csr | `PIPE ASSERT drain` |
@@ -172,9 +182,58 @@ variable. It is correct. There are no width, latch or case warnings.
 ## 7. Rerun
 ```bash
 P=/home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p1
-bash $P/scripts/build-sims.sh $P/runs/sims-N          # ~10 min, 27 simulators + identity checks
-bash $P/scripts/run-p1.sh $P/runs/sims-N $P/runs/run-N 40   # ~15 min; sections A-G + coverage
-python3 $P/scripts/p1diff.py <multi-prefix> <pipe-prefix>
+bash $P/scripts/build-sims.sh $P/runs/sims-N          # 85 s here (sims-5), 27 simulators + identity gate; exit 0 only if both pass
+bash $P/scripts/run-p1.sh $P/runs/sims-N $P/runs/run-N 40   # 35 s here (run-4); sections A-G, coverage, verdict = exit status
+python3 $P/scripts/p1verdict.py <run dir> [--nhz N] [--coverage FILE]
+python3 $P/scripts/p1coverage.py <run dir>
+python3 $P/scripts/p1diff.py [--require-complete] <multi-prefix> <pipe-prefix>
+bash $P/scripts/selftest-p1diff.sh <run dir> <fresh dir>; bash $P/scripts/selftest-idcheck.sh <sims dir> <fresh dir>
+bash $P/scripts/selftest-verdict.sh <run dir> <coverage file> <fresh dir>
+bash $P/scripts/mutate-gates.sh <run dir> <coverage file> <sims dir> <fresh dir>   # seconds; no simulator is run
 python3 $P/scripts/mutjudge.py first|effect ...
 python3 $P/scripts/perf.py <log> <nm-file>
 ```
+
+## 8. Runner gates (task `codex-pipe-p1-runner-gates`)
+At `ef9706f` both entry points exited 0 whatever happened. `build-sims.sh` printed its identity checks without judging
+them, and `run-p1.sh` always ended with `RUN_P1_DONE`. The results above were judged by reading the summaries. The fixes
+below change only the scripts and this report. No RTL, harness or test program changed. The run-3 evidence was re-judged
+from its files as recorded, and nothing was re-run.
+* **Identity gate** (`scripts/idcheck.sh`, used by `build-sims.sh`). Each wrong selection must fail to build with a
+  status other than 0 or 124 (timeout), *and* its log must contain the named error. Otherwise the check counts as failed,
+  and `build-sims.sh` exits non-zero. A build that succeeds, times out, or fails for an unrelated reason is rejected.
+* **Strict differential** (`p1diff.py --require-complete`, used for all of B and for the C alignment runs). Equality is not
+  success: each side must exit 0, and its log must end with a normal `TOHOST code=0 … (store answered and retired)`. The
+  commit stream must not be empty. Two runs that fail or time out identically are now a failure.
+* **Verdict** (`scripts/p1verdict.py`, the exit status of `run-p1.sh`). It fails on an unexpected positive-test failure,
+  missing or extra output, an uncaught negative control, a failed control run, a changed shared source, or a zero or
+  missing coverage counter. The expected results in D and E are what it requires. It tolerates exactly four named baseline
+  exceptions in A, each with its exact recorded result:
+  * c06_targets on the multicycle core;
+  * d07_csr_cycle on both cores;
+  * p1_misa on the multicycle core.
+  A different failure of the same program is a failure, and so is an exception that unexpectedly passes.
+* **Coverage** (`scripts/p1coverage.py`). The old glob matched `[ABC]/*-p.log` *and* `B/*-p.log`, so every B run was
+  counted twice. `results/coverage.txt` is kept as recorded: 739 runs. The corrected totals are in
+  `results/coverage-dedup-run-3.txt`: 444 runs (A 26, B 295, C 123). The interrupt counters quoted in §3.3 are unchanged,
+  because B raises no interrupts. Every other counter was inflated by its B share.
+
+Run-3 under the gates: `results/verdict-run-3.txt` is **PASS**, with the four named exceptions and no failure reasons.
+The submitted evidence was re-judged from its files, and neither sims-4 nor run-3 was changed.
+
+End to end, the gated entry points were then run once more into new directories (`results/e2e-sims-5-run-4.txt`).
+`build-sims.sh` built `runs/sims-5` from the same source snapshot as sims-4. All four identity checks passed the gate
+(`results/identity-sims-5.txt`), and the script exited 0. `run-p1.sh` on it wrote `runs/run-4` and exited 0 with verdict
+PASS (`results/verdict-run-4.txt`). Sections A, D, E, F and G are byte-identical to run-3. B and C are identical except
+that every `retired=` figure is exactly one lower: 295 of 295 and 111 of 111, the header correction. The coverage
+equals the de-duplicated run-3 totals. All 81 program images are identical to run-3.
+
+Self-tests (`results/selftest-*.txt`). Each is cheap and works on copies. Each gate was itself mutation-tested by
+`scripts/mutate-gates.sh`: every mutant removes one check from a copy of the gate, and the self-test must then fail.
+Result: 28 / 28 caught (`results/gate-mutants.txt`).
+| gate | self-test | cases | mutants of the gate, each caught |
+|---|---|---|---|
+| strict differential | `selftest-p1diff.sh` on copies of a run-3 pair: identical timeouts (strict and, as the old behaviour, non-strict), empty streams, no completion line, identical non-zero exit, a real difference | 7 / 7 | 5 / 5 (exit check, completion check, empty check, strict mode off, stream comparison) |
+| identity | `selftest-idcheck.sh`: stubbed builds plus two real `--lint-only` elaborations of the sims-4 sources | 9 / 9 | 3 / 3 (the non-zero-status check, the timeout check, the named-error check). The real `-I` at the RTL directory elaborates and is rejected; the include-only directory is accepted. |
+| verdict | `selftest-verdict.sh` on 24 mutated copies of the run-3 summaries, each changing one thing | 24 / 24 | 20 / 20 checks removed one at a time; each turns exactly its own case red |
+

@@ -1,0 +1,5 @@
+IDOK   define-with-multicycle-list: rc=1, %Error: /home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p1/runs/sims-5/src/tb/tcpu_harness.v:178:3: Cannot find file containing module: 'tcpu_cor
+IDOK   no-define-with-pipeline-list: rc=1, %Error: /home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p1/runs/sims-5/src/tb/tcpu_harness.v:198:3: Cannot find file containing module: 'tcpu_cor
+IDOK   pipeline-MISA_A-1: rc=1, %Error: /home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p1/runs/sims-5/src/pipeline/tcpu_core_pipe.v:115:68: Cannot find file containing module: 
+IDOK   pipeline-PIPE_FAULT-13: rc=1, %Error: /home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p1/runs/sims-5/src/pipeline/tcpu_core_pipe.v:135:70: Cannot find file containing module: 
+ID_FAILS=0
