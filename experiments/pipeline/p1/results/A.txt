@@ -1,0 +1,27 @@
+== A: the P1 subset of the existing programs, accepted expectations, both implementations (min profile)
+  t01_alu                 m: PASS                          p: PASS                        
+  t02_branch              m: PASS                          p: PASS                        
+  t03_ldst                m: PASS                          p: PASS                        
+  t04_trap                m: PASS                          p: PASS                        
+  t05_roi                 m: PASS                          p: PASS                        
+  t01n_x0check            m: PASS                          p: PASS                        
+  c05_mret_count          m: PASS                          p: PASS                        
+  c06_targets             m: FAIL(exit 3, want 0)          p: PASS                        
+  c07_handler_fault       m: PASS                          p: PASS                        
+  c08_accessfault         m: PASS                          p: PASS                        
+  c09_ecall_ebreak        m: PASS                          p: PASS                        
+  d01_highpa              m: PASS                          p: PASS                        
+  d02_misaligned          m: PASS                          p: PASS                        
+  d03_badbranch           m: PASS                          p: PASS                        
+  d04_illegal             m: PASS                          p: PASS                        
+  d05_jalr_f1             m: PASS                          p: PASS                        
+  d05_jalr_f2             m: PASS                          p: PASS                        
+  d05_jalr_f3             m: PASS                          p: PASS                        
+  d05_jalr_f4             m: PASS                          p: PASS                        
+  d05_jalr_f5             m: PASS                          p: PASS                        
+  d05_jalr_f6             m: PASS                          p: PASS                        
+  d05_jalr_f7             m: PASS                          p: PASS                        
+  d06_loadpayload         m: PASS                          p: PASS                        
+  d07_csr_cycle           m: FAIL(exit 38, want 0)         p: FAIL(exit 38, want 0)       
+  d08_minstret_ok         m: PASS                          p: PASS                        
+  p1_misa-PIPE-ONLY       m: FAIL(exit 1, want 0)          p: PASS                        

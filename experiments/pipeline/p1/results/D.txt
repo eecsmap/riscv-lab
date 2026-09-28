@@ -1,0 +1,17 @@
+== D: pipeline fault knobs (fixed profile), each must fail its INTENDED property as its FIRST failure
+  knob 1 on p1_loaduse: CAUGHT first signal: PIPE ASSERT once-only: seq 4 retired again (pc 0x8000000c)
+  knob 2 on p1_branch: CAUGHT first signal: PIPE ASSERT redirect-once: pc 0x80000058 redirected again
+  knob 3 on hz10: CAUGHT first signal: PIPE ASSERT fetch-delivery: engine line 0x800004e0 delivered, F2 is waiting for 0x80000050
+  knob 4 on p1_store_trap: CAUGHT first signal: PIPE ASSERT oldest-issue: data request for pc 0x80000174 raised while WB (pc 0x80000170) does not commit cleanly
+  knob 5 on p1_loaduse: CAUGHT first signal: PIPE ASSERT load-use: pc 0x8000015c left EX with its load producer still in MEM
+  knob 6 on p1_fwd: CAUGHT: 4 fault effect(s) logged, first at pc 0x80000004; first divergence at record 1; consumer 0x0000000080000004 (69010113 x2 0x0000000080001690 4) is a logged effect point
+  knob 7 on p1_fwd: CAUGHT: 1 fault effect(s) logged, first at pc 0x8000015c; first divergence at record 18; consumer 0x000000008000015c (00330663 - - 4) is a logged effect point
+  knob 8 on p1_fwd: CAUGHT: 4 fault effect(s) logged, first at pc 0x800001fc; first divergence at record 61; consumer 0x000000008000024c (00f73023 - - 4) is a logged effect point
+  knob 9 on p1_fwd: CAUGHT first signal: TOHOST code=7 after 623 cycles, retired=59 (store answered and retired)
+  knob 10 on p1_irq_empty: CAUGHT first signal: TOHOST code=1 after 2259 cycles, retired=488 (store answered and retired)
+  knob 11 on p1_csr: CAUGHT first signal: PIPE ASSERT drain: serialising pc 0x8000003c left EX with the port or fetch engine busy
+  knob 12 on c08_accessfault: CAUGHT first signal: PIPE ASSERT spec-uncached: uncached fetch of 0x90000008 raised while the front end is speculative
+  control knob 9 on p1_loaduse: exit 0, errors 0
+  control knob 10 on p1_fwd: exit 0, errors 0
+  control knob 3 on p1_fwd: exit 0, errors 0
+  control knob 12 on p1_fwd: exit 0, errors 0

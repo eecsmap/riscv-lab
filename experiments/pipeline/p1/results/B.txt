@@ -1,0 +1,3 @@
+== B: architectural differential, 5 profiles (multicycle reference vs pipeline)
+  B total: 295 DIFF_OK, 0 DIFF_FAIL over 5 profiles x 59 programs
+    295 DIFF_OK

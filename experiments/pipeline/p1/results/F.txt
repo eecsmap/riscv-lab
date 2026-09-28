@@ -1,0 +1,25 @@
+== F: ROI measurements (second pass, warm I-cache)
+  m (min):
+    ROI1 retired=65 cycles=390 CPI=6.000 intervals[6:65]
+    ROI2 retired=65 cycles=390 CPI=6.000 intervals[6:65]
+    ROI3 retired=33 cycles=262 CPI=7.939 intervals[6:17 10:16]
+    ROI4 retired=65 cycles=390 CPI=6.000 intervals[6:65]
+    ROI5 retired=17 cycles=166 CPI=9.765 intervals[6:1 10:16]
+  p (min):
+    ROI1 retired=65 cycles=65 CPI=1.000 intervals[1:65]
+    ROI2 retired=65 cycles=65 CPI=1.000 intervals[1:65]
+    ROI3 retired=33 cycles=113 CPI=3.424 intervals[1:1 2:16 5:16]
+    ROI4 retired=65 cycles=158 CPI=2.431 intervals[1:34 4:31]
+    ROI5 retired=17 cycles=81 CPI=4.765 intervals[1:1 5:16]
+  m (fixed):
+    ROI1 retired=65 cycles=390 CPI=6.000 intervals[6:65]
+    ROI2 retired=65 cycles=390 CPI=6.000 intervals[6:65]
+    ROI3 retired=33 cycles=358 CPI=10.848 intervals[6:17 16:16]
+    ROI4 retired=65 cycles=390 CPI=6.000 intervals[6:65]
+    ROI5 retired=17 cycles=262 CPI=15.412 intervals[6:1 16:16]
+  p (fixed):
+    ROI1 retired=65 cycles=65 CPI=1.000 intervals[1:65]
+    ROI2 retired=65 cycles=65 CPI=1.000 intervals[1:65]
+    ROI3 retired=33 cycles=209 CPI=6.333 intervals[1:1 2:16 11:16]
+    ROI4 retired=65 cycles=158 CPI=2.431 intervals[1:34 4:31]
+    ROI5 retired=17 cycles=177 CPI=10.412 intervals[1:1 11:16]

@@ -1,0 +1,125 @@
+== C: interrupts -- independent checks on the pipeline, then DUT-directed alignment of the reference
+  p1_irq_basic N=20 min: PASS k=22 interrupts=1 max_latency=4 | aligned(N'=21): DIFF_OK exit=0 retired=562 dreq=21
+  p1_irq_basic N=20 fixed: PASS k=22 interrupts=1 max_latency=4 | aligned(N'=21): DIFF_OK exit=0 retired=562 dreq=21
+  p1_irq_basic N=20 rnd12345: PASS k=22 interrupts=1 max_latency=4 | aligned(N'=21): DIFF_OK exit=0 retired=562 dreq=21
+  p1_irq_basic N=30 min: PASS k=30 interrupts=1 max_latency=4 | aligned(N'=29): DIFF_OK exit=0 retired=562 dreq=21
+  p1_irq_basic N=30 fixed: PASS k=30 interrupts=1 max_latency=4 | aligned(N'=29): DIFF_OK exit=0 retired=562 dreq=21
+  p1_irq_basic N=30 rnd12345: PASS k=30 interrupts=1 max_latency=4 | aligned(N'=29): DIFF_OK exit=0 retired=562 dreq=21
+  p1_irq_basic N=40 min: PASS k=42 interrupts=1 max_latency=4 | aligned(N'=41): DIFF_OK exit=0 retired=562 dreq=21
+  p1_irq_basic N=40 fixed: PASS k=42 interrupts=1 max_latency=4 | aligned(N'=41): DIFF_OK exit=0 retired=562 dreq=21
+  p1_irq_basic N=40 rnd12345: PASS k=42 interrupts=1 max_latency=4 | aligned(N'=41): DIFF_OK exit=0 retired=562 dreq=21
+  p1_irq_basic N=60 min: PASS k=62 interrupts=1 max_latency=4 | aligned(N'=61): DIFF_OK exit=0 retired=562 dreq=21
+  p1_irq_basic N=60 fixed: PASS k=62 interrupts=1 max_latency=4 | aligned(N'=61): DIFF_OK exit=0 retired=562 dreq=21
+  p1_irq_basic N=60 rnd12345: PASS k=62 interrupts=1 max_latency=4 | aligned(N'=61): DIFF_OK exit=0 retired=562 dreq=21
+  p1_irq_basic N=70 min: PASS k=70 interrupts=1 max_latency=4 | aligned(N'=69): DIFF_OK exit=0 retired=562 dreq=21
+  p1_irq_basic N=70 fixed: PASS k=70 interrupts=1 max_latency=4 | aligned(N'=69): DIFF_OK exit=0 retired=562 dreq=21
+  p1_irq_basic N=70 rnd12345: PASS k=70 interrupts=1 max_latency=4 | aligned(N'=69): DIFF_OK exit=0 retired=562 dreq=21
+  p1_irq_masked N=12 min: PASS k=264 interrupts=1 max_latency=4 | aligned(N'=263): DIFF_OK exit=0 retired=332 dreq=22
+  p1_irq_masked N=12 fixed: PASS k=264 interrupts=1 max_latency=4 | aligned(N'=263): DIFF_OK exit=0 retired=332 dreq=22
+  p1_irq_masked N=12 rnd12345: PASS k=264 interrupts=1 max_latency=4 | aligned(N'=263): DIFF_OK exit=0 retired=332 dreq=22
+  p1_irq_masked N=20 min: PASS k=264 interrupts=1 max_latency=4 | aligned(N'=263): DIFF_OK exit=0 retired=332 dreq=22
+  p1_irq_masked N=20 fixed: PASS k=264 interrupts=1 max_latency=4 | aligned(N'=263): DIFF_OK exit=0 retired=332 dreq=22
+  p1_irq_masked N=20 rnd12345: PASS k=264 interrupts=1 max_latency=4 | aligned(N'=263): DIFF_OK exit=0 retired=332 dreq=22
+  p1_irq_masked N=30 min: PASS k=264 interrupts=1 max_latency=4 | aligned(N'=263): DIFF_OK exit=0 retired=332 dreq=22
+  p1_irq_masked N=30 fixed: PASS k=264 interrupts=1 max_latency=4 | aligned(N'=263): DIFF_OK exit=0 retired=332 dreq=22
+  p1_irq_masked N=30 rnd12345: PASS k=264 interrupts=1 max_latency=4 | aligned(N'=263): DIFF_OK exit=0 retired=332 dreq=22
+  p1_irq_fault N=14 min: PASS k=17 interrupts=1 max_latency=4 | aligned(N'=16): DIFF_OK exit=0 retired=763 dreq=37
+  p1_irq_fault N=14 fixed: PASS k=17 interrupts=1 max_latency=4 | aligned(N'=16): DIFF_OK exit=0 retired=763 dreq=37
+  p1_irq_fault N=14 rnd12345: PASS k=17 interrupts=1 max_latency=4 | aligned(N'=16): DIFF_OK exit=0 retired=763 dreq=37
+  p1_irq_fault N=16 min: PASS k=17 interrupts=1 max_latency=4 | aligned(N'=16): DIFF_OK exit=0 retired=763 dreq=37
+  p1_irq_fault N=16 fixed: PASS k=17 interrupts=1 max_latency=4 | aligned(N'=16): DIFF_OK exit=0 retired=763 dreq=37
+  p1_irq_fault N=16 rnd12345: PASS k=17 interrupts=1 max_latency=4 | aligned(N'=16): DIFF_OK exit=0 retired=763 dreq=37
+  p1_irq_fault N=18 min: PASS k=18 interrupts=1 max_latency=4 | aligned(N'=17): DIFF_OK exit=0 retired=763 dreq=37
+  p1_irq_fault N=18 fixed: PASS k=18 interrupts=1 max_latency=4 | aligned(N'=17): DIFF_OK exit=0 retired=763 dreq=37
+  p1_irq_fault N=18 rnd12345: PASS k=18 interrupts=1 max_latency=4 | aligned(N'=17): DIFF_OK exit=0 retired=763 dreq=37
+  p1_irq_fault N=20 min: PASS k=22 interrupts=1 max_latency=4 | aligned(N'=21): DIFF_OK exit=0 retired=763 dreq=37
+  p1_irq_fault N=20 fixed: PASS k=22 interrupts=1 max_latency=4 | aligned(N'=21): DIFF_OK exit=0 retired=763 dreq=37
+  p1_irq_fault N=20 rnd12345: PASS k=22 interrupts=1 max_latency=4 | aligned(N'=21): DIFF_OK exit=0 retired=763 dreq=37
+  p1_irq_fault N=22 min: PASS k=22 interrupts=1 max_latency=4 | aligned(N'=21): DIFF_OK exit=0 retired=763 dreq=37
+  p1_irq_fault N=22 fixed: PASS k=22 interrupts=1 max_latency=4 | aligned(N'=21): DIFF_OK exit=0 retired=763 dreq=37
+  p1_irq_fault N=22 rnd12345: PASS k=22 interrupts=1 max_latency=4 | aligned(N'=21): DIFF_OK exit=0 retired=763 dreq=37
+  p1_irq_fault N=24 min: PASS k=26 interrupts=1 max_latency=4 | aligned(N'=25): DIFF_OK exit=0 retired=763 dreq=37
+  p1_irq_fault N=24 fixed: PASS k=26 interrupts=1 max_latency=4 | aligned(N'=25): DIFF_OK exit=0 retired=763 dreq=37
+  p1_irq_fault N=24 rnd12345: PASS k=26 interrupts=1 max_latency=4 | aligned(N'=25): DIFF_OK exit=0 retired=763 dreq=37
+  p1_irq_fault N=26 min: PASS k=26 interrupts=1 max_latency=4 | aligned(N'=25): DIFF_OK exit=0 retired=763 dreq=37
+  p1_irq_fault N=26 fixed: PASS k=26 interrupts=1 max_latency=4 | aligned(N'=25): DIFF_OK exit=0 retired=763 dreq=37
+  p1_irq_fault N=26 rnd12345: PASS k=26 interrupts=1 max_latency=4 | aligned(N'=25): DIFF_OK exit=0 retired=763 dreq=37
+  p1_irq_fault N=30 min: PASS k=30 interrupts=1 max_latency=4 | aligned(N'=29): DIFF_OK exit=0 retired=763 dreq=37
+  p1_irq_fault N=30 fixed: PASS k=30 interrupts=1 max_latency=4 | aligned(N'=29): DIFF_OK exit=0 retired=763 dreq=37
+  p1_irq_fault N=30 rnd12345: PASS k=30 interrupts=1 max_latency=4 | aligned(N'=29): DIFF_OK exit=0 retired=763 dreq=37
+  p1_irq_hold N=20 min: PASS k=21 interrupts=3 max_latency=4 | aligned(N'=20): DIFF_OK exit=0 retired=607 dreq=54
+  p1_irq_hold N=20 fixed: PASS k=21 interrupts=3 max_latency=4 | aligned(N'=20): DIFF_OK exit=0 retired=607 dreq=54
+  p1_irq_hold N=20 rnd12345: PASS k=21 interrupts=3 max_latency=4 | aligned(N'=20): DIFF_OK exit=0 retired=607 dreq=54
+  p1_irq_hold N=30 min: PASS k=30 interrupts=3 max_latency=4 | aligned(N'=29): DIFF_OK exit=0 retired=607 dreq=54
+  p1_irq_hold N=30 fixed: PASS k=30 interrupts=3 max_latency=4 | aligned(N'=29): DIFF_OK exit=0 retired=607 dreq=54
+  p1_irq_hold N=30 rnd12345: PASS k=30 interrupts=3 max_latency=4 | aligned(N'=29): DIFF_OK exit=0 retired=607 dreq=54
+  p1_irq_empty N=12 min: PASS k=17 interrupts=1 max_latency=4 | aligned(N'=16): DIFF_OK exit=0 retired=504 dreq=21
+  p1_irq_empty N=12 fixed: PASS k=17 interrupts=1 max_latency=4 | aligned(N'=16): DIFF_OK exit=0 retired=504 dreq=21
+  p1_irq_empty N=12 rnd12345: PASS k=17 interrupts=1 max_latency=4 | aligned(N'=16): DIFF_OK exit=0 retired=504 dreq=21
+  p1_irq_empty N=14 min: PASS k=17 interrupts=1 max_latency=4 | aligned(N'=16): DIFF_OK exit=0 retired=504 dreq=21
+  p1_irq_empty N=14 fixed: PASS k=17 interrupts=1 max_latency=4 | aligned(N'=16): DIFF_OK exit=0 retired=504 dreq=21
+  p1_irq_empty N=14 rnd12345: PASS k=17 interrupts=1 max_latency=4 | aligned(N'=16): DIFF_OK exit=0 retired=504 dreq=21
+  p1_irq_empty N=18 min: PASS k=18 interrupts=1 max_latency=4 | aligned(N'=17): DIFF_OK exit=0 retired=504 dreq=21
+  p1_irq_empty N=18 fixed: PASS k=18 interrupts=1 max_latency=4 | aligned(N'=17): DIFF_OK exit=0 retired=504 dreq=21
+  p1_irq_empty N=18 rnd12345: PASS k=18 interrupts=1 max_latency=4 | aligned(N'=17): DIFF_OK exit=0 retired=504 dreq=21
+  p1_irq_empty N=20 min: PASS k=21 interrupts=1 max_latency=4 | aligned(N'=20): DIFF_OK exit=0 retired=504 dreq=21
+  p1_irq_empty N=20 fixed: PASS k=21 interrupts=1 max_latency=4 | aligned(N'=20): DIFF_OK exit=0 retired=504 dreq=21
+  p1_irq_empty N=20 rnd12345: PASS k=21 interrupts=1 max_latency=4 | aligned(N'=20): DIFF_OK exit=0 retired=504 dreq=21
+  p1_irq_empty N=21 min: PASS k=21 interrupts=1 max_latency=4 | aligned(N'=20): DIFF_OK exit=0 retired=504 dreq=21
+  p1_irq_empty N=21 fixed: PASS k=21 interrupts=1 max_latency=4 | aligned(N'=20): DIFF_OK exit=0 retired=504 dreq=21
+  p1_irq_empty N=21 rnd12345: PASS k=21 interrupts=1 max_latency=4 | aligned(N'=20): DIFF_OK exit=0 retired=504 dreq=21
+  p1_irq_empty N=22 min: PASS k=22 interrupts=1 max_latency=4 | aligned(N'=21): DIFF_OK exit=0 retired=504 dreq=21
+  p1_irq_empty N=22 fixed: PASS k=22 interrupts=1 max_latency=4 | aligned(N'=21): DIFF_OK exit=0 retired=504 dreq=21
+  p1_irq_empty N=22 rnd12345: PASS k=22 interrupts=1 max_latency=4 | aligned(N'=21): DIFF_OK exit=0 retired=504 dreq=21
+  p1_irq_empty N=23 min: PASS k=23 interrupts=1 max_latency=4 | aligned(N'=22): DIFF_OK exit=0 retired=504 dreq=21
+  p1_irq_empty N=23 fixed: PASS k=23 interrupts=1 max_latency=4 | aligned(N'=22): DIFF_OK exit=0 retired=504 dreq=21
+  p1_irq_empty N=23 rnd12345: PASS k=23 interrupts=1 max_latency=4 | aligned(N'=22): DIFF_OK exit=0 retired=504 dreq=21
+  p1_irq_empty N=24 min: PASS k=25 interrupts=1 max_latency=4 | aligned(N'=24): DIFF_OK exit=0 retired=504 dreq=21
+  p1_irq_empty N=24 fixed: PASS k=25 interrupts=1 max_latency=4 | aligned(N'=24): DIFF_OK exit=0 retired=504 dreq=21
+  p1_irq_empty N=24 rnd12345: PASS k=25 interrupts=1 max_latency=4 | aligned(N'=24): DIFF_OK exit=0 retired=504 dreq=21
+  p1_irq_empty N=26 min: PASS k=26 interrupts=1 max_latency=4 | aligned(N'=25): DIFF_OK exit=0 retired=504 dreq=21
+  p1_irq_empty N=26 fixed: PASS k=26 interrupts=1 max_latency=4 | aligned(N'=25): DIFF_OK exit=0 retired=504 dreq=21
+  p1_irq_empty N=26 rnd12345: PASS k=26 interrupts=1 max_latency=4 | aligned(N'=25): DIFF_OK exit=0 retired=504 dreq=21
+  p1_irq_warm N=40 min: PASS k=42 interrupts=1 max_latency=4 | aligned(N'=41): DIFF_OK exit=0 retired=497 dreq=21
+  p1_irq_warm N=40 fixed: PASS k=42 interrupts=1 max_latency=4 | aligned(N'=41): DIFF_OK exit=0 retired=497 dreq=21
+  p1_irq_warm N=40 rnd12345: PASS k=42 interrupts=1 max_latency=4 | aligned(N'=41): DIFF_OK exit=0 retired=497 dreq=21
+  p1_irq_warm N=60 min: PASS k=62 interrupts=1 max_latency=4 | aligned(N'=61): DIFF_OK exit=0 retired=497 dreq=21
+  p1_irq_warm N=60 fixed: PASS k=62 interrupts=1 max_latency=4 | aligned(N'=61): DIFF_OK exit=0 retired=497 dreq=21
+  p1_irq_warm N=60 rnd12345: PASS k=62 interrupts=1 max_latency=4 | aligned(N'=61): DIFF_OK exit=0 retired=497 dreq=21
+  p1_irq_warm N=80 min: PASS k=82 interrupts=1 max_latency=4 | aligned(N'=81): DIFF_OK exit=0 retired=497 dreq=21
+  p1_irq_warm N=80 fixed: PASS k=82 interrupts=1 max_latency=4 | aligned(N'=81): DIFF_OK exit=0 retired=497 dreq=21
+  p1_irq_warm N=80 rnd12345: PASS k=82 interrupts=1 max_latency=4 | aligned(N'=81): DIFF_OK exit=0 retired=497 dreq=21
+  p1_irq_warm N=100 min: PASS k=102 interrupts=1 max_latency=4 | aligned(N'=101): DIFF_OK exit=0 retired=497 dreq=21
+  p1_irq_warm N=100 fixed: PASS k=102 interrupts=1 max_latency=4 | aligned(N'=101): DIFF_OK exit=0 retired=497 dreq=21
+  p1_irq_warm N=100 rnd12345: PASS k=102 interrupts=1 max_latency=4 | aligned(N'=101): DIFF_OK exit=0 retired=497 dreq=21
+  p1_irq_warm N=120 min: PASS k=122 interrupts=1 max_latency=4 | aligned(N'=121): DIFF_OK exit=0 retired=497 dreq=21
+  p1_irq_warm N=120 fixed: PASS k=122 interrupts=1 max_latency=4 | aligned(N'=121): DIFF_OK exit=0 retired=497 dreq=21
+  p1_irq_warm N=120 rnd12345: PASS k=122 interrupts=1 max_latency=4 | aligned(N'=121): DIFF_OK exit=0 retired=497 dreq=21
+  p1_irq_warm N=150 min: PASS k=152 interrupts=1 max_latency=4 | aligned(N'=151): DIFF_OK exit=0 retired=497 dreq=21
+  p1_irq_warm N=150 fixed: PASS k=152 interrupts=1 max_latency=4 | aligned(N'=151): DIFF_OK exit=0 retired=497 dreq=21
+  p1_irq_warm N=150 rnd12345: PASS k=152 interrupts=1 max_latency=4 | aligned(N'=151): DIFF_OK exit=0 retired=497 dreq=21
+  p1_irq_cancel N=44 min: PASS k=46 interrupts=1 max_latency=4 | aligned(N'=45): DIFF_OK exit=0 retired=338 dreq=23
+  p1_irq_cancel N=44 fixed: PASS k=46 interrupts=1 max_latency=4 | aligned(N'=45): DIFF_OK exit=0 retired=338 dreq=23
+  p1_irq_cancel N=44 rnd12345: PASS k=46 interrupts=1 max_latency=4 | aligned(N'=45): DIFF_OK exit=0 retired=338 dreq=23
+  p1_irq_cancel N=45 min: PASS k=47 interrupts=1 max_latency=4 | aligned(N'=46): DIFF_OK exit=0 retired=338 dreq=23
+  p1_irq_cancel N=45 fixed: PASS k=47 interrupts=1 max_latency=4 | aligned(N'=46): DIFF_OK exit=0 retired=338 dreq=23
+  p1_irq_cancel N=45 rnd12345: PASS k=47 interrupts=1 max_latency=4 | aligned(N'=46): DIFF_OK exit=0 retired=338 dreq=23
+  p1_irq_cancel N=46 min: PASS interrupts=0 max_latency=4 cancelled=irq_cancelled=1 | n/a (no interrupt taken on the pipeline: independent checks only)
+  p1_irq_cancel N=46 fixed: PASS interrupts=0 max_latency=8 cancelled=irq_cancelled=1 | n/a (no interrupt taken on the pipeline: independent checks only)
+  p1_irq_cancel N=46 rnd12345: PASS interrupts=0 max_latency=7 cancelled=irq_cancelled=1 | n/a (no interrupt taken on the pipeline: independent checks only)
+  p1_irq_cancel N=47 min: PASS interrupts=0 max_latency=3 cancelled=irq_cancelled=0 | n/a (no interrupt taken on the pipeline: independent checks only)
+  p1_irq_cancel N=47 fixed: PASS interrupts=0 max_latency=7 cancelled=irq_cancelled=0 | n/a (no interrupt taken on the pipeline: independent checks only)
+  p1_irq_cancel N=47 rnd12345: PASS interrupts=0 max_latency=6 cancelled=irq_cancelled=0 | n/a (no interrupt taken on the pipeline: independent checks only)
+  p1_irq_cancel N=48 min: PASS interrupts=0 max_latency=2 cancelled=irq_cancelled=0 | n/a (no interrupt taken on the pipeline: independent checks only)
+  p1_irq_cancel N=48 fixed: PASS interrupts=0 max_latency=6 cancelled=irq_cancelled=0 | n/a (no interrupt taken on the pipeline: independent checks only)
+  p1_irq_cancel N=48 rnd12345: PASS interrupts=0 max_latency=5 cancelled=irq_cancelled=0 | n/a (no interrupt taken on the pipeline: independent checks only)
+  p1_irq_cancel N=49 min: PASS interrupts=0 max_latency=1 cancelled=irq_cancelled=0 | n/a (no interrupt taken on the pipeline: independent checks only)
+  p1_irq_cancel N=49 fixed: PASS interrupts=0 max_latency=5 cancelled=irq_cancelled=0 | n/a (no interrupt taken on the pipeline: independent checks only)
+  p1_irq_cancel N=49 rnd12345: PASS interrupts=0 max_latency=4 cancelled=irq_cancelled=0 | n/a (no interrupt taken on the pipeline: independent checks only)
+  p1_irq_cancel N=50 min: PASS k=55 interrupts=1 max_latency=4 | aligned(N'=54): DIFF_OK exit=0 retired=338 dreq=23
+  p1_irq_cancel N=50 fixed: PASS k=55 interrupts=1 max_latency=4 | aligned(N'=54): DIFF_OK exit=0 retired=338 dreq=23
+  p1_irq_cancel N=50 rnd12345: PASS k=55 interrupts=1 max_latency=4 | aligned(N'=54): DIFF_OK exit=0 retired=338 dreq=23
+  p1_irq_cancel N=51 min: PASS k=56 interrupts=1 max_latency=4 | aligned(N'=55): DIFF_OK exit=0 retired=338 dreq=23
+  p1_irq_cancel N=51 fixed: PASS k=56 interrupts=1 max_latency=4 | aligned(N'=55): DIFF_OK exit=0 retired=338 dreq=23
+  p1_irq_cancel N=51 rnd12345: PASS k=56 interrupts=1 max_latency=4 | aligned(N'=55): DIFF_OK exit=0 retired=338 dreq=23
+  C total: self-checks 123 PASS / 0 FAIL; reference aligned and identical 111, not aligned or different 0

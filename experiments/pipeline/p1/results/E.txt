@@ -1,0 +1,6 @@
+== E: monitor self-tests and existing core fault injections on the pipeline
+  p-mon-samecycle on t03_ldst: exit 5 -> caught: PROTO ERROR: response in the request handshake cycle
+  p-mon-withdraw on t03_ldst: exit 5 -> caught: PROTO ERROR: request withdrawn before the handshake
+  p-mon-loadpayload on d06_loadpayload: exit 5 -> caught: PROTO ERROR: read request carried a write payload wdata=0000000080000080 wmask=00
+  p-fault-x0 on t01_alu: exit 1 -> caught: TOHOST code=1 after 119 cycles, retired=21 (store answered and retired)
+  p-fault-nosext on t03_ldst: exit 3 -> caught: TOHOST code=3 after 240 cycles, retired=39 (store answered and retired)

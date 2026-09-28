@@ -1,0 +1,11 @@
+== define TCPU_IMPL_PIPE with the MULTICYCLE source list (must fail: tcpu_core_pipe not found)
+rc=1
+%Error: /home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p1/runs/sims-1/src/tb/tcpu_harness.v:178:3: Cannot find file containing module: 'tcpu_core_pipe'
+== no define with the PIPELINE source list (must fail: tcpu_core not found)
+rc=0
+== pipeline with MISA_A=1 (must be refused: A is not implemented in P1)
+rc=1
+%Error: /home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p1/runs/sims-1/src/pipeline/tcpu_core_pipe.v:115:68: Cannot find file containing module: 'pipe_p1_unsupported_MISA_A'
+== pipeline with PIPE_FAULT=13 (must be refused: no such control)
+rc=1
+%Error: /home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p1/runs/sims-1/src/pipeline/tcpu_core_pipe.v:135:70: Cannot find file containing module: 'pipe_p1_unsupported_PIPE_FAULT'

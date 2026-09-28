@@ -1,0 +1,4 @@
+git: 93b8117fca126400f4dc4dcc4607ccedb1bb1bcf (mc-v1-dual)
+verilator: Verilator 5.022 2024-02-24 rev conda-forge build 1
+gcc: riscv64-unknown-elf-gcc (gc891d8dc23e) 13.2.0
+date: 2026-09-28T17:34:35Z
