@@ -54,7 +54,11 @@ module TeachingTop #(
   parameter FAULT_A_SC_RESULT = 0,
   parameter FAULT_A_AMO_AS_LOAD = 0,
   parameter FAULT_A_EARLY_RETIRE = 0,
-  parameter FAULT_A_NO_RESV_CLEAR = 0
+  parameter FAULT_A_NO_RESV_CLEAR = 0,
+  parameter PIPE_FAULT = 0,
+  parameter IRQ_AT_RETIRE = 0,
+  parameter IRQ_LAT_BOUND = 0,
+  parameter PROGRESS_BOUND = 0
 ) (
   input clk, input rst,
   input bd_we, input [15:0] bd_addr, input [63:0] bd_data,
@@ -94,7 +98,8 @@ module TeachingTop #(
                  .FAULT_MODEL_NO_KILL(FAULT_MODEL_NO_KILL), .FAULT_MODEL_SC_ALWAYS_OK(FAULT_MODEL_SC_ALWAYS_OK),
                  .MISA_A(MISA_A), .FAULT_A_W_NOSEXT(FAULT_A_W_NOSEXT), .FAULT_A_SC_RESULT(FAULT_A_SC_RESULT),
                  .FAULT_A_AMO_AS_LOAD(FAULT_A_AMO_AS_LOAD), .FAULT_A_EARLY_RETIRE(FAULT_A_EARLY_RETIRE),
-                 .FAULT_A_NO_RESV_CLEAR(FAULT_A_NO_RESV_CLEAR)) h (
+                 .FAULT_A_NO_RESV_CLEAR(FAULT_A_NO_RESV_CLEAR), .PIPE_FAULT(PIPE_FAULT), .IRQ_AT_RETIRE(IRQ_AT_RETIRE),
+                 .IRQ_LAT_BOUND(IRQ_LAT_BOUND), .PROGRESS_BOUND(PROGRESS_BOUND)) h (
     .clk(clk), .rst(rst), .bd_we(bd_we), .bd_addr(bd_addr), .bd_data(bd_data),
     .bd_rd_addr(bd_rd_addr), .bd_rd_data(bd_rd_data), .bd_fault_addr(bd_fault_addr),
     .bd_watch_addr(bd_watch_addr), .bd_inject_pc(bd_inject_pc),

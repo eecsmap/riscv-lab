@@ -76,7 +76,12 @@ module tcpu_harness #(
   parameter        FAULT_A_SC_RESULT = 0,
   parameter        FAULT_A_AMO_AS_LOAD = 0,
   parameter        FAULT_A_EARLY_RETIRE = 0,
-  parameter        FAULT_A_NO_RESV_CLEAR = 0
+  parameter        FAULT_A_NO_RESV_CLEAR = 0,
+  // ---- PIPE-P1 (all default off; the multicycle selection and its behaviour are unchanged when unset) --------
+  parameter        PIPE_FAULT     = 0,   // passed to tcpu_core_pipe only (TCPU_IMPL_PIPE builds)
+  parameter        IRQ_AT_RETIRE  = 0,   // architectural injection: raise IRQ_LINE once N retirements have happened
+  parameter        IRQ_LAT_BOUND  = 0,   // a raised, enabled line must be taken within this many cycles (0 = off)
+  parameter        PROGRESS_BOUND = 0    // some commit or trap at least every N cycles (0 = off)
 ) (
   input clk,
   input rst,
@@ -167,6 +172,29 @@ module tcpu_harness #(
   wire        resp_error = same_cycle_inject ? !in_range : resp_error_r;
   wire [63:0] resp_rdata = same_cycle_inject ? (in_range ? mem[widx[15:0]] : 64'd0) : resp_rdata_r;
 
+  // PIPE-P1: the implementation is chosen by the source list AND this define; each selection names its own module,
+  // so a mismatch between them is a build error, never a silent substitution.
+`ifdef TCPU_IMPL_PIPE
+  tcpu_core_pipe #(.X0_WRITABLE(X0_WRITABLE), .NO_LOAD_SEXT(NO_LOAD_SEXT), .REQ_WITHDRAW(REQ_WITHDRAW),
+                   .LOAD_WDATA_LEAK(LOAD_WDATA_LEAK), .STOP_ON_TRAP(STOP_ON_TRAP), .TRAP_BAD_MEPC(TRAP_BAD_MEPC),
+                   .TRAP_COUNTS_RET(TRAP_COUNTS_RET), .ALLOW_RO_WRITE(ALLOW_RO_WRITE), .MISA_A(MISA_A),
+                   .EARLY_IRQ(EARLY_IRQ), .IRQ_BAD_MEPC(IRQ_BAD_MEPC), .STALE_MIE(STALE_MIE),
+                   .PIPE_FAULT(PIPE_FAULT)) cpu (
+    .clk(clk), .rst(rst | bd_core_rst),
+    .req_valid(req_valid), .req_ready(req_ready), .req_addr(req_addr), .req_write(req_write),
+    .req_size(req_size), .req_wdata(req_wdata), .req_wmask(req_wmask),
+    .req_amo(req_amo), .req_lrsc(req_lrsc), .resp_scfail(resp_scfail), .resv_clear(resv_clear),
+    .resp_valid(resp_valid), .resp_ready(resp_ready), .resp_rdata(resp_rdata), .resp_error(resp_error),
+    .commit_valid(commit_valid), .commit_pc(commit_pc), .commit_insn(commit_insn), .commit_len(commit_len),
+    .commit_rd_valid(commit_rd_valid), .commit_rd(commit_rd), .commit_rd_data(commit_rd_data),
+    .trap_valid(trap_valid), .trap_interrupt(trap_interrupt), .trap_cause(trap_cause), .trap_epc(trap_epc),
+    .trap_tval(trap_tval), .halted(halted), .dbg_req_is_fetch(req_is_fetch),
+    .dbg_ra(dbg_ra), .dbg_rd(dbg_rd), .dbg_ra2(bd_reg_addr), .dbg_rd2(bd_reg_data),
+    .dbg_csr_sel(bd_csr_sel), .dbg_csr_val(bd_csr_data), .dbg_priv(cpu_priv_o),
+    .irq_msip(irq_msip | clint_msip), .irq_mtip(irq_mtip | clint_mtip), .irq_meip(irq_meip), .dbg_state(cpu_state),
+    .dbg_redirect(cpu_redirect),
+    .dbg_pc(cpu_pc), .dbg_irq_enabled(cpu_irq_enabled));
+`else
   tcpu_core #(.MISA_A(MISA_A), .FAULT_A_W_NOSEXT(FAULT_A_W_NOSEXT), .FAULT_A_SC_RESULT(FAULT_A_SC_RESULT),
               .FAULT_A_AMO_AS_LOAD(FAULT_A_AMO_AS_LOAD), .FAULT_A_EARLY_RETIRE(FAULT_A_EARLY_RETIRE),
               .FAULT_A_NO_RESV_CLEAR(FAULT_A_NO_RESV_CLEAR),
@@ -191,6 +219,7 @@ module tcpu_harness #(
     .irq_msip(irq_msip | clint_msip), .irq_mtip(irq_mtip | clint_mtip), .irq_meip(irq_meip), .dbg_state(cpu_state),
     .dbg_redirect(cpu_redirect),
     .dbg_pc(cpu_pc), .dbg_irq_enabled(cpu_irq_enabled));
+`endif
   wire [3:0] cpu_state;
   wire cpu_redirect, cpu_irq_enabled;
   wire [63:0] cpu_pc;
@@ -216,6 +245,15 @@ module tcpu_harness #(
   // Arming takes effect only once the core is back at a fetch boundary, so the arming store itself -- its
   // request phase, its response wait and its writeback -- can never be the moment that gets injected into.
   reg irq_armed, irq_arm_pending;
+  // PIPE-P1: architectural injection, latency and progress bounds
+  reg [63:0] n_retired, lat_cnt, idle_cnt, max_lat;
+  reg        trace_on;
+  reg [63:0] irq_at_ret;          // IRQ_AT_RETIRE, or +irq-at-retire=N at run time (one build serves many positions)
+  final if (IRQ_LAT_BOUND != 0 || trace_on) $display("IRQ LATENCY max=%0d cycles (enabled line raised -> taken)", (lat_cnt > max_lat) ? lat_cnt : max_lat);
+  initial begin
+    trace_on = $test$plusargs("pipe-trace");
+    if (!$value$plusargs("irq-at-retire=%d", irq_at_ret)) irq_at_ret = IRQ_AT_RETIRE;
+  end
   wire irq_moment =
       (IRQ_POINT == 1) ? (cpu_state == S_IF_WAIT_  &&  req_valid && !req_ready) :
       (IRQ_POINT == 2) ? (cpu_state == S_IF_WAIT_  && !req_valid && !resp_valid) :
@@ -377,6 +415,7 @@ module tcpu_harness #(
       clint_msip <= 1'b0; clint_mtimecmp <= 64'hFFFF_FFFF_FFFF_FFFF; clint_mtime <= 64'd0; acc_clint <= 1'b0; acc_clint_rdata <= 64'd0;
       irq_hits <= 64'd0; irq_fires <= 64'd0; irq_clears <= 64'd0; irq_raised <= 64'd0;
       irq_armed <= 1'b0; irq_arm_pending <= 1'b0; cyc <= 64'd0;
+      n_retired <= 64'd0; lat_cnt <= 64'd0; idle_cnt <= 64'd0; max_lat <= 64'd0;
       fire_cycle <= 64'd0; fire_pc <= 64'd0; fire_state <= 4'd0; fire_enabled <= 1'b0; fire_priv <= 2'd0;
       fire_req_valid <= 1'b0; fire_req_ready <= 1'b0; fire_outstanding <= 1'b0;
       fire_is_write <= 1'b0; fire_addr <= 32'd0;
@@ -419,6 +458,31 @@ module tcpu_harness #(
           endcase
         end
       end
+      // PIPE-P1: raise the line once N instructions have retired (an architectural position, not a core state)
+      if (commit_valid) n_retired <= n_retired + 64'd1;
+      if (irq_at_ret != 0 && n_retired >= irq_at_ret && !irq_any_high && irq_raised < IRQ_TIMES) begin
+        irq_raised <= irq_raised + 64'd1; irq_fires <= irq_fires + 64'd1;
+        fire_cycle <= cyc; fire_pc <= cpu_pc; fire_enabled <= cpu_irq_enabled;
+        case (IRQ_LINE) 0: irq_msip <= 1'b1; 1: irq_mtip <= 1'b1; default: irq_meip <= 1'b1; endcase
+        if (trace_on) $display("IRQ_RAISE cyc=%0d retired=%0d line=%0d", cyc, n_retired, IRQ_LINE);
+      end
+      // a raised line that the core would accept must be taken within the bound
+      if (irq_any_high && cpu_irq_enabled && !(trap_valid && trap_interrupt)) lat_cnt <= lat_cnt + 64'd1;
+      else begin
+        if (lat_cnt > max_lat) max_lat <= lat_cnt;
+        lat_cnt <= 64'd0;
+      end
+      if (IRQ_LAT_BOUND != 0 && lat_cnt == IRQ_LAT_BOUND) begin
+        proto_errors <= proto_errors + 64'd1;
+        $display("IRQ LATENCY ERROR: an enabled interrupt line has been pending %0d cycles without being taken", lat_cnt);
+      end
+      if (commit_valid || trap_valid) idle_cnt <= 64'd0; else idle_cnt <= idle_cnt + 64'd1;
+      if (PROGRESS_BOUND != 0 && idle_cnt == PROGRESS_BOUND) begin
+        proto_errors <= proto_errors + 64'd1;
+        $display("PROGRESS ERROR: no commit or trap for %0d cycles", idle_cnt);
+      end
+      if (trace_on && commit_valid) $display("CMT cyc=%0d pc=%h insn=%h rdv=%0d rd=%0d val=%h", cyc, commit_pc, commit_insn, commit_rd_valid, commit_rd, commit_rd_data);
+      if (trace_on && trap_valid) $display("TRP cyc=%0d irq=%0d cause=%h epc=%h tval=%h", cyc, trap_interrupt, trap_cause, trap_epc, trap_tval);
       resp_valid_r <= 1'b0;
 
       // --- request side: ready after READY_DELAY (or a random number of) cycles of offer
@@ -478,6 +542,7 @@ module tcpu_harness #(
                               : ((RESP_DELAY < 1) ? 8'd1 : RESP_DELAY[7:0]);
         n_req <= n_req + 64'd1;
         if (!req_is_fetch) n_data_req <= n_data_req + 64'd1;
+        if (trace_on && !req_is_fetch) $display("DREQ cyc=%0d addr=%h write=%0d size=%0d wdata=%h wmask=%h", cyc, req_addr, req_write, req_size, req_write ? req_wdata : 64'd0, req_wmask);
         if (watch_hit) begin
           watch_req <= watch_req + 64'd1;
           if (req_write) watch_wreq <= watch_wreq + 64'd1;
