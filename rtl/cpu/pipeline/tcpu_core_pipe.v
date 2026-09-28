@@ -61,6 +61,8 @@ module tcpu_core_pipe #(
   // 10 IRQ_EPC_FETCHPTR  a synthesised interrupt token takes the fetch pointer as its epc
   // 11 CSR_NO_DRAIN      a serialising instruction does not wait for the port / fetch engine to drain
   // 12 SPEC_MMIO_FETCH   an uncached fetch may be issued while the front end is speculative
+  // 13 FLUSH_FILL        a refill whose final beat answers in a flush cycle still fills the I-cache
+  // 14 FLUSH_ALLOC       the fetch engine may raise its request in a flush cycle (the request is left unowned)
   parameter        PIPE_FAULT = 0
 ) (
   input             clk,
@@ -132,12 +134,13 @@ module tcpu_core_pipe #(
     if (FAULT_A_EARLY_RETIRE != 0) begin : refuse_FAULT_A_EARLY_RETIRE pipe_p1_unsupported_FAULT_A_EARLY_RETIRE u (); end
     if (FAULT_A_NO_RESV_CLEAR != 0) begin : refuse_FAULT_A_NO_RESV_CLEAR pipe_p1_unsupported_FAULT_A_NO_RESV_CLEAR u (); end
     if (ICACHE_BYTES != 0 && ICACHE_BYTES != 1024) begin : refuse_ICACHE_BYTES pipe_p1_unsupported_ICACHE_BYTES u (); end
-    if (PIPE_FAULT < 0 || PIPE_FAULT > 12) begin : refuse_PIPE_FAULT pipe_p1_unsupported_PIPE_FAULT u (); end
+    if (PIPE_FAULT < 0 || PIPE_FAULT > 14) begin : refuse_PIPE_FAULT pipe_p1_unsupported_PIPE_FAULT u (); end
   endgenerate
 
   localparam PF_WB_HOLD = 1, PF_REDIRECT_REPEAT = 2, PF_EPOCH_BIT = 3, PF_STORE_UNDER_TRAP = 4,
              PF_NO_LOADUSE = 5, PF_NO_FWD_EXMEM = 6, PF_NO_FWD_MEMWB = 7, PF_NO_WB_BYPASS = 8,
-             PF_X0_FWD = 9, PF_IRQ_EPC_FETCHPTR = 10, PF_CSR_NO_DRAIN = 11, PF_SPEC_MMIO_FETCH = 12;
+             PF_X0_FWD = 9, PF_IRQ_EPC_FETCHPTR = 10, PF_CSR_NO_DRAIN = 11, PF_SPEC_MMIO_FETCH = 12,
+             PF_FLUSH_FILL = 13, PF_FLUSH_ALLOC = 14;
   localparam [63:0] MISA_P1 = 64'h8000_0000_0000_0100;     // MXL = 2, I only
   wire x0z = (X0_WRITABLE == 0);                              // x0 reads 0 and is never written
 
@@ -584,6 +587,7 @@ module tcpu_core_pipe #(
              cv_fwd_exmem, cv_fwd_memwb, cv_wb_bypass, cv_two_flush, cv_nc_wait, cv_flush_pending_valid, cv_redirect_held,
              cv_irq_synth_ahead;
   reg [7:0]  flushes_since_eng;
+  reg        fe_flush_q;     // simulation check only: a front-end flush happened in the previous cycle
   reg [31:0] last_ret_seq;
   reg        ex_redir_count;
 
@@ -614,9 +618,19 @@ module tcpu_core_pipe #(
       cv_redirect <= 0; cv_killed_resp <= 0; cv_irq_token <= 0; cv_irq_synth <= 0; cv_irq_cancel <= 0;
       cv_drain_wait <= 0; cv_loaduse <= 0; cv_fwd_exmem <= 0; cv_fwd_memwb <= 0; cv_wb_bypass <= 0;
       cv_two_flush <= 0; cv_nc_wait <= 0; cv_flush_pending_valid <= 0; cv_redirect_held <= 0; cv_irq_synth_ahead <= 0;
-      flushes_since_eng <= 0; last_ret_seq <= 32'd0;
+      flushes_since_eng <= 0; last_ret_seq <= 32'd0; fe_flush_q <= 1'b0;
     end else begin
       fe_flush = 1'b0; fe_kill = 1'b0; fe_target = fe_pc;
+      // ---- fetch-transaction ownership (CONTRACT rev. 3 section 3.1): a fetch request is raised or outstanding exactly
+      // when the engine waits for it, and the request and the engine agree on whether it is killed. A flushed refill
+      // fills nothing, including one whose final beat answers in the flush cycle itself.
+      if ((preq_owner_f && (preq_valid || pwait)) != (eng_st == E_WAIT0 || eng_st == E_WAIT1 || eng_st == E_WAITD))
+        $display("PIPE ASSERT fetch-owner: fetch request valid=%0d outstanding=%0d, fetch engine state %0d",
+                 preq_owner_f && preq_valid, preq_owner_f && pwait, eng_st);
+      else if (PIPE_FAULT != PF_EPOCH_BIT && preq_owner_f && (preq_valid || pwait) && preq_killed != eng_killed)
+        $display("PIPE ASSERT fetch-owner: request killed=%0d, engine killed=%0d", preq_killed, eng_killed);
+      if (ic_fill && fe_flush_q)
+        $display("PIPE ASSERT fill-after-flush: line 0x%08x filled from a refill answered in a flush cycle", ic_fill_pa);
 
       // ---------------------------------------------------------------- port: handshake and response
       if (REQ_WITHDRAW != 0 && preq_valid && !req_ready && !withdrawn && !preq_owner_f) begin
@@ -831,8 +845,11 @@ module tcpu_core_pipe #(
           end else cv_nc_wait <= cv_nc_wait + 1;
         end
       end
-      // the engine takes the port when MEM does not (MEM has priority)
-      if (!mem_alloc && port_free && !frozen && !(PIPE_FAULT != PF_EPOCH_BIT && eng_killed)) begin
+      // the engine takes the port when MEM does not (MEM has priority). Never in a flush cycle: the flush below
+      // drops an engine with nothing outstanding, so a request raised now would be left with no owner and no kill
+      // (the request is not yet visible on the port, so nothing is withdrawn).
+      if (!mem_alloc && port_free && !frozen && !(fe_flush && PIPE_FAULT != PF_FLUSH_ALLOC) &&
+          !(PIPE_FAULT != PF_EPOCH_BIT && eng_killed)) begin
         if (eng_st == E_NEED0 || eng_st == E_NEED1) begin
           preq_valid <= 1'b1; preq_owner_f <= 1'b1; preq_killed <= 1'b0; preq_write <= 1'b0; preq_size <= 2'd3;
           preq_addr <= {eng_pa[31:4], (eng_st == E_NEED1), 3'b000}; preq_wdata <= 64'd0; preq_wmask <= 8'd0;
@@ -890,6 +907,8 @@ module tcpu_core_pipe #(
         end else begin
           if (!(eng_st == E_WAIT0 || eng_st == E_WAIT1 || eng_st == E_WAITD) && eng_st != E_IDLE) eng_st <= E_IDLE;
         end
+        // a refill whose final beat answers in this cycle belongs to the flushed front end: it fills nothing
+        if (PIPE_FAULT != PF_FLUSH_FILL) ic_fill <= 1'b0;
         if (new_id_irq) begin
           fe_park <= 1'b1;                                 // the token keeps its place in ID
         end else begin
@@ -899,6 +918,7 @@ module tcpu_core_pipe #(
           if (halted || (wb_trap_take && STOP_ON_TRAP != 0)) f1_v <= 1'b0;
         end
       end
+      fe_flush_q <= fe_flush;
     end
   end
 
