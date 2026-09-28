@@ -1,0 +1,21 @@
+{
+  "trace_lines": 9314,
+  "last_cycle": 21100,
+  "events": {
+    "EV:COMMIT": 1464,
+    "EV:IRQLEVEL": 2,
+    "EV:REQ": 1984,
+    "EV:RESP": 1984,
+    "EV:TRAP": 1,
+    "EVA:AR": 993,
+    "EVA:AW": 630,
+    "EVA:B": 630,
+    "EVA:R": 993,
+    "EVA:W": 630,
+    "EVH:DUTRESET": 1,
+    "EVH:HOSTDONE": 1,
+    "EVH:SETTLED": 1
+  },
+  "kept_raw": 4000,
+  "note": "the full trace is NOT retained: it reaches hundreds of MB per run. Counts are exact; the raw head and tail are for diagnosis. Every non-trace line -- the probe's own output and its verdict -- is in console.txt verbatim."
+}

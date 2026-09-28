@@ -1,0 +1,7 @@
+workload=perf-board stage_timeout=900 wall=5400
+kernel=/root/xv6run/kernel-perf-128mib (133f5b72290781ad47d766beeede7d7a07d9af63985caeb34c669dfeba67081c)
+disk=/root/xv6run/fs-run.img (d558e4444abcea6046147d85b81e538ecf604049b6d8ab15552f9a3d32bf688c, fresh copy of fs-perf.img)
+host=/root/xv6run/fesvr-teaching-static (c050eab30f80a21a7c92c8688faa2f043c67aa2900fbc08b80f3dd8de2ba1fb9)
+bit_sha=4ecccd051ebfe6143d7706e00a5f080dd53c6d5a29f71526fcaa0533d76e743b payload_sha=43e5b414c093f27854513f6ae08addbb431c6865b85f822685a824cda66e2841 (the PL holds the payload; --bitstream-sha records the .bit identity verbatim as in the accepted run)
+evidence=/home/engineer/fpga/experiments/multicore/perf/sessions/session-dual-20260928T041829Z/memory boot_id=a1b62d8e-0bdb-4495-a1fe-c95a191f810b
+start=2026-09-28T04:36:09Z

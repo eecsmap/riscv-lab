@@ -1,0 +1,256 @@
+{
+  "stage": "fetch32",
+  "platform": "simulator",
+  "clock_hz": 40000000,
+  "counters": "the probe's own cycle/instret reads, bounding the ROI",
+  "caution": "IPS and roi_seconds are computed at 40 MHz from SIMULATED cycles. The simulated memory system is not the board's PS DDR -- perf03's 32-bit ROI reads CPI 19.0 here and 40.34 on hardware -- so these are not board figures and are never pooled with board results.",
+  "rows": [
+    {
+      "platform": "simulator",
+      "stage": "fetch32",
+      "core": "baseline",
+      "workload": "perf03_fetch",
+      "roi": "insn32",
+      "cycles": 570620,
+      "retired": 30002,
+      "cpi": 19.019398706752884,
+      "ips_at_40mhz": 2103115.909011251,
+      "roi_seconds": 0.0142655,
+      "gain_vs_baseline": 1.0
+    },
+    {
+      "platform": "simulator",
+      "stage": "fetch32",
+      "core": "baseline",
+      "workload": "perf03_fetch",
+      "roi": "insn16",
+      "cycles": 330044,
+      "retired": 30002,
+      "cpi": 11.000733284447703,
+      "ips_at_40mhz": 3636121.244440135,
+      "roi_seconds": 0.0082511,
+      "gain_vs_baseline": 1.0
+    },
+    {
+      "platform": "simulator",
+      "stage": "fetch32",
+      "core": "baseline",
+      "workload": "perf04_where",
+      "roi": "load_dram",
+      "cycles": 640907,
+      "retired": 30002,
+      "cpi": 21.362142523831743,
+      "ips_at_40mhz": 1872471.3569987533,
+      "roi_seconds": 0.016022675,
+      "gain_vs_baseline": 1.0
+    },
+    {
+      "platform": "simulator",
+      "stage": "fetch32",
+      "core": "baseline",
+      "workload": "perf04_where",
+      "roi": "load_clint",
+      "cycles": 640904,
+      "retired": 30002,
+      "cpi": 21.362042530497966,
+      "ips_at_40mhz": 1872480.121827918,
+      "roi_seconds": 0.0160226,
+      "gain_vs_baseline": 1.0
+    },
+    {
+      "platform": "simulator",
+      "stage": "fetch32",
+      "core": "baseline",
+      "workload": "perf06_iws",
+      "roi": "iws_resident",
+      "cycles": 1331371,
+      "retired": 70001,
+      "cpi": 19.01931400979986,
+      "ips_at_40mhz": 2103125.2746229265,
+      "roi_seconds": 0.033284275,
+      "gain_vs_baseline": 1.0
+    },
+    {
+      "platform": "simulator",
+      "stage": "fetch32",
+      "core": "baseline",
+      "workload": "perf06_iws",
+      "roi": "iws_exceeds",
+      "cycles": 1250124,
+      "retired": 65729,
+      "cpi": 19.019367402516394,
+      "ips_at_40mhz": 2103119.3705584407,
+      "roi_seconds": 0.0312531,
+      "gain_vs_baseline": 1.0
+    },
+    {
+      "platform": "simulator",
+      "stage": "fetch32",
+      "core": "fetch32",
+      "workload": "perf03_fetch",
+      "roi": "insn32",
+      "cycles": 330029,
+      "retired": 30002,
+      "cpi": 11.000233317778815,
+      "ips_at_40mhz": 3636286.508155344,
+      "roi_seconds": 0.008250725,
+      "gain_vs_baseline": 1.7289995727648175
+    },
+    {
+      "platform": "simulator",
+      "stage": "fetch32",
+      "core": "fetch32",
+      "workload": "perf03_fetch",
+      "roi": "insn16",
+      "cycles": 330033,
+      "retired": 30002,
+      "cpi": 11.000366642223852,
+      "ips_at_40mhz": 3636242.4363624244,
+      "roi_seconds": 0.008250825,
+      "gain_vs_baseline": 1.0000333300003332
+    },
+    {
+      "platform": "simulator",
+      "stage": "fetch32",
+      "core": "fetch32",
+      "workload": "perf04_where",
+      "roi": "load_dram",
+      "cycles": 400370,
+      "retired": 30002,
+      "cpi": 13.344777014865675,
+      "ips_at_40mhz": 2997427.379673802,
+      "roi_seconds": 0.01000925,
+      "gain_vs_baseline": 1.6007867722356819
+    },
+    {
+      "platform": "simulator",
+      "stage": "fetch32",
+      "core": "fetch32",
+      "workload": "perf04_where",
+      "roi": "load_clint",
+      "cycles": 400366,
+      "retired": 30002,
+      "cpi": 13.34464369042064,
+      "ips_at_40mhz": 2997457.3265462103,
+      "roi_seconds": 0.01000915,
+      "gain_vs_baseline": 1.6007952723258219
+    },
+    {
+      "platform": "simulator",
+      "stage": "fetch32",
+      "core": "fetch32",
+      "workload": "perf06_iws",
+      "roi": "iws_resident",
+      "cycles": 770013,
+      "retired": 70001,
+      "cpi": 11.000028571020414,
+      "ips_at_40mhz": 3636354.1914227423,
+      "roi_seconds": 0.019250325,
+      "gain_vs_baseline": 1.7290240554380252
+    },
+    {
+      "platform": "simulator",
+      "stage": "fetch32",
+      "core": "fetch32",
+      "workload": "perf06_iws",
+      "roi": "iws_exceeds",
+      "cycles": 723019,
+      "retired": 65729,
+      "cpi": 11.0,
+      "ips_at_40mhz": 3636363.6363636362,
+      "roi_seconds": 0.018075475,
+      "gain_vs_baseline": 1.729033400228763
+    }
+  ],
+  "refused": [],
+  "axi_reads": {
+    "baseline/boot01_marker": {
+      "ar": 777,
+      "r": 777
+    },
+    "baseline/boot02_clint": {
+      "ar": 14110,
+      "r": 14110
+    },
+    "baseline/boot03_ddr": {
+      "ar": 3025,
+      "r": 3025
+    },
+    "baseline/boot04_badaddr": {
+      "ar": 740,
+      "r": 740
+    },
+    "baseline/ext01_m": {
+      "ar": 842,
+      "r": 842
+    },
+    "baseline/ext02_c": {
+      "ar": 778,
+      "r": 778
+    },
+    "baseline/ext03_a": {
+      "ar": 83814,
+      "r": 83814
+    },
+    "baseline/ext04_sv39": {
+      "ar": 1855,
+      "r": 1855
+    },
+    "baseline/perf03_fetch": {
+      "ar": 107348,
+      "r": 107348
+    },
+    "baseline/perf04_where": {
+      "ar": 150962,
+      "r": 150962
+    },
+    "baseline/perf06_iws": {
+      "ar": 306618,
+      "r": 306618
+    },
+    "fetch32/boot01_marker": {
+      "ar": 581,
+      "r": 581
+    },
+    "fetch32/boot02_clint": {
+      "ar": 7271,
+      "r": 7271
+    },
+    "fetch32/boot03_ddr": {
+      "ar": 1678,
+      "r": 1678
+    },
+    "fetch32/boot04_badaddr": {
+      "ar": 508,
+      "r": 508
+    },
+    "fetch32/ext01_m": {
+      "ar": 603,
+      "r": 603
+    },
+    "fetch32/ext02_c": {
+      "ar": 769,
+      "r": 769
+    },
+    "fetch32/ext03_a": {
+      "ar": 73518,
+      "r": 73518
+    },
+    "fetch32/ext04_sv39": {
+      "ar": 993,
+      "r": 993
+    },
+    "fetch32/perf03_fetch": {
+      "ar": 74407,
+      "r": 74407
+    },
+    "fetch32/perf04_where": {
+      "ar": 83272,
+      "r": 83272
+    },
+    "fetch32/perf06_iws": {
+      "ar": 156607,
+      "r": 156607
+    }
+  }
+}

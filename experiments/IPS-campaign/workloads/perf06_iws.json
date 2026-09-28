@@ -1,0 +1,35 @@
+{
+  "id": "perf06_iws",
+  "kind": "microbenchmark",
+  "description": "Two instruction working sets: one that fits the frozen 1 KiB I-cache and one four times its capacity. Both bodies are addi on a single register -- no loads, no stores, no branches inside the body -- so what separates the two ROIs is instruction fetch.",
+  "source": "experiments/IPS-campaign/workloads/perf06_iws.S",
+  "source_sha256": "b38d414eb6f169e3ccef6f7d80205f3e931e9c5352b95a5f8b9366ec4d6704c3",
+  "source_imported": false,
+  "iters": null,
+  "marker": "TEACHING-PERF-IWS-OK",
+  "roi": [
+    {
+      "name": "iws_resident",
+      "cycles_label": "IWS-CYC-RESIDENT",
+      "retired_label": "IWS-INS-RESIDENT",
+      "insns_per_iter": 35,
+      "expected_retired": 70001,
+      "footprint_bytes": 192,
+      "fits_1kib_cache": true,
+      "description": "a 32-instruction body, 192 bytes measured, re-entered 2000 times"
+    },
+    {
+      "name": "iws_exceeds",
+      "cycles_label": "IWS-CYC-EXCEEDS",
+      "retired_label": "IWS-INS-EXCEEDS",
+      "insns_per_iter": 1027,
+      "expected_retired": 65729,
+      "footprint_bytes": 4140,
+      "fits_1kib_cache": false,
+      "description": "a 1024-instruction body, 4140 bytes measured, re-entered 64 times"
+    }
+  ],
+  "expected_retired_derivation": "counted from the disassembly by experiments/IPS-campaign/workloads/check_retirement.py, which also confirms the assembler did not relax the backward jump",
+  "runs_unchanged_on_baseline": true,
+  "baseline_expectation": "the baseline core has no instruction cache, so the two ROIs should cost the same PER INSTRUCTION. A difference there would mean the probe is measuring something other than fetch locality."
+}

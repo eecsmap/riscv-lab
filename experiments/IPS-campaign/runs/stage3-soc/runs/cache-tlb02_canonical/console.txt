@@ -1,0 +1,4 @@
+TEACHING-TLB-CANON-OK
+Completed after 51894 cycles
+AXI ar=320 r=320 rlast=320 aw=2262 w=2262 wlast=2262 b=2262
+CYCLES total=51894 host_done_at=51894 drained=1

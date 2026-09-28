@@ -1,0 +1,6 @@
+case B (a hit ignored A/D)
+TEACHING-TLB-SFENCE-FAIL
+*** FAILED *** (tohost = 1)
+*** FAILED *** (code = 1, seed 1786906968) after 39664 cycles
+AXI ar=1375 r=1375 rlast=1375 aw=1271 w=1271 wlast=1271 b=1271
+CYCLES total=39664 host_done_at=39659 drained=6

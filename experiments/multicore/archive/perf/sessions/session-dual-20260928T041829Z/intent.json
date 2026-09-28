@@ -1,0 +1,1 @@
+{ "variant": "dual", "payload_sha256": "43e5b414c093f27854513f6ae08addbb431c6865b85f822685a824cda66e2841", "bit_sha256": "4ecccd051ebfe6143d7706e00a5f080dd53c6d5a29f71526fcaa0533d76e743b", "expected_gates": 6, "expected_probes": [], "started_utc": "2026-09-28T04:18:29Z" }

@@ -1,0 +1,4 @@
+M3-DDR-OK
+Completed after 21557 cycles
+AXI ar=1678 r=1678 rlast=1678 aw=340 w=340 wlast=340 b=340
+CYCLES total=21557 host_done_at=21557 drained=1

@@ -1,0 +1,2 @@
+variant=dual
+completed_utc=2026-09-28T04:35:32Z

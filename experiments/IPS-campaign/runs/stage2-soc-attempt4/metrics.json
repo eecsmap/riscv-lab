@@ -1,0 +1,828 @@
+{
+  "stage": "tlb",
+  "platform": "simulator",
+  "clock_hz": 40000000,
+  "counters": "the probe's own cycle/instret reads, bounding the ROI",
+  "caution": "IPS and roi_seconds are computed at 40 MHz from SIMULATED cycles. The simulated memory system is not the board's PS DDR -- perf03's 32-bit ROI reads CPI 19.0 here and 40.34 on hardware -- so these are not board figures and are never pooled with board results.",
+  "rows": [
+    {
+      "platform": "simulator",
+      "stage": "tlb",
+      "core": "baseline",
+      "workload": "perf02_sv39",
+      "roi": "bare_alu",
+      "cycles": 570619,
+      "retired": 30002,
+      "cpi": 19.019365375641623,
+      "ips_at_40mhz": 2103119.594685771,
+      "roi_seconds": 0.014265475,
+      "gain_vs_baseline": 1.0
+    },
+    {
+      "platform": "simulator",
+      "stage": "tlb",
+      "core": "baseline",
+      "workload": "perf02_sv39",
+      "roi": "bare_load",
+      "cycles": 640910,
+      "retired": 30002,
+      "cpi": 21.362242517165523,
+      "ips_at_40mhz": 1872462.5922516421,
+      "roi_seconds": 0.01602275,
+      "gain_vs_baseline": 1.0
+    },
+    {
+      "platform": "simulator",
+      "stage": "tlb",
+      "core": "baseline",
+      "workload": "perf02_sv39",
+      "roi": "mega_alu",
+      "cycles": 1171468,
+      "retired": 30002,
+      "cpi": 39.046330244650356,
+      "ips_at_40mhz": 1024424.0559707991,
+      "roi_seconds": 0.0292867,
+      "gain_vs_baseline": 1.0
+    },
+    {
+      "platform": "simulator",
+      "stage": "tlb",
+      "core": "baseline",
+      "workload": "perf02_sv39",
+      "roi": "mega_load",
+      "cycles": 1340083,
+      "retired": 30002,
+      "cpi": 44.66645556962869,
+      "ips_at_40mhz": 895526.6203660519,
+      "roi_seconds": 0.033502075,
+      "gain_vs_baseline": 1.0
+    },
+    {
+      "platform": "simulator",
+      "stage": "tlb",
+      "core": "baseline",
+      "workload": "perf02_sv39",
+      "roi": "k4_alu",
+      "cycles": 2131225,
+      "retired": 30002,
+      "cpi": 71.03609759349376,
+      "ips_at_40mhz": 563093.9952374808,
+      "roi_seconds": 0.053280625,
+      "gain_vs_baseline": 1.0
+    },
+    {
+      "platform": "simulator",
+      "stage": "tlb",
+      "core": "baseline",
+      "workload": "perf02_sv39",
+      "roi": "k4_load",
+      "cycles": 2463655,
+      "retired": 30002,
+      "cpi": 82.11635890940605,
+      "ips_at_40mhz": 487113.65836531494,
+      "roi_seconds": 0.061591375,
+      "gain_vs_baseline": 1.0
+    },
+    {
+      "platform": "simulator",
+      "stage": "tlb",
+      "core": "baseline",
+      "workload": "perf03_fetch",
+      "roi": "insn32",
+      "cycles": 570620,
+      "retired": 30002,
+      "cpi": 19.019398706752884,
+      "ips_at_40mhz": 2103115.909011251,
+      "roi_seconds": 0.0142655,
+      "gain_vs_baseline": 1.0
+    },
+    {
+      "platform": "simulator",
+      "stage": "tlb",
+      "core": "baseline",
+      "workload": "perf03_fetch",
+      "roi": "insn16",
+      "cycles": 330044,
+      "retired": 30002,
+      "cpi": 11.000733284447703,
+      "ips_at_40mhz": 3636121.244440135,
+      "roi_seconds": 0.0082511,
+      "gain_vs_baseline": 1.0
+    },
+    {
+      "platform": "simulator",
+      "stage": "tlb",
+      "core": "baseline",
+      "workload": "perf04_where",
+      "roi": "load_dram",
+      "cycles": 640907,
+      "retired": 30002,
+      "cpi": 21.362142523831743,
+      "ips_at_40mhz": 1872471.3569987533,
+      "roi_seconds": 0.016022675,
+      "gain_vs_baseline": 1.0
+    },
+    {
+      "platform": "simulator",
+      "stage": "tlb",
+      "core": "baseline",
+      "workload": "perf04_where",
+      "roi": "load_clint",
+      "cycles": 640904,
+      "retired": 30002,
+      "cpi": 21.362042530497966,
+      "ips_at_40mhz": 1872480.121827918,
+      "roi_seconds": 0.0160226,
+      "gain_vs_baseline": 1.0
+    },
+    {
+      "platform": "simulator",
+      "stage": "tlb",
+      "core": "baseline",
+      "workload": "perf06_iws",
+      "roi": "iws_resident",
+      "cycles": 1331371,
+      "retired": 70001,
+      "cpi": 19.01931400979986,
+      "ips_at_40mhz": 2103125.2746229265,
+      "roi_seconds": 0.033284275,
+      "gain_vs_baseline": 1.0
+    },
+    {
+      "platform": "simulator",
+      "stage": "tlb",
+      "core": "baseline",
+      "workload": "perf06_iws",
+      "roi": "iws_exceeds",
+      "cycles": 1250124,
+      "retired": 65729,
+      "cpi": 19.019367402516394,
+      "ips_at_40mhz": 2103119.3705584407,
+      "roi_seconds": 0.0312531,
+      "gain_vs_baseline": 1.0
+    },
+    {
+      "platform": "simulator",
+      "stage": "tlb",
+      "core": "fetch32",
+      "workload": "perf02_sv39",
+      "roi": "bare_alu",
+      "cycles": 330022,
+      "retired": 30002,
+      "cpi": 11.0,
+      "ips_at_40mhz": 3636363.6363636362,
+      "roi_seconds": 0.00825055,
+      "gain_vs_baseline": 1.7290332159674204
+    },
+    {
+      "platform": "simulator",
+      "stage": "tlb",
+      "core": "fetch32",
+      "workload": "perf02_sv39",
+      "roi": "bare_load",
+      "cycles": 400562,
+      "retired": 30002,
+      "cpi": 13.351176588227451,
+      "ips_at_40mhz": 2995990.6331604095,
+      "roi_seconds": 0.01001405,
+      "gain_vs_baseline": 1.600026962118224
+    },
+    {
+      "platform": "simulator",
+      "stage": "tlb",
+      "core": "fetch32",
+      "workload": "perf02_sv39",
+      "roi": "mega_alu",
+      "cycles": 631753,
+      "retired": 30002,
+      "cpi": 21.057029531364577,
+      "ips_at_40mhz": 1899603.167693703,
+      "roi_seconds": 0.015793825,
+      "gain_vs_baseline": 1.8543133154888065
+    },
+    {
+      "platform": "simulator",
+      "stage": "tlb",
+      "core": "fetch32",
+      "workload": "perf02_sv39",
+      "roi": "mega_load",
+      "cycles": 801119,
+      "retired": 30002,
+      "cpi": 26.702186520898607,
+      "ips_at_40mhz": 1498004.6659734696,
+      "roi_seconds": 0.020027975,
+      "gain_vs_baseline": 1.6727639713950113
+    },
+    {
+      "platform": "simulator",
+      "stage": "tlb",
+      "core": "fetch32",
+      "workload": "perf02_sv39",
+      "roi": "k4_alu",
+      "cycles": 1111130,
+      "retired": 30002,
+      "cpi": 37.03519765348977,
+      "ips_at_40mhz": 1080053.6390881354,
+      "roi_seconds": 0.02777825,
+      "gain_vs_baseline": 1.9180698928118223
+    },
+    {
+      "platform": "simulator",
+      "stage": "tlb",
+      "core": "fetch32",
+      "workload": "perf02_sv39",
+      "roi": "k4_load",
+      "cycles": 1442031,
+      "retired": 30002,
+      "cpi": 48.06449570028665,
+      "ips_at_40mhz": 832215.1188150601,
+      "roi_seconds": 0.036050775,
+      "gain_vs_baseline": 1.7084618846612867
+    },
+    {
+      "platform": "simulator",
+      "stage": "tlb",
+      "core": "fetch32",
+      "workload": "perf03_fetch",
+      "roi": "insn32",
+      "cycles": 330029,
+      "retired": 30002,
+      "cpi": 11.000233317778815,
+      "ips_at_40mhz": 3636286.508155344,
+      "roi_seconds": 0.008250725,
+      "gain_vs_baseline": 1.7289995727648175
+    },
+    {
+      "platform": "simulator",
+      "stage": "tlb",
+      "core": "fetch32",
+      "workload": "perf03_fetch",
+      "roi": "insn16",
+      "cycles": 330033,
+      "retired": 30002,
+      "cpi": 11.000366642223852,
+      "ips_at_40mhz": 3636242.4363624244,
+      "roi_seconds": 0.008250825,
+      "gain_vs_baseline": 1.0000333300003332
+    },
+    {
+      "platform": "simulator",
+      "stage": "tlb",
+      "core": "fetch32",
+      "workload": "perf04_where",
+      "roi": "load_dram",
+      "cycles": 400370,
+      "retired": 30002,
+      "cpi": 13.344777014865675,
+      "ips_at_40mhz": 2997427.379673802,
+      "roi_seconds": 0.01000925,
+      "gain_vs_baseline": 1.6007867722356819
+    },
+    {
+      "platform": "simulator",
+      "stage": "tlb",
+      "core": "fetch32",
+      "workload": "perf04_where",
+      "roi": "load_clint",
+      "cycles": 400366,
+      "retired": 30002,
+      "cpi": 13.34464369042064,
+      "ips_at_40mhz": 2997457.3265462103,
+      "roi_seconds": 0.01000915,
+      "gain_vs_baseline": 1.6007952723258219
+    },
+    {
+      "platform": "simulator",
+      "stage": "tlb",
+      "core": "fetch32",
+      "workload": "perf06_iws",
+      "roi": "iws_resident",
+      "cycles": 770013,
+      "retired": 70001,
+      "cpi": 11.000028571020414,
+      "ips_at_40mhz": 3636354.1914227423,
+      "roi_seconds": 0.019250325,
+      "gain_vs_baseline": 1.7290240554380252
+    },
+    {
+      "platform": "simulator",
+      "stage": "tlb",
+      "core": "fetch32",
+      "workload": "perf06_iws",
+      "roi": "iws_exceeds",
+      "cycles": 723019,
+      "retired": 65729,
+      "cpi": 11.0,
+      "ips_at_40mhz": 3636363.6363636362,
+      "roi_seconds": 0.018075475,
+      "gain_vs_baseline": 1.729033400228763
+    },
+    {
+      "platform": "simulator",
+      "stage": "tlb",
+      "core": "tlb",
+      "workload": "perf02_sv39",
+      "roi": "bare_alu",
+      "cycles": 330022,
+      "retired": 30002,
+      "cpi": 11.0,
+      "ips_at_40mhz": 3636363.6363636362,
+      "roi_seconds": 0.00825055,
+      "gain_vs_baseline": 1.7290332159674204
+    },
+    {
+      "platform": "simulator",
+      "stage": "tlb",
+      "core": "tlb",
+      "workload": "perf02_sv39",
+      "roi": "bare_load",
+      "cycles": 400562,
+      "retired": 30002,
+      "cpi": 13.351176588227451,
+      "ips_at_40mhz": 2995990.6331604095,
+      "roi_seconds": 0.01001405,
+      "gain_vs_baseline": 1.600026962118224
+    },
+    {
+      "platform": "simulator",
+      "stage": "tlb",
+      "core": "tlb",
+      "workload": "perf02_sv39",
+      "roi": "mega_alu",
+      "cycles": 390204,
+      "retired": 30002,
+      "cpi": 13.005932937804147,
+      "ips_at_40mhz": 3075519.471865998,
+      "roi_seconds": 0.0097551,
+      "gain_vs_baseline": 3.0021937243083103
+    },
+    {
+      "platform": "simulator",
+      "stage": "tlb",
+      "core": "tlb",
+      "workload": "perf02_sv39",
+      "roi": "mega_load",
+      "cycles": 480669,
+      "retired": 30002,
+      "cpi": 16.021231917872143,
+      "ips_at_40mhz": 2496686.9092868483,
+      "roi_seconds": 0.012016725,
+      "gain_vs_baseline": 2.7879538726233646
+    },
+    {
+      "platform": "simulator",
+      "stage": "tlb",
+      "core": "tlb",
+      "workload": "perf02_sv39",
+      "roi": "k4_alu",
+      "cycles": 390203,
+      "retired": 30002,
+      "cpi": 13.005899606692887,
+      "ips_at_40mhz": 3075527.353710761,
+      "roi_seconds": 0.009755075,
+      "gain_vs_baseline": 5.46183653124143
+    },
+    {
+      "platform": "simulator",
+      "stage": "tlb",
+      "core": "tlb",
+      "workload": "perf02_sv39",
+      "roi": "k4_load",
+      "cycles": 480673,
+      "retired": 30002,
+      "cpi": 16.021365242317177,
+      "ips_at_40mhz": 2496666.13269312,
+      "roi_seconds": 0.012016825,
+      "gain_vs_baseline": 5.125428305729675
+    },
+    {
+      "platform": "simulator",
+      "stage": "tlb",
+      "core": "tlb",
+      "workload": "perf03_fetch",
+      "roi": "insn32",
+      "cycles": 330029,
+      "retired": 30002,
+      "cpi": 11.000233317778815,
+      "ips_at_40mhz": 3636286.508155344,
+      "roi_seconds": 0.008250725,
+      "gain_vs_baseline": 1.7289995727648175
+    },
+    {
+      "platform": "simulator",
+      "stage": "tlb",
+      "core": "tlb",
+      "workload": "perf03_fetch",
+      "roi": "insn16",
+      "cycles": 330033,
+      "retired": 30002,
+      "cpi": 11.000366642223852,
+      "ips_at_40mhz": 3636242.4363624244,
+      "roi_seconds": 0.008250825,
+      "gain_vs_baseline": 1.0000333300003332
+    },
+    {
+      "platform": "simulator",
+      "stage": "tlb",
+      "core": "tlb",
+      "workload": "perf04_where",
+      "roi": "load_dram",
+      "cycles": 400370,
+      "retired": 30002,
+      "cpi": 13.344777014865675,
+      "ips_at_40mhz": 2997427.379673802,
+      "roi_seconds": 0.01000925,
+      "gain_vs_baseline": 1.6007867722356819
+    },
+    {
+      "platform": "simulator",
+      "stage": "tlb",
+      "core": "tlb",
+      "workload": "perf04_where",
+      "roi": "load_clint",
+      "cycles": 400366,
+      "retired": 30002,
+      "cpi": 13.34464369042064,
+      "ips_at_40mhz": 2997457.3265462103,
+      "roi_seconds": 0.01000915,
+      "gain_vs_baseline": 1.6007952723258219
+    },
+    {
+      "platform": "simulator",
+      "stage": "tlb",
+      "core": "tlb",
+      "workload": "perf06_iws",
+      "roi": "iws_resident",
+      "cycles": 770013,
+      "retired": 70001,
+      "cpi": 11.000028571020414,
+      "ips_at_40mhz": 3636354.1914227423,
+      "roi_seconds": 0.019250325,
+      "gain_vs_baseline": 1.7290240554380252
+    },
+    {
+      "platform": "simulator",
+      "stage": "tlb",
+      "core": "tlb",
+      "workload": "perf06_iws",
+      "roi": "iws_exceeds",
+      "cycles": 723019,
+      "retired": 65729,
+      "cpi": 11.0,
+      "ips_at_40mhz": 3636363.6363636362,
+      "roi_seconds": 0.018075475,
+      "gain_vs_baseline": 1.729033400228763
+    },
+    {
+      "platform": "simulator",
+      "stage": "tlb",
+      "core": "tlboff",
+      "workload": "perf02_sv39",
+      "roi": "bare_alu",
+      "cycles": 330022,
+      "retired": 30002,
+      "cpi": 11.0,
+      "ips_at_40mhz": 3636363.6363636362,
+      "roi_seconds": 0.00825055,
+      "gain_vs_baseline": 1.7290332159674204
+    },
+    {
+      "platform": "simulator",
+      "stage": "tlb",
+      "core": "tlboff",
+      "workload": "perf02_sv39",
+      "roi": "bare_load",
+      "cycles": 400562,
+      "retired": 30002,
+      "cpi": 13.351176588227451,
+      "ips_at_40mhz": 2995990.6331604095,
+      "roi_seconds": 0.01001405,
+      "gain_vs_baseline": 1.600026962118224
+    },
+    {
+      "platform": "simulator",
+      "stage": "tlb",
+      "core": "tlboff",
+      "workload": "perf02_sv39",
+      "roi": "mega_alu",
+      "cycles": 631753,
+      "retired": 30002,
+      "cpi": 21.057029531364577,
+      "ips_at_40mhz": 1899603.167693703,
+      "roi_seconds": 0.015793825,
+      "gain_vs_baseline": 1.8543133154888065
+    },
+    {
+      "platform": "simulator",
+      "stage": "tlb",
+      "core": "tlboff",
+      "workload": "perf02_sv39",
+      "roi": "mega_load",
+      "cycles": 801119,
+      "retired": 30002,
+      "cpi": 26.702186520898607,
+      "ips_at_40mhz": 1498004.6659734696,
+      "roi_seconds": 0.020027975,
+      "gain_vs_baseline": 1.6727639713950113
+    },
+    {
+      "platform": "simulator",
+      "stage": "tlb",
+      "core": "tlboff",
+      "workload": "perf02_sv39",
+      "roi": "k4_alu",
+      "cycles": 1111130,
+      "retired": 30002,
+      "cpi": 37.03519765348977,
+      "ips_at_40mhz": 1080053.6390881354,
+      "roi_seconds": 0.02777825,
+      "gain_vs_baseline": 1.9180698928118223
+    },
+    {
+      "platform": "simulator",
+      "stage": "tlb",
+      "core": "tlboff",
+      "workload": "perf02_sv39",
+      "roi": "k4_load",
+      "cycles": 1442031,
+      "retired": 30002,
+      "cpi": 48.06449570028665,
+      "ips_at_40mhz": 832215.1188150601,
+      "roi_seconds": 0.036050775,
+      "gain_vs_baseline": 1.7084618846612867
+    },
+    {
+      "platform": "simulator",
+      "stage": "tlb",
+      "core": "tlboff",
+      "workload": "perf03_fetch",
+      "roi": "insn32",
+      "cycles": 330029,
+      "retired": 30002,
+      "cpi": 11.000233317778815,
+      "ips_at_40mhz": 3636286.508155344,
+      "roi_seconds": 0.008250725,
+      "gain_vs_baseline": 1.7289995727648175
+    },
+    {
+      "platform": "simulator",
+      "stage": "tlb",
+      "core": "tlboff",
+      "workload": "perf03_fetch",
+      "roi": "insn16",
+      "cycles": 330033,
+      "retired": 30002,
+      "cpi": 11.000366642223852,
+      "ips_at_40mhz": 3636242.4363624244,
+      "roi_seconds": 0.008250825,
+      "gain_vs_baseline": 1.0000333300003332
+    },
+    {
+      "platform": "simulator",
+      "stage": "tlb",
+      "core": "tlboff",
+      "workload": "perf04_where",
+      "roi": "load_dram",
+      "cycles": 400370,
+      "retired": 30002,
+      "cpi": 13.344777014865675,
+      "ips_at_40mhz": 2997427.379673802,
+      "roi_seconds": 0.01000925,
+      "gain_vs_baseline": 1.6007867722356819
+    },
+    {
+      "platform": "simulator",
+      "stage": "tlb",
+      "core": "tlboff",
+      "workload": "perf04_where",
+      "roi": "load_clint",
+      "cycles": 400366,
+      "retired": 30002,
+      "cpi": 13.34464369042064,
+      "ips_at_40mhz": 2997457.3265462103,
+      "roi_seconds": 0.01000915,
+      "gain_vs_baseline": 1.6007952723258219
+    },
+    {
+      "platform": "simulator",
+      "stage": "tlb",
+      "core": "tlboff",
+      "workload": "perf06_iws",
+      "roi": "iws_resident",
+      "cycles": 770013,
+      "retired": 70001,
+      "cpi": 11.000028571020414,
+      "ips_at_40mhz": 3636354.1914227423,
+      "roi_seconds": 0.019250325,
+      "gain_vs_baseline": 1.7290240554380252
+    },
+    {
+      "platform": "simulator",
+      "stage": "tlb",
+      "core": "tlboff",
+      "workload": "perf06_iws",
+      "roi": "iws_exceeds",
+      "cycles": 723019,
+      "retired": 65729,
+      "cpi": 11.0,
+      "ips_at_40mhz": 3636363.6363636362,
+      "roi_seconds": 0.018075475,
+      "gain_vs_baseline": 1.729033400228763
+    }
+  ],
+  "refused": [],
+  "axi_reads": {
+    "baseline/boot01_marker": {
+      "ar": 777,
+      "r": 777
+    },
+    "baseline/boot02_clint": {
+      "ar": 14110,
+      "r": 14110
+    },
+    "baseline/boot03_ddr": {
+      "ar": 3025,
+      "r": 3025
+    },
+    "baseline/boot04_badaddr": {
+      "ar": 740,
+      "r": 740
+    },
+    "baseline/ext01_m": {
+      "ar": 842,
+      "r": 842
+    },
+    "baseline/ext02_c": {
+      "ar": 778,
+      "r": 778
+    },
+    "baseline/ext04_sv39": {
+      "ar": 1855,
+      "r": 1855
+    },
+    "baseline/perf02_sv39": {
+      "ar": 1081139,
+      "r": 1081139
+    },
+    "baseline/perf03_fetch": {
+      "ar": 107348,
+      "r": 107348
+    },
+    "baseline/perf04_where": {
+      "ar": 150962,
+      "r": 150962
+    },
+    "baseline/perf06_iws": {
+      "ar": 306618,
+      "r": 306618
+    },
+    "baseline/tlb01_sfence": {
+      "ar": 2377,
+      "r": 2377
+    },
+    "fetch32/boot01_marker": {
+      "ar": 581,
+      "r": 581
+    },
+    "fetch32/boot02_clint": {
+      "ar": 7271,
+      "r": 7271
+    },
+    "fetch32/boot03_ddr": {
+      "ar": 1678,
+      "r": 1678
+    },
+    "fetch32/boot04_badaddr": {
+      "ar": 508,
+      "r": 508
+    },
+    "fetch32/ext01_m": {
+      "ar": 603,
+      "r": 603
+    },
+    "fetch32/ext02_c": {
+      "ar": 769,
+      "r": 769
+    },
+    "fetch32/ext04_sv39": {
+      "ar": 993,
+      "r": 993
+    },
+    "fetch32/perf02_sv39": {
+      "ar": 584225,
+      "r": 584225
+    },
+    "fetch32/perf03_fetch": {
+      "ar": 74407,
+      "r": 74407
+    },
+    "fetch32/perf04_where": {
+      "ar": 83272,
+      "r": 83272
+    },
+    "fetch32/perf06_iws": {
+      "ar": 156607,
+      "r": 156607
+    },
+    "fetch32/tlb01_sfence": {
+      "ar": 1274,
+      "r": 1274
+    },
+    "tlb/boot01_marker": {
+      "ar": 581,
+      "r": 581
+    },
+    "tlb/boot02_clint": {
+      "ar": 7271,
+      "r": 7271
+    },
+    "tlb/boot03_ddr": {
+      "ar": 1678,
+      "r": 1678
+    },
+    "tlb/boot04_badaddr": {
+      "ar": 508,
+      "r": 508
+    },
+    "tlb/ext01_m": {
+      "ar": 603,
+      "r": 603
+    },
+    "tlb/ext02_c": {
+      "ar": 769,
+      "r": 769
+    },
+    "tlb/ext04_sv39": {
+      "ar": 606,
+      "r": 606
+    },
+    "tlb/perf02_sv39": {
+      "ar": 248937,
+      "r": 248937
+    },
+    "tlb/perf03_fetch": {
+      "ar": 74407,
+      "r": 74407
+    },
+    "tlb/perf04_where": {
+      "ar": 83272,
+      "r": 83272
+    },
+    "tlb/perf06_iws": {
+      "ar": 156607,
+      "r": 156607
+    },
+    "tlb/tlb01_sfence": {
+      "ar": 779,
+      "r": 779
+    },
+    "tlboff/boot01_marker": {
+      "ar": 581,
+      "r": 581
+    },
+    "tlboff/boot02_clint": {
+      "ar": 7271,
+      "r": 7271
+    },
+    "tlboff/boot03_ddr": {
+      "ar": 1678,
+      "r": 1678
+    },
+    "tlboff/boot04_badaddr": {
+      "ar": 508,
+      "r": 508
+    },
+    "tlboff/ext01_m": {
+      "ar": 603,
+      "r": 603
+    },
+    "tlboff/ext02_c": {
+      "ar": 769,
+      "r": 769
+    },
+    "tlboff/ext04_sv39": {
+      "ar": 993,
+      "r": 993
+    },
+    "tlboff/perf02_sv39": {
+      "ar": 584225,
+      "r": 584225
+    },
+    "tlboff/perf03_fetch": {
+      "ar": 74407,
+      "r": 74407
+    },
+    "tlboff/perf04_where": {
+      "ar": 83272,
+      "r": 83272
+    },
+    "tlboff/perf06_iws": {
+      "ar": 156607,
+      "r": 156607
+    },
+    "tlboff/tlb01_sfence": {
+      "ar": 1274,
+      "r": 1274
+    }
+  }
+}

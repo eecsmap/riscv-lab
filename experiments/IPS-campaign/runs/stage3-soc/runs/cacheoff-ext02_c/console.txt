@@ -1,0 +1,4 @@
+TEACHING-EXT-C-OK
+Completed after 7877 cycles
+AXI ar=769 r=769 rlast=769 aw=79 w=79 wlast=79 b=79
+CYCLES total=7877 host_done_at=7876 drained=2

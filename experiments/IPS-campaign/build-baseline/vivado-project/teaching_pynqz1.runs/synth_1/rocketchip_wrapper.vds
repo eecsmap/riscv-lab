@@ -1,0 +1,1461 @@
+#-----------------------------------------------------------
+# Vivado v2025.2.1 (64-bit)
+# SW Build 6403652 on Thu Mar 19 13:47:00 MDT 2026
+# IP Build 6403511 on Thu Mar 19 12:41:45 MDT 2026
+# SharedData Build 6403650 on Thu Mar 19 14:02:13 MDT 2026
+# Start of session at: Thu Sep 24 23:46:41 2026
+# Process ID         : 1910
+# Current directory  : /home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/vivado-project/teaching_pynqz1.runs/synth_1
+# Command line       : vivado -log rocketchip_wrapper.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source rocketchip_wrapper.tcl
+# Log file           : /home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/vivado-project/teaching_pynqz1.runs/synth_1/rocketchip_wrapper.vds
+# Journal file       : /home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/vivado-project/teaching_pynqz1.runs/synth_1/vivado.jou
+# Running On         : ubuntu
+# Platform           : Ubuntu
+# Operating System   : Ubuntu 24.04.2 LTS
+# Processor Detail   : Intel(R) Core(TM) i7-8700B CPU @ 3.20GHz
+# CPU Frequency      : 4488.700 MHz
+# CPU Physical cores : 6
+# CPU Logical cores  : 12
+# Host memory        : 32957 MB
+# Swap memory        : 8589 MB
+# Total Virtual      : 41547 MB
+# Available Virtual  : 34954 MB
+#-----------------------------------------------------------
+source rocketchip_wrapper.tcl -notrace
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1704] No user IP repositories specified
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository '/opt/Xilinx/2025.2.1/data/ip'.
+Command: synth_design -top rocketchip_wrapper -part xc7z020clg400-1
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xc7z020'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7z020'
+INFO: [Device 21-403] Loading part xc7z020clg400-1
+INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 7 processes.
+INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
+INFO: [Synth 8-7075] Helper process launched with PID 1956
+---------------------------------------------------------------------------------
+Starting RTL Elaboration : Time (s): cpu = 00:00:03 ; elapsed = 00:00:04 . Memory (MB): peak = 2257.238 ; gain = 481.875 ; free physical = 8149 ; free virtual = 31889
+---------------------------------------------------------------------------------
+WARNING: [Synth 8-6901] identifier 'csr_irq_pending' is used before its declaration [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/tcpu_core.v:429]
+WARNING: [Synth 8-6901] identifier 'st_mpp' is used before its declaration [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/tcpu_csr.v:94]
+INFO: [Synth 8-11241] undeclared symbol 'M_AXI_rresp', assumed default net type 'wire' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/rocketchip_wrapper.v:301]
+INFO: [Synth 8-11241] undeclared symbol 'M_AXI_bresp', assumed default net type 'wire' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/rocketchip_wrapper.v:308]
+INFO: [Synth 8-6157] synthesizing module 'rocketchip_wrapper' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/rocketchip_wrapper.v:4]
+INFO: [Synth 8-6157] synthesizing module 'system' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/vivado-project/teaching_pynqz1.gen/sources_1/bd/system/synth/system.v:665]
+INFO: [Synth 8-6157] synthesizing module 'system_axi_interconnect_0_0' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/vivado-project/teaching_pynqz1.gen/sources_1/bd/system/synth/system.v:1332]
+INFO: [Synth 8-6157] synthesizing module 's00_couplers_imp_Y9JEWS' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/vivado-project/teaching_pynqz1.gen/sources_1/bd/system/synth/system.v:339]
+INFO: [Synth 8-6157] synthesizing module 'system_axi_interconnect_0_imp_auto_pc_0' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/vivado-project/teaching_pynqz1.runs/synth_1/.Xil/Vivado-1910-ubuntu/realtime/system_axi_interconnect_0_imp_auto_pc_0_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'system_axi_interconnect_0_imp_auto_pc_0' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/vivado-project/teaching_pynqz1.runs/synth_1/.Xil/Vivado-1910-ubuntu/realtime/system_axi_interconnect_0_imp_auto_pc_0_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 's00_couplers_imp_Y9JEWS' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/vivado-project/teaching_pynqz1.gen/sources_1/bd/system/synth/system.v:339]
+INFO: [Synth 8-6155] done synthesizing module 'system_axi_interconnect_0_0' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/vivado-project/teaching_pynqz1.gen/sources_1/bd/system/synth/system.v:1332]
+INFO: [Synth 8-6157] synthesizing module 'system_axi_interconnect_1_0' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/vivado-project/teaching_pynqz1.gen/sources_1/bd/system/synth/system.v:1666]
+INFO: [Synth 8-6157] synthesizing module 's00_couplers_imp_8CNLH6' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/vivado-project/teaching_pynqz1.gen/sources_1/bd/system/synth/system.v:13]
+INFO: [Synth 8-6157] synthesizing module 'system_axi_interconnect_1_imp_auto_pc_0' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/vivado-project/teaching_pynqz1.runs/synth_1/.Xil/Vivado-1910-ubuntu/realtime/system_axi_interconnect_1_imp_auto_pc_0_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'system_axi_interconnect_1_imp_auto_pc_0' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/vivado-project/teaching_pynqz1.runs/synth_1/.Xil/Vivado-1910-ubuntu/realtime/system_axi_interconnect_1_imp_auto_pc_0_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 's00_couplers_imp_8CNLH6' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/vivado-project/teaching_pynqz1.gen/sources_1/bd/system/synth/system.v:13]
+INFO: [Synth 8-6155] done synthesizing module 'system_axi_interconnect_1_0' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/vivado-project/teaching_pynqz1.gen/sources_1/bd/system/synth/system.v:1666]
+INFO: [Synth 8-6157] synthesizing module 'system_proc_sys_reset_0_0' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/vivado-project/teaching_pynqz1.runs/synth_1/.Xil/Vivado-1910-ubuntu/realtime/system_proc_sys_reset_0_0_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'system_proc_sys_reset_0_0' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/vivado-project/teaching_pynqz1.runs/synth_1/.Xil/Vivado-1910-ubuntu/realtime/system_proc_sys_reset_0_0_stub.v:6]
+WARNING: [Synth 8-7071] port 'mb_reset' of module 'system_proc_sys_reset_0_0' is unconnected for instance 'proc_sys_reset_0' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/vivado-project/teaching_pynqz1.gen/sources_1/bd/system/synth/system.v:1218]
+WARNING: [Synth 8-7071] port 'bus_struct_reset' of module 'system_proc_sys_reset_0_0' is unconnected for instance 'proc_sys_reset_0' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/vivado-project/teaching_pynqz1.gen/sources_1/bd/system/synth/system.v:1218]
+WARNING: [Synth 8-7071] port 'peripheral_reset' of module 'system_proc_sys_reset_0_0' is unconnected for instance 'proc_sys_reset_0' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/vivado-project/teaching_pynqz1.gen/sources_1/bd/system/synth/system.v:1218]
+WARNING: [Synth 8-7023] instance 'proc_sys_reset_0' of module 'system_proc_sys_reset_0_0' has 10 connections declared, but only 7 given [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/vivado-project/teaching_pynqz1.gen/sources_1/bd/system/synth/system.v:1218]
+INFO: [Synth 8-6157] synthesizing module 'system_processing_system7_0_0' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/vivado-project/teaching_pynqz1.runs/synth_1/.Xil/Vivado-1910-ubuntu/realtime/system_processing_system7_0_0_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'system_processing_system7_0_0' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/vivado-project/teaching_pynqz1.runs/synth_1/.Xil/Vivado-1910-ubuntu/realtime/system_processing_system7_0_0_stub.v:6]
+WARNING: [Synth 8-7071] port 'USB0_PORT_INDCTL' of module 'system_processing_system7_0_0' is unconnected for instance 'processing_system7_0' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/vivado-project/teaching_pynqz1.gen/sources_1/bd/system/synth/system.v:1226]
+WARNING: [Synth 8-7071] port 'USB0_VBUS_PWRSELECT' of module 'system_processing_system7_0_0' is unconnected for instance 'processing_system7_0' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/vivado-project/teaching_pynqz1.gen/sources_1/bd/system/synth/system.v:1226]
+WARNING: [Synth 8-7071] port 'S_AXI_HP0_RCOUNT' of module 'system_processing_system7_0_0' is unconnected for instance 'processing_system7_0' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/vivado-project/teaching_pynqz1.gen/sources_1/bd/system/synth/system.v:1226]
+WARNING: [Synth 8-7071] port 'S_AXI_HP0_WCOUNT' of module 'system_processing_system7_0_0' is unconnected for instance 'processing_system7_0' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/vivado-project/teaching_pynqz1.gen/sources_1/bd/system/synth/system.v:1226]
+WARNING: [Synth 8-7071] port 'S_AXI_HP0_RACOUNT' of module 'system_processing_system7_0_0' is unconnected for instance 'processing_system7_0' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/vivado-project/teaching_pynqz1.gen/sources_1/bd/system/synth/system.v:1226]
+WARNING: [Synth 8-7071] port 'S_AXI_HP0_WACOUNT' of module 'system_processing_system7_0_0' is unconnected for instance 'processing_system7_0' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/vivado-project/teaching_pynqz1.gen/sources_1/bd/system/synth/system.v:1226]
+WARNING: [Synth 8-7071] port 'FCLK_CLK0' of module 'system_processing_system7_0_0' is unconnected for instance 'processing_system7_0' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/vivado-project/teaching_pynqz1.gen/sources_1/bd/system/synth/system.v:1226]
+WARNING: [Synth 8-7023] instance 'processing_system7_0' of module 'system_processing_system7_0_0' has 110 connections declared, but only 103 given [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/vivado-project/teaching_pynqz1.gen/sources_1/bd/system/synth/system.v:1226]
+INFO: [Synth 8-6155] done synthesizing module 'system' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/vivado-project/teaching_pynqz1.gen/sources_1/bd/system/synth/system.v:665]
+INFO: [Synth 8-6157] synthesizing module 'Top' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/teaching_top_shim.v:19]
+INFO: [Synth 8-6157] synthesizing module 'RD2BoardTop' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:146825]
+INFO: [Synth 8-6157] synthesizing module 'RD2ZynqTop' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:55566]
+INFO: [Synth 8-6157] synthesizing module 'IntXbar' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:1]
+INFO: [Synth 8-6155] done synthesizing module 'IntXbar' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:1]
+INFO: [Synth 8-6157] synthesizing module 'SystemBus' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:5308]
+INFO: [Synth 8-6157] synthesizing module 'TLXbar' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:7]
+INFO: [Synth 8-6155] done synthesizing module 'TLXbar' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:7]
+INFO: [Synth 8-6157] synthesizing module 'TLSplitter' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:3113]
+INFO: [Synth 8-6155] done synthesizing module 'TLSplitter' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:3113]
+INFO: [Synth 8-6157] synthesizing module 'SimpleLazyModule' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:3398]
+INFO: [Synth 8-6157] synthesizing module 'TLFIFOFixer' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:3284]
+INFO: [Synth 8-6155] done synthesizing module 'TLFIFOFixer' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:3284]
+INFO: [Synth 8-6157] synthesizing module 'TLWidthWidget' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:3341]
+INFO: [Synth 8-6155] done synthesizing module 'TLWidthWidget' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:3341]
+INFO: [Synth 8-6155] done synthesizing module 'SimpleLazyModule' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:3398]
+INFO: [Synth 8-6157] synthesizing module 'SimpleLazyModule_2' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:3731]
+INFO: [Synth 8-6155] done synthesizing module 'SimpleLazyModule_2' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:3731]
+INFO: [Synth 8-6157] synthesizing module 'SimpleLazyModule_3' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:4339]
+INFO: [Synth 8-6157] synthesizing module 'TLBuffer_1' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:4222]
+INFO: [Synth 8-6157] synthesizing module 'Queue' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:3788]
+INFO: [Synth 8-6155] done synthesizing module 'Queue' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:3788]
+INFO: [Synth 8-6157] synthesizing module 'Queue_1' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:3957]
+INFO: [Synth 8-6155] done synthesizing module 'Queue_1' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:3957]
+INFO: [Synth 8-6155] done synthesizing module 'TLBuffer_1' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:4222]
+INFO: [Synth 8-6155] done synthesizing module 'SimpleLazyModule_3' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:4339]
+INFO: [Synth 8-6157] synthesizing module 'SimpleLazyModule_4' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:4544]
+INFO: [Synth 8-6157] synthesizing module 'TLBuffer_2' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:4448]
+INFO: [Synth 8-6155] done synthesizing module 'TLBuffer_2' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:4448]
+INFO: [Synth 8-6157] synthesizing module 'TLFIFOFixer_1' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:4496]
+INFO: [Synth 8-6155] done synthesizing module 'TLFIFOFixer_1' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:4496]
+INFO: [Synth 8-6155] done synthesizing module 'SimpleLazyModule_4' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:4544]
+INFO: [Synth 8-6157] synthesizing module 'SimpleLazyModule_5' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:4924]
+INFO: [Synth 8-6157] synthesizing module 'TLBuffer_3' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:4744]
+INFO: [Synth 8-6155] done synthesizing module 'TLBuffer_3' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:4744]
+INFO: [Synth 8-6157] synthesizing module 'TLFIFOFixer_2' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:4834]
+INFO: [Synth 8-6155] done synthesizing module 'TLFIFOFixer_2' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:4834]
+INFO: [Synth 8-6155] done synthesizing module 'SimpleLazyModule_5' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:4924]
+INFO: [Synth 8-6155] done synthesizing module 'SystemBus' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:5308]
+INFO: [Synth 8-6157] synthesizing module 'PeripheryBus' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:14625]
+INFO: [Synth 8-6157] synthesizing module 'TLXbar_1' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:6565]
+INFO: [Synth 8-6155] done synthesizing module 'TLXbar_1' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:6565]
+INFO: [Synth 8-6157] synthesizing module 'SimpleLazyModule_7' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:10302]
+INFO: [Synth 8-6157] synthesizing module 'TLBuffer_5' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:8298]
+INFO: [Synth 8-6157] synthesizing module 'Queue_2' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:7760]
+INFO: [Synth 8-6155] done synthesizing module 'Queue_2' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:7760]
+INFO: [Synth 8-6157] synthesizing module 'Queue_3' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:8029]
+INFO: [Synth 8-6155] done synthesizing module 'Queue_3' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:8029]
+INFO: [Synth 8-6155] done synthesizing module 'TLBuffer_5' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:8298]
+INFO: [Synth 8-6157] synthesizing module 'TLAtomicAutomata' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:8463]
+INFO: [Synth 8-6155] done synthesizing module 'TLAtomicAutomata' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:8463]
+INFO: [Synth 8-6155] done synthesizing module 'SimpleLazyModule_7' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:10302]
+INFO: [Synth 8-6157] synthesizing module 'SimpleLazyModule_8' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:11185]
+INFO: [Synth 8-6157] synthesizing module 'TLFragmenter' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:10682]
+INFO: [Synth 8-6157] synthesizing module 'Repeater' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:10557]
+INFO: [Synth 8-6155] done synthesizing module 'Repeater' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:10557]
+INFO: [Synth 8-6155] done synthesizing module 'TLFragmenter' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:10682]
+INFO: [Synth 8-6157] synthesizing module 'TLBuffer_7' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:11137]
+INFO: [Synth 8-6155] done synthesizing module 'TLBuffer_7' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:11137]
+INFO: [Synth 8-6155] done synthesizing module 'SimpleLazyModule_8' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:11185]
+INFO: [Synth 8-6157] synthesizing module 'SimpleLazyModule_9' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:12034]
+INFO: [Synth 8-6157] synthesizing module 'TLFragmenter_1' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:11516]
+INFO: [Synth 8-6157] synthesizing module 'Repeater_1' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:11391]
+INFO: [Synth 8-6155] done synthesizing module 'Repeater_1' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:11391]
+INFO: [Synth 8-6155] done synthesizing module 'TLFragmenter_1' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:11516]
+INFO: [Synth 8-6157] synthesizing module 'TLBuffer_8' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:11980]
+INFO: [Synth 8-6155] done synthesizing module 'TLBuffer_8' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:11980]
+INFO: [Synth 8-6155] done synthesizing module 'SimpleLazyModule_9' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:12034]
+INFO: [Synth 8-6157] synthesizing module 'SimpleLazyModule_10' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:12895]
+INFO: [Synth 8-6157] synthesizing module 'TLFragmenter_2' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:12392]
+INFO: [Synth 8-6157] synthesizing module 'Repeater_2' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:12267]
+INFO: [Synth 8-6155] done synthesizing module 'Repeater_2' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:12267]
+INFO: [Synth 8-6155] done synthesizing module 'TLFragmenter_2' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:12392]
+INFO: [Synth 8-6157] synthesizing module 'TLBuffer_9' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:12847]
+INFO: [Synth 8-6155] done synthesizing module 'TLBuffer_9' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:12847]
+INFO: [Synth 8-6155] done synthesizing module 'SimpleLazyModule_10' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:12895]
+INFO: [Synth 8-6157] synthesizing module 'SimpleLazyModule_11' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:13656]
+INFO: [Synth 8-6157] synthesizing module 'TLFragmenter_3' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:13214]
+INFO: [Synth 8-6157] synthesizing module 'Repeater_3' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:13101]
+INFO: [Synth 8-6155] done synthesizing module 'Repeater_3' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:13101]
+INFO: [Synth 8-6155] done synthesizing module 'TLFragmenter_3' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:13214]
+INFO: [Synth 8-6157] synthesizing module 'TLBuffer_10' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:13617]
+INFO: [Synth 8-6155] done synthesizing module 'TLBuffer_10' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:13617]
+INFO: [Synth 8-6155] done synthesizing module 'SimpleLazyModule_11' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:13656]
+INFO: [Synth 8-6157] synthesizing module 'SimpleLazyModule_13' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:14399]
+INFO: [Synth 8-6157] synthesizing module 'TLFragmenter_5' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:13944]
+INFO: [Synth 8-6157] synthesizing module 'Repeater_5' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:13819]
+INFO: [Synth 8-6155] done synthesizing module 'Repeater_5' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:13819]
+INFO: [Synth 8-6155] done synthesizing module 'TLFragmenter_5' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:13944]
+INFO: [Synth 8-6155] done synthesizing module 'SimpleLazyModule_13' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:14399]
+INFO: [Synth 8-6155] done synthesizing module 'PeripheryBus' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:14625]
+INFO: [Synth 8-6157] synthesizing module 'AtomicBackend' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:15848]
+INFO: [Synth 8-6157] synthesizing module 'Queue_6' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:15744]
+INFO: [Synth 8-6155] done synthesizing module 'Queue_6' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:15744]
+INFO: [Synth 8-6155] done synthesizing module 'AtomicBackend' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:15848]
+INFO: [Synth 8-6157] synthesizing module 'TLBroadcast' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:18640]
+INFO: [Synth 8-6157] synthesizing module 'TLBroadcastTracker' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:17308]
+INFO: [Synth 8-6157] synthesizing module 'Queue_7' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:17164]
+INFO: [Synth 8-6155] done synthesizing module 'Queue_7' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:17164]
+INFO: [Synth 8-6155] done synthesizing module 'TLBroadcastTracker' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:17308]
+INFO: [Synth 8-6157] synthesizing module 'TLBroadcastTracker_1' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:17641]
+INFO: [Synth 8-6155] done synthesizing module 'TLBroadcastTracker_1' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:17641]
+INFO: [Synth 8-6157] synthesizing module 'TLBroadcastTracker_2' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:17974]
+INFO: [Synth 8-6155] done synthesizing module 'TLBroadcastTracker_2' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:17974]
+INFO: [Synth 8-6157] synthesizing module 'TLBroadcastTracker_3' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:18307]
+INFO: [Synth 8-6155] done synthesizing module 'TLBroadcastTracker_3' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:18307]
+INFO: [Synth 8-6155] done synthesizing module 'TLBroadcast' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:18640]
+INFO: [Synth 8-6157] synthesizing module 'TLWidthWidget_1' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:20026]
+INFO: [Synth 8-6155] done synthesizing module 'TLWidthWidget_1' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:20026]
+INFO: [Synth 8-6157] synthesizing module 'MemoryBus' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:25938]
+INFO: [Synth 8-6157] synthesizing module 'TLXbar_3' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:20077]
+INFO: [Synth 8-6155] done synthesizing module 'TLXbar_3' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:20077]
+INFO: [Synth 8-6157] synthesizing module 'SimpleLazyModule_15' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:20287]
+INFO: [Synth 8-6157] synthesizing module 'TLFilter' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:20236]
+INFO: [Synth 8-6155] done synthesizing module 'TLFilter' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:20236]
+INFO: [Synth 8-6155] done synthesizing module 'SimpleLazyModule_15' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:20287]
+INFO: [Synth 8-6157] synthesizing module 'SimpleLazyModule_16' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:25213]
+INFO: [Synth 8-6157] synthesizing module 'AXI4UserYanker' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:20581]
+INFO: [Synth 8-6157] synthesizing module 'Queue_11' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:20502]
+INFO: [Synth 8-6155] done synthesizing module 'Queue_11' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:20502]
+INFO: [Synth 8-6155] done synthesizing module 'AXI4UserYanker' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:20581]
+INFO: [Synth 8-6157] synthesizing module 'AXI4IdIndexer' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:22621]
+INFO: [Synth 8-6155] done synthesizing module 'AXI4IdIndexer' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:22621]
+INFO: [Synth 8-6157] synthesizing module 'TLToAXI4' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:23232]
+INFO: [Synth 8-6157] synthesizing module 'Queue_43' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:22747]
+INFO: [Synth 8-6155] done synthesizing module 'Queue_43' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:22747]
+INFO: [Synth 8-6157] synthesizing module 'Queue_44' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:22892]
+INFO: [Synth 8-6155] done synthesizing module 'Queue_44' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:22892]
+INFO: [Synth 8-6155] done synthesizing module 'TLToAXI4' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:23232]
+INFO: [Synth 8-6155] done synthesizing module 'SimpleLazyModule_16' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:25213]
+INFO: [Synth 8-6155] done synthesizing module 'MemoryBus' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:25938]
+INFO: [Synth 8-6157] synthesizing module 'TLPLIC' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:26565]
+INFO: [Synth 8-6157] synthesizing module 'LevelGateway' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:26333]
+INFO: [Synth 8-6155] done synthesizing module 'LevelGateway' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:26333]
+INFO: [Synth 8-6157] synthesizing module 'Queue_45' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:26386]
+INFO: [Synth 8-6155] done synthesizing module 'Queue_45' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:26386]
+INFO: [Synth 8-6155] done synthesizing module 'TLPLIC' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:26565]
+INFO: [Synth 8-6157] synthesizing module 'CLINT' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:27368]
+INFO: [Synth 8-6155] done synthesizing module 'CLINT' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:27368]
+INFO: [Synth 8-6157] synthesizing module 'TLDebugModule' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:48422]
+INFO: [Synth 8-6157] synthesizing module 'TLDebugModuleOuterAsync' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:29445]
+WARNING: [Synth 8-4446] all outputs are unconnected for this instance and logic may be removed [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:29507]
+INFO: [Synth 8-6157] synthesizing module 'TLXbar_4' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:27705]
+INFO: [Synth 8-6155] done synthesizing module 'TLXbar_4' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:27705]
+INFO: [Synth 8-6157] synthesizing module 'TLDebugModuleOuter' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:28519]
+INFO: [Synth 8-6157] synthesizing module 'AsyncResetRegVec_w32_i0' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:27914]
+INFO: [Synth 8-6157] synthesizing module 'AsyncResetReg' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/AsyncResetReg.v:40]
+WARNING: [Synth 8-6896] if statement with non-constant condition is inside initial block, initial block items will be ignored [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/AsyncResetReg.v:54]
+INFO: [Synth 8-6155] done synthesizing module 'AsyncResetReg' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/AsyncResetReg.v:40]
+INFO: [Synth 8-6155] done synthesizing module 'AsyncResetRegVec_w32_i0' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:27914]
+INFO: [Synth 8-6157] synthesizing module 'AsyncResetRegVec_w1_i0' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:28494]
+INFO: [Synth 8-6155] done synthesizing module 'AsyncResetRegVec_w1_i0' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:28494]
+INFO: [Synth 8-6155] done synthesizing module 'TLDebugModuleOuter' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:28519]
+INFO: [Synth 8-6157] synthesizing module 'TLAsyncCrossingSource' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:29209]
+INFO: [Synth 8-6157] synthesizing module 'AsyncQueueSource' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:28837]
+INFO: [Synth 8-6157] synthesizing module 'AsyncResetSynchronizerShiftReg_w1_d3_i0' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:28623]
+INFO: [Synth 8-6155] done synthesizing module 'AsyncResetSynchronizerShiftReg_w1_d3_i0' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:28623]
+INFO: [Synth 8-6157] synthesizing module 'AsyncValidSync' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:28751]
+INFO: [Synth 8-6157] synthesizing module 'AsyncResetSynchronizerShiftReg_w1_d4_i0' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:28679]
+INFO: [Synth 8-6155] done synthesizing module 'AsyncResetSynchronizerShiftReg_w1_d4_i0' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:28679]
+INFO: [Synth 8-6155] done synthesizing module 'AsyncValidSync' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:28751]
+INFO: [Synth 8-6157] synthesizing module 'AsyncValidSync_1' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:28795]
+INFO: [Synth 8-6157] synthesizing module 'AsyncResetSynchronizerShiftReg_w1_d1_i0' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:28771]
+INFO: [Synth 8-6155] done synthesizing module 'AsyncResetSynchronizerShiftReg_w1_d1_i0' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:28771]
+INFO: [Synth 8-6155] done synthesizing module 'AsyncValidSync_1' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:28795]
+INFO: [Synth 8-6157] synthesizing module 'AsyncValidSync_2' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:28816]
+INFO: [Synth 8-6155] done synthesizing module 'AsyncValidSync_2' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:28816]
+INFO: [Synth 8-6155] done synthesizing module 'AsyncQueueSource' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:28837]
+INFO: [Synth 8-6157] synthesizing module 'AsyncQueueSink' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:29004]
+INFO: [Synth 8-6157] synthesizing module 'SynchronizerShiftReg_w42_d1' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:28968]
+INFO: [Synth 8-6155] done synthesizing module 'SynchronizerShiftReg_w42_d1' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:28968]
+INFO: [Synth 8-6155] done synthesizing module 'AsyncQueueSink' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:29004]
+INFO: [Synth 8-6155] done synthesizing module 'TLAsyncCrossingSource' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:29209]
+INFO: [Synth 8-6157] synthesizing module 'AsyncQueueSource_1' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:29314]
+INFO: [Synth 8-6155] done synthesizing module 'AsyncQueueSource_1' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:29314]
+INFO: [Synth 8-6155] done synthesizing module 'TLDebugModuleOuterAsync' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:29445]
+INFO: [Synth 8-6157] synthesizing module 'TLDebugModuleInnerAsync' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:48143]
+INFO: [Common 17-14] Message 'Synth 8-6157' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+INFO: [Synth 8-6155] done synthesizing module 'TLDebugModuleInner' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:29584]
+INFO: [Synth 8-6155] done synthesizing module 'SynchronizerShiftReg_w54_d1' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:47317]
+INFO: [Synth 8-6155] done synthesizing module 'AsyncQueueSink_1' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:47353]
+INFO: [Synth 8-6155] done synthesizing module 'AsyncQueueSource_2' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:47557]
+INFO: [Synth 8-6155] done synthesizing module 'TLAsyncCrossingSink' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:47765]
+INFO: [Synth 8-6155] done synthesizing module 'SynchronizerShiftReg_w12_d1' (0#1) [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:47908]
+INFO: [Common 17-14] Message 'Synth 8-6155' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+	Parameter RESET_PC bound to: 64'b0000000000000000000000000000000000000000000000010000000001000000 
+	Parameter MISA_A bound to: 1 - type: integer 
+	Parameter FAULT_C_IMM bound to: 0 - type: integer 
+	Parameter FAULT_C_REG bound to: 0 - type: integer 
+	Parameter X0_WRITABLE bound to: 0 - type: integer 
+	Parameter FAULT_PTW_NO_PERM bound to: 0 - type: integer 
+	Parameter MISA_A bound to: 1 - type: integer 
+	Parameter TRAP_BAD_MEPC bound to: 0 - type: integer 
+	Parameter TRAP_COUNTS_RET bound to: 0 - type: integer 
+	Parameter ALLOW_RO_WRITE bound to: 0 - type: integer 
+	Parameter FAULT_NO_DELEG bound to: 0 - type: integer 
+	Parameter FAULT_S_IRQ_IN_M bound to: 0 - type: integer 
+	Parameter FAULT_SRET_SPP bound to: 0 - type: integer 
+	Parameter FAULT_W_SEXT bound to: 0 - type: integer 
+	Parameter FAULT_MULH_SIGN bound to: 0 - type: integer 
+WARNING: [Synth 8-689] width (4) of port connection 'dbg_csr_sel' does not match port width (5) of module 'tcpu_core' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:55506]
+WARNING: [Synth 8-7071] port 'commit_len' of module 'tcpu_core' is unconnected for instance 'core' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:55497]
+WARNING: [Synth 8-7071] port 'dbg_priv' of module 'tcpu_core' is unconnected for instance 'core' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:55497]
+WARNING: [Synth 8-7023] instance 'core' of module 'tcpu_core' has 45 connections declared, but only 43 given [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:55497]
+WARNING: [Synth 8-689] width (32) of port connection 'io_ps_axi_slave_aw_bits_addr' does not match port width (31) of module 'Top' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/rocketchip_wrapper.v:270]
+WARNING: [Synth 8-689] width (32) of port connection 'io_ps_axi_slave_ar_bits_addr' does not match port width (31) of module 'Top' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/rocketchip_wrapper.v:282]
+WARNING: [Synth 8-689] width (1) of port connection 'io_ps_axi_slave_r_bits_resp' does not match port width (2) of module 'Top' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/rocketchip_wrapper.v:301]
+WARNING: [Synth 8-689] width (1) of port connection 'io_ps_axi_slave_b_bits_resp' does not match port width (2) of module 'Top' [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/rocketchip_wrapper.v:308]
+	Parameter BANDWIDTH bound to: OPTIMIZED - type: string 
+	Parameter CLKFBOUT_MULT_F bound to: 8.000000e+00 - type: double 
+	Parameter CLKFBOUT_PHASE bound to: 0.000000e+00 - type: double 
+	Parameter CLKIN1_PERIOD bound to: 8.000000e+00 - type: double 
+	Parameter CLKOUT0_DIVIDE_F bound to: 2.500000e+01 - type: double 
+	Parameter CLKOUT0_DUTY_CYCLE bound to: 5.000000e-01 - type: double 
+	Parameter CLKOUT0_PHASE bound to: 0.000000e+00 - type: double 
+	Parameter CLKOUT1_DIVIDE bound to: 1 - type: integer 
+	Parameter CLKOUT1_DUTY_CYCLE bound to: 5.000000e-01 - type: double 
+	Parameter CLKOUT1_PHASE bound to: 0.000000e+00 - type: double 
+	Parameter CLKOUT2_DIVIDE bound to: 1 - type: integer 
+	Parameter CLKOUT2_DUTY_CYCLE bound to: 5.000000e-01 - type: double 
+	Parameter CLKOUT2_PHASE bound to: 0.000000e+00 - type: double 
+	Parameter CLKOUT3_DIVIDE bound to: 1 - type: integer 
+	Parameter CLKOUT3_DUTY_CYCLE bound to: 5.000000e-01 - type: double 
+	Parameter CLKOUT3_PHASE bound to: 0.000000e+00 - type: double 
+	Parameter CLKOUT4_CASCADE bound to: FALSE - type: string 
+	Parameter CLKOUT4_DIVIDE bound to: 1 - type: integer 
+	Parameter CLKOUT4_DUTY_CYCLE bound to: 5.000000e-01 - type: double 
+	Parameter CLKOUT4_PHASE bound to: 0.000000e+00 - type: double 
+	Parameter CLKOUT5_DIVIDE bound to: 1 - type: integer 
+	Parameter CLKOUT5_DUTY_CYCLE bound to: 5.000000e-01 - type: double 
+	Parameter CLKOUT5_PHASE bound to: 0.000000e+00 - type: double 
+	Parameter CLKOUT6_DIVIDE bound to: 1 - type: integer 
+	Parameter CLKOUT6_DUTY_CYCLE bound to: 5.000000e-01 - type: double 
+	Parameter CLKOUT6_PHASE bound to: 0.000000e+00 - type: double 
+	Parameter DIVCLK_DIVIDE bound to: 1 - type: integer 
+	Parameter REF_JITTER1 bound to: 0.000000e+00 - type: double 
+	Parameter STARTUP_WAIT bound to: FALSE - type: string 
+WARNING: [Synth 8-4767] Trying to implement RAM 'ram_lr_reg' in registers. Block RAM or DRAM implementation is not possible; see log for reasons. [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:15779]
+Reason is one or more of the following :
+	1: Write port has constant address. 
+	2: No valid read/write found for RAM. 
+	2: Only 1 word in RAM 
+WARNING: [Synth 8-4767] Trying to implement RAM 'ram_sc_reg' in registers. Block RAM or DRAM implementation is not possible; see log for reasons. [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:15786]
+Reason is one or more of the following :
+	1: Write port has constant address. 
+	2: No valid read/write found for RAM. 
+	2: Only 1 word in RAM 
+WARNING: [Synth 8-4767] Trying to implement RAM 'ram_reg' in registers. Block RAM or DRAM implementation is not possible; see log for reasons. [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:20527]
+Reason is one or more of the following :
+	1: Write port has constant address. 
+	2: No valid read/write found for RAM. 
+	2: Only 1 word in RAM 
+WARNING: [Synth 8-4767] Trying to implement RAM 'ram_data_reg' in registers. Block RAM or DRAM implementation is not possible; see log for reasons. [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:22796]
+Reason is one or more of the following :
+	1: Write port has constant address. 
+	2: No valid read/write found for RAM. 
+	2: Only 1 word in RAM 
+WARNING: [Synth 8-4767] Trying to implement RAM 'ram_strb_reg' in registers. Block RAM or DRAM implementation is not possible; see log for reasons. [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:22803]
+Reason is one or more of the following :
+	1: Write port has constant address. 
+	2: No valid read/write found for RAM. 
+	2: Only 1 word in RAM 
+WARNING: [Synth 8-4767] Trying to implement RAM 'ram_last_reg' in registers. Block RAM or DRAM implementation is not possible; see log for reasons. [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:22809]
+Reason is one or more of the following :
+	1: Write port has constant address. 
+	2: No valid read/write found for RAM. 
+	2: Only 1 word in RAM 
+WARNING: [Synth 8-4767] Trying to implement RAM 'ram_id_reg' in registers. Block RAM or DRAM implementation is not possible; see log for reasons. [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:23016]
+Reason is one or more of the following :
+	1: Write port has constant address. 
+	2: No valid read/write found for RAM. 
+	2: Only 1 word in RAM 
+WARNING: [Synth 8-4767] Trying to implement RAM 'ram_addr_reg' in registers. Block RAM or DRAM implementation is not possible; see log for reasons. [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:23023]
+Reason is one or more of the following :
+	1: Write port has constant address. 
+	2: No valid read/write found for RAM. 
+	2: Only 1 word in RAM 
+WARNING: [Synth 8-4767] Trying to implement RAM 'ram_len_reg' in registers. Block RAM or DRAM implementation is not possible; see log for reasons. [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:23029]
+Reason is one or more of the following :
+	1: Write port has constant address. 
+	2: No valid read/write found for RAM. 
+	2: Only 1 word in RAM 
+WARNING: [Synth 8-4767] Trying to implement RAM 'ram_size_reg' in registers. Block RAM or DRAM implementation is not possible; see log for reasons. [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:23035]
+Reason is one or more of the following :
+	1: Write port has constant address. 
+	2: No valid read/write found for RAM. 
+	2: Only 1 word in RAM 
+WARNING: [Synth 8-4767] Trying to implement RAM 'ram_burst_reg' in registers. Block RAM or DRAM implementation is not possible; see log for reasons. [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:23041]
+Reason is one or more of the following :
+	1: Only 1 word in RAM 
+WARNING: [Synth 8-4767] Trying to implement RAM 'ram_lock_reg' in registers. Block RAM or DRAM implementation is not possible; see log for reasons. [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:23047]
+Reason is one or more of the following :
+	1: Only 1 word in RAM 
+WARNING: [Synth 8-4767] Trying to implement RAM 'ram_cache_reg' in registers. Block RAM or DRAM implementation is not possible; see log for reasons. [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:23053]
+Reason is one or more of the following :
+	1: Only 1 word in RAM 
+WARNING: [Synth 8-4767] Trying to implement RAM 'ram_prot_reg' in registers. Block RAM or DRAM implementation is not possible; see log for reasons. [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:23059]
+Reason is one or more of the following :
+	1: Only 1 word in RAM 
+WARNING: [Synth 8-4767] Trying to implement RAM 'ram_qos_reg' in registers. Block RAM or DRAM implementation is not possible; see log for reasons. [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:23065]
+Reason is one or more of the following :
+	1: Only 1 word in RAM 
+WARNING: [Synth 8-4767] Trying to implement RAM 'ram_user_reg' in registers. Block RAM or DRAM implementation is not possible; see log for reasons. [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:23071]
+Reason is one or more of the following :
+	1: Write port has constant address. 
+	2: No valid read/write found for RAM. 
+	2: Only 1 word in RAM 
+WARNING: [Synth 8-4767] Trying to implement RAM 'ram_wen_reg' in registers. Block RAM or DRAM implementation is not possible; see log for reasons. [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:23077]
+Reason is one or more of the following :
+	1: Write port has constant address. 
+	2: No valid read/write found for RAM. 
+	2: Only 1 word in RAM 
+WARNING: [Synth 8-4767] Trying to implement RAM 'ram_read_reg' in registers. Block RAM or DRAM implementation is not possible; see log for reasons. [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:26451]
+Reason is one or more of the following :
+	1: Write port has constant address. 
+	2: No valid read/write found for RAM. 
+	2: Only 1 word in RAM 
+WARNING: [Synth 8-4767] Trying to implement RAM 'ram_index_reg' in registers. Block RAM or DRAM implementation is not possible; see log for reasons. [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:26458]
+Reason is one or more of the following :
+	1: Write port has constant address. 
+	2: No valid read/write found for RAM. 
+	2: Only 1 word in RAM 
+WARNING: [Synth 8-4767] Trying to implement RAM 'ram_data_reg' in registers. Block RAM or DRAM implementation is not possible; see log for reasons. [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:26464]
+Reason is one or more of the following :
+	1: Write port has constant address. 
+	2: No valid read/write found for RAM. 
+	2: Only 1 word in RAM 
+WARNING: [Synth 8-4767] Trying to implement RAM 'ram_mask_reg' in registers. Block RAM or DRAM implementation is not possible; see log for reasons. [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:26470]
+Reason is one or more of the following :
+	1: Write port has constant address. 
+	2: No valid read/write found for RAM. 
+	2: Only 1 word in RAM 
+WARNING: [Synth 8-4767] Trying to implement RAM 'ram_extra_reg' in registers. Block RAM or DRAM implementation is not possible; see log for reasons. [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:26476]
+Reason is one or more of the following :
+	1: Write port has constant address. 
+	2: No valid read/write found for RAM. 
+	2: Only 1 word in RAM 
+WARNING: [Synth 8-4767] Trying to implement RAM 'ram_opcode_reg' in registers. Block RAM or DRAM implementation is not possible; see log for reasons. [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:48661]
+Reason is one or more of the following :
+	1: Write port has constant address. 
+	2: No valid read/write found for RAM. 
+	2: Only 1 word in RAM 
+WARNING: [Synth 8-4767] Trying to implement RAM 'ram_size_reg' in registers. Block RAM or DRAM implementation is not possible; see log for reasons. [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:48668]
+Reason is one or more of the following :
+	1: Write port has constant address. 
+	2: No valid read/write found for RAM. 
+	2: Only 1 word in RAM 
+WARNING: [Synth 8-4767] Trying to implement RAM 'ram_source_reg' in registers. Block RAM or DRAM implementation is not possible; see log for reasons. [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:48674]
+Reason is one or more of the following :
+	1: Write port has constant address. 
+	2: No valid read/write found for RAM. 
+	2: Only 1 word in RAM 
+WARNING: [Synth 8-4767] Trying to implement RAM 'ram_read_reg' in registers. Block RAM or DRAM implementation is not possible; see log for reasons. [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:51847]
+Reason is one or more of the following :
+	1: Write port has constant address. 
+	2: No valid read/write found for RAM. 
+	2: Only 1 word in RAM 
+WARNING: [Synth 8-4767] Trying to implement RAM 'ram_index_reg' in registers. Block RAM or DRAM implementation is not possible; see log for reasons. [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:51854]
+Reason is one or more of the following :
+	1: Write port has constant address. 
+	2: No valid read/write found for RAM. 
+	2: Only 1 word in RAM 
+WARNING: [Synth 8-4767] Trying to implement RAM 'ram_data_reg' in registers. Block RAM or DRAM implementation is not possible; see log for reasons. [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:51860]
+Reason is one or more of the following :
+	1: Write port has constant address. 
+	2: No valid read/write found for RAM. 
+	2: Only 1 word in RAM 
+WARNING: [Synth 8-4767] Trying to implement RAM 'ram_mask_reg' in registers. Block RAM or DRAM implementation is not possible; see log for reasons. [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:51866]
+Reason is one or more of the following :
+	1: Write port has constant address. 
+	2: No valid read/write found for RAM. 
+	2: Only 1 word in RAM 
+WARNING: [Synth 8-4767] Trying to implement RAM 'ram_extra_reg' in registers. Block RAM or DRAM implementation is not possible; see log for reasons. [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:51872]
+Reason is one or more of the following :
+	1: Write port has constant address. 
+	2: No valid read/write found for RAM. 
+	2: Only 1 word in RAM 
+WARNING: [Synth 8-6014] Unused sequential element withdrawn_reg was removed.  [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/tcpu_core.v:515]
+WARNING: [Synth 8-6014] Unused sequential element take_trap_reg was removed.  [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/tcpu_core.v:621]
+WARNING: [Synth 8-6014] Unused sequential element commit_valid_reg was removed.  [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/tcpu_core.v:506]
+WARNING: [Synth 8-6014] Unused sequential element trap_enter_reg was removed.  [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/tcpu_core.v:465]
+WARNING: [Synth 8-4767] Trying to implement RAM 'ram_read_reg' in registers. Block RAM or DRAM implementation is not possible; see log for reasons. [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:58343]
+Reason is one or more of the following :
+	1: Write port has constant address. 
+	2: No valid read/write found for RAM. 
+	2: Only 1 word in RAM 
+WARNING: [Synth 8-4767] Trying to implement RAM 'ram_index_reg' in registers. Block RAM or DRAM implementation is not possible; see log for reasons. [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:58350]
+Reason is one or more of the following :
+	1: Write port has constant address. 
+	2: No valid read/write found for RAM. 
+	2: Only 1 word in RAM 
+WARNING: [Synth 8-4767] Trying to implement RAM 'ram_data_reg' in registers. Block RAM or DRAM implementation is not possible; see log for reasons. [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:58356]
+Reason is one or more of the following :
+	1: Write port has constant address. 
+	2: No valid read/write found for RAM. 
+	2: Only 1 word in RAM 
+WARNING: [Synth 8-4767] Trying to implement RAM 'ram_mask_reg' in registers. Block RAM or DRAM implementation is not possible; see log for reasons. [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:58362]
+Reason is one or more of the following :
+	1: Write port has constant address. 
+	2: No valid read/write found for RAM. 
+	2: Only 1 word in RAM 
+WARNING: [Synth 8-4767] Trying to implement RAM 'ram_extra_reg' in registers. Block RAM or DRAM implementation is not possible; see log for reasons. [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:58368]
+Reason is one or more of the following :
+	1: Write port has constant address. 
+	2: No valid read/write found for RAM. 
+	2: Only 1 word in RAM 
+WARNING: [Synth 8-4767] Trying to implement RAM 'ram_id_reg' in registers. Block RAM or DRAM implementation is not possible; see log for reasons. [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:59595]
+Reason is one or more of the following :
+	1: Write port has constant address. 
+	2: No valid read/write found for RAM. 
+	2: Only 1 word in RAM 
+WARNING: [Synth 8-4767] Trying to implement RAM 'ram_addr_reg' in registers. Block RAM or DRAM implementation is not possible; see log for reasons. [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:59602]
+Reason is one or more of the following :
+	1: Write port has constant address. 
+	2: No valid read/write found for RAM. 
+	2: Only 1 word in RAM 
+WARNING: [Synth 8-4767] Trying to implement RAM 'ram_len_reg' in registers. Block RAM or DRAM implementation is not possible; see log for reasons. [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:59608]
+Reason is one or more of the following :
+	1: Write port has constant address. 
+	2: No valid read/write found for RAM. 
+	2: Only 1 word in RAM 
+WARNING: [Synth 8-4767] Trying to implement RAM 'ram_size_reg' in registers. Block RAM or DRAM implementation is not possible; see log for reasons. [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:59614]
+Reason is one or more of the following :
+	1: Write port has constant address. 
+	2: No valid read/write found for RAM. 
+	2: Only 1 word in RAM 
+WARNING: [Synth 8-4767] Trying to implement RAM 'ram_burst_reg' in registers. Block RAM or DRAM implementation is not possible; see log for reasons. [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:59620]
+Reason is one or more of the following :
+	1: Write port has constant address. 
+	2: No valid read/write found for RAM. 
+	2: Only 1 word in RAM 
+WARNING: [Synth 8-4767] Trying to implement RAM 'ram_data_reg' in registers. Block RAM or DRAM implementation is not possible; see log for reasons. [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:59770]
+Reason is one or more of the following :
+	1: Write port has constant address. 
+	2: No valid read/write found for RAM. 
+	2: Only 1 word in RAM 
+WARNING: [Synth 8-4767] Trying to implement RAM 'ram_strb_reg' in registers. Block RAM or DRAM implementation is not possible; see log for reasons. [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:59777]
+Reason is one or more of the following :
+	1: Write port has constant address. 
+	2: No valid read/write found for RAM. 
+	2: Only 1 word in RAM 
+WARNING: [Synth 8-4767] Trying to implement RAM 'ram_last_reg' in registers. Block RAM or DRAM implementation is not possible; see log for reasons. [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:59783]
+Reason is one or more of the following :
+	1: Write port has constant address. 
+	2: No valid read/write found for RAM. 
+	2: Only 1 word in RAM 
+WARNING: [Synth 8-7129] Port read_intent in module tcpu_csr is either unconnected or has no load
+WARNING: [Synth 8-7129] Port trap_epc[0] in module tcpu_csr is either unconnected or has no load
+WARNING: [Synth 8-7129] Port resp_rdata[9] in module tcpu_ptw is either unconnected or has no load
+WARNING: [Synth 8-7129] Port resp_rdata[8] in module tcpu_ptw is either unconnected or has no load
+WARNING: [Synth 8-7129] Port resp_rdata[5] in module tcpu_ptw is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_out_d_bits_opcode[2] in module RD2BridgeV2 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_out_d_bits_opcode[1] in module RD2BridgeV2 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_out_d_bits_opcode[0] in module RD2BridgeV2 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_out_d_bits_source in module RD2BridgeV2 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_in_a_bits_address[28] in module BlockDeviceFrontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_in_a_bits_address[27] in module BlockDeviceFrontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_in_a_bits_address[26] in module BlockDeviceFrontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_in_a_bits_address[25] in module BlockDeviceFrontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_in_a_bits_address[24] in module BlockDeviceFrontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_in_a_bits_address[23] in module BlockDeviceFrontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_in_a_bits_address[22] in module BlockDeviceFrontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_in_a_bits_address[21] in module BlockDeviceFrontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_in_a_bits_address[20] in module BlockDeviceFrontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_in_a_bits_address[19] in module BlockDeviceFrontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_in_a_bits_address[18] in module BlockDeviceFrontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_in_a_bits_address[17] in module BlockDeviceFrontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_in_a_bits_address[16] in module BlockDeviceFrontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_in_a_bits_address[15] in module BlockDeviceFrontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_in_a_bits_address[14] in module BlockDeviceFrontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_in_a_bits_address[13] in module BlockDeviceFrontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_in_a_bits_address[12] in module BlockDeviceFrontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_in_a_bits_address[2] in module BlockDeviceFrontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_in_a_bits_address[1] in module BlockDeviceFrontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_in_a_bits_address[0] in module BlockDeviceFrontend is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_in_a_bits_address[25] in module RD2Clint is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_in_a_bits_address[24] in module RD2Clint is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_in_a_bits_address[23] in module RD2Clint is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_in_a_bits_address[22] in module RD2Clint is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_in_a_bits_address[21] in module RD2Clint is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_in_a_bits_address[20] in module RD2Clint is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_in_a_bits_address[19] in module RD2Clint is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_in_a_bits_address[18] in module RD2Clint is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_in_a_bits_address[17] in module RD2Clint is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_in_a_bits_address[16] in module RD2Clint is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_in_a_bits_address[2] in module RD2Clint is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_in_a_bits_address[1] in module RD2Clint is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_in_a_bits_address[0] in module RD2Clint is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_in_a_bits_address[16] in module TLROM is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_in_a_bits_address[2] in module TLROM is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_in_a_bits_address[1] in module TLROM is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_in_a_bits_address[0] in module TLROM is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_tl_in_a_bits_address[2] in module TLDebugModuleInner is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_tl_in_a_bits_address[1] in module TLDebugModuleInner is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_tl_in_a_bits_address[0] in module TLDebugModuleInner is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_dmi_in_a_bits_address[1] in module TLDebugModuleInner is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_dmi_in_a_bits_address[0] in module TLDebugModuleInner is either unconnected or has no load
+WARNING: [Synth 8-7129] Port clock in module TLXbar_4 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port reset in module TLXbar_4 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_out_0_d_valid in module TLXbar_4 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_out_0_d_bits_source in module TLXbar_4 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_in_a_bits_address[25] in module CLINT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_in_a_bits_address[24] in module CLINT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_in_a_bits_address[23] in module CLINT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_in_a_bits_address[22] in module CLINT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_in_a_bits_address[21] in module CLINT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_in_a_bits_address[20] in module CLINT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_in_a_bits_address[19] in module CLINT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_in_a_bits_address[18] in module CLINT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_in_a_bits_address[17] in module CLINT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_in_a_bits_address[16] in module CLINT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_in_a_bits_address[2] in module CLINT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_in_a_bits_address[1] in module CLINT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_in_a_bits_address[0] in module CLINT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_in_a_bits_address[27] in module TLPLIC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_in_a_bits_address[26] in module TLPLIC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_in_a_bits_address[2] in module TLPLIC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_in_a_bits_address[1] in module TLPLIC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_in_a_bits_address[0] in module TLPLIC is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_in_a_bits_opcode[1] in module TLToAXI4 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_in_a_bits_opcode[0] in module TLToAXI4 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_out_b_bits_user[7] in module TLToAXI4 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_out_r_bits_user[7] in module TLToAXI4 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_out_b_bits_id[5] in module AXI4IdIndexer is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_out_b_bits_id[4] in module AXI4IdIndexer is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_out_r_bits_id[5] in module AXI4IdIndexer is either unconnected or has no load
+WARNING: [Synth 8-7129] Port auto_out_r_bits_id[4] in module AXI4IdIndexer is either unconnected or has no load
+WARNING: [Synth 8-7129] Port clock in module TLXbar_3 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port reset in module TLXbar_3 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port io_ps_axi_slave_aw_bits_lock in module RD2BoardTop is either unconnected or has no load
+WARNING: [Synth 8-7129] Port io_ps_axi_slave_aw_bits_cache[3] in module RD2BoardTop is either unconnected or has no load
+WARNING: [Synth 8-7129] Port io_ps_axi_slave_aw_bits_cache[2] in module RD2BoardTop is either unconnected or has no load
+WARNING: [Synth 8-7129] Port io_ps_axi_slave_aw_bits_cache[1] in module RD2BoardTop is either unconnected or has no load
+WARNING: [Synth 8-7129] Port io_ps_axi_slave_aw_bits_cache[0] in module RD2BoardTop is either unconnected or has no load
+WARNING: [Synth 8-7129] Port io_ps_axi_slave_aw_bits_prot[2] in module RD2BoardTop is either unconnected or has no load
+WARNING: [Synth 8-7129] Port io_ps_axi_slave_aw_bits_prot[1] in module RD2BoardTop is either unconnected or has no load
+WARNING: [Synth 8-7129] Port io_ps_axi_slave_aw_bits_prot[0] in module RD2BoardTop is either unconnected or has no load
+WARNING: [Synth 8-7129] Port io_ps_axi_slave_aw_bits_qos[3] in module RD2BoardTop is either unconnected or has no load
+WARNING: [Synth 8-7129] Port io_ps_axi_slave_aw_bits_qos[2] in module RD2BoardTop is either unconnected or has no load
+WARNING: [Synth 8-7129] Port io_ps_axi_slave_aw_bits_qos[1] in module RD2BoardTop is either unconnected or has no load
+WARNING: [Synth 8-7129] Port io_ps_axi_slave_aw_bits_qos[0] in module RD2BoardTop is either unconnected or has no load
+WARNING: [Synth 8-7129] Port io_ps_axi_slave_ar_bits_lock in module RD2BoardTop is either unconnected or has no load
+WARNING: [Synth 8-7129] Port io_ps_axi_slave_ar_bits_cache[3] in module RD2BoardTop is either unconnected or has no load
+WARNING: [Synth 8-7129] Port io_ps_axi_slave_ar_bits_cache[2] in module RD2BoardTop is either unconnected or has no load
+WARNING: [Synth 8-7129] Port io_ps_axi_slave_ar_bits_cache[1] in module RD2BoardTop is either unconnected or has no load
+WARNING: [Synth 8-7129] Port io_ps_axi_slave_ar_bits_cache[0] in module RD2BoardTop is either unconnected or has no load
+INFO: [Common 17-14] Message 'Synth 8-7129' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+---------------------------------------------------------------------------------
+Finished RTL Elaboration : Time (s): cpu = 00:00:20 ; elapsed = 00:00:21 . Memory (MB): peak = 3050.879 ; gain = 1275.516 ; free physical = 7398 ; free virtual = 31150
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:22 ; elapsed = 00:00:23 . Memory (MB): peak = 3050.879 ; gain = 1275.516 ; free physical = 7408 ; free virtual = 31160
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:22 ; elapsed = 00:00:23 . Memory (MB): peak = 3050.879 ; gain = 1275.516 ; free physical = 7408 ; free virtual = 31160
+---------------------------------------------------------------------------------
+Netlist sorting complete. Time (s): cpu = 00:00:00.74 ; elapsed = 00:00:00.74 . Memory (MB): peak = 3050.879 ; gain = 0.000 ; free physical = 7432 ; free virtual = 31183
+INFO: [Netlist 29-17] Analyzing 2 Unisim elements for replacement
+WARNING: [Netlist 29-432] The IBUFG primitive 'ibufg_gclk' has been retargeted to an IBUF primitive only. No BUFG will be added. If a global buffer is intended, please instantiate an available global clock primitive from the current architecture.
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-570] Preparing netlist for logic optimization
+
+Processing XDC Constraints
+Initializing timing engine
+Parsing XDC File [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/vivado-project/teaching_pynqz1.gen/sources_1/bd/system/ip/system_axi_interconnect_0_imp_auto_pc_0/system_axi_interconnect_0_imp_auto_pc_0/system_axi_interconnect_0_imp_auto_pc_0_in_context.xdc] for cell 'system_i/axi_interconnect_0/s00_couplers/auto_pc'
+Finished Parsing XDC File [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/vivado-project/teaching_pynqz1.gen/sources_1/bd/system/ip/system_axi_interconnect_0_imp_auto_pc_0/system_axi_interconnect_0_imp_auto_pc_0/system_axi_interconnect_0_imp_auto_pc_0_in_context.xdc] for cell 'system_i/axi_interconnect_0/s00_couplers/auto_pc'
+Parsing XDC File [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/vivado-project/teaching_pynqz1.gen/sources_1/bd/system/ip/system_axi_interconnect_1_imp_auto_pc_0/system_axi_interconnect_1_imp_auto_pc_0/system_axi_interconnect_1_imp_auto_pc_0_in_context.xdc] for cell 'system_i/axi_interconnect_1/s00_couplers/auto_pc'
+Finished Parsing XDC File [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/vivado-project/teaching_pynqz1.gen/sources_1/bd/system/ip/system_axi_interconnect_1_imp_auto_pc_0/system_axi_interconnect_1_imp_auto_pc_0/system_axi_interconnect_1_imp_auto_pc_0_in_context.xdc] for cell 'system_i/axi_interconnect_1/s00_couplers/auto_pc'
+Parsing XDC File [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/vivado-project/teaching_pynqz1.gen/sources_1/bd/system/ip/system_proc_sys_reset_0_0/system_proc_sys_reset_0_0/system_proc_sys_reset_0_0_in_context.xdc] for cell 'system_i/proc_sys_reset_0'
+Finished Parsing XDC File [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/vivado-project/teaching_pynqz1.gen/sources_1/bd/system/ip/system_proc_sys_reset_0_0/system_proc_sys_reset_0_0/system_proc_sys_reset_0_0_in_context.xdc] for cell 'system_i/proc_sys_reset_0'
+Parsing XDC File [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/vivado-project/teaching_pynqz1.gen/sources_1/bd/system/ip/system_processing_system7_0_0/system_processing_system7_0_0/system_processing_system7_0_0_in_context.xdc] for cell 'system_i/processing_system7_0'
+Finished Parsing XDC File [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/vivado-project/teaching_pynqz1.gen/sources_1/bd/system/ip/system_processing_system7_0_0/system_processing_system7_0_0/system_processing_system7_0_0_in_context.xdc] for cell 'system_i/processing_system7_0'
+Parsing XDC File [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/base.xdc]
+Finished Parsing XDC File [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/base.xdc]
+INFO: [Project 1-236] Implementation specific constraints were found while reading constraint file [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/base.xdc]. These constraints will be ignored for synthesis but will be used in implementation. Impacted constraints are listed in the file [.Xil/rocketchip_wrapper_propImpl.xdc].
+Resolution: To avoid this warning, move constraints listed in [.Xil/rocketchip_wrapper_propImpl.xdc] to another XDC file and exclude this new file from synthesis with the used_in_synthesis property (File Properties dialog in GUI) and re-run elaboration/synthesis.
+Parsing XDC File [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/vivado-project/teaching_pynqz1.runs/synth_1/dont_touch.xdc]
+Finished Parsing XDC File [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/vivado-project/teaching_pynqz1.runs/synth_1/dont_touch.xdc]
+INFO: [Timing 38-2] Deriving generated clocks
+Completed Processing XDC Constraints
+
+Netlist sorting complete. Time (s): cpu = 00:00:00.02 ; elapsed = 00:00:00.01 . Memory (MB): peak = 3144.586 ; gain = 0.000 ; free physical = 7451 ; free virtual = 31202
+INFO: [Project 1-111] Unisim Transformation Summary:
+  A total of 2 instances were transformed.
+  IBUFG => IBUF: 1 instance 
+  MMCME2_BASE => MMCME2_ADV: 1 instance 
+
+Constraint Validation Runtime : Time (s): cpu = 00:00:00.12 ; elapsed = 00:00:00.13 . Memory (MB): peak = 3156.508 ; gain = 0.000 ; free physical = 7438 ; free virtual = 31190
+WARNING: [Timing 38-316] Clock period '40.000' specified during out-of-context synthesis of instance 'system_i/proc_sys_reset_0' at clock pin 'slowest_sync_clk' is different from the actual clock period '25.000', this can lead to different synthesis results.
+WARNING: [Timing 38-316] Clock period '40.000' specified during out-of-context synthesis of instance 'system_i/axi_interconnect_1/s00_couplers/auto_pc' at clock pin 'aclk' is different from the actual clock period '25.000', this can lead to different synthesis results.
+---------------------------------------------------------------------------------
+Finished Constraint Validation : Time (s): cpu = 00:00:42 ; elapsed = 00:00:40 . Memory (MB): peak = 3156.508 ; gain = 1381.145 ; free physical = 5436 ; free virtual = 29188
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Loading Part and Timing Information
+---------------------------------------------------------------------------------
+Loading part: xc7z020clg400-1
+---------------------------------------------------------------------------------
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:42 ; elapsed = 00:00:40 . Memory (MB): peak = 3164.512 ; gain = 1389.148 ; free physical = 5436 ; free virtual = 29188
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying 'set_property' XDC Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:42 ; elapsed = 00:00:40 . Memory (MB): peak = 3164.512 ; gain = 1389.148 ; free physical = 5428 ; free virtual = 29180
+---------------------------------------------------------------------------------
+WARNING: [Synth 8-3936] Found unconnected internal register '_T_250_0_bits_opcode_reg' and it is trimmed from '3' to '1' bits. [/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/inputs/RD2BoardTop.RD2AtomicBoardConfig.v:9824]
+INFO: [Synth 8-802] inferred FSM for state register 'state_reg' in module 'tcpu_ptw'
+INFO: [Synth 8-802] inferred FSM for state register 'state_reg' in module 'tcpu_core'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+                    IDLE |                               00 |                               00
+                     REQ |                               01 |                               01
+                    WAIT |                               10 |                               10
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'state_reg' using encoding 'sequential' in module 'tcpu_ptw'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+                S_IF_REQ |                             0110 |                             0000
+               S_IF_WAIT |                             0111 |                             0001
+               S_IF2_REQ |                             1001 |                             1010
+              S_IF2_WAIT |                             1000 |                             1011
+                  S_EXEC |                             0011 |                             0010
+                 S_XLATE |                             0100 |                             1100
+              S_MEM_WAIT |                             0000 |                             0100
+                  S_TRAP |                             0001 |                             0110
+                   S_MUL |                             0101 |                             1001
+                    S_WB |                             0010 |                             0101
+                  S_ARCH |                             1010 |                             1000
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'state_reg' using encoding 'sequential' in module 'tcpu_core'
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:01:26 ; elapsed = 00:01:25 . Memory (MB): peak = 5537.340 ; gain = 3761.977 ; free physical = 341 ; free virtual = 23594
+---------------------------------------------------------------------------------
+INFO: [Synth 8-223] decloning instance 'top/teaching_board_top/target/debug_1/dmOuter/asource/AsyncQueueSource/widx_bin' (AsyncResetRegVec_w1_i0) to 'top/teaching_board_top/target/debug_1/dmOuter/asource/AsyncQueueSource/widx_gray'
+INFO: [Synth 8-223] decloning instance 'top/teaching_board_top/target/debug_1/dmOuter/asource/AsyncQueueSink/ridx_bin' (AsyncResetRegVec_w1_i0) to 'top/teaching_board_top/target/debug_1/dmOuter/asource/AsyncQueueSink/ridx_gray'
+INFO: [Synth 8-223] decloning instance 'top/teaching_board_top/target/debug_1/dmOuter/AsyncQueueSource/widx_bin' (AsyncResetRegVec_w1_i0) to 'top/teaching_board_top/target/debug_1/dmOuter/AsyncQueueSource/widx_gray'
+INFO: [Synth 8-223] decloning instance 'top/teaching_board_top/target/debug_1/dmInner/dmiXing/AsyncQueueSink/ridx_bin' (AsyncResetRegVec_w1_i0) to 'top/teaching_board_top/target/debug_1/dmInner/dmiXing/AsyncQueueSink/ridx_gray'
+INFO: [Synth 8-223] decloning instance 'top/teaching_board_top/target/debug_1/dmInner/dmiXing/AsyncQueueSource/widx_bin' (AsyncResetRegVec_w1_i0) to 'top/teaching_board_top/target/debug_1/dmInner/dmiXing/AsyncQueueSource/widx_gray'
+INFO: [Synth 8-223] decloning instance 'top/teaching_board_top/target/debug_1/dmInner/AsyncQueueSink/ridx_bin' (AsyncResetRegVec_w1_i0) to 'top/teaching_board_top/target/debug_1/dmInner/AsyncQueueSink/ridx_gray'
+---------------------------------------------------------------------------------
+Start RTL Component Statistics 
+---------------------------------------------------------------------------------
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input  128 Bit       Adders := 1     
+	   2 Input   65 Bit       Adders := 1     
+	   3 Input   65 Bit       Adders := 1     
+	   2 Input   64 Bit       Adders := 22    
+	   3 Input   64 Bit       Adders := 2     
+	   2 Input   56 Bit       Adders := 1     
+	   3 Input   33 Bit       Adders := 2     
+	   2 Input   32 Bit       Adders := 7     
+	   3 Input   32 Bit       Adders := 1     
+	   2 Input   31 Bit       Adders := 2     
+	   2 Input   29 Bit       Adders := 1     
+	   3 Input    9 Bit       Adders := 7     
+	   2 Input    9 Bit       Adders := 8     
+	  14 Input    8 Bit       Adders := 1     
+	   2 Input    8 Bit       Adders := 7     
+	   2 Input    7 Bit       Adders := 2     
+	  16 Input    5 Bit       Adders := 2     
+	   2 Input    5 Bit       Adders := 2     
+	   8 Input    4 Bit       Adders := 2     
+	   2 Input    4 Bit       Adders := 15    
+	   3 Input    4 Bit       Adders := 5     
+	   2 Input    3 Bit       Adders := 30    
+	   3 Input    3 Bit       Adders := 9     
+	   4 Input    3 Bit       Adders := 2     
+	   2 Input    2 Bit       Adders := 8     
+	   2 Input    1 Bit       Adders := 30    
+	   3 Input    1 Bit       Adders := 2     
+	   4 Input    1 Bit       Adders := 16    
++---XORs : 
+	   2 Input     64 Bit         XORs := 2     
+	   2 Input     32 Bit         XORs := 26    
+	   2 Input     29 Bit         XORs := 8     
+	   2 Input     23 Bit         XORs := 4     
+	   2 Input     13 Bit         XORs := 3     
+	   2 Input     10 Bit         XORs := 14    
+	   2 Input      9 Bit         XORs := 157   
+	   2 Input      7 Bit         XORs := 25    
+	   2 Input      1 Bit         XORs := 4     
++---Registers : 
+	               65 Bit    Registers := 2     
+	               64 Bit    Registers := 49    
+	               56 Bit    Registers := 2     
+	               54 Bit    Registers := 1     
+	               44 Bit    Registers := 1     
+	               42 Bit    Registers := 1     
+	               32 Bit    Registers := 30    
+	               31 Bit    Registers := 4     
+	               29 Bit    Registers := 3     
+	               28 Bit    Registers := 1     
+	               26 Bit    Registers := 2     
+	               24 Bit    Registers := 1     
+	               23 Bit    Registers := 1     
+	               17 Bit    Registers := 1     
+	               16 Bit    Registers := 3     
+	               13 Bit    Registers := 1     
+	               12 Bit    Registers := 6     
+	               10 Bit    Registers := 1     
+	                9 Bit    Registers := 15    
+	                8 Bit    Registers := 130   
+	                7 Bit    Registers := 2     
+	                6 Bit    Registers := 1     
+	                5 Bit    Registers := 3     
+	                4 Bit    Registers := 25    
+	                3 Bit    Registers := 83    
+	                2 Bit    Registers := 4137  
+	                1 Bit    Registers := 381   
++---RAMs : 
+	               2K Bit	(32 X 64 bit)          RAMs := 1     
+	              512 Bit	(8 X 64 bit)          RAMs := 4     
+	              512 Bit	(16 X 32 bit)          RAMs := 5     
+	              128 Bit	(2 X 64 bit)          RAMs := 5     
+	               64 Bit	(8 X 8 bit)          RAMs := 4     
+	               64 Bit	(2 X 32 bit)          RAMs := 3     
+	               58 Bit	(2 X 29 bit)          RAMs := 2     
+	               26 Bit	(2 X 13 bit)          RAMs := 1     
+	               16 Bit	(2 X 8 bit)          RAMs := 2     
+	                8 Bit	(2 X 4 bit)          RAMs := 2     
+	                6 Bit	(2 X 3 bit)          RAMs := 12    
+	                4 Bit	(2 X 2 bit)          RAMs := 9     
+	                2 Bit	(2 X 1 bit)          RAMs := 9     
++---Muxes : 
+	   2 Input  128 Bit        Muxes := 1     
+	   2 Input  117 Bit        Muxes := 5     
+	   2 Input  116 Bit        Muxes := 12    
+	   2 Input  112 Bit        Muxes := 2     
+	   2 Input   95 Bit        Muxes := 11    
+	   2 Input   79 Bit        Muxes := 12    
+	   2 Input   77 Bit        Muxes := 1     
+	   2 Input   76 Bit        Muxes := 6     
+	   2 Input   66 Bit        Muxes := 1     
+	   2 Input   65 Bit        Muxes := 1     
+	   2 Input   64 Bit        Muxes := 129   
+	   4 Input   64 Bit        Muxes := 5     
+	   3 Input   64 Bit        Muxes := 2     
+	  11 Input   64 Bit        Muxes := 8     
+	   3 Input   56 Bit        Muxes := 2     
+	   2 Input   44 Bit        Muxes := 1     
+	   2 Input   32 Bit        Muxes := 47    
+	   3 Input   32 Bit        Muxes := 3     
+	   4 Input   32 Bit        Muxes := 2     
+	  11 Input   32 Bit        Muxes := 3     
+	   2 Input   31 Bit        Muxes := 9     
+	   2 Input   29 Bit        Muxes := 1     
+	   2 Input   28 Bit        Muxes := 1     
+	   2 Input   26 Bit        Muxes := 2     
+	   2 Input   21 Bit        Muxes := 1     
+	   2 Input   17 Bit        Muxes := 1     
+	   2 Input   16 Bit        Muxes := 6     
+	   2 Input   13 Bit        Muxes := 1     
+	   2 Input   12 Bit        Muxes := 4     
+	   2 Input   10 Bit        Muxes := 3     
+	   2 Input    9 Bit        Muxes := 31    
+	   3 Input    9 Bit        Muxes := 1     
+	   2 Input    8 Bit        Muxes := 100   
+	   4 Input    8 Bit        Muxes := 3     
+	  11 Input    8 Bit        Muxes := 1     
+	   2 Input    6 Bit        Muxes := 1     
+	   2 Input    5 Bit        Muxes := 1     
+	   2 Input    4 Bit        Muxes := 19    
+	   5 Input    4 Bit        Muxes := 2     
+	   4 Input    4 Bit        Muxes := 2     
+	   3 Input    4 Bit        Muxes := 3     
+	   6 Input    4 Bit        Muxes := 1     
+	  11 Input    4 Bit        Muxes := 2     
+	  34 Input    4 Bit        Muxes := 1     
+	   2 Input    3 Bit        Muxes := 173   
+	   6 Input    3 Bit        Muxes := 3     
+	   5 Input    3 Bit        Muxes := 3     
+	   4 Input    3 Bit        Muxes := 1     
+	   3 Input    3 Bit        Muxes := 5     
+	   2 Input    2 Bit        Muxes := 71    
+	   3 Input    2 Bit        Muxes := 13    
+	   4 Input    2 Bit        Muxes := 2     
+	   5 Input    2 Bit        Muxes := 2     
+	  11 Input    2 Bit        Muxes := 5     
+	   2 Input    1 Bit        Muxes := 4623  
+	 256 Input    1 Bit        Muxes := 1     
+	   6 Input    1 Bit        Muxes := 2     
+	  32 Input    1 Bit        Muxes := 1     
+	   5 Input    1 Bit        Muxes := 4     
+	   4 Input    1 Bit        Muxes := 14    
+	  16 Input    1 Bit        Muxes := 2     
+	   3 Input    1 Bit        Muxes := 15    
+	   7 Input    1 Bit        Muxes := 2     
+	  11 Input    1 Bit        Muxes := 29    
+	  15 Input    1 Bit        Muxes := 1     
+---------------------------------------------------------------------------------
+Finished RTL Component Statistics 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Part Resource Summary
+---------------------------------------------------------------------------------
+Part Resources:
+DSPs: 220 (col length:60)
+BRAMs: 280 (col length: RAMB18 60 RAMB36 30)
+---------------------------------------------------------------------------------
+Finished Part Resource Summary
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Cross Boundary and Area Optimization
+---------------------------------------------------------------------------------
+INFO: [Synth 8-5544] ROM "_T_2911" won't be mapped to Block RAM because address size (2) smaller than threshold (5)
+WARNING: [Synth 8-3936] Found unconnected internal register 'Queue/ram_data_reg' and it is trimmed from '64' to '34' bits.
+INFO: [Common 17-14] Message 'Synth 8-7129' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+WARNING: [Synth 8-13161] RAM (pbus/i_10) is optimized away because it doesn't have any load.
+WARNING: [Synth 8-6014] Unused sequential element coupler_from_sbus/buffer/Queue/ram_param_reg was removed. 
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (plic/\LevelGateway_1/inFlight_reg )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (plic/\LevelGateway_2/inFlight_reg )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (plic/pending_1_reg)
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (plic/pending_2_reg)
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (pbus/\coupler_from_sbus/atomics/_T_250_0_lut_reg[0] )
+INFO: [Synth 8-7067] Removed DRAM instance pbus/i_7/i_0/coupler_from_sbus/buffer/Queue_1/ram_param_reg_0_1_1_1 from module extram__64 due to constant propagation
+INFO: [Synth 8-7067] Removed DRAM instance pbus/i_7/i_0/coupler_from_sbus/buffer/Queue_1/ram_param_reg_0_1_0_0 from module extram__64 due to constant propagation
+INFO: [Synth 8-7067] Removed DRAM instance pbus/i_11/i_0/coupler_from_sbus/buffer/Queue_1/ram_sink_reg_0_1_0_0 from module extram__70 due to constant propagation
+INFO: [Synth 8-7067] Removed DRAM instance pbus/i_22/i_0/sync_xing/Queue_1/ram_param_reg_0_1_1_1 from module extram__92 due to constant propagation
+INFO: [Synth 8-7067] Removed DRAM instance pbus/i_22/i_0/sync_xing/Queue_1/ram_param_reg_0_1_0_0 from module extram__92 due to constant propagation
+INFO: [Synth 8-7067] Removed DRAM instance pbus/i_25/i_0/sync_xing/Queue_1/ram_sink_reg_0_1_0_0 from module extram__98 due to constant propagation
+INFO: [Synth 8-7067] Removed DRAM instance pbus/i_22/i_0/sync_xing/Queue_1/ram_param_reg_0_1_0_0 from module extram__92 due to constant propagation
+INFO: [Synth 8-3333] propagating constant 1 across sequential element (plic/\_T_403_reg[2] )
+WARNING: [Synth 8-3936] Found unconnected internal register 'coupler_to_memory_controller_named_axi4/axi4yank/Queue/ram_reg' and it is trimmed from '8' to '7' bits.
+WARNING: [Synth 8-3936] Found unconnected internal register 'coupler_to_memory_controller_named_axi4/axi4yank/Queue_1/ram_reg' and it is trimmed from '8' to '7' bits.
+WARNING: [Synth 8-3936] Found unconnected internal register 'coupler_to_memory_controller_named_axi4/axi4yank/Queue_2/ram_reg' and it is trimmed from '8' to '7' bits.
+WARNING: [Synth 8-3936] Found unconnected internal register 'coupler_to_memory_controller_named_axi4/axi4yank/Queue_3/ram_reg' and it is trimmed from '8' to '7' bits.
+WARNING: [Synth 8-3936] Found unconnected internal register 'coupler_to_memory_controller_named_axi4/axi4yank/Queue_4/ram_reg' and it is trimmed from '8' to '7' bits.
+WARNING: [Synth 8-3936] Found unconnected internal register 'coupler_to_memory_controller_named_axi4/axi4yank/Queue_5/ram_reg' and it is trimmed from '8' to '7' bits.
+WARNING: [Synth 8-3936] Found unconnected internal register 'coupler_to_memory_controller_named_axi4/axi4yank/Queue_6/ram_reg' and it is trimmed from '8' to '7' bits.
+WARNING: [Synth 8-3936] Found unconnected internal register 'coupler_to_memory_controller_named_axi4/axi4yank/Queue_7/ram_reg' and it is trimmed from '8' to '7' bits.
+WARNING: [Synth 8-3936] Found unconnected internal register 'coupler_to_memory_controller_named_axi4/axi4yank/Queue_8/ram_reg' and it is trimmed from '8' to '7' bits.
+WARNING: [Synth 8-3936] Found unconnected internal register 'coupler_to_memory_controller_named_axi4/axi4yank/Queue_9/ram_reg' and it is trimmed from '8' to '7' bits.
+WARNING: [Synth 8-3936] Found unconnected internal register 'coupler_to_memory_controller_named_axi4/axi4yank/Queue_10/ram_reg' and it is trimmed from '8' to '7' bits.
+WARNING: [Synth 8-3936] Found unconnected internal register 'coupler_to_memory_controller_named_axi4/axi4yank/Queue_11/ram_reg' and it is trimmed from '8' to '7' bits.
+WARNING: [Synth 8-3936] Found unconnected internal register 'coupler_to_memory_controller_named_axi4/axi4yank/Queue_12/ram_reg' and it is trimmed from '8' to '7' bits.
+WARNING: [Synth 8-3936] Found unconnected internal register 'coupler_to_memory_controller_named_axi4/axi4yank/Queue_13/ram_reg' and it is trimmed from '8' to '7' bits.
+WARNING: [Synth 8-3936] Found unconnected internal register 'coupler_to_memory_controller_named_axi4/axi4yank/Queue_14/ram_reg' and it is trimmed from '8' to '7' bits.
+WARNING: [Synth 8-3936] Found unconnected internal register 'coupler_to_memory_controller_named_axi4/axi4yank/Queue_15/ram_reg' and it is trimmed from '8' to '7' bits.
+WARNING: [Synth 8-3936] Found unconnected internal register 'coupler_to_memory_controller_named_axi4/axi4yank/Queue_16/ram_reg' and it is trimmed from '8' to '7' bits.
+WARNING: [Synth 8-3936] Found unconnected internal register 'coupler_to_memory_controller_named_axi4/axi4yank/Queue_17/ram_reg' and it is trimmed from '8' to '7' bits.
+WARNING: [Synth 8-3936] Found unconnected internal register 'coupler_to_memory_controller_named_axi4/axi4yank/Queue_18/ram_reg' and it is trimmed from '8' to '7' bits.
+WARNING: [Synth 8-3936] Found unconnected internal register 'coupler_to_memory_controller_named_axi4/axi4yank/Queue_19/ram_reg' and it is trimmed from '8' to '7' bits.
+WARNING: [Synth 8-3936] Found unconnected internal register 'coupler_to_memory_controller_named_axi4/axi4yank/Queue_20/ram_reg' and it is trimmed from '8' to '7' bits.
+WARNING: [Synth 8-3936] Found unconnected internal register 'coupler_to_memory_controller_named_axi4/axi4yank/Queue_21/ram_reg' and it is trimmed from '8' to '7' bits.
+WARNING: [Synth 8-3936] Found unconnected internal register 'coupler_to_memory_controller_named_axi4/axi4yank/Queue_22/ram_reg' and it is trimmed from '8' to '7' bits.
+WARNING: [Synth 8-3936] Found unconnected internal register 'coupler_to_memory_controller_named_axi4/axi4yank/Queue_23/ram_reg' and it is trimmed from '8' to '7' bits.
+WARNING: [Synth 8-3936] Found unconnected internal register 'coupler_to_memory_controller_named_axi4/axi4yank/Queue_24/ram_reg' and it is trimmed from '8' to '7' bits.
+WARNING: [Synth 8-3936] Found unconnected internal register 'coupler_to_memory_controller_named_axi4/axi4yank/Queue_25/ram_reg' and it is trimmed from '8' to '7' bits.
+WARNING: [Synth 8-3936] Found unconnected internal register 'coupler_to_memory_controller_named_axi4/axi4yank/Queue_26/ram_reg' and it is trimmed from '8' to '7' bits.
+WARNING: [Synth 8-3936] Found unconnected internal register 'coupler_to_memory_controller_named_axi4/axi4yank/Queue_27/ram_reg' and it is trimmed from '8' to '7' bits.
+WARNING: [Synth 8-3936] Found unconnected internal register 'coupler_to_memory_controller_named_axi4/axi4yank/Queue_28/ram_reg' and it is trimmed from '8' to '7' bits.
+WARNING: [Synth 8-3936] Found unconnected internal register 'coupler_to_memory_controller_named_axi4/axi4yank/Queue_29/ram_reg' and it is trimmed from '8' to '7' bits.
+WARNING: [Synth 8-3936] Found unconnected internal register 'coupler_to_memory_controller_named_axi4/axi4yank/Queue_30/ram_reg' and it is trimmed from '8' to '7' bits.
+WARNING: [Synth 8-3936] Found unconnected internal register 'coupler_to_memory_controller_named_axi4/axi4yank/Queue_31/ram_reg' and it is trimmed from '8' to '7' bits.
+WARNING: [Synth 8-3936] Found unconnected internal register 'coupler_to_memory_controller_named_axi4/tl2axi4/Queue_1/ram_user_reg' and it is trimmed from '8' to '7' bits.
+INFO: [Synth 8-7067] Removed DRAM instance i_28/i_0/sbus/coupler_to_slave_named_Error/buffer/Queue_1/ram_data_reg_0_1_60_63 from module extram__60 due to constant propagation
+INFO: [Synth 8-7067] Removed DRAM instance i_28/i_0/sbus/coupler_to_slave_named_Error/buffer/Queue_1/ram_data_reg_0_1_54_59 from module extram__60 due to constant propagation
+INFO: [Synth 8-7067] Removed DRAM instance i_28/i_0/sbus/coupler_to_slave_named_Error/buffer/Queue_1/ram_data_reg_0_1_48_53 from module extram__60 due to constant propagation
+INFO: [Synth 8-7067] Removed DRAM instance i_28/i_0/sbus/coupler_to_slave_named_Error/buffer/Queue_1/ram_data_reg_0_1_42_47 from module extram__60 due to constant propagation
+INFO: [Synth 8-7067] Removed DRAM instance i_28/i_0/sbus/coupler_to_slave_named_Error/buffer/Queue_1/ram_data_reg_0_1_36_41 from module extram__60 due to constant propagation
+INFO: [Synth 8-7067] Removed DRAM instance i_28/i_0/sbus/coupler_to_slave_named_Error/buffer/Queue_1/ram_data_reg_0_1_30_35 from module extram__60 due to constant propagation
+INFO: [Synth 8-7067] Removed DRAM instance i_28/i_0/sbus/coupler_to_slave_named_Error/buffer/Queue_1/ram_data_reg_0_1_24_29 from module extram__60 due to constant propagation
+INFO: [Synth 8-7067] Removed DRAM instance i_28/i_0/sbus/coupler_to_slave_named_Error/buffer/Queue_1/ram_data_reg_0_1_18_23 from module extram__60 due to constant propagation
+INFO: [Synth 8-7067] Removed DRAM instance i_28/i_0/sbus/coupler_to_slave_named_Error/buffer/Queue_1/ram_data_reg_0_1_12_17 from module extram__60 due to constant propagation
+INFO: [Synth 8-7067] Removed DRAM instance i_28/i_0/sbus/coupler_to_slave_named_Error/buffer/Queue_1/ram_data_reg_0_1_6_11 from module extram__60 due to constant propagation
+INFO: [Synth 8-7067] Removed DRAM instance i_28/i_0/sbus/coupler_to_slave_named_Error/buffer/Queue_1/ram_data_reg_0_1_0_5 from module extram__60 due to constant propagation
+INFO: [Synth 8-3886] merging instance 'mbus/coupler_to_memory_controller_named_axi4/tl2axi4/Queue_1/ram_user_reg[6]' (FDE) to 'mbus/coupler_to_memory_controller_named_axi4/tl2axi4/Queue_1/ram_len_reg[0]'
+INFO: [Synth 8-3886] merging instance 'mbus/coupler_to_memory_controller_named_axi4/tl2axi4/Queue_1/ram_user_reg[3]' (FDE) to 'mbus/coupler_to_memory_controller_named_axi4/tl2axi4/Queue_1/ram_id_reg[3]'
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\bh/_T_1052_reg )
+INFO: [Synth 8-3886] merging instance 'mbus/coupler_to_memory_controller_named_axi4/tl2axi4/Queue_1/ram_prot_reg[0]' (FDSE) to 'mbus/coupler_to_memory_controller_named_axi4/tl2axi4/Queue_1/ram_burst_reg[0]'
+INFO: [Synth 8-3886] merging instance 'mbus/coupler_to_memory_controller_named_axi4/tl2axi4/Queue_1/ram_prot_reg[1]' (FDRE) to 'mbus/coupler_to_memory_controller_named_axi4/tl2axi4/Queue_1/ram_prot_reg[2]'
+INFO: [Synth 8-3886] merging instance 'mbus/coupler_to_memory_controller_named_axi4/tl2axi4/Queue_1/ram_prot_reg[2]' (FDRE) to 'mbus/coupler_to_memory_controller_named_axi4/tl2axi4/Queue_1/ram_lock_reg[0]'
+INFO: [Synth 8-3886] merging instance 'mbus/coupler_to_memory_controller_named_axi4/tl2axi4/Queue_1/ram_cache_reg[0]' (FDRE) to 'mbus/coupler_to_memory_controller_named_axi4/tl2axi4/Queue_1/ram_lock_reg[0]'
+INFO: [Synth 8-3886] merging instance 'mbus/coupler_to_memory_controller_named_axi4/tl2axi4/Queue_1/ram_cache_reg[1]' (FDRE) to 'mbus/coupler_to_memory_controller_named_axi4/tl2axi4/Queue_1/ram_lock_reg[0]'
+INFO: [Synth 8-3886] merging instance 'mbus/coupler_to_memory_controller_named_axi4/tl2axi4/Queue_1/ram_cache_reg[2]' (FDRE) to 'mbus/coupler_to_memory_controller_named_axi4/tl2axi4/Queue_1/ram_lock_reg[0]'
+INFO: [Synth 8-3886] merging instance 'mbus/coupler_to_memory_controller_named_axi4/tl2axi4/Queue_1/ram_cache_reg[3]' (FDRE) to 'mbus/coupler_to_memory_controller_named_axi4/tl2axi4/Queue_1/ram_lock_reg[0]'
+INFO: [Synth 8-3886] merging instance 'mbus/coupler_to_memory_controller_named_axi4/tl2axi4/Queue_1/ram_lock_reg[0]' (FDRE) to 'mbus/coupler_to_memory_controller_named_axi4/tl2axi4/Queue_1/ram_burst_reg[1]'
+INFO: [Synth 8-3333] propagating constant 1 across sequential element (\mbus/coupler_to_memory_controller_named_axi4/tl2axi4/Queue_1/ram_burst_reg[0] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\mbus/coupler_to_memory_controller_named_axi4/tl2axi4/Queue_1/ram_burst_reg[1] )
+INFO: [Synth 8-7067] Removed DRAM instance i_28/i_0/sbus/coupler_to_slave_named_Error/buffer/Queue_1/ram_data_reg_0_1_60_63 from module extram__60 due to constant propagation
+INFO: [Synth 8-7067] Removed DRAM instance bufferi_29/i_0/sbus/coupler_to_slave_named_Error/buffer/Queue_1/ram_error_reg_0_1_0_0 from module extram__62 due to constant propagation
+INFO: [Synth 8-7067] Removed DRAM instance bufferi_29/i_0/sbus/coupler_to_slave_named_Error/buffer/Queue_1/ram_error_reg_0_1_0_0 from module extram__62 due to constant propagation
+INFO: [Synth 8-3886] merging instance 'dmInner/dmInner/abstractGeneratedMem_0_reg[29]' (FDE) to 'dmInner/dmInner/abstractGeneratedMem_0_reg[28]'
+INFO: [Synth 8-3886] merging instance 'dmInner/dmInner/abstractGeneratedMem_0_reg[28]' (FDE) to 'dmInner/dmInner/abstractGeneratedMem_0_reg[27]'
+INFO: [Synth 8-3886] merging instance 'dmInner/dmInner/abstractGeneratedMem_0_reg[0]' (FDE) to 'dmInner/dmInner/abstractGeneratedMem_0_reg[1]'
+INFO: [Synth 8-3333] propagating constant 1 across sequential element (\dmInner/dmInner /\abstractGeneratedMem_0_reg[1] )
+INFO: [Synth 8-3886] merging instance 'dmInner/dmInner/abstractGeneratedMem_0_reg[2]' (FDE) to 'dmInner/dmInner/abstractGeneratedMem_0_reg[3]'
+INFO: [Synth 8-3886] merging instance 'dmInner/dmInner/abstractGeneratedMem_0_reg[3]' (FDE) to 'dmInner/dmInner/abstractGeneratedMem_0_reg[6]'
+INFO: [Synth 8-3886] merging instance 'dmInner/dmInner/abstractGeneratedMem_0_reg[6]' (FDE) to 'dmInner/dmInner/abstractGeneratedMem_0_reg[15]'
+INFO: [Synth 8-3886] merging instance 'dmInner/dmInner/abstractGeneratedMem_0_reg[15]' (FDE) to 'dmInner/dmInner/abstractGeneratedMem_0_reg[16]'
+INFO: [Synth 8-3886] merging instance 'dmInner/dmInner/abstractGeneratedMem_0_reg[16]' (FDE) to 'dmInner/dmInner/abstractGeneratedMem_0_reg[17]'
+INFO: [Synth 8-3886] merging instance 'dmInner/dmInner/abstractGeneratedMem_0_reg[17]' (FDE) to 'dmInner/dmInner/abstractGeneratedMem_0_reg[18]'
+INFO: [Synth 8-3886] merging instance 'dmInner/dmInner/abstractGeneratedMem_0_reg[18]' (FDE) to 'dmInner/dmInner/abstractGeneratedMem_0_reg[19]'
+INFO: [Synth 8-3886] merging instance 'dmInner/dmInner/abstractGeneratedMem_0_reg[19]' (FDE) to 'dmInner/dmInner/abstractGeneratedMem_0_reg[25]'
+INFO: [Synth 8-3886] merging instance 'dmInner/dmInner/abstractGeneratedMem_0_reg[25]' (FDE) to 'dmInner/dmInner/abstractGeneratedMem_0_reg[26]'
+INFO: [Synth 8-3886] merging instance 'dmInner/dmInner/abstractGeneratedMem_0_reg[26]' (FDE) to 'dmInner/dmInner/abstractGeneratedMem_0_reg[30]'
+INFO: [Synth 8-3886] merging instance 'dmInner/dmInner/abstractGeneratedMem_0_reg[30]' (FDE) to 'dmInner/dmInner/abstractGeneratedMem_0_reg[31]'
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\abstractGeneratedMem_0_reg[31] )
+INFO: [Synth 8-3886] merging instance 'dmInner/dmInner/abstractGeneratedMem_1_reg[0]' (FDSE) to 'dmInner/dmInner/abstractGeneratedMem_1_reg[4]'
+INFO: [Synth 8-3886] merging instance 'dmInner/dmInner/abstractGeneratedMem_1_reg[1]' (FDSE) to 'dmInner/dmInner/abstractGeneratedMem_1_reg[4]'
+INFO: [Synth 8-3886] merging instance 'dmInner/dmInner/abstractGeneratedMem_1_reg[2]' (FDRE) to 'dmInner/dmInner/abstractGeneratedMem_1_reg[31]'
+INFO: [Synth 8-3886] merging instance 'dmInner/dmInner/abstractGeneratedMem_1_reg[3]' (FDRE) to 'dmInner/dmInner/abstractGeneratedMem_1_reg[31]'
+INFO: [Synth 8-3333] propagating constant 1 across sequential element (\dmInner/dmInner /\abstractGeneratedMem_1_reg[4] )
+INFO: [Synth 8-3886] merging instance 'dmInner/dmInner/abstractGeneratedMem_1_reg[5]' (FDRE) to 'dmInner/dmInner/abstractGeneratedMem_1_reg[6]'
+INFO: [Synth 8-3886] merging instance 'dmInner/dmInner/abstractGeneratedMem_1_reg[6]' (FDRE) to 'dmInner/dmInner/abstractGeneratedMem_1_reg[20]'
+INFO: [Synth 8-3886] merging instance 'dmInner/dmInner/abstractGeneratedMem_1_reg[7]' (FDRE) to 'dmInner/dmInner/abstractGeneratedMem_1_reg[31]'
+INFO: [Synth 8-3886] merging instance 'dmInner/dmInner/abstractGeneratedMem_1_reg[8]' (FDRE) to 'dmInner/dmInner/abstractGeneratedMem_1_reg[31]'
+INFO: [Synth 8-3886] merging instance 'dmInner/dmInner/abstractGeneratedMem_1_reg[9]' (FDRE) to 'dmInner/dmInner/abstractGeneratedMem_1_reg[31]'
+INFO: [Synth 8-3886] merging instance 'dmInner/dmInner/abstractGeneratedMem_1_reg[10]' (FDRE) to 'dmInner/dmInner/abstractGeneratedMem_1_reg[31]'
+INFO: [Synth 8-3886] merging instance 'dmInner/dmInner/abstractGeneratedMem_1_reg[11]' (FDRE) to 'dmInner/dmInner/abstractGeneratedMem_1_reg[31]'
+INFO: [Synth 8-3886] merging instance 'dmInner/dmInner/abstractGeneratedMem_1_reg[12]' (FDRE) to 'dmInner/dmInner/abstractGeneratedMem_1_reg[31]'
+INFO: [Synth 8-3886] merging instance 'dmInner/dmInner/abstractGeneratedMem_1_reg[13]' (FDRE) to 'dmInner/dmInner/abstractGeneratedMem_1_reg[31]'
+INFO: [Synth 8-3886] merging instance 'dmInner/dmInner/abstractGeneratedMem_1_reg[14]' (FDRE) to 'dmInner/dmInner/abstractGeneratedMem_1_reg[31]'
+INFO: [Synth 8-3886] merging instance 'dmInner/dmInner/abstractGeneratedMem_1_reg[15]' (FDRE) to 'dmInner/dmInner/abstractGeneratedMem_1_reg[31]'
+INFO: [Synth 8-3886] merging instance 'dmInner/dmInner/abstractGeneratedMem_1_reg[16]' (FDRE) to 'dmInner/dmInner/abstractGeneratedMem_1_reg[31]'
+INFO: [Synth 8-3886] merging instance 'dmInner/dmInner/abstractGeneratedMem_1_reg[17]' (FDRE) to 'dmInner/dmInner/abstractGeneratedMem_1_reg[31]'
+INFO: [Synth 8-3886] merging instance 'dmInner/dmInner/abstractGeneratedMem_1_reg[18]' (FDRE) to 'dmInner/dmInner/abstractGeneratedMem_1_reg[31]'
+INFO: [Synth 8-3886] merging instance 'dmInner/dmInner/abstractGeneratedMem_1_reg[19]' (FDRE) to 'dmInner/dmInner/abstractGeneratedMem_1_reg[31]'
+INFO: [Synth 8-3886] merging instance 'dmInner/dmInner/abstractGeneratedMem_1_reg[21]' (FDRE) to 'dmInner/dmInner/abstractGeneratedMem_1_reg[31]'
+INFO: [Synth 8-3886] merging instance 'dmInner/dmInner/abstractGeneratedMem_1_reg[22]' (FDRE) to 'dmInner/dmInner/abstractGeneratedMem_1_reg[31]'
+INFO: [Synth 8-3886] merging instance 'dmInner/dmInner/abstractGeneratedMem_1_reg[23]' (FDRE) to 'dmInner/dmInner/abstractGeneratedMem_1_reg[31]'
+INFO: [Synth 8-3886] merging instance 'dmInner/dmInner/abstractGeneratedMem_1_reg[24]' (FDRE) to 'dmInner/dmInner/abstractGeneratedMem_1_reg[31]'
+INFO: [Synth 8-3886] merging instance 'dmInner/dmInner/abstractGeneratedMem_1_reg[25]' (FDRE) to 'dmInner/dmInner/abstractGeneratedMem_1_reg[31]'
+INFO: [Synth 8-3886] merging instance 'dmInner/dmInner/abstractGeneratedMem_1_reg[26]' (FDRE) to 'dmInner/dmInner/abstractGeneratedMem_1_reg[31]'
+INFO: [Synth 8-3886] merging instance 'dmInner/dmInner/abstractGeneratedMem_1_reg[27]' (FDRE) to 'dmInner/dmInner/abstractGeneratedMem_1_reg[31]'
+INFO: [Synth 8-3886] merging instance 'dmInner/dmInner/abstractGeneratedMem_1_reg[28]' (FDRE) to 'dmInner/dmInner/abstractGeneratedMem_1_reg[31]'
+INFO: [Synth 8-3886] merging instance 'dmInner/dmInner/abstractGeneratedMem_1_reg[29]' (FDRE) to 'dmInner/dmInner/abstractGeneratedMem_1_reg[31]'
+INFO: [Synth 8-3886] merging instance 'dmInner/dmInner/abstractGeneratedMem_1_reg[30]' (FDRE) to 'dmInner/dmInner/abstractGeneratedMem_1_reg[31]'
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\abstractGeneratedMem_1_reg[31] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmOuter/dmOuter/DMCONTROL/reg_0/q_reg )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmactiveSync/AsyncResetSynchronizerShiftReg_w1_d3_i0/sync_2/reg_0/q_reg )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmactiveSync/AsyncResetSynchronizerShiftReg_w1_d3_i0/sync_1/reg_0/q_reg )
+INFO: [Synth 8-3886] merging instance 'dmInner/dmactiveSync/AsyncResetSynchronizerShiftReg_w1_d3_i0/sync_0/reg_0/q_reg' (FDC) to 'dmInner/dmactiveSync/AsyncResetSynchronizerShiftReg_w1_d3_i0/sync_1/reg_0/q_reg'
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmactiveSync/AsyncResetSynchronizerShiftReg_w1_d3_i0/sync_1/reg_0/q_reg )
+INFO: [Synth 8-3886] merging instance 'dmInner/dmInner/ABSTRACTCSReg_cmderr_reg[0]' (FDE) to 'dmInner/dmInner/ABSTRACTCSReg_cmderr_reg[2]'
+INFO: [Synth 8-3886] merging instance 'dmInner/dmInner/ABSTRACTCSReg_cmderr_reg[2]' (FDE) to 'dmInner/dmInner/ABSTRACTCSReg_cmderr_reg[1]'
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\ABSTRACTCSReg_cmderr_reg[1] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\ABSTRACTAUTOReg_autoexecdata_reg[0] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\ABSTRACTAUTOReg_autoexecprogbuf_reg[0] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\ABSTRACTAUTOReg_autoexecdata_reg[1] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\ABSTRACTAUTOReg_autoexecprogbuf_reg[15] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\ABSTRACTAUTOReg_autoexecprogbuf_reg[14] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\ABSTRACTAUTOReg_autoexecprogbuf_reg[13] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\ABSTRACTAUTOReg_autoexecprogbuf_reg[12] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\ABSTRACTAUTOReg_autoexecprogbuf_reg[11] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\ABSTRACTAUTOReg_autoexecprogbuf_reg[10] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\ABSTRACTAUTOReg_autoexecprogbuf_reg[9] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\ABSTRACTAUTOReg_autoexecprogbuf_reg[8] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\ABSTRACTAUTOReg_autoexecprogbuf_reg[7] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\ABSTRACTAUTOReg_autoexecprogbuf_reg[6] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\ABSTRACTAUTOReg_autoexecprogbuf_reg[5] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\ABSTRACTAUTOReg_autoexecprogbuf_reg[4] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\ABSTRACTAUTOReg_autoexecprogbuf_reg[3] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\ABSTRACTAUTOReg_autoexecprogbuf_reg[2] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\ABSTRACTAUTOReg_autoexecprogbuf_reg[1] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\COMMANDRdData_control_reg[20] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\COMMANDRdData_control_reg[21] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\COMMANDRdData_control_reg[22] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\COMMANDRdData_control_reg[0] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\COMMANDRdData_control_reg[1] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\COMMANDRdData_control_reg[2] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\COMMANDRdData_control_reg[3] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\COMMANDRdData_control_reg[4] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\COMMANDRdData_control_reg[16] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\COMMANDRdData_control_reg[18] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\COMMANDRdData_cmdtype_reg[7] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\COMMANDRdData_cmdtype_reg[6] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\COMMANDRdData_cmdtype_reg[4] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\COMMANDRdData_cmdtype_reg[5] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\COMMANDRdData_cmdtype_reg[0] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\COMMANDRdData_cmdtype_reg[1] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\COMMANDRdData_cmdtype_reg[2] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\COMMANDRdData_cmdtype_reg[3] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /haltedBitRegs_0_reg)
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\COMMANDRdData_control_reg[5] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\COMMANDRdData_control_reg[6] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\COMMANDRdData_control_reg[7] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\COMMANDRdData_control_reg[8] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\COMMANDRdData_control_reg[9] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\COMMANDRdData_control_reg[10] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\COMMANDRdData_control_reg[11] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\COMMANDRdData_control_reg[13] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\COMMANDRdData_control_reg[14] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\COMMANDRdData_control_reg[15] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\COMMANDRdData_control_reg[12] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\COMMANDRdData_control_reg[17] )
+INFO: [Synth 8-3886] merging instance 'dmInner/dmInner/abstractGeneratedMem_0_reg[31]' (FDE) to 'dmInner/dmInner/abstractGeneratedMem_0_reg[27]'
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\ctrlStateReg_reg[1] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\ctrlStateReg_reg[0] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\abstractDataMem_0_reg[0] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\programBufferMem_56_reg[0] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\programBufferMem_48_reg[0] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\programBufferMem_40_reg[0] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\programBufferMem_32_reg[0] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\programBufferMem_24_reg[0] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\programBufferMem_16_reg[0] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\programBufferMem_8_reg[0] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\programBufferMem_0_reg[0] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /resumeReqRegs_0_reg)
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\abstractDataMem_0_reg[1] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\programBufferMem_56_reg[1] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\programBufferMem_48_reg[1] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\programBufferMem_40_reg[1] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\programBufferMem_32_reg[1] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\programBufferMem_24_reg[1] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\programBufferMem_16_reg[1] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\programBufferMem_8_reg[1] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\programBufferMem_0_reg[1] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\abstractDataMem_0_reg[2] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\programBufferMem_56_reg[2] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\programBufferMem_48_reg[2] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\programBufferMem_40_reg[2] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\programBufferMem_32_reg[2] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\programBufferMem_24_reg[2] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\programBufferMem_16_reg[2] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\programBufferMem_8_reg[2] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\programBufferMem_0_reg[2] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\abstractDataMem_0_reg[3] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\programBufferMem_56_reg[3] )
+INFO: [Synth 8-3333] propagating constant 0 across sequential element (\dmInner/dmInner /\programBufferMem_48_reg[3] )
+INFO: [Common 17-14] Message 'Synth 8-3333' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+INFO: [Common 17-14] Message 'Synth 8-3333' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+INFO: [Synth 8-3886] merging instance 'dmInner/dmInner/abstractGeneratedMem_0_reg[1]' (FDE) to 'dmInner/dmInner/abstractGeneratedMem_0_reg[4]'
+INFO: [Synth 8-3886] merging instance 'dmInner/dmInner/abstractGeneratedMem_0_reg[5]' (FDE) to 'dmInner/dmInner/abstractGeneratedMem_0_reg[7]'
+INFO: [Synth 8-3886] merging instance 'dmInner/dmInner/abstractGeneratedMem_0_reg[7]' (FDE) to 'dmInner/dmInner/abstractGeneratedMem_0_reg[8]'
+INFO: [Synth 8-3886] merging instance 'dmInner/dmInner/abstractGeneratedMem_0_reg[8]' (FDE) to 'dmInner/dmInner/abstractGeneratedMem_0_reg[9]'
+INFO: [Synth 8-3886] merging instance 'dmInner/dmInner/abstractGeneratedMem_0_reg[9]' (FDE) to 'dmInner/dmInner/abstractGeneratedMem_0_reg[10]'
+INFO: [Synth 8-3886] merging instance 'dmInner/dmInner/abstractGeneratedMem_0_reg[10]' (FDE) to 'dmInner/dmInner/abstractGeneratedMem_0_reg[11]'
+INFO: [Synth 8-3886] merging instance 'dmInner/dmInner/abstractGeneratedMem_0_reg[11]' (FDE) to 'dmInner/dmInner/abstractGeneratedMem_0_reg[12]'
+INFO: [Synth 8-3886] merging instance 'dmInner/dmInner/abstractGeneratedMem_0_reg[12]' (FDE) to 'dmInner/dmInner/abstractGeneratedMem_0_reg[13]'
+INFO: [Synth 8-3886] merging instance 'dmInner/dmInner/abstractGeneratedMem_0_reg[13]' (FDE) to 'dmInner/dmInner/abstractGeneratedMem_0_reg[14]'
+INFO: [Synth 8-3886] merging instance 'dmInner/dmInner/abstractGeneratedMem_0_reg[14]' (FDE) to 'dmInner/dmInner/abstractGeneratedMem_0_reg[20]'
+INFO: [Synth 8-3886] merging instance 'dmInner/dmInner/abstractGeneratedMem_0_reg[20]' (FDE) to 'dmInner/dmInner/abstractGeneratedMem_0_reg[21]'
+INFO: [Synth 8-3886] merging instance 'dmInner/dmInner/abstractGeneratedMem_0_reg[21]' (FDE) to 'dmInner/dmInner/abstractGeneratedMem_0_reg[22]'
+INFO: [Synth 8-3886] merging instance 'dmInner/dmInner/abstractGeneratedMem_0_reg[22]' (FDE) to 'dmInner/dmInner/abstractGeneratedMem_0_reg[23]'
+INFO: [Synth 8-3886] merging instance 'dmInner/dmInner/abstractGeneratedMem_0_reg[23]' (FDE) to 'dmInner/dmInner/abstractGeneratedMem_0_reg[24]'
+INFO: [Synth 8-3886] merging instance 'dmInner/dmInner/abstractGeneratedMem_0_reg[24]' (FDE) to 'dmInner/dmInner/abstractGeneratedMem_0_reg[27]'
+INFO: [Synth 8-3886] merging instance 'dmInner/dmInner/abstractGeneratedMem_1_reg[31]' (FDRE) to 'dmInner/dmInner/abstractGeneratedMem_1_reg[20]'
+INFO: [Synth 8-5546] ROM "st_sie" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "medeleg" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "mideleg" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "st_mie" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "scnt_cy" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "mcnt_cy" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "mie_msie" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "mtvec" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "mscratch" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "mepc" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "mcause" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "mtval" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "sw_stip" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "stvec" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "sscratch" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "sepc" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "scause" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "stval" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "st_sie" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "medeleg" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "mideleg" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "st_mie" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "scnt_cy" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "mcnt_cy" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "mie_msie" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "mtvec" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "mscratch" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "mepc" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "mcause" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "mtval" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "sw_stip" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "stvec" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "sscratch" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "sepc" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "scause" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5546] ROM "stval" won't be mapped to RAM because it is too sparse
+INFO: [Synth 8-5587] ROM size for "amo_code" is below threshold of ROM address width. It will be mapped to LUTs
+INFO: [Synth 8-5587] ROM size for "amo_code" is below threshold of ROM address width. It will be mapped to LUTs
+INFO: [Synth 8-5544] ROM "p_0_out" won't be mapped to Block RAM because address size (2) smaller than threshold (5)
+INFO: [Synth 8-5544] ROM "md_op" won't be mapped to Block RAM because address size (3) smaller than threshold (5)
+INFO: [Synth 8-3886] merging instance 'cpuV2/core/trap_cause_reg[58]' (FDRE) to 'cpuV2/core/trap_cause_reg[62]'
+INFO: [Synth 8-3886] merging instance 'cpuV2/core/trap_cause_reg[59]' (FDRE) to 'cpuV2/core/trap_cause_reg[62]'
+INFO: [Synth 8-3886] merging instance 'cpuV2/core/trap_cause_reg[56]' (FDRE) to 'cpuV2/core/trap_cause_reg[62]'
+INFO: [Synth 8-3886] merging instance 'cpuV2/core/trap_cause_reg[57]' (FDRE) to 'cpuV2/core/trap_cause_reg[62]'
+INFO: [Synth 8-3886] merging instance 'cpuV2/core/trap_cause_reg[54]' (FDRE) to 'cpuV2/core/trap_cause_reg[62]'
+INFO: [Synth 8-3886] merging instance 'cpuV2/core/trap_cause_reg[55]' (FDRE) to 'cpuV2/core/trap_cause_reg[62]'
+INFO: [Synth 8-3886] merging instance 'cpuV2/core/trap_cause_reg[52]' (FDRE) to 'cpuV2/core/trap_cause_reg[62]'
+INFO: [Synth 8-3886] merging instance 'cpuV2/core/trap_cause_reg[53]' (FDRE) to 'cpuV2/core/trap_cause_reg[62]'
+INFO: [Synth 8-3886] merging instance 'cpuV2/core/trap_cause_reg[50]' (FDRE) to 'cpuV2/core/trap_cause_reg[62]'
+INFO: [Synth 8-3886] merging instance 'cpuV2/core/trap_cause_reg[51]' (FDRE) to 'cpuV2/core/trap_cause_reg[62]'
+INFO: [Synth 8-3886] merging instance 'cpuV2/core/trap_cause_reg[48]' (FDRE) to 'cpuV2/core/trap_cause_reg[62]'
+INFO: [Synth 8-3886] merging instance 'cpuV2/core/trap_cause_reg[49]' (FDRE) to 'cpuV2/core/trap_cause_reg[62]'
+INFO: [Synth 8-3886] merging instance 'cpuV2/core/trap_cause_reg[46]' (FDRE) to 'cpuV2/core/trap_cause_reg[62]'
+INFO: [Synth 8-3886] merging instance 'cpuV2/core/trap_cause_reg[47]' (FDRE) to 'cpuV2/core/trap_cause_reg[62]'
+INFO: [Synth 8-3886] merging instance 'cpuV2/core/trap_cause_reg[44]' (FDRE) to 'cpuV2/core/trap_cause_reg[62]'
+INFO: [Synth 8-3886] merging instance 'cpuV2/core/trap_cause_reg[45]' (FDRE) to 'cpuV2/core/trap_cause_reg[62]'
+INFO: [Synth 8-3886] merging instance 'cpuV2/core/trap_cause_reg[42]' (FDRE) to 'cpuV2/core/trap_cause_reg[62]'
+INFO: [Synth 8-3886] merging instance 'cpuV2/core/trap_cause_reg[43]' (FDRE) to 'cpuV2/core/trap_cause_reg[62]'
+INFO: [Synth 8-3886] merging instance 'cpuV2/core/trap_cause_reg[40]' (FDRE) to 'cpuV2/core/trap_cause_reg[62]'
+INFO: [Synth 8-3886] merging instance 'cpuV2/core/trap_cause_reg[41]' (FDRE) to 'cpuV2/core/trap_cause_reg[62]'
+INFO: [Synth 8-3886] merging instance 'cpuV2/core/trap_cause_reg[38]' (FDRE) to 'cpuV2/core/trap_cause_reg[62]'
+INFO: [Synth 8-3886] merging instance 'cpuV2/core/trap_cause_reg[39]' (FDRE) to 'cpuV2/core/trap_cause_reg[62]'
+INFO: [Synth 8-3886] merging instance 'cpuV2/core/trap_cause_reg[36]' (FDRE) to 'cpuV2/core/trap_cause_reg[62]'
+INFO: [Synth 8-3886] merging instance 'cpuV2/core/trap_cause_reg[37]' (FDRE) to 'cpuV2/core/trap_cause_reg[62]'
+INFO: [Synth 8-3886] merging instance 'cpuV2/core/trap_cause_reg[34]' (FDRE) to 'cpuV2/core/trap_cause_reg[62]'
+INFO: [Synth 8-3886] merging instance 'cpuV2/core/trap_cause_reg[35]' (FDRE) to 'cpuV2/core/trap_cause_reg[62]'
+INFO: [Synth 8-3886] merging instance 'cpuV2/core/trap_cause_reg[32]' (FDRE) to 'cpuV2/core/trap_cause_reg[62]'
+INFO: [Common 17-14] Message 'Synth 8-3886' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+INFO: [Common 17-14] Message 'Synth 8-3886' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+INFO: [Common 17-14] Message 'Synth 8-3886' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+INFO: [Common 17-14] Message 'Synth 8-3333' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+---------------------------------------------------------------------------------
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:01:54 ; elapsed = 00:01:59 . Memory (MB): peak = 5557.266 ; gain = 3781.902 ; free physical = 293 ; free virtual = 22547
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start ROM, RAM, DSP, Shift Register and Retiming Reporting
+---------------------------------------------------------------------------------
+
+Distributed RAM: Preliminary Mapping Report (see note below)
++----------------+-----------------------------------------------------------------+-----------+----------------------+---------------+
+|Module Name     | RTL Object                                                      | Inference | Size (Depth x Width) | Primitives    | 
++----------------+-----------------------------------------------------------------+-----------+----------------------+---------------+
+|controller      | router/allocQueue/ram_reg                                       | Implied   | 2 x 1                | RAM16X1D x 1  | 
+|controller      | router/completeQueue/ram_reg                                    | Implied   | 2 x 1                | RAM16X1D x 1  | 
+|pbus            | coupler_from_sbus/buffer/Queue/ram_opcode_reg                   | Implied   | 2 x 3                | RAM32M x 1    | 
+|pbus            | coupler_from_sbus/buffer/Queue/ram_size_reg                     | Implied   | 2 x 3                | RAM32M x 1    | 
+|pbus            | coupler_from_sbus/buffer/Queue/ram_source_reg                   | Implied   | 2 x 2                | RAM16X1D x 2  | 
+|pbus            | coupler_from_sbus/buffer/Queue/ram_address_reg                  | Implied   | 2 x 29               | RAM32M x 5    | 
+|pbus            | coupler_from_sbus/buffer/Queue/ram_mask_reg                     | Implied   | 2 x 8                | RAM32M x 2    | 
+|pbus            | coupler_from_sbus/buffer/Queue/ram_data_reg                     | Implied   | 2 x 64               | RAM32M x 11   | 
+|pbus            | coupler_from_sbus/buffer/Queue_1/ram_opcode_reg                 | Implied   | 2 x 3                | RAM32M x 1    | 
+|pbus            | coupler_from_sbus/buffer/Queue_1/ram_size_reg                   | Implied   | 2 x 3                | RAM32M x 1    | 
+|pbus            | coupler_from_sbus/buffer/Queue_1/ram_source_reg                 | Implied   | 2 x 2                | RAM16X1D x 2  | 
+|pbus            | coupler_from_sbus/buffer/Queue_1/ram_error_reg                  | Implied   | 2 x 1                | RAM16X1D x 1  | 
+|pbus            | coupler_from_sbus/buffer/Queue_1/ram_data_reg                   | Implied   | 2 x 64               | RAM32M x 11   | 
+|pbus            | sync_xing/Queue/ram_opcode_reg                                  | Implied   | 2 x 3                | RAM32M x 1    | 
+|pbus            | sync_xing/Queue/ram_param_reg                                   | Implied   | 2 x 3                | RAM32M x 1    | 
+|pbus            | sync_xing/Queue/ram_size_reg                                    | Implied   | 2 x 3                | RAM32M x 1    | 
+|pbus            | sync_xing/Queue/ram_source_reg                                  | Implied   | 2 x 2                | RAM16X1D x 2  | 
+|pbus            | sync_xing/Queue/ram_address_reg                                 | Implied   | 2 x 29               | RAM32M x 5    | 
+|pbus            | sync_xing/Queue/ram_mask_reg                                    | Implied   | 2 x 8                | RAM32M x 2    | 
+|pbus            | sync_xing/Queue/ram_data_reg                                    | Implied   | 2 x 64               | RAM32M x 11   | 
+|pbus            | sync_xing/Queue_1/ram_opcode_reg                                | Implied   | 2 x 3                | RAM32M x 1    | 
+|pbus            | sync_xing/Queue_1/ram_size_reg                                  | Implied   | 2 x 3                | RAM32M x 1    | 
+|pbus            | sync_xing/Queue_1/ram_source_reg                                | Implied   | 2 x 2                | RAM16X1D x 2  | 
+|pbus            | sync_xing/Queue_1/ram_data_reg                                  | Implied   | 2 x 64               | RAM32M x 11   | 
+|pbus            | sync_xing/Queue_1/ram_error_reg                                 | Implied   | 2 x 1                | RAM16X1D x 1  | 
+|RD2ZynqTop__GB1 | bh/TLBroadcastTracker/o_data/ram_data_reg                       | Implied   | 8 x 64               | RAM32M x 11   | 
+|RD2ZynqTop__GB1 | bh/TLBroadcastTracker/o_data/ram_mask_reg                       | Implied   | 8 x 8                | RAM32M x 2    | 
+|RD2ZynqTop__GB1 | bh/TLBroadcastTracker_1/o_data/ram_data_reg                     | Implied   | 8 x 64               | RAM32M x 11   | 
+|RD2ZynqTop__GB1 | bh/TLBroadcastTracker_1/o_data/ram_mask_reg                     | Implied   | 8 x 8                | RAM32M x 2    | 
+|RD2ZynqTop__GB1 | bh/TLBroadcastTracker_2/o_data/ram_data_reg                     | Implied   | 8 x 64               | RAM32M x 11   | 
+|RD2ZynqTop__GB1 | bh/TLBroadcastTracker_2/o_data/ram_mask_reg                     | Implied   | 8 x 8                | RAM32M x 2    | 
+|RD2ZynqTop__GB1 | bh/TLBroadcastTracker_3/o_data/ram_data_reg                     | Implied   | 8 x 64               | RAM32M x 11   | 
+|RD2ZynqTop__GB1 | bh/TLBroadcastTracker_3/o_data/ram_mask_reg                     | Implied   | 8 x 8                | RAM32M x 2    | 
+|RD2ZynqTop__GB1 | sbus/coupler_to_slave_named_Error/buffer/Queue/ram_opcode_reg   | Implied   | 2 x 3                | RAM32M x 1    | 
+|RD2ZynqTop__GB1 | sbus/coupler_to_slave_named_Error/buffer/Queue/ram_size_reg     | Implied   | 2 x 4                | RAM32M x 1    | 
+|RD2ZynqTop__GB1 | sbus/coupler_to_slave_named_Error/buffer/Queue/ram_source_reg   | Implied   | 2 x 2                | RAM16X1D x 2  | 
+|RD2ZynqTop__GB1 | sbus/coupler_to_slave_named_Error/buffer/Queue_1/ram_opcode_reg | Implied   | 2 x 3                | RAM32M x 1    | 
+|RD2ZynqTop__GB1 | sbus/coupler_to_slave_named_Error/buffer/Queue_1/ram_size_reg   | Implied   | 2 x 4                | RAM32M x 1    | 
+|RD2ZynqTop__GB1 | sbus/coupler_to_slave_named_Error/buffer/Queue_1/ram_source_reg | Implied   | 2 x 2                | RAM16X1D x 2  | 
+|\cpuV2/core /rf | regs_reg                                                        | Implied   | 32 x 64              | RAM32M x 44   | 
+|RD2ZynqTop__GB3 | Queue/ram_reg                                                   | Implied   | 2 x 32               | RAM32M x 6    | 
+|RD2ZynqTop__GB3 | Queue_1/ram_reg                                                 | Implied   | 2 x 32               | RAM32M x 6    | 
+|ZynqAdapterRD2  | core/ser_in_fifo/ram_reg                                        | Implied   | 16 x 32              | RAM32M x 6    | 
+|ZynqAdapterRD2  | core/bdev_resp_fifo/ram_reg                                     | Implied   | 16 x 32              | RAM32M x 6    | 
+|ZynqAdapterRD2  | core/Queue_1/ram_read_reg                                       | Implied   | 2 x 1                | RAM16X1D x 1  | 
+|ZynqAdapterRD2  | core/bdev_data_fifo/ram_reg                                     | Implied   | 16 x 32              | RAM32M x 6    | 
+|ZynqAdapterRD2  | core/bdev_req_fifo/ram_reg                                      | Implied   | 16 x 32              | RAM32M x 6    | 
+|ZynqAdapterRD2  | core/ser_out_fifo/ram_reg                                       | Implied   | 16 x 32              | RAM32M x 6    | 
+|ZynqAdapterRD2  | core/Queue_1/ram_data_reg                                       | Implied   | 2 x 32               | RAM32M x 6    | 
+|ZynqAdapterRD2  | core/Queue_1/ram_extra_reg                                      | Implied   | 2 x 13               | RAM32M x 3    | 
++----------------+-----------------------------------------------------------------+-----------+----------------------+---------------+
+
+Note: The table above is a preliminary report that shows the Distributed RAMs at the current stage of the synthesis flow. Some Distributed RAMs may be reimplemented as non Distributed RAM primitives later in the synthesis flow. Multiple instantiated RAMs are reported only once.
+---------------------------------------------------------------------------------
+Finished ROM, RAM, DSP, Shift Register and Retiming Reporting
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying XDC Timing Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:02:00 ; elapsed = 00:02:09 . Memory (MB): peak = 5565.227 ; gain = 3789.863 ; free physical = 1369 ; free virtual = 23646
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Timing Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Timing Optimization : Time (s): cpu = 00:02:31 ; elapsed = 00:02:41 . Memory (MB): peak = 5613.250 ; gain = 3837.887 ; free physical = 1337 ; free virtual = 23615
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start ROM, RAM, DSP, Shift Register and Retiming Reporting
+---------------------------------------------------------------------------------
+
+Distributed RAM: Final Mapping Report
++----------------+-----------------------------------------------------------------+-----------+----------------------+---------------+
+|Module Name     | RTL Object                                                      | Inference | Size (Depth x Width) | Primitives    | 
++----------------+-----------------------------------------------------------------+-----------+----------------------+---------------+
+|\cpuV2/core /rf | regs_reg                                                        | Implied   | 32 x 64              | RAM32M x 44   | 
+|RD2ZynqTop__GB3 | Queue/ram_reg                                                   | Implied   | 2 x 32               | RAM32M x 6    | 
+|RD2ZynqTop__GB3 | Queue_1/ram_reg                                                 | Implied   | 2 x 32               | RAM32M x 6    | 
+|controller      | router/allocQueue/ram_reg                                       | Implied   | 2 x 1                | RAM16X1D x 1  | 
+|controller      | router/completeQueue/ram_reg                                    | Implied   | 2 x 1                | RAM16X1D x 1  | 
+|pbus            | coupler_from_sbus/buffer/Queue/ram_opcode_reg                   | Implied   | 2 x 3                | RAM32M x 1    | 
+|pbus            | coupler_from_sbus/buffer/Queue/ram_size_reg                     | Implied   | 2 x 3                | RAM32M x 1    | 
+|pbus            | coupler_from_sbus/buffer/Queue/ram_source_reg                   | Implied   | 2 x 2                | RAM16X1D x 2  | 
+|pbus            | coupler_from_sbus/buffer/Queue/ram_address_reg                  | Implied   | 2 x 29               | RAM32M x 5    | 
+|pbus            | coupler_from_sbus/buffer/Queue/ram_mask_reg                     | Implied   | 2 x 8                | RAM32M x 2    | 
+|pbus            | coupler_from_sbus/buffer/Queue/ram_data_reg                     | Implied   | 2 x 64               | RAM32M x 11   | 
+|pbus            | coupler_from_sbus/buffer/Queue_1/ram_opcode_reg                 | Implied   | 2 x 3                | RAM32M x 1    | 
+|pbus            | coupler_from_sbus/buffer/Queue_1/ram_size_reg                   | Implied   | 2 x 3                | RAM32M x 1    | 
+|pbus            | coupler_from_sbus/buffer/Queue_1/ram_source_reg                 | Implied   | 2 x 2                | RAM16X1D x 2  | 
+|pbus            | coupler_from_sbus/buffer/Queue_1/ram_error_reg                  | Implied   | 2 x 1                | RAM16X1D x 1  | 
+|pbus            | coupler_from_sbus/buffer/Queue_1/ram_data_reg                   | Implied   | 2 x 64               | RAM32M x 11   | 
+|pbus            | sync_xing/Queue/ram_opcode_reg                                  | Implied   | 2 x 3                | RAM32M x 1    | 
+|pbus            | sync_xing/Queue/ram_param_reg                                   | Implied   | 2 x 3                | RAM32M x 1    | 
+|pbus            | sync_xing/Queue/ram_size_reg                                    | Implied   | 2 x 3                | RAM32M x 1    | 
+|pbus            | sync_xing/Queue/ram_source_reg                                  | Implied   | 2 x 2                | RAM16X1D x 2  | 
+|pbus            | sync_xing/Queue/ram_address_reg                                 | Implied   | 2 x 29               | RAM32M x 5    | 
+|pbus            | sync_xing/Queue/ram_mask_reg                                    | Implied   | 2 x 8                | RAM32M x 2    | 
+|pbus            | sync_xing/Queue/ram_data_reg                                    | Implied   | 2 x 64               | RAM32M x 11   | 
+|pbus            | sync_xing/Queue_1/ram_opcode_reg                                | Implied   | 2 x 3                | RAM32M x 1    | 
+|pbus            | sync_xing/Queue_1/ram_size_reg                                  | Implied   | 2 x 3                | RAM32M x 1    | 
+|pbus            | sync_xing/Queue_1/ram_source_reg                                | Implied   | 2 x 2                | RAM16X1D x 2  | 
+|pbus            | sync_xing/Queue_1/ram_data_reg                                  | Implied   | 2 x 64               | RAM32M x 11   | 
+|pbus            | sync_xing/Queue_1/ram_error_reg                                 | Implied   | 2 x 1                | RAM16X1D x 1  | 
+|RD2ZynqTop__GB1 | bh/TLBroadcastTracker/o_data/ram_data_reg                       | Implied   | 8 x 64               | RAM32M x 11   | 
+|RD2ZynqTop__GB1 | bh/TLBroadcastTracker/o_data/ram_mask_reg                       | Implied   | 8 x 8                | RAM32M x 2    | 
+|RD2ZynqTop__GB1 | bh/TLBroadcastTracker_1/o_data/ram_data_reg                     | Implied   | 8 x 64               | RAM32M x 11   | 
+|RD2ZynqTop__GB1 | bh/TLBroadcastTracker_1/o_data/ram_mask_reg                     | Implied   | 8 x 8                | RAM32M x 2    | 
+|RD2ZynqTop__GB1 | bh/TLBroadcastTracker_2/o_data/ram_data_reg                     | Implied   | 8 x 64               | RAM32M x 11   | 
+|RD2ZynqTop__GB1 | bh/TLBroadcastTracker_2/o_data/ram_mask_reg                     | Implied   | 8 x 8                | RAM32M x 2    | 
+|RD2ZynqTop__GB1 | bh/TLBroadcastTracker_3/o_data/ram_data_reg                     | Implied   | 8 x 64               | RAM32M x 11   | 
+|RD2ZynqTop__GB1 | bh/TLBroadcastTracker_3/o_data/ram_mask_reg                     | Implied   | 8 x 8                | RAM32M x 2    | 
+|RD2ZynqTop__GB1 | sbus/coupler_to_slave_named_Error/buffer/Queue/ram_opcode_reg   | Implied   | 2 x 3                | RAM32M x 1    | 
+|RD2ZynqTop__GB1 | sbus/coupler_to_slave_named_Error/buffer/Queue/ram_size_reg     | Implied   | 2 x 4                | RAM32M x 1    | 
+|RD2ZynqTop__GB1 | sbus/coupler_to_slave_named_Error/buffer/Queue/ram_source_reg   | Implied   | 2 x 2                | RAM16X1D x 2  | 
+|RD2ZynqTop__GB1 | sbus/coupler_to_slave_named_Error/buffer/Queue_1/ram_opcode_reg | Implied   | 2 x 3                | RAM32M x 1    | 
+|RD2ZynqTop__GB1 | sbus/coupler_to_slave_named_Error/buffer/Queue_1/ram_size_reg   | Implied   | 2 x 4                | RAM32M x 1    | 
+|RD2ZynqTop__GB1 | sbus/coupler_to_slave_named_Error/buffer/Queue_1/ram_source_reg | Implied   | 2 x 2                | RAM16X1D x 2  | 
+|ZynqAdapterRD2  | core/ser_in_fifo/ram_reg                                        | Implied   | 16 x 32              | RAM32M x 6    | 
+|ZynqAdapterRD2  | core/bdev_resp_fifo/ram_reg                                     | Implied   | 16 x 32              | RAM32M x 6    | 
+|ZynqAdapterRD2  | core/Queue_1/ram_read_reg                                       | Implied   | 2 x 1                | RAM16X1D x 1  | 
+|ZynqAdapterRD2  | core/bdev_data_fifo/ram_reg                                     | Implied   | 16 x 32              | RAM32M x 6    | 
+|ZynqAdapterRD2  | core/bdev_req_fifo/ram_reg                                      | Implied   | 16 x 32              | RAM32M x 6    | 
+|ZynqAdapterRD2  | core/ser_out_fifo/ram_reg                                       | Implied   | 16 x 32              | RAM32M x 6    | 
+|ZynqAdapterRD2  | core/Queue_1/ram_data_reg                                       | Implied   | 2 x 32               | RAM32M x 6    | 
+|ZynqAdapterRD2  | core/Queue_1/ram_extra_reg                                      | Implied   | 2 x 13               | RAM32M x 3    | 
++----------------+-----------------------------------------------------------------+-----------+----------------------+---------------+
+
+---------------------------------------------------------------------------------
+Finished ROM, RAM, DSP, Shift Register and Retiming Reporting
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Technology Mapping
+---------------------------------------------------------------------------------
+INFO: [Synth 8-7067] Removed DRAM instance targeti_1/top/teaching_board_top/target/pbus/coupler_from_sbus/buffer/Queue_1/ram_error_reg_0_1_0_0 from module rocketchip_wrapper_GT0_tempName due to constant propagation
+INFO: [Synth 8-7067] Removed DRAM instance targeti_1/top/teaching_board_top/target/pbus/coupler_from_sbus/buffer/Queue_1/ram_error_reg_0_1_0_0 from module rocketchip_wrapper_GT0_tempName due to constant propagation
+INFO: [Synth 8-7067] Removed DRAM instance targeti_1/top/teaching_board_top/target/pbus/sync_xing/Queue_1/ram_error_reg_0_1_0_0 from module rocketchip_wrapper_GT0_tempName due to constant propagation
+---------------------------------------------------------------------------------
+Finished Technology Mapping : Time (s): cpu = 00:02:34 ; elapsed = 00:02:51 . Memory (MB): peak = 5625.176 ; gain = 3849.812 ; free physical = 433 ; free virtual = 22714
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished IO Insertion : Time (s): cpu = 00:02:39 ; elapsed = 00:02:56 . Memory (MB): peak = 5625.176 ; gain = 3849.812 ; free physical = 393 ; free virtual = 22713
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Instances
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Instances : Time (s): cpu = 00:02:39 ; elapsed = 00:02:56 . Memory (MB): peak = 5625.176 ; gain = 3849.812 ; free physical = 393 ; free virtual = 22713
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Rebuilding User Hierarchy
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:02:41 ; elapsed = 00:02:58 . Memory (MB): peak = 5625.176 ; gain = 3849.812 ; free physical = 393 ; free virtual = 22713
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Ports
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Ports : Time (s): cpu = 00:02:41 ; elapsed = 00:02:58 . Memory (MB): peak = 5625.176 ; gain = 3849.812 ; free physical = 393 ; free virtual = 22713
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:02:42 ; elapsed = 00:02:59 . Memory (MB): peak = 5625.176 ; gain = 3849.812 ; free physical = 393 ; free virtual = 22713
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Nets
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Nets : Time (s): cpu = 00:02:42 ; elapsed = 00:02:59 . Memory (MB): peak = 5625.176 ; gain = 3849.812 ; free physical = 393 ; free virtual = 22713
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Writing Synthesis Report
+---------------------------------------------------------------------------------
+
+Report BlackBoxes: 
++------+----------------------------------------+----------+
+|      |BlackBox name                           |Instances |
++------+----------------------------------------+----------+
+|1     |system_axi_interconnect_0_imp_auto_pc_0 |         1|
+|2     |system_axi_interconnect_1_imp_auto_pc_0 |         1|
+|3     |system_proc_sys_reset_0_0               |         1|
+|4     |system_processing_system7_0_0           |         1|
++------+----------------------------------------+----------+
+
+Report Cell Usage: 
++------+--------------------------------------+------+
+|      |Cell                                  |Count |
++------+--------------------------------------+------+
+|1     |system_axi_interconnect_0_imp_auto_pc |     1|
+|2     |system_axi_interconnect_1_imp_auto_pc |     1|
+|3     |system_proc_sys_reset_0               |     1|
+|4     |system_processing_system7_0           |     1|
+|5     |BUFG                                  |     1|
+|6     |CARRY4                                |   751|
+|7     |LUT1                                  |   538|
+|8     |LUT2                                  |  1128|
+|9     |LUT3                                  |  2084|
+|10    |LUT4                                  |  2034|
+|11    |LUT5                                  |  2475|
+|12    |LUT6                                  |  6601|
+|13    |MMCME2_BASE                           |     1|
+|14    |MUXF7                                 |    71|
+|15    |MUXF8                                 |     6|
+|16    |RAM16X1D                              |    15|
+|17    |RAM32M                                |   179|
+|18    |RAM32X1D                              |    14|
+|19    |FDRE                                  |  5498|
+|20    |FDSE                                  |    77|
+|21    |IBUFG                                 |     1|
++------+--------------------------------------+------+
+---------------------------------------------------------------------------------
+Finished Writing Synthesis Report : Time (s): cpu = 00:02:42 ; elapsed = 00:02:59 . Memory (MB): peak = 5625.176 ; gain = 3849.812 ; free physical = 393 ; free virtual = 22713
+---------------------------------------------------------------------------------
+Synthesis finished with 0 errors, 0 critical warnings and 149 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:03:21 ; elapsed = 00:02:52 . Memory (MB): peak = 5625.176 ; gain = 3744.184 ; free physical = 6670 ; free virtual = 28990
+Synthesis Optimization Complete : Time (s): cpu = 00:03:34 ; elapsed = 00:03:02 . Memory (MB): peak = 5625.176 ; gain = 3849.812 ; free physical = 6687 ; free virtual = 28997
+INFO: [Project 1-571] Translating synthesized netlist
+Netlist sorting complete. Time (s): cpu = 00:00:00.15 ; elapsed = 00:00:00.15 . Memory (MB): peak = 5625.176 ; gain = 0.000 ; free physical = 6694 ; free virtual = 29004
+INFO: [Netlist 29-17] Analyzing 1038 Unisim elements for replacement
+WARNING: [Netlist 29-432] The IBUFG primitive 'ibufg_gclk' has been retargeted to an IBUF primitive only. No BUFG will be added. If a global buffer is intended, please instantiate an available global clock primitive from the current architecture.
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-570] Preparing netlist for logic optimization
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 5669.277 ; gain = 0.000 ; free physical = 6703 ; free virtual = 29013
+INFO: [Project 1-111] Unisim Transformation Summary:
+  A total of 210 instances were transformed.
+  IBUFG => IBUF: 1 instance 
+  MMCME2_BASE => MMCME2_ADV: 1 instance 
+  RAM16X1D => RAM32X1D (RAMD32(x2)): 15 instances
+  RAM32M => RAM32M (RAMD32(x6), RAMS32(x2)): 179 instances
+  RAM32X1D => RAM32X1D (RAMD32(x2)): 14 instances
+
+Synth Design complete | Checksum: a03b2568
+INFO: [Common 17-83] Releasing license: Synthesis
+508 Infos, 212 Warnings, 0 Critical Warnings and 0 Errors encountered.
+synth_design completed successfully
+synth_design: Time (s): cpu = 00:03:44 ; elapsed = 00:03:11 . Memory (MB): peak = 5669.312 ; gain = 4029.809 ; free physical = 6708 ; free virtual = 29018
+INFO: [Common 17-2834] synth_design peak Physical Memory [PSS] (MB): overall = 11335.115; main = 4719.764; forked = 6886.104
+INFO: [Common 17-2834] synth_design peak Virtual Memory [VSS] (MB): overall = 20511.426; main = 5669.281; forked = 14958.066
+Write ShapeDB Complete: Time (s): cpu = 00:00:00.06 ; elapsed = 00:00:00.02 . Memory (MB): peak = 5693.289 ; gain = 0.000 ; free physical = 6707 ; free virtual = 29018
+INFO: [Common 17-1381] The checkpoint '/home/engineer/fpga/worktrees/ips-cache/experiments/IPS-campaign/build-baseline/vivado-project/teaching_pynqz1.runs/synth_1/rocketchip_wrapper.dcp' has been generated.
+INFO: [Vivado 12-24828] Executing command : report_utilization -file rocketchip_wrapper_utilization_synth.rpt -pb rocketchip_wrapper_utilization_synth.pb
+INFO: [Common 17-206] Exiting Vivado at Thu Sep 24 23:50:00 2026...

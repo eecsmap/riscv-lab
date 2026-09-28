@@ -12,6 +12,11 @@
 
 module tcpu_core #(
   parameter [63:0] RESET_PC      = 64'h0000_0000_8000_0000, // test harness entry; real reset is 0x10040
+  parameter        TLB_ENTRIES   = 8,   // IPS-campaign stage 2: 0 disables translation caching entirely
+  parameter        ICACHE_BYTES  = 1024,// IPS-campaign stage 3: 0 removes the instruction cache
+  parameter [63:0] HART_ID       = 64'd0, // MC-M1: what mhartid reads. Was hard-wired to 0 in tcpu_csr; a
+                                          // second hart needs its own value, and the boot ROM's first
+                                          // branch is `csrr a0, mhartid; beqz a0, ...`
   parameter        X0_WRITABLE   = 0,   // fault injection: x0 becomes an ordinary register
   parameter        NO_LOAD_SEXT  = 0,   // fault injection: loads stop sign-extending
   parameter        REQ_WITHDRAW  = 0,   // monitor self-test: withdraw a request before its handshake
@@ -60,7 +65,7 @@ module tcpu_core #(
   output            resp_ready,
   input      [63:0] resp_rdata,
   input             resp_error,
-  input             resp_scfail,      // the SC's result, valid with resp_valid
+  input             resp_scfail,      // the SC's result, valid with ic_resp_valid
   output            resv_clear,       // one-cycle pulse: a trap was taken (or the core is in reset)
 
   // --- observation: normal retirement and trap are mutually exclusive, never in the same cycle ---
@@ -108,7 +113,7 @@ module tcpu_core #(
   // edge. A test that injects during S_WB is exercising the scheduling window; one that injects during
   // S_ARCH is exercising the landing window; they are separate injection points and neither stands in for
   // the other. Only afterwards -- in S_IF_REQ, before
-  // req_valid is raised -- is an interrupt considered, which is what keeps the decision from being made on
+  // ic_req_valid is raised -- is an interrupt considered, which is what keeps the decision from being made on
   // a stale MIE, mtvec or mepc, and what stops an MRET or an enable-changing CSR write from being followed
   // by one more ordinary instruction.
 
@@ -134,10 +139,38 @@ module tcpu_core #(
   wire        csr_satp_mode, csr_sum, csr_mxr, csr_mprv;
   wire [43:0] csr_satp_ppn;
   wire [1:0]  csr_mpp;
-  assign req_valid = ptw_busy ? ptw_req_valid : core_req_valid;
-  assign req_addr  = ptw_busy ? ptw_req_addr  : core_req_addr;
-  assign req_write = ptw_busy ? 1'b0          : core_req_write;
-  assign req_size  = ptw_busy ? 2'd3          : core_req_size;
+  // IPS-campaign stage 3. The core's fetch states are unchanged: tcpu_ifill sits between this mux and
+  // the module's port, answers a cacheable instruction fetch from a resident line without going out,
+  // and passes everything else -- data, the walker's PTE reads, MMIO, writes -- straight through.
+  //
+  // `ic_is_fetch` excludes the walker deliberately: while ptw_busy the request is a PTE READ, which is
+  // data and must never be cached as an instruction.
+  wire        ic_req_valid, ic_req_write;
+  wire [31:0] ic_req_addr;
+  wire [1:0]  ic_req_size;
+  wire        ic_req_ready, ic_resp_valid, ic_resp_error;
+  wire [63:0] ic_resp_rdata;
+  wire        icache_hit, icache_miss;
+
+  assign ic_req_valid = ptw_busy ? ptw_req_valid : core_req_valid;
+  assign ic_req_addr  = ptw_busy ? ptw_req_addr  : core_req_addr;
+  assign ic_req_write = ptw_busy ? 1'b0          : core_req_write;
+  assign ic_req_size  = ptw_busy ? 2'd3          : core_req_size;
+  wire        ic_is_fetch = !ptw_busy && ((state == S_IF_REQ) || (state == S_IF_WAIT) ||
+                                          (state == S_IF2_REQ) || (state == S_IF2_WAIT) ||
+                                          (state == S_XLATE && xl_kind != 2'd2));
+  // fence.i invalidates, and so does reset, which the cache does itself
+  wire        icache_flush = (state == S_ARCH) && is_fencei;
+
+  tcpu_ifill #(.BYTES(ICACHE_BYTES), .LINE_BYTES(16)) ifill (
+    .clk(clk), .rst(rst), .invalidate(icache_flush),
+    .c_req_valid(ic_req_valid), .c_req_ready(ic_req_ready), .c_req_addr(ic_req_addr),
+    .c_req_size(ic_req_size), .c_req_write(ic_req_write), .c_is_fetch(ic_is_fetch),
+    .c_resp_valid(ic_resp_valid), .c_resp_rdata(ic_resp_rdata), .c_resp_error(ic_resp_error),
+    .m_req_valid(req_valid), .m_req_ready(req_ready), .m_req_addr(req_addr), .m_req_size(req_size),
+    .m_resp_valid(resp_valid), .m_resp_rdata(resp_rdata), .m_resp_error(resp_error),
+    .o_hit(icache_hit), .o_miss(icache_miss));
+  assign req_write = ic_req_write;
   assign req_wdata = ptw_busy ? 64'd0         : core_req_wdata;
   assign req_wmask = ptw_busy ? 8'd0          : core_req_wmask;
   // a page-table read is an ordinary read: never an atomic, never a reservation
@@ -169,12 +202,23 @@ module tcpu_core #(
   reg [63:0] insn_len;
   reg [31:0] raw_insn;
   reg [15:0] half_lo;          // the first parcel of a 32-bit instruction, held while the second is fetched
+  reg        fetch_wide_req;   // OPT01: this fetch request authorised four bytes, so four may be used
   reg [63:0] pc2;              // the second parcel's own address, kept for the exception report
-  wire [15:0] fetched_half = pc[2] ? (pc[1] ? resp_rdata[63:48] : resp_rdata[47:32])
-                                   : (pc[1] ? resp_rdata[31:16] : resp_rdata[15:0]);
-  wire [15:0] fetched_half2 = pc2[2] ? (pc2[1] ? resp_rdata[63:48] : resp_rdata[47:32])
-                                     : (pc2[1] ? resp_rdata[31:16] : resp_rdata[15:0]);
+  wire [15:0] fetched_half = pc[2] ? (pc[1] ? ic_resp_rdata[63:48] : ic_resp_rdata[47:32])
+                                   : (pc[1] ? ic_resp_rdata[31:16] : ic_resp_rdata[15:0]);
+  wire [15:0] fetched_half2 = pc2[2] ? (pc2[1] ? ic_resp_rdata[63:48] : ic_resp_rdata[47:32])
+                                     : (pc2[1] ? ic_resp_rdata[31:16] : ic_resp_rdata[15:0]);
   wire        fetched_is_c = (fetched_half[1:0] != 2'b11);
+  // OPT01: when pc is 4-byte aligned the whole 32-bit instruction lies inside ONE response. The response
+  // bus is 64 bits wide and always was; the core simply never used more than 16 bits of it. pc[1]==0 puts
+  // both halves in the same aligned word, selected by pc[2] exactly as fetched_half is.
+  wire        pc_word_aligned = (pc[1] == 1'b0);
+  //: The wide form may be consumed ONLY when the request that produced this response actually asked for
+  //: four bytes. `fetch_wide_req` is latched at the moment of issue rather than read back from
+  //: core_req_size, because the walker's own PTE reads drive that field during a translation -- so
+  //: reading it back would be asking a signal somebody else has since written. This flag is the
+  //: difference between reading what was asked for and reading what the bus happened to return.
+  wire [31:0] fetched_word = pc[2] ? ic_resp_rdata[63:32] : ic_resp_rdata[31:0];
   wire [31:0] c_insn; wire c_illegal, c_hint;
   tcpu_cdecode #(.FAULT_C_IMM(FAULT_C_IMM), .FAULT_C_REG(FAULT_C_REG)) cdec (
     .c(fetched_half), .insn(c_insn), .illegal(c_illegal), .hint(c_hint));
@@ -396,10 +440,10 @@ module tcpu_core #(
 
   // ---- load extension --------------------------------------------------
   wire [5:0]  lshift   = {mem_vaddr[2:0], 3'b000};
-  wire [63:0] ld_shift = resp_rdata >> lshift;
+  wire [63:0] ld_shift = ic_resp_rdata >> lshift;
   // CPU-A: the old value comes back on the address's byte lanes. .W returns the 32-bit word
   // sign-extended -- including AMOMINU/AMOMAXU, where only the *comparison* is unsigned.
-  wire [63:0] amo_old  = a_w ? {{32{(FAULT_A_W_NOSEXT != 0) ? 1'b0 : ld_shift[31]}}, ld_shift[31:0]} : resp_rdata;
+  wire [63:0] amo_old  = a_w ? {{32{(FAULT_A_W_NOSEXT != 0) ? 1'b0 : ld_shift[31]}}, ld_shift[31:0]} : ic_resp_rdata;
   reg  [63:0] load_data;
   always @(*) begin
     case (funct3)
@@ -449,13 +493,33 @@ module tcpu_core #(
   wire [1:0] eff_priv_data = csr_mprv ? csr_mpp : priv;
   wire xlate_fetch = csr_satp_mode && (priv != 2'd3);
   wire xlate_data  = csr_satp_mode && (eff_priv_data != 2'd3);
-  tcpu_ptw #(.FAULT_PTW_NO_PERM(FAULT_PTW_NO_PERM)) ptw (
-    .clk(clk), .rst(rst), .start(ptw_start), .va(ptw_va), .acc_type(ptw_type), .eff_priv(ptw_priv),
+
+  // IPS-campaign stage 2 -- the TLB's invalidation, deliberately more than the architecture requires.
+  //
+  // Any sfence.vma, whatever its rs1/rs2, flushes everything; so does any CHANGE of satp. satp's value
+  // is watched rather than its write strobe because the CSR file owns the write and ASIDLEN is 0 here,
+  // so a write that changes nothing changes no mapping -- and a write that changes the root is exactly
+  // what must flush. An sfence that traps also flushes, which is over-flushing, which is the safe
+  // direction: the failure mode of over-flushing is a slower machine and of under-flushing a wrong one.
+  // EVERY write to satp, not only one that changes it. The first version watched the VALUE, so a
+  // same-value write did not flush -- which is not an ISA violation on its own, since sfence.vma is
+  // still required, but it is not what STAGE2-DESIGN.md promised and a design document that does not
+  // describe the RTL is worse than no document. csr_we_r is the actual write enable the CSR file acts
+  // on, so this covers same-value writes and excludes a CSRRS/CSRRC with rs1=x0, which performs no
+  // write at all.
+  wire        satp_write = csr_we_r && (csr == 12'h180);
+  wire        tlb_flush  = satp_write || ((state == S_ARCH) && is_sfence);
+
+  wire xlate_hit, xlate_miss;      // observation only; nothing architectural reads these
+  tcpu_xlate #(.TLB_ENTRIES(TLB_ENTRIES), .FAULT_PTW_NO_PERM(FAULT_PTW_NO_PERM)) ptw (
+    .clk(clk), .rst(rst), .flush(tlb_flush),
+    .start(ptw_start), .va(ptw_va), .acc_type(ptw_type), .eff_priv(ptw_priv),
     .sum(csr_sum), .mxr(csr_mxr), .root_ppn(csr_satp_ppn),
-    .req_valid(ptw_req_valid), .req_ready(req_ready), .req_addr(ptw_req_addr),
-    .resp_valid(resp_valid), .resp_rdata(resp_rdata), .resp_error(resp_error),
-    .busy(ptw_busy), .done(ptw_done), .fault(ptw_fault), .cause(ptw_cause), .pa(ptw_pa));
-  tcpu_csr #(.MISA_A(MISA_A), .TRAP_BAD_MEPC(TRAP_BAD_MEPC), .TRAP_COUNTS_RET(TRAP_COUNTS_RET),
+    .req_valid(ptw_req_valid), .req_ready(ic_req_ready), .req_addr(ptw_req_addr),
+    .resp_valid(ic_resp_valid), .resp_rdata(ic_resp_rdata), .resp_error(ic_resp_error),
+    .busy(ptw_busy), .done(ptw_done), .fault(ptw_fault), .cause(ptw_cause), .pa(ptw_pa),
+    .o_hit(xlate_hit), .o_miss(xlate_miss));
+  tcpu_csr #(.HART_ID(HART_ID), .MISA_A(MISA_A), .TRAP_BAD_MEPC(TRAP_BAD_MEPC), .TRAP_COUNTS_RET(TRAP_COUNTS_RET),
              .ALLOW_RO_WRITE(ALLOW_RO_WRITE), .FAULT_NO_DELEG(FAULT_NO_DELEG),
              .FAULT_S_IRQ_IN_M(FAULT_S_IRQ_IN_M), .FAULT_SRET_SPP(FAULT_SRET_SPP)) csrfile (
     .clk(clk), .rst(rst),
@@ -516,13 +580,14 @@ module tcpu_core #(
       commit_rd_valid <= 1'b0; commit_rd <= 5'd0; commit_rd_data <= 64'd0;
       commit_pc <= 64'd0; commit_insn <= 32'd0; commit_len <= 3'd0;
       insn_len <= 64'd4; raw_insn <= 32'd0; half_lo <= 16'd0; pc2 <= 64'd0; c_bad <= 1'b0;
+      fetch_wide_req <= 1'b0;
       trap_cause <= 64'd0; trap_epc <= 64'd0; trap_tval <= 64'd0;
     end else begin
       case (state)
         // ---- fetch: one naturally aligned 32-bit read from the test RAM (M2-1 scope: no C, no MMU)
         S_IF_REQ: begin
           // The only point at which an interrupt is accepted. Nothing is in flight here: the previous
-          // instruction's architectural updates landed at the end of S_ARCH, and req_valid has not been
+          // instruction's architectural updates landed at the end of S_ARCH, and ic_req_valid has not been
           // raised yet, so nothing has to be cancelled or replayed. mepc is simply pc -- the address of the
           // instruction that has not run -- which already includes the effect of a preceding jump or MRET.
           if (irq_take) begin
@@ -539,24 +604,40 @@ module tcpu_core #(
           end else if (pc_pa_bad) begin
             trap_cause <= `CAUSE_INSN_ACCESS; trap_tval <= pc; trap_epc <= pc; state <= S_TRAP;
           end else begin
-            core_req_valid <= 1'b1; core_req_addr <= pc[31:0]; core_req_write <= 1'b0; core_req_size <= 2'd1;   // one parcel
+            // OPT01: four bytes when the PC is 4-byte aligned, one parcel otherwise. perf05 measured that
+            // size does not affect the cost of an access within a 64-bit beat (a 1-byte and an 8-byte
+            // load differ by 0.2%), so the wider request is free and the saving is the request it removes.
+            core_req_valid <= 1'b1; core_req_addr <= pc[31:0]; core_req_write <= 1'b0;
+            core_req_size <= pc_word_aligned ? 2'd2 : 2'd1;
+            fetch_wide_req <= pc_word_aligned;
             core_req_wdata <= 64'd0; core_req_wmask <= 8'd0; core_req_amo <= 4'd0; core_req_lrsc <= 2'd0; state <= S_IF_WAIT;
           end
         end
         S_IF_WAIT: begin
-          if (core_req_valid && req_ready) core_req_valid <= 1'b0;     // payload held until the handshake
-          else if (REQ_WITHDRAW != 0 && core_req_valid && !req_ready && !withdrawn) begin
+          if (core_req_valid && ic_req_ready) core_req_valid <= 1'b0;     // payload held until the handshake
+          else if (REQ_WITHDRAW != 0 && core_req_valid && !ic_req_ready && !withdrawn) begin
             core_req_valid <= 1'b0; withdrawn <= 1'b1;             // deliberate violation, monitor self-test only
           end else if (REQ_WITHDRAW != 0 && withdrawn && !core_req_valid) core_req_valid <= 1'b1;
-          if (resp_valid) begin
-            if (resp_error) begin
+          if (ic_resp_valid) begin
+            if (ic_resp_error) begin
               trap_cause <= `CAUSE_INSN_ACCESS; trap_tval <= pc; trap_epc <= pc; state <= S_TRAP;
             end else if (fetched_is_c) begin
               // a compressed parcel: expanded here, the original kept for the commit / exception record
               insn <= c_insn; raw_insn <= {16'd0, fetched_half}; insn_len <= 64'd2; c_bad <= c_illegal;
               state <= S_EXEC;
+            end else if (fetch_wide_req) begin
+              // OPT01: a 32-bit instruction that is 4-byte aligned. Both halves arrived together, so
+              // S_IF2_REQ/S_IF2_WAIT are never entered and the instruction costs ONE round-trip.
+              //
+              // This is also why the second translation disappears under Sv39: a naturally aligned
+              // 4-byte access cannot cross a 4 KiB page, so the single translation already covers the
+              // whole instruction. The independent second walk exists for the unaligned case below,
+              // which is untouched.
+              insn <= fetched_word; raw_insn <= fetched_word; insn_len <= 64'd4; c_bad <= 1'b0;
+              state <= S_EXEC;
             end else begin
-              // a 32-bit instruction: only now is the second parcel asked for, at its own address
+              // a 32-bit instruction at a 2-byte-aligned PC: it may straddle a page, so the second parcel
+              // is still fetched and translated on its own. Unchanged.
               half_lo <= fetched_half; pc2 <= pc + 64'd2; c_bad <= 1'b0;
               state <= S_IF2_REQ;
             end
@@ -577,7 +658,8 @@ module tcpu_core #(
             trap_cause <= `CAUSE_INSN_ACCESS; trap_tval <= pc2; trap_epc <= pc; state <= S_TRAP;
           end else begin
             core_req_valid <= 1'b1; core_req_addr <= pc2[31:0]; core_req_write <= 1'b0; core_req_size <= 2'd1;
-            core_req_wdata <= 64'd0; core_req_wmask <= 8'd0; core_req_amo <= 4'd0; core_req_lrsc <= 2'd0; state <= S_IF2_WAIT;
+            core_req_wdata <= 64'd0; core_req_wmask <= 8'd0; core_req_amo <= 4'd0; core_req_lrsc <= 2'd0;
+            fetch_wide_req <= 1'b0; state <= S_IF2_WAIT;
           end
         end
         // ---- CPU-SV39: a walk in progress. The walker owns the port; nothing else happens, no interrupt is
@@ -599,16 +681,24 @@ module tcpu_core #(
               core_req_lrsc  <= is_lr ? 2'd1 : is_sc ? 2'd2 : 2'd0;
               state <= S_MEM_WAIT;
             end else begin
-              core_req_valid <= 1'b1; core_req_addr <= ptw_pa[31:0]; core_req_write <= 1'b0; core_req_size <= 2'd1;
+              // OPT01: the TRANSLATED fetch must authorise four bytes too, exactly as the untranslated
+              // one does. Without this the request asks for two bytes while S_IF_WAIT consumes four out
+              // of the 64-bit response -- bytes the request never authorised. Simulation hides that,
+              // because the model returns a full word whatever was asked for; a stricter model, a
+              // monitor, or real fabric need not. Only the FIRST parcel (xl_kind==0) widens: the
+              // second-parcel path is the unaligned fallback and stays at one parcel.
+              core_req_valid <= 1'b1; core_req_addr <= ptw_pa[31:0]; core_req_write <= 1'b0;
+              core_req_size  <= (xl_kind == 2'd0 && pc_word_aligned) ? 2'd2 : 2'd1;
+              fetch_wide_req <= (xl_kind == 2'd0 && pc_word_aligned);
               core_req_wdata <= 64'd0; core_req_wmask <= 8'd0; core_req_amo <= 4'd0; core_req_lrsc <= 2'd0;
               state <= (xl_kind == 2'd0) ? S_IF_WAIT : S_IF2_WAIT;
             end
           end
         end
         S_IF2_WAIT: begin
-          if (core_req_valid && req_ready) core_req_valid <= 1'b0;
-          if (resp_valid) begin
-            if (resp_error) begin
+          if (core_req_valid && ic_req_ready) core_req_valid <= 1'b0;
+          if (ic_resp_valid) begin
+            if (ic_resp_error) begin
               trap_cause <= `CAUSE_INSN_ACCESS; trap_tval <= pc2; trap_epc <= pc; state <= S_TRAP;
             end else begin
               insn <= {fetched_half2, half_lo}; raw_insn <= {fetched_half2, half_lo}; insn_len <= 64'd4;
@@ -684,9 +774,9 @@ module tcpu_core #(
             trap_cause <= csr_irq_cause; trap_tval <= 64'd0; trap_epc <= pc;
             trap_interrupt <= 1'b1; state <= S_TRAP;
           end
-          if (core_req_valid && req_ready) core_req_valid <= 1'b0;
-          if (resp_valid) begin
-            if (resp_error) begin
+          if (core_req_valid && ic_req_ready) core_req_valid <= 1'b0;
+          if (ic_resp_valid) begin
+            if (ic_resp_error) begin
               // a bus error is a real access fault (7 for SC/AMO, 5 for a load or an LR), never scFail
               trap_cause <= mem_write_class ? `CAUSE_STORE_ACCESS : `CAUSE_LOAD_ACCESS;
               trap_tval <= mem_vaddr; trap_epc <= pc; state <= S_TRAP;

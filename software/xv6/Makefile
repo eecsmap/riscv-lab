@@ -133,7 +133,22 @@ mkfs/mkfs: mkfs/mkfs.c $K/fs.h $K/param.h
 # http://www.gnu.org/software/make/manual/html_node/Chained-Rules.html
 .PRECIOUS: %.o
 
+# Validation-only programs require the matching kernel system calls.
+VALIDATION_UPROGS=
+ifneq (,$(findstring -DTEACHING_VALIDATION,$(CPPFLAGS)))
+VALIDATION_UPROGS=$U/_m3par $U/_m3migrate $U/_m3exec
+endif
+
 UPROGS=\
+	$U/_b0compute\
+	$U/_b0array\
+	$U/_b0file\
+	$(VALIDATION_UPROGS)\
+	$U/_m3fs\
+	$U/_m3par2\
+	$U/_perfcompute\
+	$U/_perfarray\
+	$U/_mtimetest\
 	$U/_cat\
 	$U/_echo\
 	$U/_forktest\

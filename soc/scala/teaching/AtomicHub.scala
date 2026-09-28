@@ -18,13 +18,25 @@ object AtomicHub {
 }
 
 class WithAtomicHub(fReadErr: Boolean = false, fNoKill: Boolean = false, fWrongSrc: Boolean = false,
-                    trace: Boolean = true) extends Config((site, here, up) => {
+                    trace: Boolean = true,
+                    // MC-M2a: the harts, by exact client name (one entry per hart, slot order = hart order).
+                    // MC-M2b: None = derive them from the SAME configuration the SoC builds its harts from
+                    // (RD2Key.numCores, through TeachingHart.clientNames), so the binding cannot drift
+                    cpuClientNames: Option[Seq[String]] = None,
+                    fNoCrossKill: Boolean = false, fSwapSideband: Boolean = false,
+                    fSwapDSource: Boolean = false, fAmoInterleave: Boolean = false) extends Config((site, here, up) => {
   case BankedL2Key => up(BankedL2Key, site).copy(coherenceManager = { subsystem =>
     implicit val p = subsystem.p
     val BroadcastParams(nTrackers, bufferless) = p(BroadcastKey)
-    val backend = LazyModule(new AtomicBackend(fReadErr, fNoKill, fWrongSrc,
+    // the matrix check lives in RD2ZynqTop too, but this closure elaborates FIRST (inside the subsystem's
+    // constructor), so the refusal for NUM_CORES=0 must be worded here as well, with the value in the message
+    if (cpuClientNames.isEmpty) require(p(RD2Key).numCores >= 1,
+      s"unsupported NUM_CORES=${p(RD2Key).numCores}: MC-M2b implements 1 and 2 (no harts to bind)")
+    val names = cpuClientNames.getOrElse(TeachingHart.clientNames(p(RD2Key).numCores))
+    val backend = LazyModule(new AtomicBackend(fReadErr, fNoKill, fWrongSrc, names,
                                                dramRegion = Seq(AddressSet(p(ExtMem).base, p(ExtMem).size - 1)),
-                                               trace = trace))
+                                               trace = trace, faultNoCrossKill = fNoCrossKill, faultSwapSideband = fSwapSideband,
+                                               faultSwapDSource = fSwapDSource, faultAmoInterleave = fAmoInterleave))
     val bh = LazyModule(new TLBroadcast(subsystem.memBusBlockBytes, nTrackers, bufferless))
     val ww = LazyModule(new TLWidthWidget(subsystem.sbus.beatBytes))
     bh.node :*= backend.node

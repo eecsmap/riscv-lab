@@ -1,0 +1,4 @@
+Verilator 5.022 2024-02-24 rev conda-forge build 1
+2026-09-25T01:38:01Z
+cpu rtl dir: /home/engineer/fpga/worktrees/ips-cache/rtl/cpu
+96586a6f2261ae2c6c1d950d76b5023304037258899798674853eb1458a8961b  /home/engineer/fpga/worktrees/ips-cache/rtl/cpu/tcpu_core.v

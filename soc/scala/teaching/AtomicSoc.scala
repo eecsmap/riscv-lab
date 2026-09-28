@@ -34,7 +34,9 @@ class AtomicZynqTop(implicit p: Parameters) extends RocketSubsystem
     case 4 => (s4cpu, Nil, Nil); case 5 => (s5cpu, s5ext0, s5ext1); case 6 => (s6cpu, Nil, Nil)
     case 7 => (s7cpu, s7ext0, Nil)
   }
-  val bridge = LazyModule(new RD2BridgeV2(cfg.bridgeFault, atomicRegion = Seq(AddressSet(p(ExtMem).base, p(ExtMem).size - 1))))
+  // MC-M2b: the one hart's name comes from the same function the backend binds with (WithAtomicHub, None)
+  val bridge = LazyModule(new RD2BridgeV2(cfg.bridgeFault, atomicRegion = Seq(AddressSet(p(ExtMem).base, p(ExtMem).size - 1)),
+                                          clientName = TeachingHart.clientName(0), hartId = 0))
   val put0   = LazyModule(new TLPutter("ext-tsi", e0))
   val put1   = LazyModule(new TLPutter("ext-dma", e1))
   val tap    = TLIdentityNode()
@@ -63,7 +65,7 @@ class AtomicZynqTopModule(outer: AtomicZynqTop) extends RocketSubsystemModuleImp
   outer.bridge.module.io.phys <> drv.io.phys
   drv.io.hold := outer.bridge.module.io.drain.cpuResetHold
   outer.bridge.module.io.drain.softReset := false.B
-  outer.backend.module.io.sb <> outer.bridge.module.io.sb
+  outer.backend.module.io.sb(0) <> outer.bridge.module.io.sb
   val (tlb, _) = outer.tap.in(0)
   val aFires = RegInit(0.U(32.W)); when (tlb.a.fire()) { aFires := aFires + 1.U }
   val outst = RegInit(false.B); when (tlb.a.fire()) { outst := true.B }; when (tlb.d.fire()) { outst := false.B }

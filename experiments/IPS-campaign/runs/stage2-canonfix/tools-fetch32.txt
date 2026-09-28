@@ -1,0 +1,5 @@
+Verilator 5.022 2024-02-24 rev conda-forge build 1
+gcc: riscv64-unknown-elf-gcc (gc891d8dc23e) 13.2.0
+2026-09-24T21:37:33Z
+cpu rtl dir: /home/engineer/fpga/worktrees/ips-fetch32/rtl/cpu
+de6be6cb3b795d388998e21c0b3c4da0cdb64449340efdcab417a29afb829a2f  /home/engineer/fpga/worktrees/ips-fetch32/rtl/cpu/tcpu_core.v

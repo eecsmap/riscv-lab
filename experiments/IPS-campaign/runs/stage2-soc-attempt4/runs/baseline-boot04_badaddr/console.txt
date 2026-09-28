@@ -1,0 +1,4 @@
+M3-BADADDR-OK
+Completed after 8954 cycles
+AXI ar=740 r=740 rlast=740 aw=141 w=141 wlast=141 b=141
+CYCLES total=8954 host_done_at=8952 drained=3

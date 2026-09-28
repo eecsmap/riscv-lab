@@ -1,0 +1,4 @@
+TEACHING-TLB-SFENCE-OK
+Completed after 31462 cycles
+AXI ar=779 r=779 rlast=779 aw=1213 w=1213 wlast=1213 b=1213
+CYCLES total=31462 host_done_at=31458 drained=5

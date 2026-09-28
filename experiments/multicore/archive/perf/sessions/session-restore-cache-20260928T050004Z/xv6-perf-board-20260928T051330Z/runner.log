@@ -1,0 +1,31 @@
+  evidence bundle /home/engineer/fpga/experiments/multicore/perf/sessions/session-restore-cache-20260928T050004Z/memory: session e6930db4-05a4-484a-9e93-508e17127ea2, digest 0de66416f7876e2b
+  memory preflight: re-run now, accepted
+  board's live boot id: e6930db4-05a4-484a-9e93-508e17127ea2
+  roles bound to exact paths: disk at start=/root/xv6run/fs-run.img, host binary=/root/xv6run/fesvr-teaching-static, kernel=/root/xv6run/kernel-perf-128mib
+  3 deployment files hashed on the board, all as approved
+  [phase    0.00s] commands: begin
+  [    5.5s] kernel banner: seen
+  [   11.7s] init started / first prompt: seen
+  [   11.7s] shell prompt: seen
+  [   11.7s] typed: 'mtimetest'
+  [   13.9s] command mtimetest: ok
+  [   13.9s] typed: 'perfcompute'
+  [   42.0s] command perfcompute-1: ok
+  [   42.0s] typed: 'perfcompute'
+  [   70.2s] command perfcompute-2: ok
+  [   70.2s] typed: 'perfcompute'
+  [   98.3s] command perfcompute-3: ok
+  [   98.3s] typed: 'perfarray'
+  [  140.5s] command perfarray-1: ok
+  [  140.5s] typed: 'perfarray'
+  [  182.7s] command perfarray-2: ok
+  [  182.7s] typed: 'perfarray'
+  [  224.8s] command perfarray-3: ok
+  [phase  221.45s] commands: end; teardown begins
+  [phase  221.45s] teardown: settle pump
+  [phase  222.05s] teardown: stop()
+  [phase  223.75s] teardown: stop() returned 0
+  [phase  223.75s] teardown: final drain
+  [phase  223.75s] teardown: drain done
+  [phase  225.03s] teardown: closing logs
+BOARD_RUN stages=10 failed=0 host_exit=0 (deliberate-stop-after-all-commands)

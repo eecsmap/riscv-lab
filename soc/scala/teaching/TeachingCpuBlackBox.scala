@@ -7,12 +7,14 @@ import chisel3._
 import chisel3.experimental.IntParam
 import chisel3.util._
 
-class TcpuCoreBlackBox(resetPc: BigInt, misaA: Int = 0) extends BlackBox(Map(
+class TcpuCoreBlackBox(resetPc: BigInt, misaA: Int = 0, hartId: BigInt = 0) extends BlackBox(Map(
       // the integration uses the SoC's own reset vector; the standalone harness keeps its own default
       "RESET_PC" -> IntParam(resetPc),
       // CPU-A: 1 only in a configuration that has the atomic path. With 0 the A instructions are illegal
       // and misa.A reads 0, so a configuration never claims support it does not have.
-      "MISA_A" -> IntParam(misaA))) {
+      "MISA_A" -> IntParam(misaA),
+      // MC-M1: what mhartid reads. Every instance gets its own; the SoC passes 0 this round.
+      "HART_ID" -> IntParam(hartId))) {
   val io = IO(new Bundle {
     val clk = Input(Clock())
     val rst = Input(Bool())
@@ -71,14 +73,15 @@ class TcpuCoreBlackBox(resetPc: BigInt, misaA: Int = 0) extends BlackBox(Map(
 
 // The wrapper: BlackBox + the PhysPortIO the bridge expects. The CPU is always ready for a response, which
 // is what "single outstanding" means on this port, so the handshake reduces to a valid.
-class TeachingCpu(resetPc: BigInt) extends Module {
+class TeachingCpu(resetPc: BigInt, hartId: BigInt = 0) extends Module {
   val io = IO(new Bundle {
     val phys = new PhysPortIO
     val irq  = Input(new Bundle { val msip = Bool(); val mtip = Bool(); val meip = Bool() })
     val obs  = Output(new TeachingCpuObs)
+    val impl = Output(new TeachingCpuImplObs)   // implementation detail, not contract (see the bundle)
     val physObs = Output(new PhysObs)     // the fields an observer needs, the same shape on V1 and V2
   })
-  val core = Module(new TcpuCoreBlackBox(resetPc))
+  val core = Module(new TcpuCoreBlackBox(resetPc, hartId = hartId))
   core.io.clk := clock
   core.io.rst := reset.toBool
 
@@ -119,11 +122,12 @@ class TeachingCpu(resetPc: BigInt) extends Module {
   io.obs.trapCause   := core.io.trap_cause
   io.obs.trapEpc     := core.io.trap_epc
   io.obs.trapTval    := core.io.trap_tval
-  io.obs.state       := core.io.dbg_state
   io.obs.pc          := core.io.dbg_pc
   io.obs.irqEnabled  := core.io.dbg_irq_enabled
   io.obs.isFetch     := core.io.dbg_req_is_fetch
   io.obs.halted      := core.io.halted
+  io.impl.state      := core.io.dbg_state
+  io.impl.redirect   := core.io.dbg_redirect
 }
 
 // The parts of the physical port an observer (the R-BOOT event trace, the status word) reads. Both
@@ -143,14 +147,15 @@ class PhysObs extends Bundle {
 
 // CPU-A: the same BlackBox with its V2 port exposed. No logic of its own either -- the core that passed
 // the core-level gates is the core that runs here.
-class TeachingCpuV2(resetPc: BigInt) extends Module {
+class TeachingCpuV2(resetPc: BigInt, hartId: BigInt = 0) extends Module {
   val io = IO(new Bundle {
     val phys = new PhysPortV2IO
     val irq  = Input(new Bundle { val msip = Bool(); val mtip = Bool(); val meip = Bool() })
     val obs  = Output(new TeachingCpuObs)
+    val impl = Output(new TeachingCpuImplObs)   // implementation detail, not contract (see the bundle)
     val physObs = Output(new PhysObs)
   })
-  val core = Module(new TcpuCoreBlackBox(resetPc, misaA = 1))   // this configuration has the atomic path
+  val core = Module(new TcpuCoreBlackBox(resetPc, misaA = 1, hartId = hartId))   // this configuration has the atomic path
   core.io.clk := clock
   core.io.rst := reset.toBool
 
@@ -184,11 +189,12 @@ class TeachingCpuV2(resetPc: BigInt) extends Module {
   io.obs.trapCause   := core.io.trap_cause
   io.obs.trapEpc     := core.io.trap_epc
   io.obs.trapTval    := core.io.trap_tval
-  io.obs.state       := core.io.dbg_state
   io.obs.pc          := core.io.dbg_pc
   io.obs.irqEnabled  := core.io.dbg_irq_enabled
   io.obs.isFetch     := core.io.dbg_req_is_fetch
   io.obs.halted      := core.io.halted
+  io.impl.state      := core.io.dbg_state
+  io.impl.redirect   := core.io.dbg_redirect
 
   io.physObs.reqFire  := io.phys.req.fire()
   io.physObs.reqValid := io.phys.req.valid
@@ -202,6 +208,9 @@ class TeachingCpuV2(resetPc: BigInt) extends Module {
   io.physObs.error    := io.phys.resp.bits.error
 }
 
+// MC-M1: the STABLE observation contract. Any CORE_IMPL must publish exactly these, with these meanings:
+// one commit or one trap per cycle, never both; `pc` of the instruction being executed; `isFetch` while
+// the outstanding request is an instruction fetch (the SoC's "busy" definition depends on it); `halted`.
 class TeachingCpuObs extends Bundle {
   val commitValid   = Bool()
   val commitPc      = UInt(64.W)
@@ -211,9 +220,17 @@ class TeachingCpuObs extends Bundle {
   val trapCause     = UInt(64.W)
   val trapEpc       = UInt(64.W)
   val trapTval      = UInt(64.W)
-  val state         = UInt(4.W)
   val pc            = UInt(64.W)
   val irqEnabled    = Bool()
   val isFetch       = Bool()
   val halted        = Bool()
+}
+
+// MC-M1: implementation detail of the multicycle core, deliberately kept OUT of TeachingCpuObs. `state` is
+// the 13-state FSM's encoding and `redirect` its writeback-of-a-redirect flag; a pipelined core has neither.
+// Nothing outside the hart wrapper may depend on these -- they exist so a core-specific test can place an
+// interrupt at an exact boundary, and for nothing else. (Enforced by a grep lint, TESTPLAN T1.3.)
+class TeachingCpuImplObs extends Bundle {
+  val state    = UInt(4.W)
+  val redirect = Bool()
 }

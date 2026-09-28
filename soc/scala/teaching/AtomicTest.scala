@@ -93,7 +93,7 @@ class TLPutter(name: String, steps: Seq[PutStep], dStallN: Int = 0)(implicit p: 
     // an empty script: the master exists (it is a real crossbar port) but never speaks
     val stepsP = if (steps.isEmpty) Seq(PutStep(0, Int.MaxValue, 0, 0x80000000L, 3, 0, 0xff)) else steps
     val n = steps.size
-    val idx = RegInit(0.U(8.W)); val beat = RegInit(0.U(1.W)); val busy = RegInit(false.B); val outst = RegInit(false.B)
+    val idx = RegInit(0.U(16.W)); val beat = RegInit(0.U(1.W)); val busy = RegInit(false.B); val outst = RegInit(false.B)
     val trigV = VecInit(stepsP.map(_.trig.U(2.W))); val argV = VecInit(stepsP.map(_.arg.U(32.W)))
     val opV = VecInit(stepsP.map(_.op.U(2.W))); val addrV = VecInit(stepsP.map(_.addr.U(32.W)))
     val sizeV = VecInit(stepsP.map(_.size.U(3.W))); val dataV = VecInit(stepsP.map(s => s.data.U(64.W))); val maskV = VecInit(stepsP.map(_.mask.U(8.W)))
@@ -129,19 +129,25 @@ class TLPutter(name: String, steps: Seq[PutStep], dStallN: Int = 0)(implicit p: 
 // reserved lrsc = 3 (must be refused locally). respStall: the CPU takes a response only every (respStall+1)-th cycle;
 // respRandom: the CPU's resp.ready follows an LFSR (return-side backpressure).
 case class CpuStep(kind: Int, addr: Long = 0, size: Int = 3, data: BigInt = 0, amo: Int = 0, arg: Int = 0)
-class V2Driver(steps: Seq[CpuStep], respStall: Int = 0, respRandom: Boolean = false) extends Module {
+// MC-M2a: hartId is printed on the driver's own events (CPU_TRAP, CPU_HELD); withdraw is a negative control
+// that offers a request while the bridge is busy and withdraws it the next cycle (the port rule broken).
+class V2Driver(steps: Seq[CpuStep], respStall: Int = 0, respRandom: Boolean = false, hartId: Int = 0, withdraw: Boolean = false) extends Module {
   val io = IO(new Bundle { val phys = new PhysPortV2IO; val hold = Input(Bool()); val finished = Output(Bool()); val nResp = Output(UInt(32.W)) })
   val n = steps.size
   val cyc = RegInit(0.U(32.W)); cyc := cyc + 1.U
-  val idx = RegInit(0.U(8.W)); val inFlight = RegInit(false.B); val waitN = RegInit(0.U(32.W)); val nResp = RegInit(0.U(32.W))
-  val kindV = VecInit(steps.map(_.kind.U(3.W))); val addrV = VecInit(steps.map(_.addr.U(32.W)))
+  val idx = RegInit(0.U(16.W)); val inFlight = RegInit(false.B); val waitN = RegInit(0.U(32.W)); val nResp = RegInit(0.U(32.W))
+  val kindV = VecInit(steps.map(_.kind.U(4.W))); val addrV = VecInit(steps.map(_.addr.U(32.W)))
   val sizeV = VecInit(steps.map(_.size.U(2.W))); val dataV = VecInit(steps.map(s => s.data.U(64.W)))
   val amoV = VecInit(steps.map(_.amo.U(4.W))); val argV = VecInit(steps.map(_.arg.U(32.W)))
   val k = kindV(idx); val done = idx >= n.U
   val lanes = PhysPort.laneMask(sizeV(idx), addrV(idx)(2, 0))
   val shift = Cat(addrV(idx)(2, 0), 0.U(3.W))
   val isMem = (k <= 4.U) || (k === 7.U)
-  io.phys.req.valid := !done && isMem && !inFlight && !io.hold
+  // withdraw (negative control): the bridge accepts an idle-time offer in the same cycle, so a withdrawal can
+  // only be provoked while it is BUSY (phys.req.ready low): one spurious valid on the first busy cycle after
+  // each acceptance, dropped the next cycle -- an offer that was not honoured, the port rule broken
+  val busyPulse = withdraw.B && inFlight && !RegNext(inFlight, false.B)
+  io.phys.req.valid := (!done && isMem && !inFlight && !io.hold) || busyPulse
   io.phys.req.bits.addr  := addrV(idx)
   io.phys.req.bits.write := (k === 1.U) || (k === 2.U) || (k === 4.U)
   io.phys.req.bits.size  := sizeV(idx)
@@ -157,9 +163,12 @@ class V2Driver(steps: Seq[CpuStep], respStall: Int = 0, respRandom: Boolean = fa
   when (io.phys.resp.fire()) { inFlight := false.B; idx := idx + 1.U; nResp := nResp + 1.U }
   // a held CPU is a CPU in reset: whatever it had in flight is gone, and it re-issues the step when released
   when (io.hold) { inFlight := false.B }
-  when (io.hold && !RegNext(io.hold, false.B)) { printf(p"AT ${cyc} CPU_HELD step=${idx}\n") }
-  when (!done && k === 5.U) { printf(p"AT ${cyc} CPU_TRAP\n"); idx := idx + 1.U }
+  when (io.hold && !RegNext(io.hold, false.B)) { printf(p"AT ${cyc} CPU_HELD hart=${hartId.U} step=${idx}\n") }
+  when (!done && k === 5.U) { printf(p"AT ${cyc} CPU_TRAP hart=${hartId.U}\n"); idx := idx + 1.U }
   when (!done && k === 6.U) { when (waitN >= argV(idx)) { waitN := 0.U; idx := idx + 1.U } .otherwise { waitN := waitN + 1.U } }
+  // kind 8, until(c): the step completes in the first cycle with cyc >= c, so two drivers with the same `until`
+  // execute their NEXT steps in the same cycle (used to make two harts trap, or trap and be written, together)
+  when (!done && k === 8.U && cyc >= argV(idx)) { idx := idx + 1.U }
   io.finished := done
   io.nResp := nResp
 }
@@ -197,7 +206,7 @@ class AtomicHarness(cpu: Seq[CpuStep], ext0: Seq[PutStep], ext1: Seq[PutStep], l
     val drv = Module(new V2Driver(cpu, respStall, respRandom))
     bridge.module.io.phys <> drv.io.phys
     drv.io.hold := bridge.module.io.drain.cpuResetHold
-    backend.module.io.sb <> bridge.module.io.sb
+    backend.module.io.sb(0) <> bridge.module.io.sb
     val (tlb, _) = tap.in(0)
     val aFires = RegInit(0.U(32.W)); when (tlb.a.fire()) { aFires := aFires + 1.U }
     val outst = RegInit(false.B); when (tlb.a.fire()) { outst := true.B }; when (tlb.d.fire()) { outst := false.B }
@@ -240,7 +249,7 @@ object AtomicScen {
   def amo(op: Int, a: Long, d: BigInt, sz: Int = 3) = CpuStep(2, a, sz, d, op)
   def ld(a: Long, sz: Int = 3) = CpuStep(0, a, sz); def st(a: Long, d: BigInt, sz: Int = 3) = CpuStep(1, a, sz, d)
   def lr(a: Long, sz: Int = 3) = CpuStep(3, a, sz); def sc(a: Long, d: BigInt, sz: Int = 3) = CpuStep(4, a, sz, d)
-  val trap = CpuStep(5); def wait(n: Int) = CpuStep(6, arg = n)
+  val trap = CpuStep(5); def wait(n: Int) = CpuStep(6, arg = n); def until(c: Int) = CpuStep(8, arg = c)
   val ops = Seq(AmoOp.SWAP, AmoOp.ADD, AmoOp.XOR, AmoOp.AND, AmoOp.OR, AmoOp.MIN, AmoOp.MAX, AmoOp.MINU, AmoOp.MAXU)
   // 1: every AMO w and d, no contention; the .w forms on both halves of a word; a neighbouring byte must survive
   val s1cpu: Seq[CpuStep] = Seq(st(X, BigInt("F0F0F0F080000005", 16)), st(Y, BigInt("0000000000000007", 16))) ++

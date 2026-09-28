@@ -1,0 +1,13 @@
+  frozen artefact set verified: 9 artefacts
+  claimed lease: board
+  claimed lease: serial
+== same boot as the cache install, PL configured, no host, no lock; /var/lock present for the production device lock
+== deploy the measurement kernel and a FRESH disk copy (hash-verified on the board)
+  deployed+verified: /root/xv6run/kernel-perf-128mib
+  deployed+verified: /root/xv6run/fs-run.img
+PD=1
+FESVR=0
+LOCK=NO_LOCK
+BID=e6930db4-05a4-484a-9e93-508e17127ea2
+  released lease: board
+  released lease: serial

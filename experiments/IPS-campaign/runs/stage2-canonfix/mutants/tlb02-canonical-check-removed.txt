@@ -1,0 +1,6 @@
+a LOAD through the non-canonical alias did not page-fault
+TEACHING-TLB-CANON-FAIL
+*** FAILED *** (tohost = 1)
+*** FAILED *** (code = 1, seed 1786936596) after 67299 cycles
+AXI ar=2128 r=2128 rlast=2128 aw=2382 w=2382 wlast=2382 b=2382
+CYCLES total=67299 host_done_at=67293 drained=7

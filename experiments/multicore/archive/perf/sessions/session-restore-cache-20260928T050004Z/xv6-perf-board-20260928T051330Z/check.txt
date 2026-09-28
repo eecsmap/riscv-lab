@@ -1,0 +1,8 @@
+INFO mtimetest: 8 reads monotonic, consecutive deltas [191, 189, 191, 190, 191, 190, 190] mtime units; child 133131302 within [133124993,133151851]; spin100k=140948 mtime units (14094800 cycles, 141 cycles/iter)
+RESULT PERF-COMPUTE size=2000000 dmtime=10635175 readcost=190 ticks_diag=426 seconds=26.588 work_per_s=300888
+RESULT PERF-COMPUTE size=2000000 dmtime=10631716 readcost=190 ticks_diag=425 seconds=26.579 work_per_s=300986
+RESULT PERF-COMPUTE size=2000000 dmtime=10635172 readcost=191 ticks_diag=426 seconds=26.588 work_per_s=300888
+RESULT PERF-ARRAY size=128 dmtime=16215854 readcost=190 ticks_diag=648 seconds=40.540 work_per_s=206924
+RESULT PERF-ARRAY size=128 dmtime=16219028 readcost=189 ticks_diag=649 seconds=40.548 work_per_s=206883
+RESULT PERF-ARRAY size=128 dmtime=16220441 readcost=190 ticks_diag=649 seconds=40.551 work_per_s=206865
+PASS /home/engineer/fpga/experiments/multicore/perf/sessions/session-restore-cache-20260928T050004Z/xv6-perf-board-20260928T051330Z (6 perf runs)
