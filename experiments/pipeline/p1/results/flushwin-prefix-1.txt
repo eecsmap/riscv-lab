@@ -1,0 +1,4 @@
+== flush-window bench: /home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p1/runs/fw-prefix-1; reference checksum (multicycle core): INVALID
+  orig (report only): 40171 runs over 15 profiles; failing runs 40171; bench properties {'fetch-owner': 40171, 'fill-after-flush': 870}; core assertions {}; exit codes {'0': 40171}; checksums ['9e68d22cb4285550']; windows {'final': 870, 'first': 870, 'alloc': 1410504, 'offered': 181987, 'handshake': 5965, 'error': 132}
+  orignc (report only): 44509 runs over 15 profiles; failing runs 44509; bench properties {'fetch-owner': 44509}; core assertions {}; exit codes {'0': 44509}; checksums ['9e68d22cb4285550']; windows {'final': 1890, 'first': 0, 'alloc': 2225842, 'offered': 200930, 'handshake': 2860, 'error': 124}
+FW_JUDGE PASS

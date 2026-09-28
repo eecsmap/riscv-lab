@@ -1,0 +1,16 @@
+thinned base judged identically to the original logs (832M -> 22M)
+case good: PASS  PASS
+case fix-bench-error: FAIL  PASS
+case fix-core-assert: FAIL  PASS
+case fix-window-missing: FAIL  PASS
+case fix-checksum: FAIL  PASS
+case fix-exit-code: FAIL  PASS
+case fix-log-missing: FAIL  PASS
+case fix-no-total: FAIL  PASS
+case ref-differs: FAIL  PASS
+case nc-window-missing: FAIL  PASS
+case k13-not-caught: FAIL  PASS
+case k13-other-property: FAIL  PASS
+case k13-no-core-assert: FAIL  PASS
+case k14-no-bench-error: FAIL  PASS
+SELFTEST_FWJUDGE 14/14

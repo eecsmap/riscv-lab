@@ -22,6 +22,7 @@ PROFILES = 5
 B_FIXED = 11 + 8          # the completing existing programs + the P1 directed programs; hazard programs are --nhz
 C_CASES = {"p1_irq_basic": 5, "p1_irq_masked": 3, "p1_irq_fault": 8, "p1_irq_hold": 2, "p1_irq_empty": 9,
            "p1_irq_warm": 6, "p1_irq_cancel": 8}       # raise positions per program; each on 3 profiles
+H_VARIANTS = [("fix", "clean"), ("fixnc", "clean"), ("k13", "caught:fill-after-flush"), ("k14", "caught:fetch-owner")]
 D_KNOBS = 12; D_CONTROLS = 4; E_CASES = 5; G_FILES = 13; F_BLOCKS = 4; F_ROIS = 5
 COVERAGE_KEYS = ("redirects redirect_while_held killed_fetch_responses killed_after_two_flushes flush_with_pending_valid "
                  "irq_tokens irq_synthetic irq_synthetic_fetch_ahead irq_cancelled drain_wait_cycles loaduse_stall_cycles "
@@ -122,6 +123,12 @@ g = read("G.txt")
 un = [l for l in g if l.startswith("  unchanged ")]; ch = [l for l in g if "CHANGED" in l]
 for l in ch: bad.append("G: " + l.strip())
 if len(un) != G_FILES: bad.append(f"G: {len(un)} files unchanged, the plan has {G_FILES}")
+
+# ---- H: the flush-window bench (codex-pipe-p1-flush-boundary)
+h = read("H.txt")
+for v, e in H_VARIANTS:
+    if not [l for l in h if l.startswith(f"  {v} ({e}): PASS;")]: bad.append(f"H: {v} ({e}) did not pass")
+if "FW_JUDGE PASS" not in h: bad.append("H: the flush-window judge did not pass")
 
 # ---- coverage (every counter present and non-zero, each A/B/C pipeline log counted once)
 cv = read(cov, in_run=False); na = sum(1 for p in A_PROGRAMS); ncv = na + nb + nc

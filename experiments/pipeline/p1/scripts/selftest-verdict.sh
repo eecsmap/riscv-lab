@@ -7,7 +7,7 @@ set -u
 RUN=${1:?run dir}; COV=${2:?coverage}; OUT=${3:?work dir}; [ -e "$OUT" ] && { echo "REFUSE: $OUT exists"; exit 2; }
 SC=$(dirname "$(readlink -f "$0")"); mkdir -p $OUT; ok=0; n=0
 fresh() {  # a pristine copy of the summaries only
-  local d=$OUT/$1; mkdir -p $d/B; cp $RUN/{A,B,C,D,E,F,G}.txt $d/; cp $RUN/B/results.txt $d/B/; cp $COV $d/coverage.txt; echo $d; }
+  local d=$OUT/$1; mkdir -p $d/B; cp $RUN/{A,B,C,D,E,F,G,H}.txt $d/; cp $RUN/B/results.txt $d/B/; cp $COV $d/coverage.txt; echo $d; }
 case_() {  # case_ <name> <PASS|FAIL> <reason regex> <file> <mutation: sed script, or DELETE>
   local name=$1 want=$2 rx=$3 file=$4 mut=$5 d; d=$(fresh $name); n=$((n+1))
   if [ "$mut" = DELETE ]; then rm $d/$file
@@ -40,6 +40,9 @@ case_ D-control-fails     FAIL 'D: control failed: control knob 10'             
 case_ E-monitor-silent    FAIL 'E: p-mon-withdraw'                                   E.txt '/p-mon-withdraw/s/-> caught: .*/NOT CAUGHT (PROTO ERROR)/'
 case_ F-roi-missing       FAIL 'F: 4 blocks / 19 ROI lines'                          F.txt '0,/    ROI3 /{/    ROI3 /d}'
 case_ G-source-changed    FAIL 'G: CHANGED tcpu_csr.v'                               G.txt 's/^  unchanged (tcpu_csr.v) (.*)/  CHANGED \1 tag=0 now=\2/'
+case_ H-variant-fails     FAIL 'H: k14 \(caught:fetch-owner\) did not pass'      H.txt 's/^  k14 \(caught:fetch-owner\): PASS;/  k14 (caught:fetch-owner): FAIL;/'
+case_ H-judge-fails       FAIL 'H: the flush-window judge did not pass'            H.txt 's/^FW_JUDGE PASS/FW_JUDGE FAIL/'
+case_ H-file-missing      FAIL 'missing output: .*/H.txt'                           H.txt DELETE
 case_ cov-counter-zero    FAIL 'coverage: irq_cancelled = 0'                         coverage.txt 's/irq_cancelled = [0-9]+/irq_cancelled = 0/'
 case_ cov-double-count    FAIL 'coverage: header is not the de-duplicated format'    coverage.txt '1s/.*/== pipeline coverage summed over 739 runs (A, B, C)/'
 echo "SELFTEST_VERDICT $ok/$n"; [ $ok = $n ]

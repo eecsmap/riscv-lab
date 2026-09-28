@@ -1,0 +1,6 @@
+== flush-window bench: /home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p1/runs/run-5/H; reference checksum (multicycle core): 4468d22c6cd13710
+  fix (clean): PASS; 38715 runs over 15 profiles; failing runs 0; bench properties {}; core assertions {}; exit codes {'0': 38715}; checksums ['4468d22c6cd13710']; windows {'final': 870, 'first': 870, 'alloc': 1359600, 'offered': 158200, 'handshake': 1820, 'error': 120}
+  fixnc (clean): PASS; 41749 runs over 15 profiles; failing runs 0; bench properties {}; core assertions {}; exit codes {'0': 41749}; checksums ['4468d22c6cd13710']; windows {'final': 1890, 'first': 0, 'alloc': 2087842, 'offered': 170596, 'handshake': 1890, 'error': 0}
+  k13 (caught:fill-after-flush): PASS; 38715 runs over 15 profiles; failing runs 870; bench properties {'fill-after-flush': 870}; core assertions {'fill-after-flush': 870}; exit codes {'0': 38715}; checksums ['4468d22c6cd13710']; windows {'final': 870, 'first': 870, 'alloc': 1359600, 'offered': 158200, 'handshake': 1820, 'error': 120}
+  k14 (caught:fetch-owner): PASS; 40171 runs over 15 profiles; failing runs 40171; bench properties {'fetch-owner': 40171}; core assertions {'fetch-owner': 40171}; exit codes {'0': 40171}; checksums ['4468d22c6cd13710']; windows {'final': 870, 'first': 870, 'alloc': 1410540, 'offered': 182035, 'handshake': 5945, 'error': 132}
+FW_JUDGE PASS

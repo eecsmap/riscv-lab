@@ -6,7 +6,7 @@
 set -u
 W=/home/engineer/fpga/worktrees/pipe-single
 OUT=${1:?outdir}; [ -e "$OUT" ] && { echo "REFUSE: $OUT exists"; exit 2; }
-mkdir -p $OUT/src/rtl $OUT/src/pipeline $OUT/src/tb $OUT/src/inc $OUT/sims $OUT/logs
+mkdir -p $OUT/src/rtl $OUT/src/pipeline $OUT/src/tb $OUT/src/inc $OUT/src/fw $OUT/sims $OUT/logs
 cd /home/engineer/fpga; set +u; source experiments/chipyard-env.sh >/dev/null 2>&1; set -u
 R=$W/rtl/cpu
 cp $R/*.v $R/*.vh $OUT/src/rtl/
@@ -16,6 +16,8 @@ cp $R/*.v $R/*.vh $OUT/src/rtl/
 cp $R/tcpu_defs.vh $OUT/src/inc/
 cp $R/pipeline/tcpu_core_pipe.v $OUT/src/pipeline/
 cp $W/tests/cpu/tb/tcpu_top.v $W/tests/cpu/tb/tcpu_harness.v $W/experiments/pipeline/p1/tb/tcpu_main.cpp $OUT/src/tb/
+# the flush-window bench (run-p1.sh section H builds it from this snapshot)
+cp $W/experiments/pipeline/p1/flushwin/fw_tb.v $W/experiments/pipeline/p1/flushwin/fw_prog.S $W/experiments/pipeline/p1/flushwin/mkhex.py $OUT/src/fw/
 (cd $OUT/src && find . -type f | sort | xargs sha256sum) > $OUT/src.sha256
 { echo "git: $(git -C $W rev-parse HEAD) ($(git -C $W describe --tags --always 2>/dev/null))"; echo "verilator: $(verilator --version)";
   echo "gcc: $(riscv64-unknown-elf-gcc --version | head -1)"; echo "date: $(date -u +%FT%TZ)"; } > $OUT/tools.txt
@@ -54,7 +56,7 @@ IDOUT=$OUT/logs; . "$(dirname "$(readlink -f "$0")")/idcheck.sh"
   idcheck define-with-multicycle-list "Cannot find file containing module: 'tcpu_core_pipe'" -DTCPU_IMPL_PIPE $MULTI $TB
   idcheck no-define-with-pipeline-list "Cannot find file containing module: 'tcpu_core'" -I$S/inc $S/pipeline/tcpu_core_pipe.v $S/rtl/tcpu_regfile.v $S/rtl/tcpu_csr.v $S/rtl/tcpu_icache.v $S/rtl/tcpu_cacheable.v $TB
   idcheck pipeline-MISA_A-1 "pipe_p1_unsupported_MISA_A" -GMISA_A=1 $PIPE $TB
-  idcheck pipeline-PIPE_FAULT-13 "pipe_p1_unsupported_PIPE_FAULT" -GPIPE_FAULT=13 $PIPE $TB
+  idcheck pipeline-PIPE_FAULT-15 "pipe_p1_unsupported_PIPE_FAULT" -GPIPE_FAULT=15 $PIPE $TB
   echo "ID_FAILS=$ID_FAILS"
 } > $OUT/identity.txt 2>&1
 cat $OUT/identity.txt

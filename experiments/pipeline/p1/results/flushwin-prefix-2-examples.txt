@@ -1,0 +1,9 @@
+# runs/fw-prefix-2: the original core (c81daae) on the final bench -- first failing lines of each property
+orig: FW ERROR pt=67 rd=1 rs=1 cyc=69 fill-after-flush: an I-cache fill of line 0x80000020 follows a flush cycle (the refill response was in that cycle)
+orig: FW ERROR pt=0 rd=0 rs=1 cyc=48 fetch-owner: fetch transaction outstanding=1 (valid=1 wait=0) but engine state=0 killed=0
+orignc: FW ERROR pt=0 rd=1 rs=1 cyc=33 fetch-owner: fetch transaction outstanding=1 (valid=1 wait=0) but engine state=0 killed=0
+# the run lines around the first fill-after-flush failure:
+FW RUN pt=73 rd=2 rs=1 code=0 cycles=2612 irq_taken=1 sum=4468d22c6cd13710 errors=222
+FW ERROR pt=74 rd=2 rs=1 cyc=56 fetch-owner: fetch transaction outstanding=1 (valid=1 wait=0) but engine state=0 killed=0
+FW ERROR pt=74 rd=2 rs=1 cyc=76 fill-after-flush: an I-cache fill of line 0x80000020 follows a flush cycle (the refill response was in that cycle)
+FW RUN pt=74 rd=2 rs=1 code=0 cycles=2595 irq_taken=1 sum=4468d22c6cd13710 errors=223

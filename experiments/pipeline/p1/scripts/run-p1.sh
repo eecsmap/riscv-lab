@@ -9,6 +9,8 @@
 #   E  monitor self-tests and the existing core fault injections, on the pipeline
 #   F  ROI performance, both implementations
 #   G  shared / multicycle sources unchanged against the tag
+#   H  flush-window bench: every same-cycle flush window swept on the pipeline core (flushwin/), fixed core clean,
+#      knobs 13 (FLUSH_FILL) and 14 (FLUSH_ALLOC) each caught by their named property
 # Exit status: 0 only if p1verdict.py accepts the run (see the end); 2 = refused, 3 = a program did not compile.
 set -u
 SIMS=${1:?sims dir}; OUT=${2:?outdir}; NHZ=${3:-40}
@@ -180,6 +182,11 @@ for f in $SIMS/src/rtl/*.v $SIMS/src/rtl/*.vh; do b=$(basename $f)
   [ "$t" = "$c" ] && echo "  unchanged $b $c" >> $OUT/G.txt || echo "  CHANGED $b tag=$t now=$c" | tee -a $OUT/G.txt
 done
 echo "  $(grep -c unchanged $OUT/G.txt) shared/multicycle RTL files byte-identical to the tag; $(grep -c CHANGED $OUT/G.txt) changed" | tee -a $OUT/G.txt
+
+# ---------------------------------------------------------------- H: flush-window bench (from the pinned snapshot)
+echo "== H: flush-window bench (codex-pipe-p1-flush-boundary)" | tee $OUT/H.txt
+REF_SIM=$(S m-min) bash $P1/flushwin/run-fw.sh $OUT/H $SIMS/src fix:0:1024 fixnc:0:0 k13:13:1024 k14:14:1024 > $OUT/H-run.txt 2>&1
+python3 $P1/flushwin/fwjudge.py $OUT/H fix=clean fixnc=clean k13=caught:fill-after-flush k14=caught:fetch-owner | tee -a $OUT/H.txt
 
 # ---------------------------------------------------------------- coverage over every pipeline run (each log once)
 python3 $SC/p1coverage.py $OUT | tee $OUT/coverage.txt

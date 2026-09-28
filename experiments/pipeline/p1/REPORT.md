@@ -26,9 +26,9 @@ translation is a range check), F2 (I-cache lookup on the registered PA, 2-beat r
   drain. Interrupts attach at the ID load, with a synthetic token when ID has no input. A token is cancelled at WB if its
   line was quieted meanwhile.
 * **Refused at elaboration:** every multicycle-only or unimplemented parameter when non-zero (A, M, C, S-mode, Sv39, IRQ and
-  A fault injections), an I-cache size other than 0 or 1024, and `PIPE_FAULT` > 12. Each produces a missing-module error
+  A fault injections), an I-cache size other than 0 or 1024, and `PIPE_FAULT` > 14 (> 12 before §9). Each produces a missing-module error
   that names the parameter.
-* **Twelve negative controls** via `PIPE_FAULT` = 1..12 (listed in the module header). Simulation-only assertions (`PIPE
+* **Twelve negative controls** via `PIPE_FAULT` = 1..12 (listed in the module header), and two more since §9 (13, 14). Simulation-only assertions (`PIPE
   ASSERT …`), fault-effect lines (`PIPE FAULT-EFFECT …`), coverage counters, and an opt-in per-cycle dump (`+pipe-debug`).
 
 ## 2. Implementation selection and source pinning
@@ -44,7 +44,7 @@ At `ef9706f` the checks were only printed.)*
 * the define with the multicycle list fails because `tcpu_core_pipe` is not found;
 * no define with the pipeline list fails because `tcpu_core` is not found;
 * `MISA_A=1` is refused;
-* `PIPE_FAULT=13` is refused.
+* `PIPE_FAULT=13` is refused (since §9 the check uses 15, because 13 and 14 exist).
 The same `-I` behaviour exists in the older build scripts (`rd2-build-sim-fast.sh` uses `-I$RTL`), which matters for the P2
 SoC flows.
 The harness main was copied to `tb/tcpu_main.cpp` (source `teaching-cpu-work/cpu/tb`, hash b67fba09…). The only change is
@@ -183,7 +183,7 @@ variable. It is correct. There are no width, latch or case warnings.
 ```bash
 P=/home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p1
 bash $P/scripts/build-sims.sh $P/runs/sims-N          # 85 s here (sims-5), 27 simulators + identity gate; exit 0 only if both pass
-bash $P/scripts/run-p1.sh $P/runs/sims-N $P/runs/run-N 40   # 35 s here (run-4); sections A-G, coverage, verdict = exit status
+bash $P/scripts/run-p1.sh $P/runs/sims-N $P/runs/run-N 40   # 35 s here (run-4); sections A-H, coverage, verdict = exit status
 python3 $P/scripts/p1verdict.py <run dir> [--nhz N] [--coverage FILE]
 python3 $P/scripts/p1coverage.py <run dir>
 python3 $P/scripts/p1diff.py [--require-complete] <multi-prefix> <pipe-prefix>
@@ -236,4 +236,110 @@ Result: 28 / 28 caught (`results/gate-mutants.txt`).
 | strict differential | `selftest-p1diff.sh` on copies of a run-3 pair: identical timeouts (strict and, as the old behaviour, non-strict), empty streams, no completion line, identical non-zero exit, a real difference | 7 / 7 | 5 / 5 (exit check, completion check, empty check, strict mode off, stream comparison) |
 | identity | `selftest-idcheck.sh`: stubbed builds plus two real `--lint-only` elaborations of the sims-4 sources | 9 / 9 | 3 / 3 (the non-zero-status check, the timeout check, the named-error check). The real `-I` at the RTL directory elaborates and is rejected; the include-only directory is accepted. |
 | verdict | `selftest-verdict.sh` on 24 mutated copies of the run-3 summaries, each changing one thing | 24 / 24 | 20 / 20 checks removed one at a time; each turns exactly its own case red |
+
+## 9. Same-cycle flush boundaries in the fetch engine (task `codex-pipe-p1-flush-boundary`)
+Codex found two gaps by reading the source. Both are reproduced here on the original core (`c81daae`) and closed by
+two guards in `tcpu_core_pipe.v`. No shared module changed.
+* **A refill answered in a flush cycle still filled the I-cache.** A live final beat set the fill from the old kill flags.
+  The later flush cleared F2 and stopped the engine, but did not cancel the fill. CONTRACT §3.1 says a flushed refill
+  fills nothing. The data was the correct memory line, so no program output was wrong. *Fix:* a flush cancels the fill
+  scheduled in the same cycle.
+* **A request raised in a flush cycle was left with no owner.** The engine could allocate the port in the flush cycle.
+  The flush then saw no request yet, killed nothing, and dropped the engine to idle. The request went out anyway, and its
+  response was later discarded silently. *Fix:* the engine does not allocate in a flush cycle. The request was never
+  visible on the port, so nothing is withdrawn.
+
+**The bench** (`flushwin/`). It drives the pipeline core directly, without the harness: 64 KiB of RAM, one request in
+flight, fixed ready and response delays, and an interrupt line. It also answers every fetch of one wrong-path line with
+a bus error. A self-checking program forces refills every iteration with FENCE.I, and contains taken jumps and branches
+over prefetched lines, ECALL/MRET, CSR accesses, loads and stores. For each of 15 timing profiles the interrupt is
+raised at every cycle of the program, one run per cycle. The bench observes the core through hierarchical references,
+independently of the core's own assertions, so it judges the original core too. It sees each flush as a toggle of the
+front-end epoch register, and classifies the cycle into the windows Codex listed:
+* the final or first refill beat answered in the flush cycle;
+* the engine allocating in it;
+* a fetch request offered and not ready, or handshaking;
+* an error response.
+
+It checks these properties:
+| property | meaning |
+|---|---|
+| fill-after-flush | no fill scheduled in a flush cycle |
+| killed-fill | no fill from a response of a transaction outstanding across a flush |
+| fetch-owner | a fetch request is raised or outstanding exactly when the engine waits for it, with the same kill state |
+| fill-data | every fill is the memory line, and never the error line |
+| payload / withdraw | an offered request keeps its payload and stays valid until its handshake |
+| id-content, id-fetch-fault | every instruction reaching ID is the memory word at its pc; a fetch fault appears only on the error line |
+| completion | exit 0, the multicycle reference checksum, and the interrupt count on the trap port equals the program's |
+
+**New assertions in the core.** `PIPE ASSERT fetch-owner` and `PIPE ASSERT fill-after-flush` check the same invariants
+in every simulation, so sections A–G check them too.
+
+**Negative controls.** Knob 13 (FLUSH_FILL) removes the fill guard. Knob 14 (FLUSH_ALLOC) removes the allocation
+guard.
+
+**Results.** The multicycle reference checksum for the bench program is `4468d22c6cd13710`
+(`results/flushwin-ref.txt`).
+
+| core | runs | failing runs | failing property |
+|---|---|---|---|
+| original, I-cache (`runs/fw-prefix-2`) | 40,171 | 40,171 | fetch-owner in all; fill-after-flush in 870 |
+| original, no I-cache | 44,509 | 44,509 | fetch-owner |
+| fixed, I-cache (`runs/run-5/H`) | 38,715 | 0 | — |
+| fixed, no I-cache | 41,749 | 0 | — |
+| knob 13 | 38,715 | 870 | fill-after-flush only, in the bench and in the core |
+| knob 14 | 40,171 | 40,171 | fetch-owner only, in the bench and in the core |
+
+Every run of every core exits 0 with the reference checksum. These defects break the contract, not the program's
+output, and only the properties catch them. The 870 fill failures are exactly the 870 final-beat windows.
+
+Flushes that fell into each window, fixed core, summed over all runs and flush sources (`results/H-run-5.txt`):
+| window | I-cache | no I-cache |
+|---|---|---|
+| final beat answered | 870 | 1,890 |
+| first beat answered | 870 | n/a (one-beat fetches) |
+| engine allocating | 1,359,600 | 2,087,842 |
+| request offered, not ready | 158,200 | 170,596 |
+| request handshaking | 1,820 | 1,890 |
+| error response | 120 | 0 (not reached; not required) |
+
+**Windows that needed no change, with the invariant that closes each** (all checked by the properties above):
+* **First beat and flush.** The flush overrides the engine's next state to idle, and the port empties in the same
+  cycle. Nothing is filled, because only the final beat fills.
+* **Offered, not ready, and flush.** The flush kills both the held request and the engine. The request stays valid,
+  with the same payload, until its handshake. Its response is consumed and discarded, and it fills nothing. Draining
+  waits for it, because the drain condition requires an empty port and an idle engine.
+* **Error response and flush.** An error never fills. An error delivered in the flush cycle goes to an F2 that the
+  flush empties, so no fault reaches ID.
+* **Data requests cannot be orphaned.** A data request needs `oldest_true`, which needs WB to commit normally, and a
+  WB flush means WB does not. EX redirects and interrupt attachment flush only younger stages. The existing
+  `oldest-issue` and `data-response` assertions and knob 4 cover this.
+
+**The P1 matrix after the fix** (`runs/sims-6`, `runs/run-5`) passes with exit status 0 (`results/verdict-run-5.txt`).
+B is 295 / 295, C is 123 / 123 with 111 aligned, D is 12 / 12, E is 5 / 5, G is 13 / 13, and H passes.
+* **Unchanged from run-4:** A, F and G, byte for byte, and every B result line, including the retirement counts.
+  ALU II = 1 still holds.
+* **Changed, but only in timing:**
+  * C is identical except the latency figure of 8 cancel-program runs. The worst latency is now 9 cycles, up from 8,
+    in one run (p1_irq_cancel N=46 rnd12345). An engine allocation that meets a flush now waits one cycle. The bound
+    stays 2000.
+  * D and E differ only in cycle counts. Some programs end a few cycles sooner, because orphan fetch requests no longer
+    hold the port. Knob 11 is still caught first by its `drain` assertion, now at pc 0x8000015c.
+* **Lint:** the `-Wall` warning set of the core is identical to the original.
+
+**Gates.**
+| gate | self-test | result |
+|---|---|---|
+| strict differential | `selftest-p1diff.sh` | 7 / 7 |
+| identity | `selftest-idcheck.sh`, now PIPE_FAULT 15 | 9 / 9 |
+| verdict | `selftest-verdict.sh`, 3 new H cases | 27 / 27 |
+| flush-window judge | `flushwin/selftest-fwjudge.sh` | 14 / 14 |
+| all four gates | `mutate-gates.sh` | 40 / 40 mutants caught |
+
+The judge self-test works on a thinned copy of the knob-14 logs, and checks first that the thinned copy is judged
+identically to the original (832 MB → 22 MB).
+
+**Bench correction during the work.** The first checksum included `misa`, which differs between the cores by design,
+so the multicycle reference disagreed. It now uses `mhartid`. `runs/fw-prefix-1` keeps the first pre-fix sweep, made
+with the `misa` program (`results/flushwin-prefix-1.txt`).
 

@@ -1,0 +1,16 @@
+== pipeline coverage summed over 444 runs (A 26, B 295, C 123); each log counted once
+  redirects = 45488
+  redirect_while_held = 1144
+  killed_fetch_responses = 5711
+  killed_after_two_flushes = 355
+  flush_with_pending_valid = 5692
+  irq_tokens = 33
+  irq_synthetic = 93
+  irq_synthetic_fetch_ahead = 57
+  irq_cancelled = 3
+  drain_wait_cycles = 120025
+  loaduse_stall_cycles = 40830
+  fwd_exmem = 63871
+  fwd_memwb = 11394
+  wb_bypass = 11176
+  uncached_wait_cycles = 12
