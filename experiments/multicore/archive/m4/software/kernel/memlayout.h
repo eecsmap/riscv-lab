@@ -1,0 +1,91 @@
+// Physical memory layout
+
+// qemu -machine virt is set up like this,
+// based on qemu's hw/riscv/virt.c:
+//
+// 00001000 -- boot ROM, provided by qemu
+// 02000000 -- CLINT
+// 0C000000 -- PLIC
+// 10000000 -- uart0
+// 10001000 -- virtio disk
+// 80000000 -- qemu's boot ROM loads the kernel here,
+//             then jumps here.
+// unused RAM after 80000000.
+
+// the kernel uses physical memory thus:
+// 80000000 -- entry.S, then kernel text and data
+// end -- start of kernel page allocation area
+// PHYSTOP -- end RAM used by the kernel
+
+// qemu puts UART registers here in physical memory.
+#define UART0     0x10000000L
+#define UART0_IRQ 10
+
+// virtio mmio interface
+#define VIRTIO0     0x10001000
+#define VIRTIO0_IRQ 1
+
+// Rocket port: testchipip block device controller (testchipip
+// BlockDevice.scala, HasPeripheryBlockDevice). Used instead of virtio.
+#define BLKDEV0     0x10015000L
+
+// core-local interrupt controller (CLINT)
+#define CLINT_BASE  0x02000000L
+#define CLINT(hart) (CLINT_BASE + (hart) * 4)
+// Rocket port: machine-mode timer registers. This core predates Sstc, so it
+// has no stimecmp; timer interrupts are driven from the CLINT in M-mode and
+// forwarded to supervisor mode as software interrupts (see timervec).
+#define CLINT_MTIMECMP(hartid) (CLINT_BASE + 0x4000 + 8 * (hartid))
+#define CLINT_MTIME (CLINT_BASE + 0xBFF8) // cycles since boot
+
+// qemu puts platform-level interrupt controller (PLIC) here.
+#define PLIC                 0x0c000000L
+#define PLIC_PRIORITY        (PLIC + 0x0)
+#define PLIC_PENDING         (PLIC + 0x1000)
+#define PLIC_SENABLE(hart)   (PLIC + 0x2080 + (hart) * 0x100)
+#define PLIC_SPRIORITY(hart) (PLIC + 0x201000 + (hart) * 0x2000)
+#define PLIC_SCLAIM(hart)    (PLIC + 0x201004 + (hart) * 0x2000)
+
+// the kernel expects there to be RAM
+// for use by the kernel and user pages
+// from physical address 0x80000000 to PHYSTOP.
+#define KERNBASE 0x80000000L
+// Upstream's 128MB. Rocket's window is 0x80000000-0x8FFFFFFF (256MB of Zynq
+// DDR), and Linux is confined to the low 256MB, so this is safe -- and
+// usertests' sbrkmuch eagerly grows a process to 100MB, so it is also the
+// minimum that passes the test suite.
+//
+// Note this is only affordable because kfree() skips its debug memset while
+// kinit() builds the free list; see kalloc.c. Poisoning 128MB at boot on this
+// SoC takes 27 seconds.
+// M1-a simulation only: kinit() walks every page between `end` and PHYSTOP, which at 128MB is ~32000
+// pages and dominates a Verilator boot. 16MB is far more than the kernel, fs.img (1MB) and the shell need.
+// The board image keeps 128MB; this tree is a copy and the on-board kernel is untouched.
+// TEACHING_SIM_MEM_MIB: an *optional* smaller physical memory for fast simulation only. kinit() frees and
+// kvminit() maps every page up to PHYSTOP, so both scale with it; on this core that is measurable (see
+// xv6-boot/PHYSTOP_MEASUREMENT.md). Unset, this is the reference 16 MiB the baseline chose. Setting it
+// changes the machine's capacity -- it is not an equivalence claim, and an allocation failure under it
+// must be diagnosed against the reference size rather than worked around.
+#ifndef TEACHING_SIM_MEM_MIB
+#define TEACHING_SIM_MEM_MIB 16
+#endif
+#define PHYSTOP  (KERNBASE + (uint64)TEACHING_SIM_MEM_MIB * 1024 * 1024)
+
+// map the trampoline page to the highest address,
+// in both user and kernel space.
+#define TRAMPOLINE (MAXVA - PGSIZE)
+
+// map kernel stacks beneath the trampoline,
+// each surrounded by invalid guard pages.
+#define KSTACK(p) (TRAMPOLINE - ((p) + 1) * 2 * PGSIZE)
+
+// User memory layout.
+// Address zero first:
+//   text
+//   original data and bss
+//   fixed-size stack
+//   expandable heap
+//   ...
+//   TRAPFRAME (p->trapframe, used by the trampoline)
+//   TRAMPOLINE (the same page as in the kernel)
+#define TRAPFRAME (TRAMPOLINE - PGSIZE)

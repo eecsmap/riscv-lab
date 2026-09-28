@@ -1,0 +1,50 @@
+## the reports
+   timing summary: post_route_timing_summary.rpt  sha256 caad9b7d21972269
+   utilization report: post_route_utilization.rpt  sha256 40426aa11491f128
+   DRC report: post_route_drc.rpt  sha256 4d8671dde5685533
+## 1. are these reports about the right thing?
+   timing       design=rocketchip_wrapper device=7z020-clg400 state=Routed
+   timing       tool=Vivado v.2025.2.1 (lin64) Build 6403652 Thu Mar 19 13:47:00 MDT 2026
+   utilization  design=rocketchip_wrapper device=xc7z020clg400-1 state=Routed
+   utilization  tool=Vivado v.2025.2.1 (lin64) Build 6403652 Thu Mar 19 13:47:00 MDT 2026
+   DRC          design=rocketchip_wrapper device=xc7z020clg400-1 state=Fully Routed
+   DRC          tool=Vivado v.2025.2.1 (lin64) Build 6403652 Thu Mar 19 13:47:00 MDT 2026
+## 2. timing
+   WNS +0.396  TNS 0.000 (0 failing)   WHS +0.035  THS 0.000 (0 failing)   WPWS +2.000  TPWS 0.000 (0 failing)
+   report says all user specified timing constraints are met: True
+## 3. check_timing
+   no_clock                           0
+   unconstrained_internal_endpoints   0
+   no_input_delay                     0
+   no_output_delay                    0
+   multiple_clock                     0
+   generated_clocks                   0
+   loops                              0
+   latch_loops                        0
+## 4. clocks
+   clk_fpga_0     period   10.000 ns    100.000 MHz
+   gclk_0         period    8.000 ns    125.000 MHz
+   gclk_fbout     period    8.000 ns    125.000 MHz
+   host_clk_i     period   25.000 ns     40.000 MHz
+   inter-clock paths: 0
+## 5. utilization
+   Slice LUTs          22631 of  53200   42.54%  fits
+   Slice Registers     11181 of 106400   10.51%  fits  (2 rows)
+   Block RAM Tile          0 of    140    0.00%  fits
+   DSPs                    0 of    220    0.00%  fits
+   BUFGCTRL                1 of     32    3.13%  fits
+   Bonded IOB              1 of    125    0.80%  fits
+## 6. DRC
+   design=rocketchip_wrapper state=Fully Routed; rule rows: 2
+     warning            2 rule(s), 4 violation(s): PDCN-1569, RTSTAT-10
+## 7. the things a machine does not decide
+   attested  constraints    the constraint set is the intended one and nothing was waived
+             -> the constraint set is the baseline base.xdc unchanged (sha b9a05afd... in source-MANIFEST.txt), nothing waived; attested by claude 2026-09-27 after reading project.tcl and the manifest
+   attested  methodology    the methodology report was read
+             -> post_route_methodology.rpt read; LUTAR-1 x3 (LUT drives async reset alert), identical to the single-core cache baseline build-cache; attested by claude 2026-09-27
+   attested  strategy       the implementation strategy and the part match what was agreed
+             -> Vivado Synthesis/Implementation Defaults, part xc7z020clg400-1, board pynq-z1 part0 1.0, 4 jobs -- the same as the accepted single-core builds (build-atomic.sh flow, run_impl.tcl unchanged); attested by claude 2026-09-27
+   attested  drc-warnings   the DRC warnings are the same benign ones the baseline has
+             -> PDCN-1569 x3 and RTSTAT-10 x1, all inside system_i/axi_interconnect_1 (the PS AXI protocol converter, baseline block design), identical in rule, count and location to build-cache's DRC; attested by claude 2026-09-27
+
+IMPL_CHECK verdict=PASS

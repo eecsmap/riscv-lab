@@ -1,0 +1,21 @@
+BOOTID=a1b62d8e-0bdb-4495-a1fe-c95a191f810b
+UP=1054
+PD=1
+FESVR=0
+LOCK=NO_LOCK
+LOAD=0.00 0.00 0.00
+43e5b414c093f27854513f6ae08addbb431c6865b85f822685a824cda66e2841  dual.bit.bin
+aa1faca1d5b1456acca9cde25870788f4383603915877646a5077707a72e87bc  dual01_boot.elf
+beffce7e53733a293c13c14d2f50690ac3728b9ac61cbb8eb429e64ca157e718  dual02_clint.elf
+7bb6d1df99eea7b7fb548d482f1541292912442879c32d028e46b987e1604767  dual03_lock.elf
+ab568bd79abfbee3e167b8ee4d6a721d4eaec3424b7451d174611a1deea1be8a  dual04_pbus.elf
+495360cb6f21b745ef5f42084a6e8ccc90badb73b6988fd419754a46dca1ff37  dual05_fencei.elf
+459347189d79d4f10ba99f68a5119ee12fc2dcbebbdc6ae9eb4b647c8c02f117  dual07_long.elf
+c050eab30f80a21a7c92c8688faa2f043c67aa2900fbc08b80f3dd8de2ba1fb9  fesvr-teaching-static
+d558e4444abcea6046147d85b81e538ecf604049b6d8ab15552f9a3d32bf688c  fs-run.img
+133f5b72290781ad47d766beeede7d7a07d9af63985caeb34c669dfeba67081c  kernel-perf-128mib
+Freeing unused kernel memory: 220K (c0617000 - c064e000)
+mmc0: new high speed SD card at address 1234
+mmcblk0: mmc0:1234 SA02G 1.83 GiB 
+ mmcblk0: p1
+random: nonblocking pool is initialized

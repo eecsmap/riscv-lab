@@ -95,6 +95,7 @@ extern uint64 sys_getpid(void);
 extern uint64 sys_sbrk(void);
 extern uint64 sys_pause(void);
 extern uint64 sys_uptime(void);
+extern uint64 sys_mtime(void);
 extern uint64 sys_open(void);
 extern uint64 sys_write(void);
 extern uint64 sys_mknod(void);
@@ -102,6 +103,10 @@ extern uint64 sys_unlink(void);
 extern uint64 sys_link(void);
 extern uint64 sys_mkdir(void);
 extern uint64 sys_close(void);
+#ifdef TEACHING_VALIDATION
+extern uint64 sys_getcpu(void);
+extern uint64 sys_pin(void);
+#endif
 extern uint64 sys_sync(void);
 
 // An array mapping syscall numbers from syscall.h
@@ -122,6 +127,7 @@ static uint64 (*syscalls[])(void) = {
   [SYS_sbrk]    = sys_sbrk,
   [SYS_pause]   = sys_pause,
   [SYS_uptime]  = sys_uptime,
+  [SYS_mtime]   = sys_mtime,    // MC-PERF measurement time base
   [SYS_open]    = sys_open,
   [SYS_write]   = sys_write,
   [SYS_mknod]   = sys_mknod,
@@ -129,6 +135,10 @@ static uint64 (*syscalls[])(void) = {
   [SYS_link]    = sys_link,
   [SYS_mkdir]   = sys_mkdir,
   [SYS_close]   = sys_close,
+#ifdef TEACHING_VALIDATION
+  [SYS_getcpu]  = sys_getcpu,   // validation kernel only (MC-M3 test instrumentation)
+  [SYS_pin]     = sys_pin,
+#endif
   [SYS_sync]    = sys_sync,
   // clang-format on
 };

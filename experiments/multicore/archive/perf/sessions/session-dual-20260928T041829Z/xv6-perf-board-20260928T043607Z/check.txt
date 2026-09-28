@@ -1,0 +1,8 @@
+INFO mtimetest: 8 reads monotonic, consecutive deltas [216, 214, 215, 215, 213, 215, 214] mtime units; child 22814464 within [22805138,22828753]; spin100k=132456 mtime units (13245600 cycles, 132 cycles/iter)
+RESULT PERF-COMPUTE size=2000000 dmtime=5222752 readcost=214 ticks_diag=209 seconds=13.057 work_per_s=612704
+RESULT PERF-COMPUTE size=2000000 dmtime=5240406 readcost=215 ticks_diag=210 seconds=13.101 work_per_s=610640
+RESULT PERF-COMPUTE size=2000000 dmtime=5225538 readcost=214 ticks_diag=209 seconds=13.064 work_per_s=612377
+RESULT PERF-ARRAY size=128 dmtime=8088318 readcost=213 ticks_diag=324 seconds=20.221 work_per_s=414851
+RESULT PERF-ARRAY size=128 dmtime=8212055 readcost=213 ticks_diag=328 seconds=20.530 work_per_s=408600
+RESULT PERF-ARRAY size=128 dmtime=8216646 readcost=213 ticks_diag=329 seconds=20.542 work_per_s=408371
+PASS /home/engineer/fpga/experiments/multicore/perf/sessions/session-dual-20260928T041829Z/xv6-perf-board-20260928T043607Z (6 perf runs)

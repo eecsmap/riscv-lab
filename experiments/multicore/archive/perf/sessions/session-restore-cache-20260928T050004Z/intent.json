@@ -1,0 +1,8 @@
+{
+  "variant": "cache",
+  "payload_sha256": "79a114aed6ab089514210dc182e7595a57d795851b3a3ed4715d41819bef92c1",
+  "expected_probes": ["perf02_sv39", "perf03_fetch", "perf04_where", "perf06_iws"],
+  "min_samples": 3,
+  "expected_gates": 8,
+  "started_utc": "2026-09-28T05:00:04Z"
+}

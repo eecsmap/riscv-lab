@@ -1,0 +1,12 @@
+  claimed lease: board
+  claimed lease: serial
+== pre-step: the production device lock lives under /var/lock, which the cold RAM initramfs does not have
+   (the accepted xv6-board-run REPORT: 'One directory was created on the board (/var/lock, needed by the production device lock)')
+== pre-check: the disk copy on the board is still the pristine deploy image (a previous run would have written it)
+== post-state (read-only)
+PD=1
+FESVR=0
+LOCK=NO_LOCK
+BID=a1b62d8e-0bdb-4495-a1fe-c95a191f810b
+  released lease: board
+  released lease: serial

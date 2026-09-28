@@ -42,4 +42,7 @@ entry("getpid");
 entry("sbrk");
 entry("pause");
 entry("uptime");
+entry("mtime");
 entry("sync");
+entry("getcpu");
+entry("pin");

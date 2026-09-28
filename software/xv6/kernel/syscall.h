@@ -21,3 +21,6 @@
 #define SYS_mkdir  20
 #define SYS_close  21
 #define SYS_sync   22
+#define SYS_getcpu 23   // MC-M3: the hart the caller is running on (test instrumentation)
+#define SYS_pin    24
+#define SYS_mtime  25   // MC-PERF: read-only shared CLINT mtime (measurement kernel; RV64 aligned 64-bit MMIO read in S-mode)   // MC-M3: test-only controlled scheduling -- run only on hart h (-1 = any); refused if h >= harts started

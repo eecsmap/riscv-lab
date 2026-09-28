@@ -1,0 +1,25 @@
+ok	5.5	kernel banner
+ok	11.6	init started / first prompt
+ok	11.6	shell prompt
+ok	13.7	command mtimetest
+ok	27.8	command perfcompute-1
+ok	42.0	command perfcompute-2
+ok	56.2	command perfcompute-3
+ok	78.4	command perfarray-1
+ok	100.5	command perfarray-2
+ok	122.6	command perfarray-3
+# driver: v3
+# platform: board
+# workload: perf-board
+# channel: exclusive
+# console device: /dev/ttyUSB1
+# bitstream sha256: 4ecccd051ebfe6143d7706e00a5f080dd53c6d5a29f71526fcaa0533d76e743b
+# host binary sha256: c050eab30f80a21a7c92c8688faa2f043c67aa2900fbc08b80f3dd8de2ba1fb9
+# kernel sha256: 133f5b72290781ad47d766beeede7d7a07d9af63985caeb34c669dfeba67081c
+# disk at start sha256: d558e4444abcea6046147d85b81e538ecf604049b6d8ab15552f9a3d32bf688c
+# memory evidence session: a1b62d8e-0bdb-4495-a1fe-c95a191f810b
+# memory evidence digest: 6d27c46bf09a569b5fb93fdec4e254815072411b7a0cbf428e02a56ebd38cbaf
+# board boot id: a1b62d8e-0bdb-4495-a1fe-c95a191f810b
+# host exit: 0
+# stop: deliberate-stop-after-all-commands
+# remote exit confirmed: yes

@@ -1,0 +1,6 @@
+config=single-core (cache payload 79a114aed6ab089514210dc182e7595a57d795851b3a3ed4715d41819bef92c1, bit e546c0ddb1eda90ed98e855436186a876fcf27ff2cb01d60af4187f93a99cf64) workload=perf-board stage_timeout=900 wall=5400
+kernel=/root/xv6run/kernel-perf-128mib (133f5b72290781ad47d766beeede7d7a07d9af63985caeb34c669dfeba67081c)
+disk=/root/xv6run/fs-run.img (d558e4444abcea6046147d85b81e538ecf604049b6d8ab15552f9a3d32bf688c, fresh copy of fs-perf.img)
+host=/root/xv6run/fesvr-teaching-static (c050eab30f80a21a7c92c8688faa2f043c67aa2900fbc08b80f3dd8de2ba1fb9)
+evidence=/home/engineer/fpga/experiments/multicore/perf/sessions/session-restore-cache-20260928T050004Z/memory boot_id=e6930db4-05a4-484a-9e93-508e17127ea2
+start=2026-09-28T05:18:11Z

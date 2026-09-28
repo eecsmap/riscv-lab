@@ -1,0 +1,55 @@
+=== MC-PERF dual-core board session (M5 procedure), variant 'dual', session /home/engineer/fpga/experiments/multicore/perf/sessions/session-dual-20260928T041829Z
+  frozen artefact set verified: 9 artefacts
+  payload for 'dual' matches the frozen table: 43e5b414c093f278… (this is the PAYLOAD sha, not the .bit sha 4ecccd051ebfe614…)
+  board has 'timeout' (recorded by the precheck): probes bounded on both sides
+== leases, before any transport
+  claimed lease: board
+  claimed lease: serial
+== step 1: the cold cycle
+  power removal: ATTESTED by the user at 2026-09-28T04:18:01Z (attested, not measured)
+  boot id now    : a1b62d8e-0bdb-4495-a1fe-c95a191f810b
+  pinned before  : 4e3f038a-0d62-4cde-a4f4-b96122f0ebed
+  uptime         : 32 s;  /root/xv6run entries: 0;  fesvr: 0;  lock: NO_LOCK
+  boot evidence consistent with a cold start (new boot id a1b62d8e-0bdb-4495-a1fe-c95a191f810b)
+== step 2: this boot's memory evidence, then the production preflight
+  captured memory evidence for session a1b62d8e-0bdb-4495-a1fe-c95a191f810b
+## evidence: /home/engineer/fpga/experiments/multicore/perf/sessions/session-dual-20260928T041829Z/memory
+   session a1b62d8e-0bdb-4495-a1fe-c95a191f810b
+   #address-cells=1 #size-cells=1
+   DT memory: 0x00000000 + 0x10000000 (256 MiB)
+   no reserved-memory captured (absent is acceptable; unreadable is not)
+   iomem System RAM: 0x00000000-0x0fffffff
+   MemTotal 247 MiB
+## target window: 0x10000000-0x1fffffff
+MEM_PREFLIGHT OK refusals=0
+  MEM_PREFLIGHT passed for session a1b62d8e-0bdb-4495-a1fe-c95a191f810b
+== step 3: deploy, each artefact hash-verified on the board
+  deployed+verified: /root/xv6run/dual.bit.bin
+  deployed+verified: /root/xv6run/fesvr-teaching-static
+  deployed+verified: /root/xv6run/dual01_boot.elf
+  deployed+verified: /root/xv6run/dual02_clint.elf
+  deployed+verified: /root/xv6run/dual03_lock.elf
+  deployed+verified: /root/xv6run/dual04_pbus.elf
+  deployed+verified: /root/xv6run/dual05_fencei.elf
+  deployed+verified: /root/xv6run/dual07_long.elf
+  deployed+verified: /root/xv6run/kernel-perf-128mib
+  deployed+verified: /root/xv6run/fs-run.img
+  executable mode set
+== step 4: program from the cold, quiescent platform
+  programming /root/xv6run/dual.bit.bin
+  programming reported rc=0 and prog_done=1
+  the payload on the board still hashes 43e5b414c093f278… after programming
+== step 5: the 6 dual-hart startup gates (exact marker AND RC=0; first failure stops the session)
+  gate dual01_boot: ok (M2B-BOOT-OK)
+  gate dual02_clint: ok (M2B-CLINT-OK)
+  gate dual03_lock: ok (M2B-LOCK-OK)
+  gate dual04_pbus: ok (M2B-PBUS-OK)
+  gate dual05_fencei: ok (M2B-FENCEI-OK)
+  gate dual07_long: ok (M2B-LONG-OK)
+  STARTUP GATES 6/6
+== step 6: state and health
+M5_INSTALL_DONE variant=dual session=/home/engineer/fpga/experiments/multicore/perf/sessions/session-dual-20260928T041829Z
+The board now holds the DUAL bitstream (payload 43e5b414c093f278…). Next: ./m5-xv6.sh /home/engineer/fpga/experiments/multicore/perf/sessions/session-dual-20260928T041829Z (perf-board) ; the session is NOT
+finished until the user's cache payload 79a114ae… is restored by the production ips-install.sh cache after another cold cycle.
+  released lease: board
+  released lease: serial

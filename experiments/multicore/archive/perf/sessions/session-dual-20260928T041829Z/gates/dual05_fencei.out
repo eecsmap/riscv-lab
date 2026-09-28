@@ -1,0 +1,3 @@
+teaching: ready after 50 ms; status=0x00000411 cpu_restart_safe=1 pl_reconfig_safe=0 draining=0 drain_timeout=0 boot_ready=1 boot_timeout=0 epoch=4 ndrained=0
+M2B-FENCEI-OK nofence=0x0000000000000001 fence=0x0000000000000002
+RC=0

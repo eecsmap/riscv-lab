@@ -2,11 +2,11 @@
 
 用于自学 RISC-V 微架构、FPGA SoC 与操作系统的实验仓库。
 
-当前里程碑：自研多周期 RV64 CPU 替换 Rocket，在 **PYNQ-Z1 / 40 MHz / PS DDR** 上启动 xv6，完成 `echo`、`ls`、`cat` 和管道命令。2026-09-21 的原始记录及独立复核见 [验收记录](evidence/xv6-board-run-3/CODEX_MILESTONE_ACCEPTANCE.md)。这不是教学产品，也不是完整 ISA 合规认证。
+当前里程碑 **mc-v1-dual**：自研双多周期 RV64 CPU 在 **PYNQ-Z1 / 40 MHz / PS DDR** 上运行 xv6，完成双核原子竞争、并发计算/文件测试及单/双核固定工作量测量。两类四进程负载的加速比分别为 2.035×、1.975×，不代表通用应用加速比。源码、复跑入口及范围见 [双核归档](experiments/multicore/README.md)。早期单核启动记录见 [验收记录](evidence/xv6-board-run-3/CODEX_MILESTONE_ACCEPTANCE.md)。这不是教学产品，也不是完整 ISA 合规认证。
 
 ## 当前设计
 
-CPU 使用单口指令/数据访问、独立的请求和响应 ready/valid 通道；写地址和写数据属于同一个请求。请求未握手时保持 valid 和负载，响应背压时保持响应。CPU 是顺序多周期实现，不依赖总线固定延迟。M/C、S/U、Sv39 和原子操作已加入；Sv39 使用串行页表遍历，无 TLB，无指令/数据缓存。原子操作由 CPU 与 SoC 后端共同实现。
+每核使用单口指令/数据访问、独立的请求和响应 ready/valid 通道；写地址和写数据属于同一个请求。请求未握手时保持 valid 和负载，响应背压时保持响应。CPU 是顺序多周期实现，不依赖总线固定延迟。M/C、S/U、Sv39 和原子操作已加入；每核具备 fetch32 快路径、8 项 TLB 和 1 KiB 指令缓存，无数据缓存。原子操作由 CPU 与共享串行 SoC 后端共同实现；支持配置单核或双核，流水核尚未实现。
 
 路径：CPU → req/resp 桥 → TileLink → AXI4 → Zynq PS DDR。ARM 端 fesvr 提供控制、控制台和文件支持的块设备；不是自研 SD 控制器。内部 `teaching`、`tcpu` 等历史标识保留，以免整理仓库改变已验证硬件。
 

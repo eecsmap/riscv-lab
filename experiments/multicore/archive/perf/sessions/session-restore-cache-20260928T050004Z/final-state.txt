@@ -1,0 +1,11 @@
+BOOTID=e6930db4-05a4-484a-9e93-508e17127ea2
+UP=811
+PD=1
+FESVR=0
+LOCK=NO_LOCK
+LOAD=0.00 0.00 0.00
+Freeing unused kernel memory: 220K (c0617000 - c064e000)
+mmc0: new high speed SD card at address 1234
+mmcblk0: mmc0:1234 SA02G 1.83 GiB 
+ mmcblk0: p1
+random: nonblocking pool is initialized

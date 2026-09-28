@@ -110,3 +110,45 @@ sys_uptime(void)
   release(&tickslock);
   return xticks;
 }
+
+// MC-PERF: the shared CLINT mtime register, read directly (one naturally aligned 64-bit load through the kernel's
+// identity mapping of the CLINT, kvmmap in vm.c). This is the free-running hardware time base (core clock / 100 on
+// this SoC); `ticks` is NOT: timervec rearms mtimecmp from the CURRENT mtime, so a late tick is absorbed and the
+// tick count under-reads elapsed time. Nothing here changes timervec, interrupts or scheduling.
+uint64
+sys_mtime(void)
+{
+  return *(volatile uint64 *)CLINT_MTIME;
+}
+
+#ifdef TEACHING_VALIDATION
+// MC-M3: the hart id of the caller at this instant (interrupts off around cpuid(), as it requires)
+uint64
+sys_getcpu(void)
+{
+  push_off();
+  int id = cpuid();
+  pop_off();
+  return id;
+}
+
+// MC-M3 test-only controlled scheduling: from now on only hart h may run the caller (-1: any hart again).
+// Refused (returns -1, no change) when h is not a hart that has started, so a test cannot strand itself on a
+// single-core build. After pinning, the caller yields; the current hart's scheduler skips it and the target
+// hart picks it up.
+extern volatile int ncpus_started;
+uint64
+sys_pin(void)
+{
+  int h;
+  argint(0, &h);
+  if (h >= ncpus_started)
+    return -1;
+  struct proc *p = myproc();
+  acquire(&p->lock);
+  p->pin = h < 0 ? -1 : h;
+  release(&p->lock);
+  yield();
+  return 0;
+}
+#endif // TEACHING_VALIDATION
