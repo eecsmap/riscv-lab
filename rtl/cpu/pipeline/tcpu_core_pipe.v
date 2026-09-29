@@ -63,7 +63,13 @@ module tcpu_core_pipe #(
   // 12 SPEC_MMIO_FETCH   an uncached fetch may be issued while the front end is speculative
   // 13 FLUSH_FILL        a refill whose final beat answers in a flush cycle still fills the I-cache
   // 14 FLUSH_ALLOC       the fetch engine may raise its request in a flush cycle (the request is left unowned)
-  parameter        PIPE_FAULT = 0
+  // 15 MD_STALE_RESULT   (M) a flush does not abandon the mul/div unit, and its result goes to whichever M
+  //                      instruction occupies EX when it arrives (no ownership)
+  // 16 MD_RESTART        (M) the unit is started again whenever it is idle and EX still holds an M instruction
+  parameter        PIPE_FAULT = 0,
+  // ---- P2a extensions (0 = the accepted P1 configuration, RV64I)
+  parameter        PIPE_EXT_M = 0,        // 1: M (mul/div) through the unchanged shared tcpu_muldiv
+  parameter        PIPE_EXT_C = 0         // 1: integer C (compressed) -- not implemented yet, refused
 ) (
   input             clk,
   input             rst,
@@ -115,8 +121,9 @@ module tcpu_core_pipe #(
   // A parameter that names a mechanism this core does not implement is refused, never ignored.
   generate
     if (MISA_A != 0)             begin : refuse_MISA_A             pipe_p1_unsupported_MISA_A             u (); end
-    if (FAULT_W_SEXT != 0)       begin : refuse_FAULT_W_SEXT       pipe_p1_unsupported_FAULT_W_SEXT       u (); end
-    if (FAULT_MULH_SIGN != 0)    begin : refuse_FAULT_MULH_SIGN    pipe_p1_unsupported_FAULT_MULH_SIGN    u (); end
+    // the M fault injections exist only where the unit does
+    if (FAULT_W_SEXT != 0 && PIPE_EXT_M == 0)    begin : refuse_FAULT_W_SEXT    pipe_p1_unsupported_FAULT_W_SEXT    u (); end
+    if (FAULT_MULH_SIGN != 0 && PIPE_EXT_M == 0) begin : refuse_FAULT_MULH_SIGN pipe_p1_unsupported_FAULT_MULH_SIGN u (); end
     if (FAULT_C_IMM != 0)        begin : refuse_FAULT_C_IMM        pipe_p1_unsupported_FAULT_C_IMM        u (); end
     if (FAULT_C_REG != 0)        begin : refuse_FAULT_C_REG        pipe_p1_unsupported_FAULT_C_REG        u (); end
     if (EARLY_IRQ != 0)          begin : refuse_EARLY_IRQ          pipe_p1_unsupported_EARLY_IRQ          u (); end
@@ -134,14 +141,19 @@ module tcpu_core_pipe #(
     if (FAULT_A_EARLY_RETIRE != 0) begin : refuse_FAULT_A_EARLY_RETIRE pipe_p1_unsupported_FAULT_A_EARLY_RETIRE u (); end
     if (FAULT_A_NO_RESV_CLEAR != 0) begin : refuse_FAULT_A_NO_RESV_CLEAR pipe_p1_unsupported_FAULT_A_NO_RESV_CLEAR u (); end
     if (ICACHE_BYTES != 0 && ICACHE_BYTES != 1024) begin : refuse_ICACHE_BYTES pipe_p1_unsupported_ICACHE_BYTES u (); end
-    if (PIPE_FAULT < 0 || PIPE_FAULT > 14) begin : refuse_PIPE_FAULT pipe_p1_unsupported_PIPE_FAULT u (); end
+    if (PIPE_FAULT < 0 || PIPE_FAULT > 16) begin : refuse_PIPE_FAULT pipe_p1_unsupported_PIPE_FAULT u (); end
+    if ((PIPE_FAULT == 15 || PIPE_FAULT == 16) && PIPE_EXT_M == 0) begin : refuse_PIPE_FAULT_M pipe_p1_unsupported_PIPE_FAULT_needs_M u (); end
+    if (PIPE_EXT_M != 0 && PIPE_EXT_M != 1) begin : refuse_PIPE_EXT_M pipe_p1_unsupported_PIPE_EXT_M u (); end
+    if (PIPE_EXT_C != 0)         begin : refuse_PIPE_EXT_C         pipe_p2a_not_implemented_PIPE_EXT_C    u (); end
   endgenerate
 
   localparam PF_WB_HOLD = 1, PF_REDIRECT_REPEAT = 2, PF_EPOCH_BIT = 3, PF_STORE_UNDER_TRAP = 4,
              PF_NO_LOADUSE = 5, PF_NO_FWD_EXMEM = 6, PF_NO_FWD_MEMWB = 7, PF_NO_WB_BYPASS = 8,
              PF_X0_FWD = 9, PF_IRQ_EPC_FETCHPTR = 10, PF_CSR_NO_DRAIN = 11, PF_SPEC_MMIO_FETCH = 12,
-             PF_FLUSH_FILL = 13, PF_FLUSH_ALLOC = 14;
+             PF_FLUSH_FILL = 13, PF_FLUSH_ALLOC = 14, PF_MD_STALE_RESULT = 15, PF_MD_RESTART = 16;
   localparam [63:0] MISA_P1 = 64'h8000_0000_0000_0100;     // MXL = 2, I only
+  // misa reads back what this build implements: I, plus M and C when enabled
+  localparam [63:0] MISA_P = MISA_P1 | ((PIPE_EXT_M != 0) ? 64'h1000 : 64'd0) | ((PIPE_EXT_C != 0) ? 64'h4 : 64'd0);
   wire x0z = (X0_WRITABLE == 0);                              // x0 reads 0 and is never written
 
   // ================================================================================================ shared units
@@ -265,12 +277,17 @@ module tcpu_core_pipe #(
   reg  [31:0] seq_ctr;
 
   // ================================================================================================ decode helper
+  // M (PIPE_EXT_M only): OP funct7 0000001, any funct3; OP-32 funct7 0000001 with funct3 0 (MULW) or 4..7
+  function is_md; input [31:0] i; begin
+    is_md = (PIPE_EXT_M != 0) && (i[31:25] == 7'b0000001) &&
+            ((i[6:0] == `OP_OP) || ((i[6:0] == `OP_OP32) && (i[14:12] == 3'b000 || i[14] == 1'b1)));
+  end endfunction
   // decode of one 32-bit instruction: class bits and legality (P1: RV64I + Zicsr + MRET/ECALL/EBREAK/WFI/FENCE[.I])
   function [15:0] dec;  // {illegal, is_ld, is_st, is_br, is_jal, is_jalr, is_lui, is_auipc, is_alu, is_csr, is_ecall, is_ebreak, is_mret, is_wfi, is_fence, is_fencei}
     input [31:0] i;
     input [1:0]  pv;
     reg [6:0] op; reg [2:0] f3; reg [6:0] f7; reg [4:0] rd, rs1;
-    reg ld, st, br, jal, jalr, lui, auipc, alu, csr, ecall, ebreak, mret, wfi, fence, fencei, known, bad;
+    reg ld, st, br, jal, jalr, lui, auipc, alu, csr, ecall, ebreak, mret, wfi, fence, fencei, md, known, bad;
     begin
       op = i[6:0]; f3 = i[14:12]; f7 = i[31:25]; rd = i[11:7]; rs1 = i[19:15];
       ld = (op == `OP_LOAD) && (f3 != 3'b111);
@@ -293,7 +310,8 @@ module tcpu_core_pipe #(
       wfi    = (i == 32'h10500073);
       fence  = (op == `OP_MISCMEM) && (f3 == 3'b000);
       fencei = (op == `OP_MISCMEM) && (f3 == 3'b001);
-      known  = ld | st | br | jal | jalr | lui | auipc | alu | csr | ecall | ebreak | mret | wfi | fence | fencei;
+      md     = is_md(i);
+      known  = ld | st | br | jal | jalr | lui | auipc | alu | csr | ecall | ebreak | mret | wfi | fence | fencei | md;
       bad    = (i[1:0] != 2'b11) || !known || (mret && pv != 2'd3);   // a compressed parcel is illegal in P1
       dec = {bad, ld, st, br, jal, jalr, lui, auipc, alu, csr, ecall, ebreak, mret, wfi, fence, fencei};
     end
@@ -324,7 +342,7 @@ module tcpu_core_pipe #(
   assign csr_access = wb_v && !wb_irq && !wb_exc && wb_is_csr;
   assign csr_wi     = csr_access && ((wb_f3[1:0] == 2'b01) || (wb_insn[19:15] != 5'd0));
   assign csr_ri     = csr_access && ((wb_f3[1:0] == 2'b01) ? (wb_insn[11:7] != 5'd0) : 1'b1);
-  wire [63:0] csr_rdata = (csr_addr == 12'h301) ? MISA_P1 : csr_rdata_raw;
+  wire [63:0] csr_rdata = (csr_addr == 12'h301) ? MISA_P : csr_rdata_raw;
   wire [63:0] csr_src   = wb_f3[2] ? {59'd0, wb_insn[19:15]} : wb_src;
   assign csr_wdata = (wb_f3[1:0] == 2'b01) ? csr_src : (wb_f3[1:0] == 2'b10) ? (csr_rdata | csr_src) : (csr_rdata & ~csr_src);
   // the interrupt token: taken only if an interrupt is still pending and enabled now; otherwise it is cancelled
@@ -506,12 +524,43 @@ module tcpu_core_pipe #(
     2'b10: ex_mmis = |ex_maddr[1:0];
     2'b11: ex_mmis = |ex_maddr[2:0];
   endcase
+  // ---- M: the unchanged shared unit. One start per EX occupant, in the first cycle its operands are final and the
+  // unit is idle; the occupant owns the result until it leaves EX. A WB flush removes the occupant and abandons the
+  // unit through its own synchronous reset (tcpu_muldiv.v: "reset abandons the operation"), so a flushed operation
+  // can never complete into a later instruction.
+  wire        ex_ismd = ex_v && !ex_exc && !ex_irq && is_md(ex_insn);
+  reg         ex_md_started, ex_md_have;
+  reg  [63:0] ex_md_res;
+  reg  [31:0] md_owner_seq;                  // simulation check: the EX occupant that started the unit
+  wire        md_busy, md_done;
+  wire [63:0] md_result;
+  wire        ex_flushed_by_wb = wb_flush && !halted;
+  wire        md_abort = ex_flushed_by_wb && (PIPE_FAULT != PF_MD_STALE_RESULT);
+  wire        md_start = ex_ismd && !lu_haz && !md_busy && !ex_flushed_by_wb &&
+                         (!ex_md_started || PIPE_FAULT == PF_MD_RESTART);
+  wire [3:0]  md_op = (ex_insn[6:0] == `OP_OP) ? {1'b0, ex_f3} :
+                      (ex_f3 == 3'b000) ? 4'd8 : (ex_f3 == 3'b100) ? 4'd9 : (ex_f3 == 3'b101) ? 4'd10 :
+                      (ex_f3 == 3'b110) ? 4'd11 : 4'd12;
+  // the result belongs to the occupant that started the unit (PF_MD_STALE_RESULT: to whoever is in EX)
+  wire        md_claim = md_done && ex_ismd && !ex_md_have && (ex_md_started || PIPE_FAULT == PF_MD_STALE_RESULT);
+  wire        md_have_now = ex_md_have || md_claim;
+  wire [63:0] md_value = ex_md_have ? ex_md_res : md_result;
+  // only an M build contains the unit: the P1 configuration elaborates, and names its sources, exactly as before
+  generate
+    if (PIPE_EXT_M != 0) begin : g_md
+      tcpu_muldiv #(.FAULT_W_SEXT(FAULT_W_SEXT), .FAULT_MULH_SIGN(FAULT_MULH_SIGN)) muldiv (
+        .clk(clk), .rst(rst || md_abort), .start(md_start), .op(md_op), .a(a), .b(b_reg),
+        .busy(md_busy), .done(md_done), .result(md_result));
+    end else begin : g_no_md
+      assign md_busy = 1'b0; assign md_done = 1'b0; assign md_result = 64'd0;
+    end
+  endgenerate
   // computed from forwarded operands, so it is only meaningful when no load-use hazard holds EX
   wire ex_newexc = ex_v && !ex_exc && !ex_irq && !lu_haz && ((ex_tmis) || ((ex_isld || ex_isst) && ex_mmis));
   // serialisation: drain everything older AND everything already raised on the port
   wire drained_true = !mem_v && !wb_v && !preq_valid && !pwait && (eng_st == E_IDLE);
   wire drained      = (PIPE_FAULT == PF_CSR_NO_DRAIN) ? (!mem_v && !wb_v) : drained_true;
-  wire ex_done = ex_v && (ex_exc || ex_irq || ex_newexc || (ex_serial ? drained : !lu_haz));
+  wire ex_done = ex_v && (ex_exc || ex_irq || ex_newexc || (ex_serial ? drained : ex_ismd ? md_have_now : !lu_haz));
   wire mem_ready = !mem_v || mem_fire;
   wire ex_fire = ex_done && mem_ready;
   // the one-shot redirect: in the first cycle the operands are available, even while EX is held by MEM
@@ -619,6 +668,7 @@ module tcpu_core_pipe #(
       cv_drain_wait <= 0; cv_loaduse <= 0; cv_fwd_exmem <= 0; cv_fwd_memwb <= 0; cv_wb_bypass <= 0;
       cv_two_flush <= 0; cv_nc_wait <= 0; cv_flush_pending_valid <= 0; cv_redirect_held <= 0; cv_irq_synth_ahead <= 0;
       flushes_since_eng <= 0; last_ret_seq <= 32'd0; fe_flush_q <= 1'b0;
+      ex_md_started <= 1'b0; ex_md_have <= 1'b0; ex_md_res <= 64'd0; md_owner_seq <= 32'd0;
     end else begin
       fe_flush = 1'b0; fe_kill = 1'b0; fe_target = fe_pc;
       // ---- fetch-transaction ownership (CONTRACT rev. 3 section 3.1): a fetch request is raised or outstanding exactly
@@ -732,6 +782,16 @@ module tcpu_core_pipe #(
         $display("PIPE FAULT-EFFECT knob=%0d pc=%h: the operand read in ID misses the value retiring in WB", PIPE_FAULT, id_pc);
 `endif
       if (ex_v && !ex_fire) begin ex_a <= a; ex_b <= b_reg; end      // hold: keep the forwarded values current
+      // ---- M: start once, claim the result once; both belong to this EX occupant only
+      if (md_start) begin
+        if (ex_md_started) $display("PIPE ASSERT md-once: seq %0d (pc 0x%0h) started the mul/div unit a second time", ex_seq, ex_pc);
+        ex_md_started <= 1'b1; md_owner_seq <= ex_seq;
+      end
+      if (md_claim) begin
+        if (!ex_md_started || md_owner_seq != ex_seq)
+          $display("PIPE ASSERT md-owner: seq %0d (pc 0x%0h) took a mul/div result it did not start", ex_seq, ex_pc);
+        ex_md_have <= 1'b1; ex_md_res <= md_result;
+      end
       if (ex_redirect && !fe_flush) begin
         if (ex_redirected) $display("PIPE ASSERT redirect-once: pc 0x%0h redirected again", ex_pc);
         ex_redirected <= 1'b1; cv_redirect <= cv_redirect + 1;
@@ -745,9 +805,9 @@ module tcpu_core_pipe #(
         mem_tval  <= ex_exc ? ex_tval  : ex_tmis ? ex_target : ex_maddr;
         mem_isld <= ex_isld && !ex_exc && !ex_irq && !ex_newexc; mem_isst <= ex_isst && !ex_exc && !ex_irq && !ex_newexc;
         mem_we <= writes_rd(ex_insn) && !ex_exc && !ex_irq && !ex_newexc;
-        mem_rd <= ex_insn[11:7]; mem_res <= alu_out; mem_addr <= ex_maddr; mem_sdata <= ex_isst ? b_reg : a;
+        mem_rd <= ex_insn[11:7]; mem_res <= ex_ismd ? md_value : alu_out; mem_addr <= ex_maddr; mem_sdata <= ex_isst ? b_reg : a;
         mem_st <= M_FIRST;
-        ex_v <= 1'b0; ex_redirected <= 1'b0;
+        ex_v <= 1'b0; ex_redirected <= 1'b0; ex_md_started <= 1'b0; ex_md_have <= 1'b0;
       end
       if (ex_v) begin
         if (fa[64] == 1'b0 && mem_fwd_ok && mem_rd == ex_rs1 && uses_rs1(ex_insn) && ex_rs1 != 5'd0) cv_fwd_exmem <= cv_fwd_exmem + 1;
@@ -758,7 +818,7 @@ module tcpu_core_pipe #(
       if (id_fire) begin
         ex_v <= 1'b1; ex_seq <= id_seq; ex_pc <= id_pc; ex_insn <= id_insn; ex_irq <= id_irq;
         ex_exc <= !id_irq && id_xexc; ex_cause <= id_xcause; ex_tval <= id_xtval;
-        ex_a <= id_a; ex_b <= id_b; ex_redirected <= 1'b0;
+        ex_a <= id_a; ex_b <= id_b; ex_redirected <= 1'b0; ex_md_started <= 1'b0; ex_md_have <= 1'b0;
         if (wb_byp_ok && ((wb_rd == id_rs1 && id_rs1 != 5'd0) || (wb_rd == id_rs2 && id_rs2 != 5'd0))) cv_wb_bypass <= cv_wb_bypass + 1;
         id_v <= 1'b0;
       end
@@ -882,10 +942,11 @@ module tcpu_core_pipe #(
       if (wb_flush && !halted) begin
         // everything younger than the retiring WB instruction, including what MEM handed to WB this cycle
         id_v <= 1'b0; ex_v <= 1'b0; mem_v <= 1'b0; wb_v <= 1'b0; ex_redirected <= 1'b0;
+        if (PIPE_FAULT != PF_MD_STALE_RESULT) begin ex_md_started <= 1'b0; ex_md_have <= 1'b0; end
       end
       if (ex_redirect && !(wb_flush && !halted) && ex_fire) begin
         // the branch moved to MEM this cycle; what ID handed to EX behind it is on the wrong path
-        ex_v <= 1'b0;
+        ex_v <= 1'b0; ex_md_started <= 1'b0; ex_md_have <= 1'b0;
       end
       if (fe_flush) begin
         // every younger fetch-side thing: F1, F2, the buffer; the raised or outstanding fetch transaction is killed
