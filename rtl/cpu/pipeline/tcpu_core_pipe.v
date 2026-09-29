@@ -131,7 +131,7 @@ module tcpu_core_pipe #(
   // ================================================================================================ refusals
   // A parameter that names a mechanism this core does not implement is refused, never ignored.
   generate
-    if (MISA_A != 0)             begin : refuse_MISA_A             pipe_p1_unsupported_MISA_A             u (); end
+    if (MISA_A != 0 && MISA_A != 1) begin : refuse_MISA_A          pipe_p1_unsupported_MISA_A             u (); end
     // the M fault injections exist only where the unit does
     if (FAULT_W_SEXT != 0 && PIPE_EXT_M == 0)    begin : refuse_FAULT_W_SEXT    pipe_p1_unsupported_FAULT_W_SEXT    u (); end
     if (FAULT_MULH_SIGN != 0 && PIPE_EXT_M == 0) begin : refuse_FAULT_MULH_SIGN pipe_p1_unsupported_FAULT_MULH_SIGN u (); end
@@ -151,11 +151,11 @@ module tcpu_core_pipe #(
     if (FAULT_IF2_NO_XLATE != 0 && PIPE_EXT_SU == 0) begin : refuse_FAULT_IF2_NO_XLATE pipe_p1_unsupported_FAULT_IF2_NO_XLATE u (); end
     if (FAULT_PPN_TRUNC != 0 && PIPE_EXT_SU == 0)    begin : refuse_FAULT_PPN_TRUNC    pipe_p1_unsupported_FAULT_PPN_TRUNC    u (); end
     if (PIPE_EXT_SU != 0 && TLB_ENTRIES != 8)        begin : refuse_TLB_ENTRIES        pipe_p2b_unsupported_TLB_ENTRIES       u (); end
-    if (FAULT_A_W_NOSEXT != 0)   begin : refuse_FAULT_A_W_NOSEXT   pipe_p1_unsupported_FAULT_A_W_NOSEXT   u (); end
-    if (FAULT_A_SC_RESULT != 0)  begin : refuse_FAULT_A_SC_RESULT  pipe_p1_unsupported_FAULT_A_SC_RESULT  u (); end
-    if (FAULT_A_AMO_AS_LOAD != 0) begin : refuse_FAULT_A_AMO_AS_LOAD pipe_p1_unsupported_FAULT_A_AMO_AS_LOAD u (); end
-    if (FAULT_A_EARLY_RETIRE != 0) begin : refuse_FAULT_A_EARLY_RETIRE pipe_p1_unsupported_FAULT_A_EARLY_RETIRE u (); end
-    if (FAULT_A_NO_RESV_CLEAR != 0) begin : refuse_FAULT_A_NO_RESV_CLEAR pipe_p1_unsupported_FAULT_A_NO_RESV_CLEAR u (); end
+    if (FAULT_A_W_NOSEXT != 0 && MISA_A == 0) begin : refuse_FAULT_A_W_NOSEXT pipe_p1_unsupported_FAULT_A_W_NOSEXT u (); end
+    if (FAULT_A_SC_RESULT != 0 && MISA_A == 0) begin : refuse_FAULT_A_SC_RESULT pipe_p1_unsupported_FAULT_A_SC_RESULT u (); end
+    if (FAULT_A_AMO_AS_LOAD != 0 && MISA_A == 0) begin : refuse_FAULT_A_AMO_AS_LOAD pipe_p1_unsupported_FAULT_A_AMO_AS_LOAD u (); end
+    if (FAULT_A_EARLY_RETIRE != 0 && MISA_A == 0) begin : refuse_FAULT_A_EARLY_RETIRE pipe_p1_unsupported_FAULT_A_EARLY_RETIRE u (); end
+    if (FAULT_A_NO_RESV_CLEAR != 0 && MISA_A == 0) begin : refuse_FAULT_A_NO_RESV_CLEAR pipe_p1_unsupported_FAULT_A_NO_RESV_CLEAR u (); end
     if (ICACHE_BYTES != 0 && ICACHE_BYTES != 1024) begin : refuse_ICACHE_BYTES pipe_p1_unsupported_ICACHE_BYTES u (); end
     if (PIPE_FAULT < 0 || PIPE_FAULT > 23) begin : refuse_PIPE_FAULT pipe_p1_unsupported_PIPE_FAULT u (); end
     if (PIPE_FAULT >= 21 && PIPE_FAULT <= 23 && PIPE_EXT_SU == 0) begin : refuse_PIPE_FAULT_SU pipe_p1_unsupported_PIPE_FAULT_needs_SU u (); end
@@ -177,6 +177,7 @@ module tcpu_core_pipe #(
   localparam [63:0] MISA_P1 = 64'h8000_0000_0000_0100;     // MXL = 2, I only
   // misa reads back what this build implements: I, plus M and C when enabled
   localparam [63:0] MISA_P = MISA_P1 | ((PIPE_EXT_M != 0) ? 64'h1000 : 64'd0) | ((PIPE_EXT_C != 0) ? 64'h4 : 64'd0) |
+                             ((MISA_A != 0) ? 64'h1 : 64'd0) |                        // A (bit 0)
                              ((PIPE_EXT_SU != 0) ? 64'h14_0000 : 64'd0);          // S (bit 18) and U (bit 20)
   wire x0z = (X0_WRITABLE == 0);                              // x0 reads 0 and is never written
 
@@ -205,7 +206,7 @@ module tcpu_core_pipe #(
   wire [43:0] csr_satp_ppn;
   wire        csr_satp_mode, csr_sum, csr_mxr, csr_mprv;
   wire [1:0]  csr_mpp;
-  tcpu_csr #(.HART_ID(HART_ID), .MISA_A(0), .TRAP_BAD_MEPC(TRAP_BAD_MEPC), .TRAP_COUNTS_RET(TRAP_COUNTS_RET),
+  tcpu_csr #(.HART_ID(HART_ID), .MISA_A(MISA_A), .TRAP_BAD_MEPC(TRAP_BAD_MEPC), .TRAP_COUNTS_RET(TRAP_COUNTS_RET),
              .ALLOW_RO_WRITE(ALLOW_RO_WRITE), .FAULT_NO_DELEG(FAULT_NO_DELEG), .FAULT_S_IRQ_IN_M(FAULT_S_IRQ_IN_M),
              .FAULT_SRET_SPP(FAULT_SRET_SPP)) csrfile (
     .clk(clk), .rst(rst),
@@ -243,8 +244,10 @@ module tcpu_core_pipe #(
   assign req_size  = wr_req_valid ? 2'd3 : preq_size;       // a PTE read: 8 bytes
   assign req_wdata = wr_req_valid ? 64'd0 : preq_wdata;
   assign req_wmask = wr_req_valid ? 8'd0 : preq_wmask;
-  assign req_amo   = 4'd0;
-  assign req_lrsc  = 2'd0;
+  reg  [3:0]  preq_amo;       // P2b A: the AmoOp code (SWAP 1 .. MAXU 9), 0 = not an AMO
+  reg  [1:0]  preq_lrsc;      // P2b A: 1 LR, 2 SC
+  assign req_amo   = wr_req_valid ? 4'd0 : preq_amo;
+  assign req_lrsc  = wr_req_valid ? 2'd0 : preq_lrsc;
   assign resp_ready = 1'b1;
   wire port_fire  = preq_valid && !withdrawing && req_ready;    // the core's own transaction
   wire port_resp  = resp_valid && pwait;
@@ -297,6 +300,8 @@ module tcpu_core_pipe #(
   reg  [63:0] ex_pc, ex_cause, ex_tval, ex_a, ex_b;
   reg  [31:0] ex_insn;
   reg         mem_v, mem_irq, mem_exc, mem_we, mem_isld, mem_isst;
+  reg         mem_isa, mem_issc, mem_a_lr;   // P2b A: an A instruction in MEM, and whether it is SC / LR
+  reg  [3:0]  mem_amo;                       // its AmoOp code (0 for LR / SC)
   reg  [31:0] mem_seq;
   reg  [63:0] mem_pc, mem_cause, mem_tval, mem_res, mem_addr, mem_sdata;
   reg  [31:0] mem_insn;
@@ -320,11 +325,23 @@ module tcpu_core_pipe #(
   // {is_sret, is_sfence, illegal, is_ld, is_st, is_br, is_jal, is_jalr, is_lui, is_auipc, is_alu, is_csr, is_ecall, is_ebreak,
   //  is_mret, is_wfi, is_fence, is_fencei}. SRET and SFENCE.VMA exist only with S/U (PIPE_EXT_SU), as in the reference
   // core (tcpu_core.v): TSR = TVM = TW = 0, so SRET and SFENCE.VMA are illegal only in U, WFI is legal everywhere.
-  function [17:0] dec;
+  // A (MISA_A only), as tcpu_core.v: .W or .D, funct5 an AMO operation, SC, or LR with rs2 = 0
+  function [3:0] amo_code; input [4:0] f5; begin
+    case (f5)
+      5'b00001: amo_code = 4'd1; 5'b00000: amo_code = 4'd2; 5'b00100: amo_code = 4'd3; 5'b01100: amo_code = 4'd4;
+      5'b01000: amo_code = 4'd5; 5'b10000: amo_code = 4'd6; 5'b10100: amo_code = 4'd7; 5'b11000: amo_code = 4'd8;
+      5'b11100: amo_code = 4'd9; default: amo_code = 4'd0;
+    endcase
+  end endfunction
+  function is_a; input [31:0] i; begin
+    is_a = (MISA_A != 0) && (i[6:0] == `OP_AMO) && (i[14:12] == 3'b010 || i[14:12] == 3'b011) &&
+           ((amo_code(i[31:27]) != 4'd0) || (i[31:27] == 5'b00011) || (i[31:27] == 5'b00010 && i[24:20] == 5'd0));
+  end endfunction
+  function [18:0] dec;
     input [31:0] i;
     input [1:0]  pv;
     reg [6:0] op; reg [2:0] f3; reg [6:0] f7; reg [4:0] rd, rs1;
-    reg ld, st, br, jal, jalr, lui, auipc, alu, csr, ecall, ebreak, mret, wfi, fence, fencei, md, sret, sfence, known, bad;
+    reg ld, st, br, jal, jalr, lui, auipc, alu, csr, ecall, ebreak, mret, wfi, fence, fencei, md, sret, sfence, amo, known, bad;
     begin
       op = i[6:0]; f3 = i[14:12]; f7 = i[31:25]; rd = i[11:7]; rs1 = i[19:15];
       ld = (op == `OP_LOAD) && (f3 != 3'b111);
@@ -350,32 +367,34 @@ module tcpu_core_pipe #(
       md     = is_md(i);
       sret   = (PIPE_EXT_SU != 0) && (i == 32'h10200073);
       sfence = (PIPE_EXT_SU != 0) && (op == `OP_SYSTEM) && (f3 == 3'b000) && (f7 == 7'b0001001) && (rd == 5'd0);
-      known  = ld | st | br | jal | jalr | lui | auipc | alu | csr | ecall | ebreak | mret | wfi | fence | fencei | md | sret | sfence;
+      amo    = is_a(i);
+      known  = ld | st | br | jal | jalr | lui | auipc | alu | csr | ecall | ebreak | mret | wfi | fence | fencei | md | sret | sfence | amo;
       bad    = (i[1:0] != 2'b11) || !known || (mret && pv != 2'd3) ||   // a compressed parcel is illegal in P1
                (sret && pv == 2'd0) || (sfence && pv == 2'd0);
-      dec = {sret, sfence, bad, ld, st, br, jal, jalr, lui, auipc, alu, csr, ecall, ebreak, mret, wfi, fence, fencei};
+      dec = {amo, sret, sfence, bad, ld, st, br, jal, jalr, lui, auipc, alu, csr, ecall, ebreak, mret, wfi, fence, fencei};
     end
   endfunction
   // does the instruction read rs1 / rs2 (for the interlock; a false match would only cost a cycle)
   function uses_rs1; input [31:0] i; reg [6:0] op; begin op = i[6:0];
     uses_rs1 = (op == `OP_LOAD) || (op == `OP_STORE) || (op == `OP_BRANCH) || (op == `OP_JALR) ||
                (op == `OP_OPIMM) || (op == `OP_OP) || (op == `OP_OPIMM32) || (op == `OP_OP32) ||
-               ((op == `OP_SYSTEM) && (i[14:12] != 3'b000) && !i[14]);
+               ((op == `OP_SYSTEM) && (i[14:12] != 3'b000) && !i[14]) || (MISA_A != 0 && op == `OP_AMO);
   end endfunction
   function uses_rs2; input [31:0] i; reg [6:0] op; begin op = i[6:0];
-    uses_rs2 = (op == `OP_STORE) || (op == `OP_BRANCH) || (op == `OP_OP) || (op == `OP_OP32);
+    uses_rs2 = (op == `OP_STORE) || (op == `OP_BRANCH) || (op == `OP_OP) || (op == `OP_OP32) || (MISA_A != 0 && op == `OP_AMO);
   end endfunction
   function writes_rd; input [31:0] i; reg [6:0] op; begin op = i[6:0];
     writes_rd = (i[11:7] != 5'd0 || X0_WRITABLE != 0 || PIPE_FAULT == PF_X0_FWD) &&
                 ((op == `OP_LOAD) || (op == `OP_JAL) || (op == `OP_JALR) || (op == `OP_LUI) || (op == `OP_AUIPC) ||
-                 (op == `OP_OPIMM) || (op == `OP_OP) || (op == `OP_OPIMM32) || (op == `OP_OP32));
+                 (op == `OP_OPIMM) || (op == `OP_OP) || (op == `OP_OPIMM32) || (op == `OP_OP32) ||
+                 (MISA_A != 0 && op == `OP_AMO));
   end endfunction
-  function is_serial; input [31:0] i; reg [17:0] d; begin d = dec(i, 2'd3);
+  function is_serial; input [31:0] i; reg [18:0] d; begin d = dec(i, 2'd3);
     is_serial = d[17] | d[16] | d[6] | d[3] | d[2] | d[1] | d[0];    // sret, sfence.vma, csr, mret, wfi, fence, fence.i
   end endfunction
 
   // ================================================================================================ WB
-  wire [17:0] wb_d = dec(wb_insn, priv);
+  wire [18:0] wb_d = dec(wb_insn, priv);
   wire wb_is_csr = wb_d[6], wb_is_mret = wb_d[3], wb_is_wfi = wb_d[2], wb_is_fence = wb_d[1], wb_is_fencei = wb_d[0];
   wire wb_is_sret = wb_d[17], wb_is_sfence = wb_d[16];
   wire [2:0] wb_f3 = wb_insn[14:12];
@@ -458,14 +477,24 @@ module tcpu_core_pipe #(
     endcase
   end
   wire mem_resp_now = port_resp && !preq_owner_f;
+  // A: SC writes back its fail bit; LR and the AMOs the old value (.W sign-extended -- FAULT_A_W_NOSEXT breaks that)
+  wire [63:0] mem_rv = mem_issc ? {63'd0, (FAULT_A_SC_RESULT != 0) ? 1'b0 : resp_scfail} :
+                       (mem_isa && mem_f3 == 3'b010 && FAULT_A_W_NOSEXT != 0) ? {32'd0, ld_sh[31:0]} : ld_val;
+  // the translation's access type: LR a load, SC a store, an AMO both (acc_type 3, as the reference)
+  wire [1:0]  mem_acc = mem_isa ? (mem_a_lr ? 2'd1 : mem_issc ? 2'd2 : 2'd3) : (mem_isst ? 2'd2 : 2'd1);
   wire mem_done = mem_v && (mem_exc || mem_irq || !mem_memop || mem_bad_now || mem_st == M_DONE ||
                             (mem_st == M_PEND && mem_resp_now));
   wire wb_hold = (PIPE_FAULT == PF_WB_HOLD) && wb_commit && !mem_done;
   wire mem_fire = mem_done && !wb_hold;
 
   // ================================================================================================ EX
-  wire [17:0] ex_d = dec(ex_insn, priv);
-  wire ex_isld = ex_d[14], ex_isst = ex_d[13], ex_isbr = ex_d[12], ex_isjal = ex_d[11], ex_isjalr = ex_d[10];
+  wire [18:0] ex_d = dec(ex_insn, priv);
+  // A: an A instruction is a memory read (its result comes back from memory: load-use, forwarding) and, except LR,
+  // a memory write; its address is rs1 with no offset; misaligned -> LR load / SC-AMO store-AMO misaligned
+  wire ex_isa = ex_d[18];
+  wire ex_a_lr = ex_isa && (ex_insn[31:27] == 5'b00010), ex_a_sc = ex_isa && (ex_insn[31:27] == 5'b00011);
+  wire ex_isld = ex_d[14] || ex_isa, ex_isst = ex_d[13] || (ex_isa && !ex_a_lr);
+  wire ex_isbr = ex_d[12], ex_isjal = ex_d[11], ex_isjalr = ex_d[10];
   wire ex_serial = ex_v && !ex_exc && !ex_irq && is_serial(ex_insn);
   wire [4:0] ex_rs1 = ex_insn[19:15], ex_rs2 = ex_insn[24:20];
   // forwarding: EX/MEM (an ALU result), then MEM/WB (a result or a load value), then the held operand
@@ -565,7 +594,7 @@ module tcpu_core_pipe #(
   wire [63:0] ex_target = ex_isjal ? (ex_pc + imm_j) : ex_isjalr ? ((a + imm_i) & ~64'd1) : (ex_pc + imm_b);
   // IALIGN = 32 in the P1 configuration; 16 with C (a target's bit 0 is always clear: JALR clears it, offsets are even)
   wire        ex_tmis   = ex_taken && ((PIPE_EXT_C != 0) ? ex_target[0] : (ex_target[1:0] != 2'b00));
-  wire [63:0] ex_maddr  = a + (ex_isst ? imm_s : imm_i);
+  wire [63:0] ex_maddr  = ex_isa ? a : (a + (ex_isst ? imm_s : imm_i));
   reg ex_mmis;
   always @(*) case (ex_f3[1:0])
     2'b00: ex_mmis = 1'b0;
@@ -622,7 +651,7 @@ module tcpu_core_pipe #(
   wire frozen = ex_serial;
 
   // ================================================================================================ ID
-  wire [17:0] id_d = dec(id_insn, priv);
+  wire [18:0] id_d = dec(id_insn, priv);
   assign id_rs1 = id_insn[19:15];
   assign id_rs2 = id_insn[24:20];
   wire wb_byp_ok = wb_v && !wb_irq && !wb_exc && wb_we && (PIPE_FAULT != PF_NO_WB_BYPASS);
@@ -853,12 +882,12 @@ module tcpu_core_pipe #(
       tcpu_permcheck pc_f (.acc_type(2'd0), .eff_priv(priv), .sum(csr_sum), .mxr(csr_mxr),
         .pte_r(tlb_perm_f[5]), .pte_w(tlb_perm_f[4]), .pte_x(tlb_perm_f[3]), .pte_u(tlb_perm_f[2]),
         .pte_a(tlb_perm_f[1]), .pte_d(tlb_perm_f[0]), .ok(permok_f_raw));
-      tcpu_permcheck pc_d (.acc_type(mem_isst ? 2'd2 : 2'd1), .eff_priv(eff_priv_d), .sum(csr_sum), .mxr(csr_mxr),
+      tcpu_permcheck pc_d (.acc_type(mem_acc), .eff_priv(eff_priv_d), .sum(csr_sum), .mxr(csr_mxr),
         .pte_r(tlb_perm_d[5]), .pte_w(tlb_perm_d[4]), .pte_x(tlb_perm_d[3]), .pte_u(tlb_perm_d[2]),
         .pte_a(tlb_perm_d[1]), .pte_d(tlb_perm_d[0]), .ok(permok_d_raw));
       tcpu_ptw_wrap #(.FAULT_PTW_NO_PERM(FAULT_PTW_NO_PERM)) walk (
         .clk(clk), .rst(rst), .start(wk_start_d || wk_start_f),
-        .va(wk_start_d ? mem_addr : f1_pc), .acc_type(wk_start_d ? (mem_isst ? 2'd2 : 2'd1) : 2'd0),
+        .va(wk_start_d ? mem_addr : f1_pc), .acc_type(wk_start_d ? mem_acc : 2'd0),
         .eff_priv(wk_start_d ? eff_priv_d : priv), .sum(csr_sum), .mxr(csr_mxr), .root_ppn(csr_satp_ppn),
         .spec((wk_own == WK_F) && !nonspec_f1), .abort(wk_abort), .grant(wk_grant),
         .start_ok(wr_start_ok), .busy(wr_busy), .done(wr_done), .fault(wr_fault), .cause(wr_cause), .pa(wr_pa),
@@ -906,7 +935,8 @@ module tcpu_core_pipe #(
     ic_fill <= 1'b0;
     if (rst) begin
       preq_valid <= 1'b0; pwait <= 1'b0; preq_owner_f <= 1'b0; preq_killed <= 1'b0; preq_addr <= 32'd0;
-      preq_write <= 1'b0; preq_size <= 2'd0; preq_wdata <= 64'd0; preq_wmask <= 8'd0;
+      preq_write <= 1'b0; preq_size <= 2'd0; preq_wdata <= 64'd0; preq_wmask <= 8'd0; preq_amo <= 4'd0; preq_lrsc <= 2'd0;
+      mem_isa <= 1'b0; mem_issc <= 1'b0; mem_a_lr <= 1'b0; mem_amo <= 4'd0;
       withdrawn <= 1'b0; withdrawing <= 1'b0;
       fe_pc <= RESET_PC; fe_next_pc <= RESET_PC; fe_park <= 1'b0; fe_ep <= 1'b0;
       f1_v <= 1'b0; f1_pc <= 64'd0; f2_v <= 1'b0; f2_st <= F2_LOOK; f2_pc <= 64'd0; f2_pa <= 32'd0; f2_pfault <= 1'b0;
@@ -1009,9 +1039,10 @@ module tcpu_core_pipe #(
         if (!oldest_true) $display("PIPE ASSERT oldest-issue: data request for pc 0x%0h raised while WB (pc 0x%0h) does not commit cleanly", mem_pc, wb_pc);
         preq_valid <= 1'b1; preq_owner_f <= 1'b0; preq_killed <= 1'b0;
         preq_addr <= mem_pa[31:0]; preq_write <= mem_isst; preq_size <= mem_f3[1:0];
+        preq_amo <= (FAULT_A_AMO_AS_LOAD != 0) ? 4'd0 : mem_amo; preq_lrsc <= mem_a_lr ? 2'd1 : mem_issc ? 2'd2 : 2'd0;
         preq_wdata <= (mem_isst || LOAD_WDATA_LEAK != 0) ? (mem_sdata << mem_lsh) : 64'd0;
         preq_wmask <= mem_isst ? (mem_mbase << mem_addr[2:0]) : 8'd0;
-        if (!wb_flush) mem_st <= M_PEND;
+        if (!wb_flush) mem_st <= (FAULT_A_EARLY_RETIRE != 0 && mem_isa && mem_amo != 4'd0) ? M_DONE : M_PEND;
       end
       // ---- Sv39: MEM keeps its translation once known (a later fill may evict the TLB entry)
       if (mem_xl_hitok) begin mem_xl_have <= 1'b1; mem_pa_r <= d_hit_pa; end
@@ -1036,7 +1067,7 @@ module tcpu_core_pipe #(
       if (mem_v && mem_st == M_PEND && mem_resp_now) begin
         mem_st <= M_DONE;
         if (resp_error) begin mem_exc <= 1'b1; mem_cause <= mem_isst ? `CAUSE_STORE_ACCESS : `CAUSE_LOAD_ACCESS; mem_tval <= mem_addr; end
-        else if (mem_isld) mem_res <= ld_val;
+        else if (mem_isld) mem_res <= mem_rv;
       end
       if (mem_fire) begin
         wb_v <= 1'b1; wb_seq <= mem_seq; wb_pc <= mem_pc; wb_insn <= mem_insn; wb_irq <= mem_irq; wb_raw <= mem_raw; wb_c <= mem_c;
@@ -1048,7 +1079,7 @@ module tcpu_core_pipe #(
           wb_we <= 1'b0; wb_val <= 64'd0;
         end else if (mem_st == M_PEND && mem_resp_now) begin
           wb_exc <= resp_error; wb_cause <= mem_isst ? `CAUSE_STORE_ACCESS : `CAUSE_LOAD_ACCESS; wb_tval <= mem_addr;
-          wb_we <= mem_we && !resp_error; wb_val <= mem_isld ? ld_val : mem_res;
+          wb_we <= mem_we && !resp_error; wb_val <= mem_isld ? mem_rv : mem_res;
         end else begin
           wb_exc <= mem_exc; wb_cause <= mem_cause; wb_tval <= mem_tval; wb_we <= mem_we && !mem_exc; wb_val <= mem_res;
         end
@@ -1092,6 +1123,8 @@ module tcpu_core_pipe #(
         mem_cause <= ex_exc ? ex_cause : ex_tmis ? `CAUSE_INSN_MISALIGNED : ex_isst ? `CAUSE_STORE_MISALIGNED : `CAUSE_LOAD_MISALIGNED;
         mem_tval  <= ex_exc ? ex_tval  : ex_tmis ? ex_target : ex_maddr;
         mem_isld <= ex_isld && !ex_exc && !ex_irq && !ex_newexc; mem_isst <= ex_isst && !ex_exc && !ex_irq && !ex_newexc;
+        mem_isa <= ex_isa && !ex_exc && !ex_irq && !ex_newexc; mem_issc <= ex_a_sc; mem_a_lr <= ex_a_lr;
+        mem_amo <= (ex_isa && !ex_a_lr && !ex_a_sc) ? amo_code(ex_insn[31:27]) : 4'd0;
         mem_we <= writes_rd(ex_insn) && !ex_exc && !ex_irq && !ex_newexc;
         mem_rd <= ex_insn[11:7]; mem_res <= ex_ismd ? md_value : alu_out; mem_addr <= ex_maddr; mem_sdata <= ex_isst ? b_reg : a;
         mem_st <= M_FIRST; mem_xl_have <= 1'b0;
@@ -1216,11 +1249,12 @@ module tcpu_core_pipe #(
         if (eng_st == E_NEED0 || eng_st == E_NEED1) begin
           preq_valid <= 1'b1; preq_owner_f <= 1'b1; preq_killed <= 1'b0; preq_write <= 1'b0; preq_size <= 2'd3;
           preq_addr <= {eng_pa[31:4], (eng_st == E_NEED1), 3'b000}; preq_wdata <= 64'd0; preq_wmask <= 8'd0;
+          preq_amo <= 4'd0; preq_lrsc <= 2'd0;
           eng_st <= (eng_st == E_NEED0) ? E_WAIT0 : E_WAIT1;
         end else if (eng_st == E_NEEDD) begin
           preq_valid <= 1'b1; preq_owner_f <= 1'b1; preq_killed <= 1'b0; preq_write <= 1'b0; preq_size <= eng_dsize;
           preq_addr <= (eng_dsize == 2'd3) ? {eng_pa[31:3], 3'b000} : (eng_dsize == 2'd1) ? {eng_pa[31:1], 1'b0} : {eng_pa[31:2], 2'b00};
-          preq_wdata <= 64'd0; preq_wmask <= 8'd0;
+          preq_wdata <= 64'd0; preq_wmask <= 8'd0; preq_amo <= 4'd0; preq_lrsc <= 2'd0;
           eng_st <= E_WAITD;
         end
       end

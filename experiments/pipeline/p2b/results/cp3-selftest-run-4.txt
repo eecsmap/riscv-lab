@@ -1,0 +1,45 @@
+  original run: verdict rc=0 (P2B_VERDICT PASS (0 failure reasons, 10 named baseline results))
+  mutant  0 refused  SA.txt: a CPU-SU test failing on the pipeline -> FAIL  SA: su01_modes min: pipeline exit 3, reference 0
+  mutant  1 refused  SA.txt: the reference leaving its baseline -> FAIL  SA: su09_warl min: reference exit 0, its recorded baseline is 8
+  mutant  2 refused  SB.txt: a privilege differential mismatch -> FAIL  SB: su01_modes min --require-complete: DIFF_FAIL exit=0 retired=674 dreq=141
+  mutant  3 refused  SC.txt: an interrupt test passing without its interrupt -> FAIL  SC: the interrupt-free run did not fail its interrupt check (exit 2)
+  mutant  4 refused  SC.txt: an interrupt case failing its checks -> FAIL  SC: p2b_irq_priv N=187 min: FAIL(exit 3) k=194 interrupts=1 max_latency=4 | aligned(N'=193): DIFF_OK exi
+  mutant  5 refused  SC.txt: an interrupt case not aligning -> FAIL  SC: p2b_irq_priv N=187 min: PASS k=194 interrupts=1 max_latency=4 | not-aligned exit=0 retired=494 dreq=
+  mutant  6 refused  SD.txt: an SU injection not caught -> FAIL  SD: NOT caught: FAULT_NO_DELEG on pmcs, su01: NOT CAUGHT first signal: TOHOST code=11 after 2974 cycles,
+  mutant  7 refused  SD.txt: an SU control failing -> FAIL  SD: control pmcs-nodeleg: ['  control pmcs-nodeleg on t01: exit 0, errors 1']
+  mutant  8 refused  VA.txt: a Sv39 test failing on the pipeline -> FAIL  VA: sv01_bare_sv39 min: pipeline exit 5 errors 0 | multicycle exit 0
+  mutant  9 refused  VA.txt: a faulting instruction retiring -> FAIL  VA: sv03 no-retire: ['  sv03 no-retire (pipeline): exit 0 6 commit-count checks OK, 0 FAIL']
+  mutant 10 refused  VB.txt: a generated Sv39 program differing -> FAIL  VB: hzsv3 fixed: DIFF_FAIL exit=0 retired=1115 dreq=205
+  mutant 11 refused  VB.txt: a missing differential -> FAIL  VB: hzsv20 rnd12345: 0 lines
+  mutant 12 refused  VC.txt: a walk-interrupt case failing -> FAIL  VC: p2b_irq_walk cycle=2003: FAIL(exit 2) k=412 pte_outstanding_at_raise=0 | aligned(N'=411): DIFF_OK ex
+  mutant 13 refused  VC.txt: too few raises during a walk -> FAIL  VC: too few raises with a PTE read outstanding: ['  VC total: self-checks 445 PASS / 0 FAIL; aligned and
+  mutant 14 refused  VD.txt: knob 21 not caught -> FAIL  VD: NOT caught: knob 21 (TLB_NO_FLUSH) on sv06: NOT CAUGHT first signal: TOHOST code=2 after 3714 cycles
+  mutant 15 refused  VD.txt: IF2 diverging elsewhere -> FAIL  VD: FAULT_IF2_NO_XLATE on the pipeline did not diverge first at the straddler 0x30002ffe: ['  FAULT_IF2_
+  mutant 16 refused  VD.txt: the masked PTW_NO_PERM failing -> FAIL  VD: FAULT_PTW_NO_PERM on the pipeline: ['  FAULT_PTW_NO_PERM on pmcs, sv03 (masked by construction: ever
+  mutant 17 refused  VE.txt: no data walks -> FAIL  VE: data_walks = 0
+  mutant 18 refused  AA.txt: the A matrix checker failing on the pipeline -> FAIL  AA: a01 t1: pipeline exit 0 errors 0 score 1 (A01 cases=138 checked=138 combinations=72 fails=0) | multi
+  mutant 19 refused  AA.txt: the reference failing the race -> FAIL  AA: a02 race: pipeline exit 0 errors 0 score 0 (A02 cases=13 scs=15 disagreements=0 ext_writes=2 ext_rac
+  mutant 20 refused  AA.txt: an A run with harness errors -> FAIL  AA: a03 t2: pipeline exit 0 errors 2 score 0 (A03 exit=0 traps=21 bus_events_at_slot=0 model_events=8 fa
+  mutant 21 refused  AA.txt: the exit-code self-test not refusing -> FAIL  AA: the exit code self-test was not refused
+  mutant 22 refused  AB.txt: an A differential mismatch -> FAIL  AB: a02 race: DIFF_FAIL exit=0 retired=337 dreq=138
+  mutant 23 refused  AB.txt: a missing A differential -> FAIL  AB: a01 t2: 0 lines
+  mutant 24 refused  AC.txt: the interrupt-free AMO run writing the wrong number of times -> FAIL  AC: the interrupt-free run did not fail its interrupt check (exit 8) with the 5 watched writes
+  mutant 25 refused  AC.txt: the AMO test passing without its interrupt -> FAIL  AC: the interrupt-free run did not fail its interrupt check (exit 8) with the 5 watched writes
+  mutant 26 refused  AC.txt: an AMO performed twice across an interrupt -> FAIL  AC: p2b_irq_amo cycle=1035: FAIL(exit 0, errors 0, interrupts 1, writes 6) k=187 inside_atomic=1 | align
+  mutant 27 refused  AC.txt: an AMO interrupt case differing -> FAIL  AC: p2b_irq_amo cycle=1032: PASS k=187 inside_atomic=0 | aligned(N'=5) BUT DIFF_FAIL exit=0 retired=514 
+  mutant 28 refused  AC.txt: too few raises inside an atomic -> FAIL  AC: too few raises inside an atomic access: ['  AC total: self-checks 69 PASS / 0 FAIL; aligned and iden
+  mutant 29 refused  AD.txt: an A injection not caught on the pipeline -> FAIL  AD: NOT caught: FAULT_A_SC_RESULT on pmcsa, a02: NOT CAUGHT first checker failure: FAIL: case 2 (SC with
+  mutant 30 refused  AD.txt: an A injection not caught on the reference -> FAIL  AD: NOT caught: FAULT_A_EARLY_RETIRE on ma, a01: NOT CAUGHT first signal: A_OBS_FAIL early-retire pc=0x8
+  mutant 31 refused  AD.txt: an A control failing -> FAIL  AD: control pmcsa-FAULT_A_NO_RESV_CLEAR: ['  control pmcsa-FAULT_A_NO_RESV_CLEAR on t01: exit 1, errors 
+  mutant 32 refused  G.txt: a multicycle source changed -> FAIL  G: CHANGED tcpu_core.v 66fa67036efd3ef0
+  mutant missing-AD refused
+  ajudge ok  the monitor fires first: rc 0, required 0
+  ajudge ok  an assert fires before the monitor: rc 1, required 1
+  ajudge ok  the run passed: rc 1, required 1
+  ajudge ok  killed by the timeout: rc 1, required 1
+  ajudge ok  the checker's first failure is the named one: rc 0, required 0
+  ajudge ok  the program noticed too: rc 0, required 0
+  ajudge ok  the checker's first failure is another: rc 1, required 1
+  ajudge ok  the run failed before the checker: rc 1, required 1
+  ajudge ok  the checker found nothing: rc 1, required 1
+P2B_SELFTEST PASS (34 verdict mutants, 9 judge cases, 0 failures)

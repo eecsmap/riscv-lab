@@ -1,0 +1,7 @@
+# checkpoint-3 regressions on the same tree (chain-cp3.sh, one coord job)
+P2b sims-4 + run-4: P2B_VERDICT PASS (0 failure reasons, 10 named baseline results); SA SB SC SD VA VB VC VD VE G identical to run-3
+P2b guard self-test on run-4: P2B_SELFTEST PASS (34 verdict mutants each refused for its own section, 9 ajudge cases)
+P2a sims-7 + run-7: P2A_VERDICT PASS (0 failure reasons); A B C D F G identical to run-6, U identical apart from its path
+P1  sims-12 + run-11: P1_VERDICT PASS (0 failure reasons, 4 named baseline exceptions); A B C D E F G identical to run-10, H identical apart from its path
+P1  identity: pipeline-MISA_A-2 refused (MISA_A=1 is A now; the P1 check moved to the value that does not exist)
+Note: build-p2b.sh's header comment about a02 was reworded after sims-4 was built (comment only; the commands are those that built sims-4).

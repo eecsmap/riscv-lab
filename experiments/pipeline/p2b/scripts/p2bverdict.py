@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """PIPE-P2b run verdict. Reads the section summaries run-p2b.sh wrote.   p2bverdict.py <run dir>   exit 0 = PASS
-Checkpoint 1 (privilege). The only tolerated failures are the named reference baseline of the CPU-SU suite
+Checkpoints 1 (privilege), 2 (Sv39), 3 (A: AA..AD). The only tolerated failures are the named reference baseline of the CPU-SU suite
 (M1 T1.4, "SU 9" = three programs x three profiles), and the pipeline must fail them identically."""
 import sys, re, os
 PROFILES = ["min", "fixed", "rnd12345"]
@@ -18,6 +18,10 @@ VD_CAUGHT = ["knob 21 (TLB_NO_FLUSH) on sv06", "knob 22 (TLB_HIT_NO_PERM) on sv0
 VD_CONTROLS = ["pmcs-fault21", "pmcs-fault22", "pmcs-fault23", "pmcs-noperm", "pmcs-if2", "pmcs-trunc", "m-noperm", "m-if2", "m-trunc"]
 VE_NONZERO = ["fetch_walks", "data_walks", "walks_preempted_by_data", "walks_aborted", "pte_transactions_killed", "tlb_flushes"]
 VC_MIN_DURING = 50
+A_CASES = ["a01 t0", "a01 t1", "a01 t2", "a02 t0", "a02 t1", "a02 t2", "a02 race", "a03 t0", "a03 t1", "a03 t2"]
+AD = ["FAULT_A_W_NOSEXT on {i}, a01", "FAULT_A_AMO_AS_LOAD on {i}, a01", "FAULT_A_SC_RESULT on {i}, a02",
+      "FAULT_A_NO_RESV_CLEAR on {i}, a02", "FAULT_A_EARLY_RETIRE on {i}, a01"]
+AC_MIN_CYCLES = 50; AC_MIN_INSIDE = 20
 run = sys.argv[1]; bad = []; notes = []
 def read(name):
     try: return open(os.path.join(run, name), errors="replace").read().splitlines()
@@ -108,6 +112,38 @@ for sim in VD_CONTROLS:
 ve = dict(re.findall(r"^  (\w+) = (\d+)$", "\n".join(read("VE.txt")), re.M))
 for k in VE_NONZERO:
     if int(ve.get(k, "0")) == 0: bad.append(f"VE: {k} = {ve.get(k, 'missing')}")
+# ---- AA / AB (checkpoint 3: A)
+aa = read("AA.txt"); ab = read("AB.txt")
+for c in A_CASES:
+    l = [x for x in aa if x.startswith(f"  {c}: ")]
+    if len(l) != 1: bad.append(f"AA: {c}: {len(l)} lines")
+    elif not re.search(r"pipeline exit 0 errors 0 score 0 \(.*\) \| multicycle exit 0 score 0$", l[0]): bad.append("AA: " + l[0].strip())
+    l = [x for x in ab if x.startswith(f"  {c}: ")]
+    if len(l) != 1: bad.append(f"AB: {c}: {len(l)} lines")
+    elif not re.search(r": DIFF_OK exit=0 retired=[1-9]\d* ", l[0]): bad.append("AB: " + l[0].strip())
+for st in ("exit code", "completion"):
+    if f"  self-test {st}: refused" not in aa: bad.append(f"AA: the {st} self-test was not refused")
+# ---- AC
+ac = read("AC.txt")
+if not [x for x in ac if re.search(r"without an interrupt: exit 8 .*WATCH req=\d+ wreq=\d+ resp=\d+ writes=5;", x)]:
+    bad.append("AC: the interrupt-free run did not fail its interrupt check (exit 8) with the 5 watched writes")
+cases = [x for x in ac if x.startswith("  p2b_irq_amo cycle=")]
+if len(cases) < AC_MIN_CYCLES: bad.append(f"AC: only {len(cases)} cycles swept")
+for x in cases:
+    if not re.search(r": PASS k=\d+ inside_atomic=[01] \| aligned\(N'=\d+\): DIFF_OK exit=0 ", x): bad.append("AC: " + x.strip())
+m = [x for x in ac if x.startswith("  AC total:")]
+d = re.search(r"raised inside an atomic access: (\d+)$", m[0]) if m else None
+if not d or int(d.group(1)) < AC_MIN_INSIDE: bad.append(f"AC: too few raises inside an atomic access: {m}")
+# ---- AD
+ad = read("AD.txt")
+for impl in ("pmcsa", "ma"):
+    for name in AD:
+        n = name.format(i=impl); l = [x for x in ad if x.startswith(f"  {n}: ")]
+        if len(l) != 1: bad.append(f"AD: {n}: {len(l)} lines")
+        elif not l[0].split(": ", 1)[1].startswith("CAUGHT "): bad.append("AD: NOT caught: " + l[0].strip())
+    for f in ("FAULT_A_W_NOSEXT", "FAULT_A_AMO_AS_LOAD", "FAULT_A_SC_RESULT", "FAULT_A_NO_RESV_CLEAR", "FAULT_A_EARLY_RETIRE"):
+        l = [x for x in ad if x.startswith(f"  control {impl}-{f} on t01:")]
+        if len(l) != 1 or not l[0].endswith(": exit 0, errors 0"): bad.append(f"AD: control {impl}-{f}: {l}")
 # ---- G
 g = read("G.txt")
 for x in g:

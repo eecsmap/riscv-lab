@@ -1,0 +1,13 @@
+== AA: the CPU-A directed tests on both cores, scored by the CPU-A checkers
+  a01 t0: pipeline exit 0 errors 0 score 0 (A01 cases=138 checked=138 combinations=72 fails=0) | multicycle exit 0 score 0
+  a01 t1: pipeline exit 0 errors 0 score 0 (A01 cases=138 checked=138 combinations=72 fails=0) | multicycle exit 0 score 0
+  a01 t2: pipeline exit 0 errors 0 score 0 (A01 cases=138 checked=138 combinations=72 fails=0) | multicycle exit 0 score 0
+  a02 t0: pipeline exit 0 errors 0 score 0 (A02 cases=13 scs=14 disagreements=0 ext_writes=0 ext_races=0 fails=0) | multicycle exit 0 score 0
+  a02 t1: pipeline exit 0 errors 0 score 0 (A02 cases=13 scs=14 disagreements=0 ext_writes=0 ext_races=0 fails=0) | multicycle exit 0 score 0
+  a02 t2: pipeline exit 0 errors 0 score 0 (A02 cases=13 scs=14 disagreements=0 ext_writes=0 ext_races=0 fails=0) | multicycle exit 0 score 0
+  a02 race: pipeline exit 0 errors 0 score 0 (A02 cases=13 scs=15 disagreements=0 ext_writes=2 ext_races=1 fails=0) | multicycle exit 0 score 0
+  a03 t0: pipeline exit 0 errors 0 score 0 (A03 exit=0 traps=21 bus_events_at_slot=0 model_events=8 fails=0) | multicycle exit 0 score 0
+  a03 t1: pipeline exit 0 errors 0 score 0 (A03 exit=0 traps=21 bus_events_at_slot=0 model_events=8 fails=0) | multicycle exit 0 score 0
+  a03 t2: pipeline exit 0 errors 0 score 0 (A03 exit=0 traps=21 bus_events_at_slot=0 model_events=8 fails=0) | multicycle exit 0 score 0
+  self-test exit code: refused
+  self-test completion: refused

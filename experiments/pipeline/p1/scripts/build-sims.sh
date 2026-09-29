@@ -62,7 +62,7 @@ IDOUT=$OUT/logs; . "$(dirname "$(readlink -f "$0")")/idcheck.sh"
 {
   idcheck define-with-multicycle-list "Cannot find file containing module: 'tcpu_core_pipe'" -DTCPU_IMPL_PIPE $MULTI $TB
   idcheck no-define-with-pipeline-list "Cannot find file containing module: 'tcpu_core'" -I$S/inc $S/pipeline/tcpu_core_pipe.v $S/rtl/tcpu_regfile.v $S/rtl/tcpu_csr.v $S/rtl/tcpu_icache.v $S/rtl/tcpu_cacheable.v $TB
-  idcheck pipeline-MISA_A-1 "pipe_p1_unsupported_MISA_A" -GMISA_A=1 $PIPE $TB
+  idcheck pipeline-MISA_A-2 "pipe_p1_unsupported_MISA_A" -GMISA_A=2 $PIPE $TB   # P2b: MISA_A=1 (A) exists now; 2 is not a value
   idcheck pipeline-PIPE_FAULT-15 "pipe_p1_unsupported_PIPE_FAULT" -GPIPE_FAULT=15 $PIPE $TB
   echo "ID_FAILS=$ID_FAILS"
 } > $OUT/identity.txt 2>&1

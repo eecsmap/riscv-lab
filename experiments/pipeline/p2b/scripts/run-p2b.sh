@@ -20,6 +20,8 @@
 #       the CPU-SV39 injections on both cores (PPN truncation, second parcel untranslated, walker without permission
 #       checks -- the last is not observable on the pipeline by construction, see REPORT)
 #   VE  Sv39 coverage (PIPE COVERAGE-SV39, summed over VB): fetch and data walks, preemption, aborts, killed PTE reads
+# Checkpoint 3 (A) sections AA (CPU-A tests, CPU-A checkers), AB (differential), AC (an interrupt at every cycle of
+#   atomics), AD (the CPU-A injections): run-p2b-a.sh
 #   G   shared / multicycle sources unchanged against the tag
 set -u
 SIMS=${1:?sims dir}; OUT=${2:?outdir}
@@ -191,6 +193,10 @@ for sim in pmcs-fault21 pmcs-fault22 pmcs-fault23 pmcs-noperm pmcs-if2 pmcs-trun
 # ---------------------------------------------------------------- VE
 echo "== VE: Sv39 coverage on the pipeline, summed over VB (PIPE COVERAGE-SV39)" | tee $OUT/VE.txt
 cat $OUT/VB/*-p.log | grep '^PIPE COVERAGE-SV39' | awk '{for (i = 3; i <= NF; i++) { split($i, a, "="); t[a[1]] += a[2] } } END { for (k in t) printf "  %s = %d\n", k, t[k] }' | sort | tee -a $OUT/VE.txt
+
+# ---------------------------------------------------------------- AA..AD (checkpoint 3)
+bash $SC2/run-p2b-a.sh $SIMS $OUT > $OUT/A-run.log 2>&1 || echo "run-p2b-a.sh exited $?" | tee -a $OUT/A-run.log
+cat $OUT/AA.txt $OUT/AB.txt $OUT/AD.txt 2>/dev/null; grep -v '^  p2b_irq_amo cycle=' $OUT/AC.txt 2>/dev/null
 
 # ---------------------------------------------------------------- G
 echo "== G: shared and multicycle sources compiled vs tag mc-v1-dual" | tee $OUT/G.txt

@@ -1,0 +1,6 @@
+== verdict
+  note  SA: su08_satp_bare: exit 1 on both cores -- named baseline
+  note  SA: su09_warl: exit 8 on both cores -- named baseline
+  note  SA: su11_mip_sw: exit 24 on both cores -- named baseline
+  note  VD: FAULT_PTW_NO_PERM on the pipeline: masked by construction (knob 22 is its counterpart)
+P2B_VERDICT PASS (0 failure reasons, 10 named baseline results)

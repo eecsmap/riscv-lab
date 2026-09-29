@@ -1,0 +1,21 @@
+== AD: the CPU-A injections on both cores, each rejected by its own named check
+  FAULT_A_W_NOSEXT on pmcsa, a01: CAUGHT first checker failure: FAIL: swap.w.aq at 0x80000384 (case 7): rd = 0x00000000ffffffff, the instruction's inputs give 0xffffffffffffffff (old word 0x22222222ffffffff, operand 0x000000 (run: passed)
+  FAULT_A_AMO_AS_LOAD on pmcsa, a01: CAUGHT first checker failure: FAIL: swap.d at 0x8000007c (case 0): rd = 0x0000000000000000, the instruction's inputs give 0x0000000000000001 (old word 0x0000000000000001, operand 0x000000000 (run: passed)
+  FAULT_A_SC_RESULT on pmcsa, a02: CAUGHT first checker failure: FAIL: case 2 (SC with no LR): the SC returned 0, the rule says 1 (run: passed)
+  FAULT_A_NO_RESV_CLEAR on pmcsa, a02: CAUGHT first checker failure: FAIL: case 8 (a trap between the LR and the SC drops it): the SC returned 0, the rule says 1 (run: passed)
+  FAULT_A_EARLY_RETIRE on pmcsa, a01: CAUGHT first signal: A_OBS_FAIL early-retire pc=0x8000007c insn=0x08b4352f: the atomic retired while its response was outstanding
+  control pmcsa-FAULT_A_W_NOSEXT on t01: exit 0, errors 0
+  control pmcsa-FAULT_A_AMO_AS_LOAD on t01: exit 0, errors 0
+  control pmcsa-FAULT_A_SC_RESULT on t01: exit 0, errors 0
+  control pmcsa-FAULT_A_NO_RESV_CLEAR on t01: exit 0, errors 0
+  control pmcsa-FAULT_A_EARLY_RETIRE on t01: exit 0, errors 0
+  FAULT_A_W_NOSEXT on ma, a01: CAUGHT first checker failure: FAIL: swap.w.aq at 0x80000384 (case 7): rd = 0x00000000ffffffff, the instruction's inputs give 0xffffffffffffffff (old word 0x22222222ffffffff, operand 0x000000 (run: passed)
+  FAULT_A_AMO_AS_LOAD on ma, a01: CAUGHT first checker failure: FAIL: swap.d at 0x8000007c (case 0): rd = 0x0000000000000000, the instruction's inputs give 0x0000000000000001 (old word 0x0000000000000001, operand 0x000000000 (run: passed)
+  FAULT_A_SC_RESULT on ma, a02: CAUGHT first checker failure: FAIL: case 2 (SC with no LR): the SC returned 0, the rule says 1 (run: passed)
+  FAULT_A_NO_RESV_CLEAR on ma, a02: CAUGHT first checker failure: FAIL: case 8 (a trap between the LR and the SC drops it): the SC returned 0, the rule says 1 (run: passed)
+  FAULT_A_EARLY_RETIRE on ma, a01: CAUGHT first signal: A_OBS_FAIL early-retire pc=0x8000007c insn=0x08b4352f: the atomic retired while its response was outstanding
+  control ma-FAULT_A_W_NOSEXT on t01: exit 0, errors 0
+  control ma-FAULT_A_AMO_AS_LOAD on t01: exit 0, errors 0
+  control ma-FAULT_A_SC_RESULT on t01: exit 0, errors 0
+  control ma-FAULT_A_NO_RESV_CLEAR on t01: exit 0, errors 0
+  control ma-FAULT_A_EARLY_RETIRE on t01: exit 0, errors 0

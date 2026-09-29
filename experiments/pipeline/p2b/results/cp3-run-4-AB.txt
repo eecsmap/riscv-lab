@@ -1,0 +1,11 @@
+== AB: architectural differential of the AA runs (multicycle MISA_A=1 reference)
+  a01 t0: DIFF_OK exit=0 retired=3899 dreq=1659
+  a01 t1: DIFF_OK exit=0 retired=3899 dreq=1659
+  a01 t2: DIFF_OK exit=0 retired=3899 dreq=1659
+  a02 t0: DIFF_OK exit=0 retired=331 dreq=136
+  a02 t1: DIFF_OK exit=0 retired=331 dreq=136
+  a02 t2: DIFF_OK exit=0 retired=331 dreq=136
+  a02 race: DIFF_OK exit=0 retired=337 dreq=138
+  a03 t0: DIFF_OK exit=0 retired=1876 dreq=452
+  a03 t1: DIFF_OK exit=0 retired=1876 dreq=452
+  a03 t2: DIFF_OK exit=0 retired=1876 dreq=452
