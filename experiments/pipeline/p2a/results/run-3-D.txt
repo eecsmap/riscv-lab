@@ -1,0 +1,27 @@
+== D: negative controls
+  knob 15 (MD_STALE_RESULT) on p2a_md_fault: CAUGHT first signal: PIPE ASSERT md-owner: seq 218 (pc 0x80000188) took a mul/div result it did not start
+  knob 16 (MD_RESTART) on p2a_md_hazard: CAUGHT first signal: PIPE ASSERT md-once: seq 23 (pc 0x8000015c) started the mul/div unit a second time
+  expected rejections (derived by gen_m01.py): FAULT_W_SEXT -> check 247, FAULT_MULH_SIGN -> check 36
+  FAULT_W_SEXT on pm: CAUGHT first signal: TOHOST code=247 after 22158 cycles, retired=2102 (store answered and retired)
+  FAULT_MULH_SIGN on pm: CAUGHT first signal: TOHOST code=36 after 3369 cycles, retired=330 (store answered and retired)
+  FAULT_W_SEXT on m: CAUGHT first signal: TOHOST code=247 after 34372 cycles, retired=2102 (store answered and retired)
+  FAULT_MULH_SIGN on m: CAUGHT first signal: TOHOST code=36 after 5219 cycles, retired=330 (store answered and retired)
+  knob 17 (C_LINK_LEN) on p2a_c_link: CAUGHT first signal: TOHOST code=1 after 335 cycles, retired=34 (store answered and retired)
+  knob 18 (C_CARRY_DROP) on c02: CAUGHT first signal: TOHOST code=1 after 222 cycles, retired=23 (store answered and retired)
+  FAULT_C_IMM on pmc: CAUGHT first signal: TOHOST code=6 after 210 cycles, retired=43 (store answered and retired)
+  FAULT_C_REG on pmc: CAUGHT first signal: TOHOST code=6 after 210 cycles, retired=43 (store answered and retired)
+  FAULT_C_IMM on m: CAUGHT first signal: TOHOST code=6 after 379 cycles, retired=43 (store answered and retired)
+  FAULT_C_REG on m: CAUGHT first signal: TOHOST code=6 after 379 cycles, retired=43 (store answered and retired)
+  parcel fault pmc-fe1 on c02: exit 4 TRAPS=1 last_cause=1 last_epc=0x80000ffe last_tval=0x80000ffe COMMIT COUNT OK errors 0
+  parcel fault pmc-fe2 on c02: exit 4 TRAPS=1 last_cause=1 last_epc=0x80000ffe last_tval=0x80001000 COMMIT COUNT OK errors 0
+  parcel fault m-fe1 on c02: exit 4 TRAPS=1 last_cause=1 last_epc=0x80000ffe last_tval=0x80000ffe COMMIT COUNT OK errors 0
+  parcel fault m-fe2 on c02: exit 4 TRAPS=1 last_cause=1 last_epc=0x80000ffe last_tval=0x80001000 COMMIT COUNT OK errors 0
+  parcel fault pmc-fault19 on c02: exit 4 TRAPS=1 last_cause=1 last_epc=0x80000ffe last_tval=0x80000ffe COMMIT COUNT OK errors 0
+  control pm-fault15 on t01_alu: exit 0, errors 0
+  control pm-fault16 on t01_alu: exit 0, errors 0
+  control pm-wsext on t01_alu: exit 0, errors 0
+  control pm-mulhsign on t01_alu: exit 0, errors 0
+  control pmc-fault17 on t01_alu: exit 0, errors 0
+  control pmc-fault18 on t01_alu: exit 0, errors 0
+  control pmc-cimm on t01_alu: exit 0, errors 0
+  control pmc-creg on t01_alu: exit 0, errors 0

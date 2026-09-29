@@ -1,0 +1,2 @@
+M instructions in m01: 412
+M instructions in the 40 hazard programs: 4736

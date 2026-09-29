@@ -1,0 +1,72 @@
+caught   id-rc0: SELFTEST_IDCHECK 8/9; red: build-succeeds-with-message 
+caught   id-rc124: SELFTEST_IDCHECK 8/9; red: timeout-124 
+caught   id-regex: SELFTEST_IDCHECK 6/9; red: unrelated-error near-miss-module aggregation 
+caught   d-exit: SELFTEST_P1DIFF 5/7; red: tmo samefail 
+caught   d-done: SELFTEST_P1DIFF 6/7; red: nodone 
+caught   d-empty: SELFTEST_P1DIFF 6/7; red: empty 
+caught   d-strict: SELFTEST_P1DIFF 3/7; red: tmo empty nodone samefail 
+caught   d-stream: SELFTEST_P1DIFF 6/7; red: diff 
+caught   v-exc-exact: SELFTEST_VERDICT 25/27; red: A-exception-other A-exception-passes 
+caught   v-pos-pass: SELFTEST_VERDICT 25/27; red: A-positive-fails A-errors-suffix 
+caught   v-a-missing: SELFTEST_VERDICT 26/27; red: A-missing-program 
+caught   v-a-extra: SELFTEST_VERDICT 26/27; red: A-extra-program 
+caught   v-b-count: SELFTEST_VERDICT 26/27; red: B-missing-result 
+caught   v-b-exit: SELFTEST_VERDICT 26/27; red: B-same-nonzero-exit 
+caught   v-b-total: SELFTEST_VERDICT 26/27; red: B-total-line 
+caught   v-c-pass: SELFTEST_VERDICT 26/27; red: C-selfcheck-fails 
+caught   v-c-align: SELFTEST_VERDICT 26/27; red: C-alignment-differs 
+caught   v-c-na: SELFTEST_VERDICT 26/27; red: C-na-not-cancel 
+caught   v-c-count: SELFTEST_VERDICT 26/27; red: C-missing-case 
+caught   v-d-caught: SELFTEST_VERDICT 26/27; red: D-knob-not-caught 
+caught   v-d-missing: SELFTEST_VERDICT 26/27; red: D-knob-missing 
+caught   v-d-ctl: SELFTEST_VERDICT 26/27; red: D-control-fails 
+caught   v-e-caught: SELFTEST_VERDICT 26/27; red: E-monitor-silent 
+caught   v-f-count: SELFTEST_VERDICT 26/27; red: F-roi-missing 
+caught   v-g-changed: SELFTEST_VERDICT 26/27; red: G-source-changed 
+caught   v-cov-zero: SELFTEST_VERDICT 26/27; red: cov-counter-zero 
+caught   v-cov-header: SELFTEST_VERDICT 26/27; red: cov-double-count 
+caught   v-h-variant: SELFTEST_VERDICT 26/27; red: H-variant-fails 
+caught   v-h-judge: SELFTEST_VERDICT 26/27; red: H-judge-fails 
+caught   v-exit: SELFTEST_VERDICT 1/27; red: A-positive-fails A-errors-suffix A-exception-other A-exception-passes A-missing-program A-extra-program A-file-missing B-diff-fail B-same-nonzero-exit B-missing-result B-total-line C-selfcheck-fails C-alignment-differs C-na-not-cancel C-missing-case D-knob-not-caught D-knob-missing D-control-fails E-monitor-silent F-roi-missing G-source-changed H-variant-fails H-judge-fails H-file-missing cov-counter-zero cov-double-count 
+caught   f-clean: SELFTEST_FWJUDGE 12/14; red: fix-bench-error fix-core-assert 
+caught   f-window: SELFTEST_FWJUDGE 12/14; red: fix-window-missing nc-window-missing 
+caught   f-ref: SELFTEST_FWJUDGE 12/14; red: fix-checksum ref-differs 
+caught   f-codes: SELFTEST_FWJUDGE 13/14; red: fix-exit-code 
+caught   f-missing: SELFTEST_FWJUDGE 13/14; red: fix-log-missing 
+caught   f-total: SELFTEST_FWJUDGE 13/14; red: fix-no-total 
+caught   f-notcaught: SELFTEST_FWJUDGE 13/14; red: k13-not-caught 
+caught   f-other: SELFTEST_FWJUDGE 13/14; red: k13-other-property 
+caught   f-lacks: SELFTEST_FWJUDGE 12/14; red: k13-no-core-assert k14-no-bench-error 
+caught   f-exit: SELFTEST_FWJUDGE 1/14; red: fix-bench-error fix-core-assert fix-window-missing fix-checksum fix-exit-code fix-log-missing fix-no-total ref-differs nc-window-missing k13-not-caught k13-other-property k13-no-core-assert k14-no-bench-error 
+caught   b-clean: SELFTEST_WBJUDGE 11/12; red: fix-error 
+caught   b-class: SELFTEST_WBJUDGE 11/12; red: class-missing 
+caught   b-ref: SELFTEST_WBJUDGE 11/12; red: ref-differs 
+caught   b-missing: SELFTEST_WBJUDGE 11/12; red: log-missing 
+caught   b-total: SELFTEST_WBJUDGE 11/12; red: no-total 
+caught   b-shared-count: SELFTEST_WBJUDGE 11/12; red: shared-missing 
+caught   b-shared-changed: SELFTEST_WBJUDGE 11/12; red: shared-extra 
+caught   b-caught: SELFTEST_WBJUDGE 11/12; red: w1-not-caught 
+caught   b-profile: SELFTEST_WBJUDGE 11/12; red: w1-profile-silent 
+caught   b-first: SELFTEST_WBJUDGE 11/12; red: w3-other-first 
+caught   b-exit: SELFTEST_WBJUDGE 1/12; red: fix-error class-missing ref-differs log-missing no-total shared-changed shared-missing shared-extra w1-not-caught w1-profile-silent w3-other-first 
+caught   q-a-m: SELFTEST_P2AVERDICT 23/24; red: A-m-selfcheck 
+caught   q-a-c: SELFTEST_P2AVERDICT 22/24; red: A-c-selfcheck A-c-reference 
+caught   q-a-noc: SELFTEST_P2AVERDICT 22/24; red: A-noC-retired-C A-noC-exit0 
+caught   q-a-p1: SELFTEST_P2AVERDICT 23/24; red: A-p1-accepts-M 
+caught   q-b-count: SELFTEST_P2AVERDICT 23/24; red: B-m-missing 
+caught   q-b-line: SELFTEST_P2AVERDICT 23/24; red: B-m-diff 
+caught   q-bc-count: SELFTEST_P2AVERDICT 23/24; red: B-c-missing 
+caught   q-bc-line: SELFTEST_P2AVERDICT 22/24; red: B-c-diff B-c-samefail 
+caught   q-c-count: SELFTEST_P2AVERDICT 23/24; red: C-c-missing 
+caught   q-c-line: SELFTEST_P2AVERDICT 22/24; red: C-md-fails C-c-not-aligned 
+caught   q-d-caught: SELFTEST_P2AVERDICT 23/24; red: D-knob17-silent 
+caught   q-d-lines: SELFTEST_P2AVERDICT 22/24; red: D-cimm-missing file-missing 
+caught   q-d-tval: SELFTEST_P2AVERDICT 23/24; red: D-fe2-wrong-tval 
+caught   q-d-parcel: SELFTEST_P2AVERDICT 23/24; red: D-fe1-retired 
+caught   q-d-k19: SELFTEST_P2AVERDICT 23/24; red: D-knob19-silent 
+caught   q-d-ctl: SELFTEST_P2AVERDICT 23/24; red: D-control-fails 
+caught   q-f-c: SELFTEST_P2AVERDICT 23/24; red: F-c-block-missing 
+caught   q-g: SELFTEST_P2AVERDICT 23/24; red: G-changed 
+caught   q-missing: SELFTEST_P2AVERDICT 23/24; red: file-missing 
+caught   q-exit: SELFTEST_P2AVERDICT 1/24; red: A-m-selfcheck A-c-selfcheck A-c-reference A-p1-accepts-M A-noC-retired-C A-noC-exit0 B-m-diff B-m-missing B-c-diff B-c-missing B-c-samefail C-md-fails C-c-not-aligned C-c-missing D-knob17-silent D-cimm-missing D-fe2-wrong-tval D-fe1-retired D-knob19-silent D-control-fails F-c-block-missing G-changed file-missing 
+GATE_MUTANTS caught 71/71

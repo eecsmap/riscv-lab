@@ -1,0 +1,13 @@
+case good: PASS  PASS
+case fix-error: FAIL  PASS
+case class-missing: FAIL  PASS
+case ref-differs: FAIL  PASS
+case log-missing: FAIL  PASS
+case no-total: FAIL  PASS
+case shared-changed: FAIL  PASS
+case shared-missing: FAIL  PASS
+case shared-extra: FAIL  PASS
+case w1-not-caught: FAIL  PASS
+case w1-profile-silent: FAIL  PASS
+case w3-other-first: FAIL  PASS
+SELFTEST_WBJUDGE 12/12

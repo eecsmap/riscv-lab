@@ -1,0 +1,11 @@
+IDOK   M-without-the-unit-source: rc=1, %Error: /home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p2a/runs/sims-3/src/pipeline/tcpu_core_pipe.v:560:7: Cannot find file containing module: 
+IDOK   knob15-without-M: rc=1, %Error: /home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p2a/runs/sims-3/src/pipeline/tcpu_core_pipe.v:150:96: Cannot find file containing module:
+IDOK   W_SEXT-injection-without-M: rc=1, %Error: /home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p2a/runs/sims-3/src/pipeline/tcpu_core_pipe.v:128:81: Cannot find file containing module:
+IDOK   EXT_M-2: rc=1, %Error: /home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p2a/runs/sims-3/src/pipeline/tcpu_core_pipe.v:151:71: Cannot find file containing module:
+IDOK   C-without-the-decoder-source: rc=1, %Error: /home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p2a/runs/sims-3/src/pipeline/tcpu_core_pipe.v:715:7: Cannot find file containing module: 
+IDOK   knob18-without-C: rc=1, %Error: /home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p2a/runs/sims-3/src/pipeline/tcpu_core_pipe.v:149:94: Cannot find file containing module:
+IDOK   C_IMM-injection-without-C: rc=1, %Error: /home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p2a/runs/sims-3/src/pipeline/tcpu_core_pipe.v:131:73: Cannot find file containing module:
+IDOK   EXT_C-2: rc=1, %Error: /home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p2a/runs/sims-3/src/pipeline/tcpu_core_pipe.v:152:71: Cannot find file containing module:
+IDOK   PIPE_FAULT-20: rc=1, %Error: /home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p2a/runs/sims-3/src/pipeline/tcpu_core_pipe.v:148:70: Cannot find file containing module:
+IDOK   define-with-multicycle-list: rc=1, %Error: /home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p2a/runs/sims-3/src/tb/tcpu_harness.v:180:3: Cannot find file containing module: 'tcpu_co
+ID_FAILS=0

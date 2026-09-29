@@ -1,0 +1,7 @@
+== walker-wrapper bench: /home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p2a/runs/wb-2
+  fix (clean): PASS; 3456 runs over 24 profiles; failing runs 0; first properties {}; all properties {}; abort classes {'idle': 600, 'req': 312, 'unforwarded': 180, 'forwardable': 468, 'offered': 624, 'handshake': 312, 'outstanding': 780, 'resp_l2': 120, 'resp_l1': 96, 'resp_l0': 72, 'error': 24}
+  w1 (caught:withdraw): PASS; 3456 runs over 24 profiles; failing runs 624; first properties {'withdraw': 624}; all properties {'withdraw': 624}
+  w2 (caught:done-after-kill): PASS; 3456 runs over 24 profiles; failing runs 120; first properties {'done-after-kill': 120}; all properties {'done-after-kill': 120}
+  w3 (caught:spec-uncached): PASS; 3456 runs over 24 profiles; failing runs 48; first properties {'spec-uncached': 48}; all properties {'spec-uncached': 48, 'wrong-result': 48, 'spec-stall': 48}
+  w4 (caught:killed-delivered): PASS; 3456 runs over 24 profiles; failing runs 1716; first properties {'killed-delivered': 1716}; all properties {'killed-delivered': 1716, 'resp-to-unforwarded': 780, 'wrong-result': 720}
+WB_JUDGE PASS

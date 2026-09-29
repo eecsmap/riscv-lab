@@ -1,0 +1,3 @@
+== B: architectural differential vs the multicycle reference, 5 profiles
+  B total: 220 DIFF_OK, 0 DIFF_FAIL over 5 profiles x 44 programs
+  B total (M+C): 235 DIFF_OK, 0 DIFF_FAIL over 5 profiles x 47 programs

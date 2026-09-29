@@ -1,0 +1,34 @@
+== F: M ROIs (second pass, warm I-cache); reported, not gated
+  m (min):
+    ROI1 retired=17 cycles=1174 CPI=69.059 intervals[6:1 73:16]
+    ROI2 retired=9 cycles=590 CPI=65.556 intervals[6:1 73:8]
+    ROI3 retired=33 cycles=734 CPI=22.242 intervals[6:25 73:8]
+  pm (min):
+    ROI1 retired=17 cycles=1073 CPI=63.118 intervals[1:1 67:16]
+    ROI2 retired=9 cycles=537 CPI=59.667 intervals[1:1 67:8]
+    ROI3 retired=33 cycles=561 CPI=17.000 intervals[1:25 67:8]
+  m (fixed):
+    ROI1 retired=17 cycles=1174 CPI=69.059 intervals[6:1 73:16]
+    ROI2 retired=9 cycles=590 CPI=65.556 intervals[6:1 73:8]
+    ROI3 retired=33 cycles=734 CPI=22.242 intervals[6:25 73:8]
+  pm (fixed):
+    ROI1 retired=17 cycles=1073 CPI=63.118 intervals[1:1 67:16]
+    ROI2 retired=9 cycles=537 CPI=59.667 intervals[1:1 67:8]
+    ROI3 retired=33 cycles=561 CPI=17.000 intervals[1:25 67:8]
+== F: C ROIs (second pass, warm I-cache); reported, not gated
+  C m (min):
+    ROI1 retired=65 cycles=390 CPI=6.000 intervals[6:65]
+    ROI2 retired=65 cycles=390 CPI=6.000 intervals[6:65]
+    ROI3 retired=65 cycles=390 CPI=6.000 intervals[6:65]
+  C pmc (min):
+    ROI1 retired=65 cycles=65 CPI=1.000 intervals[1:65]
+    ROI2 retired=65 cycles=65 CPI=1.000 intervals[1:65]
+    ROI3 retired=65 cycles=158 CPI=2.431 intervals[1:34 4:31]
+  C m (fixed):
+    ROI1 retired=65 cycles=390 CPI=6.000 intervals[6:65]
+    ROI2 retired=65 cycles=390 CPI=6.000 intervals[6:65]
+    ROI3 retired=65 cycles=390 CPI=6.000 intervals[6:65]
+  C pmc (fixed):
+    ROI1 retired=65 cycles=65 CPI=1.000 intervals[1:65]
+    ROI2 retired=65 cycles=65 CPI=1.000 intervals[1:65]
+    ROI3 retired=65 cycles=158 CPI=2.431 intervals[1:34 4:31]

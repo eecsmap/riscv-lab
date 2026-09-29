@@ -1,0 +1,14 @@
+== A: m01 self-checks (all 13 operations, edge operands, misa), and RV64I mode retained
+  min: pipeline M exit 0 errors 0 | multicycle exit 0 errors 0
+  fixed: pipeline M exit 0 errors 0 | multicycle exit 0 errors 0
+  rnd12345: pipeline M exit 0 errors 0 | multicycle exit 0 errors 0
+  rnd777: pipeline M exit 0 errors 0 | multicycle exit 0 errors 0
+  rnd4242: pipeline M exit 0 errors 0 | multicycle exit 0 errors 0
+  C min: pipeline M+C m01c exit 0 c01 exit 0 c02 exit 0 errors 0 | multicycle c01mc exit 0 c02 exit 0
+  C fixed: pipeline M+C m01c exit 0 c01 exit 0 c02 exit 0 errors 0 | multicycle c01mc exit 0 c02 exit 0
+  C rnd12345: pipeline M+C m01c exit 0 c01 exit 0 c02 exit 0 errors 0 | multicycle c01mc exit 0 c02 exit 0
+  C rnd777: pipeline M+C m01c exit 0 c01 exit 0 c02 exit 0 errors 0 | multicycle c01mc exit 0 c02 exit 0
+  C rnd4242: pipeline M+C m01c exit 0 c01 exit 0 c02 exit 0 errors 0 | multicycle c01mc exit 0 c02 exit 0
+  no-C build p1-min on c01: exit 13; first trap: TRP cyc=50 irq=0 cause=0000000000000000 epc=0000000080000024 tval=000000008000003e; instruction at epc: 01a000ef (8 hex digits); compressed retired: 0
+  no-C build pm-min on c01: exit 13; first trap: TRP cyc=50 irq=0 cause=0000000000000000 epc=0000000080000024 tval=000000008000003e; instruction at epc: 01a000ef (8 hex digits); compressed retired: 0
+  P1 configuration on m01: exit 13; first trap: TRP cyc=79 irq=0 cause=0000000000000002 epc=0000000080000050 tval=00000000026283b3; first M instruction at 0x80000050

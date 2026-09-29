@@ -2,7 +2,7 @@
 # PIPE-P1: mutation test of the runner gates themselves. Each mutant removes ONE check from a COPY of a gate script and
 # reruns that gate's self-test on the copy; the mutant counts as caught only if the self-test then fails.
 #   mutate-gates.sh <run dir, e.g. runs/run-3> <its de-duplicated coverage file> <sims dir, e.g. runs/sims-4> <fresh work dir>
-#   WBRUN=<p2a walker run dir> adds the walker-wrapper judge's mutants
+#   WBRUN=<p2a walker run dir> adds the walker-wrapper judge's mutants; P2RUN=<passing p2a run dir> the P2a verdict's
 set -u
 RUN=${1:?run}; COV=${2:?coverage}; SIMS=${3:?sims}; OUT=${4:?work}; [ -e "$OUT" ] && { echo "REFUSE: $OUT exists"; exit 2; }
 SC=$(dirname "$(readlink -f "$0")"); mkdir -p $OUT; caught=0; n=0
@@ -78,5 +78,29 @@ mut $G b-caught  'if fail_runs == 0: bad.append("NOT CAUGHT")' 'if False: bad.ap
 mut $G b-profile 'if prop is not None and profile_fail == 0:' 'if False:' $WBRUN
 mut $G b-first   'if other: bad.append' 'if False: bad.append' $WBRUN
 mut $G b-exit    'sys.exit(1 if bad_all else 0)' 'sys.exit(0)' $WBRUN
+fi
+# ---- the P2a run verdict, only when a passing P2a run is given (P2RUN)
+if [ -n "${P2RUN:-}" ]; then
+Q="../../p2a/scripts/p2averdict.py ../../p2a/scripts/selftest-p2averdict.sh"
+mut $Q q-a-m      'if not re.search(r"pipeline M exit 0 errors 0' 'if False and re.search(r"pipeline M exit 0 errors 0' $P2RUN
+mut $Q q-a-c      'if not re.search(r"pipeline M\+C m01c' 'if False and re.search(r"pipeline M\+C m01c' $P2RUN
+mut $Q q-a-noc    'if not ok: bad.append("A: a build without C' 'if False: bad.append("A: a build without C' $P2RUN
+mut $Q q-a-p1     'if not m or m.group(1) == "0" or m.group(2) != m.group(3):' 'if False:' $P2RUN
+mut $Q q-b-count  'if len(res) != nb:' 'if False:' $P2RUN
+mut $Q q-b-line   'if not re.match(r"\S+ \S+ DIFF_OK exit=0 retired=[1-9]\d* dreq=\d+$", x): bad.append("B: " + x)' 'pass' $P2RUN
+mut $Q q-bc-count 'if len(resc) != nbc:' 'if False:' $P2RUN
+mut $Q q-bc-line  'if not re.match(r"\S+ \S+ DIFF_OK exit=0 retired=[1-9]\d* dreq=\d+$", x): bad.append("B (M+C): " + x)' 'pass' $P2RUN
+mut $Q q-c-count  'if len(mine) != len(pos) * C_PROF:' 'if False:' $P2RUN
+mut $Q q-c-line   'if not re.search(r": PASS k=' 'if False and re.search(r": PASS k=' $P2RUN
+mut $Q q-d-caught 'elif not l[0].split(": ", 1)[1].startswith("CAUGHT first signal:"):' 'elif False:' $P2RUN
+mut $Q q-d-lines  'if len(l) != 1: bad.append(f"D: {name}: {len(l)} result lines")' 'if False: pass' $P2RUN
+mut $Q q-d-tval   'elif tval is not None and m.group(1) != tval:' 'elif False:' $P2RUN
+mut $Q q-d-parcel 'if not m: bad.append("D: parcel fault: " + l[0].strip())' 'if False: pass' $P2RUN
+mut $Q q-d-k19    'elif tval is None and m.group(1) == "0x80001000":' 'elif False:' $P2RUN
+mut $Q q-d-ctl    'if not x.endswith(": exit 0, errors 0"): bad.append("D: control failed: "' 'if False: bad.append("D: control failed: "' $P2RUN
+mut $Q q-f-c      'if len(cblocks) != F_BLOCKS:' 'if False:' $P2RUN
+mut $Q q-g        'if "CHANGED" in x: bad.append("G: "' 'if False: bad.append("G: "' $P2RUN
+mut $Q q-missing  'except OSError: bad.append("missing output: " + name); return []' 'except OSError: return []' $P2RUN
+mut $Q q-exit     'sys.exit(1 if bad else 0)' 'sys.exit(0)' $P2RUN
 fi
 echo "GATE_MUTANTS caught $caught/$n"; [ $caught = $n ]

@@ -1,0 +1,5 @@
+== verdict
+  FAIL  A: a build without C did not refuse a compressed parcel: no-C build p1-min on c01: exit 13; first trap: TRP cyc=50 irq=0 cause=0000000000000000 epc=0000000080000024 tval=000000008000003e; instruction at epc: 01a000ef (8 hex digits)
+  FAIL  A: a build without C did not refuse a compressed parcel: no-C build pm-min on c01: exit 13; first trap: TRP cyc=50 irq=0 cause=0000000000000000 epc=0000000080000024 tval=000000008000003e; instruction at epc: 01a000ef (8 hex digits)
+  FAIL  D: parcel fault: parcel fault m-fe1 on c02: exit 4 TRAPS=1 last_cause=2 last_epc=0x800000e4 last_tval=0x0 COMMIT COUNT FAIL errors 0
+P2A_VERDICT FAIL (3 failure reasons)
