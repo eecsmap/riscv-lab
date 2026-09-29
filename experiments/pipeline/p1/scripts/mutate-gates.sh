@@ -2,6 +2,7 @@
 # PIPE-P1: mutation test of the runner gates themselves. Each mutant removes ONE check from a COPY of a gate script and
 # reruns that gate's self-test on the copy; the mutant counts as caught only if the self-test then fails.
 #   mutate-gates.sh <run dir, e.g. runs/run-3> <its de-duplicated coverage file> <sims dir, e.g. runs/sims-4> <fresh work dir>
+#   WBRUN=<p2a walker run dir> adds the walker-wrapper judge's mutants
 set -u
 RUN=${1:?run}; COV=${2:?coverage}; SIMS=${3:?sims}; OUT=${4:?work}; [ -e "$OUT" ] && { echo "REFUSE: $OUT exists"; exit 2; }
 SC=$(dirname "$(readlink -f "$0")"); mkdir -p $OUT; caught=0; n=0
@@ -63,4 +64,19 @@ mut $F f-notcaught 'if fail_runs == 0: bad.append(f"NOT CAUGHT' 'if False: bad.a
 mut $F f-other     'if other_props: bad.append' 'if False: bad.append' $RUN/H
 mut $F f-lacks     'if lacking: bad.append' 'if False: bad.append' $RUN/H
 mut $F f-exit      'sys.exit(1 if bad_all else 0)' 'sys.exit(0)' $RUN/H
+# ---- walker-wrapper judge (P2a), only when a walker run is given as the fifth argument
+if [ -n "${WBRUN:-}" ]; then
+G="../../p2a/walker/wbjudge.py ../../p2a/walker/selftest-wbjudge.sh"
+mut $G b-clean   'if fail_runs: bad.append(f"{fail_runs} failing runs")' 'if False: bad.append(f"{fail_runs} failing runs")' $WBRUN
+mut $G b-class   'if cov[k] == 0: bad.append' 'if False: bad.append' $WBRUN
+mut $G b-ref     'if not r or r.group(1) != REF:' 'if False:' $WBRUN
+mut $G b-missing 'bad.append(f"missing {f}"); continue' 'continue' $WBRUN
+mut $G b-total   'bad.append(f"gm{gm}-rd{rd}-rs{rs}: no WB TOTAL line"); continue' 'continue' $WBRUN
+mut $G b-shared-count   'if len([l for l in sh if l.startswith("unchanged ")]) != 3 or' 'if False or' $WBRUN
+mut $G b-shared-changed 'or any("CHANGED" in l for l in sh):' 'or False:' $WBRUN
+mut $G b-caught  'if fail_runs == 0: bad.append("NOT CAUGHT")' 'if False: bad.append("NOT CAUGHT")' $WBRUN
+mut $G b-profile 'if prop is not None and profile_fail == 0:' 'if False:' $WBRUN
+mut $G b-first   'if other: bad.append' 'if False: bad.append' $WBRUN
+mut $G b-exit    'sys.exit(1 if bad_all else 0)' 'sys.exit(0)' $WBRUN
+fi
 echo "GATE_MUTANTS caught $caught/$n"; [ $caught = $n ]
