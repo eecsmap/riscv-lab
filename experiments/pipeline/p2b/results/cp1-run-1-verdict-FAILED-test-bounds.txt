@@ -1,0 +1,20 @@
+== verdict
+  note  SA: su08_satp_bare: exit 1 on both cores -- named baseline
+  note  SA: su09_warl: exit 8 on both cores -- named baseline
+  note  SA: su11_mip_sw: exit 24 on both cores -- named baseline
+  FAIL  SC: p2b_irq_priv N=233 min: FAIL(exit 5, errors 0, interrupts 1) k=235 interrupts=1 max_latency=4 | aligned(N'=234) BUT DIFF_FAIL exit=5 retired=494 dreq=83 :: multi: exit 5, a completing program must exit 0 | multi: no completion line (tohost written, store answered and retired) | pipe: exit 5, a completing program must exit 0 | pipe: no completion line (tohost written, store answered and retired)
+  FAIL  SC: p2b_irq_priv N=233 fixed: FAIL(exit 5, errors 0, interrupts 1) k=235 interrupts=1 max_latency=4 | aligned(N'=234) BUT DIFF_FAIL exit=5 retired=494 dreq=83 :: multi: exit 5, a completing program must exit 0 | multi: no completion line (tohost written, store answered and retired) | pipe: exit 5, a completing program must exit 0 | pipe: no completion line (tohost written, store answered and retired)
+  FAIL  SC: p2b_irq_priv N=233 rnd12345: FAIL(exit 5, errors 0, interrupts 1) k=235 interrupts=1 max_latency=4 | aligned(N'=234) BUT DIFF_FAIL exit=5 retired=494 dreq=83 :: multi: exit 5, a completing program must exit 0 | multi: no completion line (tohost written, store answered and retired) | pipe: exit 5, a completing program must exit 0 | pipe: no completion line (tohost written, store answered and retired)
+  FAIL  SC: p2b_irq_priv N=235 min: FAIL(exit 5, errors 0, interrupts 1) k=235 interrupts=1 max_latency=4 | aligned(N'=234) BUT DIFF_FAIL exit=5 retired=494 dreq=83 :: multi: exit 5, a completing program must exit 0 | multi: no completion line (tohost written, store answered and retired) | pipe: exit 5, a completing program must exit 0 | pipe: no completion line (tohost written, store answered and retired)
+  FAIL  SC: p2b_irq_priv N=235 fixed: FAIL(exit 5, errors 0, interrupts 1) k=235 interrupts=1 max_latency=4 | aligned(N'=234) BUT DIFF_FAIL exit=5 retired=494 dreq=83 :: multi: exit 5, a completing program must exit 0 | multi: no completion line (tohost written, store answered and retired) | pipe: exit 5, a completing program must exit 0 | pipe: no completion line (tohost written, store answered and retired)
+  FAIL  SC: p2b_irq_priv N=235 rnd12345: FAIL(exit 5, errors 0, interrupts 1) k=235 interrupts=1 max_latency=4 | aligned(N'=234) BUT DIFF_FAIL exit=5 retired=494 dreq=83 :: multi: exit 5, a completing program must exit 0 | multi: no completion line (tohost written, store answered and retired) | pipe: exit 5, a completing program must exit 0 | pipe: no completion line (tohost written, store answered and retired)
+  FAIL  SC: p2b_irq_priv N=237 min: FAIL(exit 2, errors 0, interrupts 0) k= interrupts=0 max_latency=1 | not-aligned
+  FAIL  SC: p2b_irq_priv N=237 fixed: FAIL(exit 2, errors 0, interrupts 0) k= interrupts=0 max_latency=1 | not-aligned
+  FAIL  SC: p2b_irq_priv N=237 rnd12345: FAIL(exit 2, errors 0, interrupts 0) k= interrupts=0 max_latency=1 | not-aligned
+  FAIL  SC: p2b_irq_priv N=239 min: FAIL(exit 2, errors 0, interrupts 0) k= interrupts=0 max_latency=0 | not-aligned
+  FAIL  SC: p2b_irq_priv N=239 fixed: FAIL(exit 2, errors 0, interrupts 0) k= interrupts=0 max_latency=0 | not-aligned
+  FAIL  SC: p2b_irq_priv N=239 rnd12345: FAIL(exit 2, errors 0, interrupts 0) k= interrupts=0 max_latency=0 | not-aligned
+  FAIL  SC: p2b_irq_priv N=241 min: FAIL(exit 2, errors 0, interrupts 0) k= interrupts=0 max_latency=0 | not-aligned
+  FAIL  SC: p2b_irq_priv N=241 fixed: FAIL(exit 2, errors 0, interrupts 0) k= interrupts=0 max_latency=0 | not-aligned
+  FAIL  SC: p2b_irq_priv N=241 rnd12345: FAIL(exit 2, errors 0, interrupts 0) k= interrupts=0 max_latency=0 | not-aligned
+P2B_VERDICT FAIL (15 failure reasons, 9 named baseline results)

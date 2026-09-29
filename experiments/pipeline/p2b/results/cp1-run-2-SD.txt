@@ -1,0 +1,13 @@
+== SD: the CPU-SU fault injections, each rejected by its named check (cpu-su/scripts/run-cpu-su.sh gate 3)
+  FAULT_NO_DELEG on pmcs, su01: CAUGHT first signal: TOHOST code=11 after 2974 cycles, retired=603 (store answered and retired)
+  FAULT_S_IRQ_IN_M on pmcs, su05: CAUGHT first signal: TOHOST code=14 after 5415 cycles, retired=1506 (store answered and retired)
+  FAULT_SRET_SPP on pmcs, su03: CAUGHT first signal: TOHOST code=1 after 1530 cycles, retired=257 (store answered and retired)
+  control pmcs-nodeleg on t01: exit 0, errors 0
+  control pmcs-sirqm on t01: exit 0, errors 0
+  control pmcs-sretspp on t01: exit 0, errors 0
+  FAULT_NO_DELEG on m, su01: CAUGHT first signal: TOHOST code=11 after 4939 cycles, retired=603 (store answered and retired)
+  FAULT_S_IRQ_IN_M on m, su05: CAUGHT first signal: TOHOST code=14 after 10591 cycles, retired=1506 (store answered and retired)
+  FAULT_SRET_SPP on m, su03: CAUGHT first signal: TOHOST code=1 after 2247 cycles, retired=257 (store answered and retired)
+  control m-nodeleg on t01: exit 0, errors 0
+  control m-sirqm on t01: exit 0, errors 0
+  control m-sretspp on t01: exit 0, errors 0

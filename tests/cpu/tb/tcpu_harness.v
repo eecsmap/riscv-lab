@@ -81,6 +81,7 @@ module tcpu_harness #(
   parameter        PIPE_FAULT     = 0,   // passed to tcpu_core_pipe only (TCPU_IMPL_PIPE builds)
   parameter        PIPE_EXT_M     = 0,   // PIPE-P2a, tcpu_core_pipe only: M through the shared mul/div unit
   parameter        PIPE_EXT_C     = 0,   // PIPE-P2a, tcpu_core_pipe only: integer C
+  parameter        PIPE_EXT_SU    = 0,   // PIPE-P2b, tcpu_core_pipe only: S and U modes
   parameter        IRQ_AT_RETIRE  = 0,   // architectural injection: raise IRQ_LINE once N retirements have happened
   parameter        IRQ_LAT_BOUND  = 0,   // a raised, enabled line must be taken within this many cycles (0 = off)
   parameter        PROGRESS_BOUND = 0    // some commit or trap at least every N cycles (0 = off)
@@ -181,7 +182,8 @@ module tcpu_harness #(
                    .LOAD_WDATA_LEAK(LOAD_WDATA_LEAK), .STOP_ON_TRAP(STOP_ON_TRAP), .TRAP_BAD_MEPC(TRAP_BAD_MEPC),
                    .TRAP_COUNTS_RET(TRAP_COUNTS_RET), .ALLOW_RO_WRITE(ALLOW_RO_WRITE), .MISA_A(MISA_A),
                    .EARLY_IRQ(EARLY_IRQ), .IRQ_BAD_MEPC(IRQ_BAD_MEPC), .STALE_MIE(STALE_MIE),
-                   .PIPE_FAULT(PIPE_FAULT), .PIPE_EXT_M(PIPE_EXT_M), .PIPE_EXT_C(PIPE_EXT_C),
+                   .PIPE_FAULT(PIPE_FAULT), .PIPE_EXT_M(PIPE_EXT_M), .PIPE_EXT_C(PIPE_EXT_C), .PIPE_EXT_SU(PIPE_EXT_SU),
+                   .FAULT_NO_DELEG(FAULT_NO_DELEG), .FAULT_S_IRQ_IN_M(FAULT_S_IRQ_IN_M), .FAULT_SRET_SPP(FAULT_SRET_SPP),
                    .FAULT_W_SEXT(FAULT_W_SEXT), .FAULT_MULH_SIGN(FAULT_MULH_SIGN),
                    .FAULT_C_IMM(FAULT_C_IMM), .FAULT_C_REG(FAULT_C_REG)) cpu (
     .clk(clk), .rst(rst | bd_core_rst),

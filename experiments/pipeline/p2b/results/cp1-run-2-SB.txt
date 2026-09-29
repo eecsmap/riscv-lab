@@ -1,0 +1,25 @@
+== SB: architectural differential (multicycle reference), programs without asynchronous events
+  su01_modes min --require-complete: DIFF_OK exit=0 retired=674 dreq=141
+  su01_modes fixed --require-complete: DIFF_OK exit=0 retired=674 dreq=141
+  su01_modes rnd12345 --require-complete: DIFF_OK exit=0 retired=674 dreq=141
+  su03_deleg min --require-complete: DIFF_OK exit=0 retired=789 dreq=179
+  su03_deleg fixed --require-complete: DIFF_OK exit=0 retired=789 dreq=179
+  su03_deleg rnd12345 --require-complete: DIFF_OK exit=0 retired=789 dreq=179
+  su04_strap min --require-complete: DIFF_OK exit=0 retired=788 dreq=183
+  su04_strap fixed --require-complete: DIFF_OK exit=0 retired=788 dreq=183
+  su04_strap rnd12345 --require-complete: DIFF_OK exit=0 retired=788 dreq=183
+  su07_epc_len min --require-complete: DIFF_OK exit=0 retired=617 dreq=134
+  su07_epc_len fixed --require-complete: DIFF_OK exit=0 retired=617 dreq=134
+  su07_epc_len rnd12345 --require-complete: DIFF_OK exit=0 retired=617 dreq=134
+  su10_wfi min --require-complete: DIFF_OK exit=0 retired=424 dreq=98
+  su10_wfi fixed --require-complete: DIFF_OK exit=0 retired=424 dreq=98
+  su10_wfi rnd12345 --require-complete: DIFF_OK exit=0 retired=424 dreq=98
+  su08_satp_bare min (baseline failure: equality only): DIFF_OK exit=1 retired=182 dreq=39
+  su08_satp_bare fixed (baseline failure: equality only): DIFF_OK exit=1 retired=182 dreq=39
+  su08_satp_bare rnd12345 (baseline failure: equality only): DIFF_OK exit=1 retired=182 dreq=39
+  su09_warl min (baseline failure: equality only): DIFF_OK exit=8 retired=234 dreq=39
+  su09_warl fixed (baseline failure: equality only): DIFF_OK exit=8 retired=234 dreq=39
+  su09_warl rnd12345 (baseline failure: equality only): DIFF_OK exit=8 retired=234 dreq=39
+  su11_mip_sw min (baseline failure: equality only): DIFF_OK exit=24 retired=1287 dreq=235
+  su11_mip_sw fixed (baseline failure: equality only): DIFF_OK exit=24 retired=1287 dreq=235
+  su11_mip_sw rnd12345 (baseline failure: equality only): DIFF_OK exit=24 retired=1287 dreq=235

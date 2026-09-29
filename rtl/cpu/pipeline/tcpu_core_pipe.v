@@ -74,7 +74,9 @@ module tcpu_core_pipe #(
   parameter        PIPE_FAULT = 0,
   // ---- P2a extensions (0 = the accepted P1 configuration, RV64I)
   parameter        PIPE_EXT_M = 0,        // 1: M (mul/div) through the unchanged shared tcpu_muldiv
-  parameter        PIPE_EXT_C = 0         // 1: integer C through the unchanged shared tcpu_cdecode; IALIGN 16
+  parameter        PIPE_EXT_C = 0,        // 1: integer C through the unchanged shared tcpu_cdecode; IALIGN 16
+  // ---- P2b
+  parameter        PIPE_EXT_SU = 0        // 1: S and U modes through the shared tcpu_csr (delegation, SRET, SFENCE.VMA)
 ) (
   input             clk,
   input             rst,
@@ -135,9 +137,11 @@ module tcpu_core_pipe #(
     if (EARLY_IRQ != 0)          begin : refuse_EARLY_IRQ          pipe_p1_unsupported_EARLY_IRQ          u (); end
     if (IRQ_BAD_MEPC != 0)       begin : refuse_IRQ_BAD_MEPC       pipe_p1_unsupported_IRQ_BAD_MEPC       u (); end
     if (STALE_MIE != 0)          begin : refuse_STALE_MIE          pipe_p1_unsupported_STALE_MIE          u (); end
-    if (FAULT_NO_DELEG != 0)     begin : refuse_FAULT_NO_DELEG     pipe_p1_unsupported_FAULT_NO_DELEG     u (); end
-    if (FAULT_S_IRQ_IN_M != 0)   begin : refuse_FAULT_S_IRQ_IN_M   pipe_p1_unsupported_FAULT_S_IRQ_IN_M   u (); end
-    if (FAULT_SRET_SPP != 0)     begin : refuse_FAULT_SRET_SPP     pipe_p1_unsupported_FAULT_SRET_SPP     u (); end
+    // the CPU-SU fault injections exist only where S and U do
+    if (FAULT_NO_DELEG != 0 && PIPE_EXT_SU == 0)   begin : refuse_FAULT_NO_DELEG   pipe_p1_unsupported_FAULT_NO_DELEG   u (); end
+    if (FAULT_S_IRQ_IN_M != 0 && PIPE_EXT_SU == 0) begin : refuse_FAULT_S_IRQ_IN_M pipe_p1_unsupported_FAULT_S_IRQ_IN_M u (); end
+    if (FAULT_SRET_SPP != 0 && PIPE_EXT_SU == 0)   begin : refuse_FAULT_SRET_SPP   pipe_p1_unsupported_FAULT_SRET_SPP   u (); end
+    if (PIPE_EXT_SU != 0 && PIPE_EXT_SU != 1) begin : refuse_PIPE_EXT_SU pipe_p1_unsupported_PIPE_EXT_SU u (); end
     if (FAULT_PTW_NO_PERM != 0)  begin : refuse_FAULT_PTW_NO_PERM  pipe_p1_unsupported_FAULT_PTW_NO_PERM  u (); end
     if (FAULT_IF2_NO_XLATE != 0) begin : refuse_FAULT_IF2_NO_XLATE pipe_p1_unsupported_FAULT_IF2_NO_XLATE u (); end
     if (FAULT_PPN_TRUNC != 0)    begin : refuse_FAULT_PPN_TRUNC    pipe_p1_unsupported_FAULT_PPN_TRUNC    u (); end
@@ -164,7 +168,8 @@ module tcpu_core_pipe #(
   localparam NC_PARCEL = (PIPE_EXT_C != 0) && (PIPE_FAULT != PF_C_NC_WORD);
   localparam [63:0] MISA_P1 = 64'h8000_0000_0000_0100;     // MXL = 2, I only
   // misa reads back what this build implements: I, plus M and C when enabled
-  localparam [63:0] MISA_P = MISA_P1 | ((PIPE_EXT_M != 0) ? 64'h1000 : 64'd0) | ((PIPE_EXT_C != 0) ? 64'h4 : 64'd0);
+  localparam [63:0] MISA_P = MISA_P1 | ((PIPE_EXT_M != 0) ? 64'h1000 : 64'd0) | ((PIPE_EXT_C != 0) ? 64'h4 : 64'd0) |
+                             ((PIPE_EXT_SU != 0) ? 64'h14_0000 : 64'd0);          // S (bit 18) and U (bit 20)
   wire x0z = (X0_WRITABLE == 0);                              // x0 reads 0 and is never written
 
   // ================================================================================================ shared units
@@ -186,23 +191,24 @@ module tcpu_core_pipe #(
   wire [63:0] csr_rdata_raw, csr_trap_vector, csr_mepc, csr_irq_cause;
   wire        csr_irq_pending, csr_irq_enabled;
   wire [1:0]  priv;
-  wire        wb_retire, wb_trap_take, wb_mret;
+  wire        wb_retire, wb_trap_take, wb_mret, wb_sret;
   wire [63:0] wb_trap_cause, wb_trap_epc, wb_trap_tval;
-  wire [63:0] unused_mtvec, unused_sepc;
+  wire [63:0] unused_mtvec, csr_sepc;
   wire [43:0] unused_satp_ppn;
   wire        unused_satp_mode, unused_sum, unused_mxr, unused_mprv;
   wire [1:0]  unused_mpp;
   tcpu_csr #(.HART_ID(HART_ID), .MISA_A(0), .TRAP_BAD_MEPC(TRAP_BAD_MEPC), .TRAP_COUNTS_RET(TRAP_COUNTS_RET),
-             .ALLOW_RO_WRITE(ALLOW_RO_WRITE)) csrfile (
+             .ALLOW_RO_WRITE(ALLOW_RO_WRITE), .FAULT_NO_DELEG(FAULT_NO_DELEG), .FAULT_S_IRQ_IN_M(FAULT_S_IRQ_IN_M),
+             .FAULT_SRET_SPP(FAULT_SRET_SPP)) csrfile (
     .clk(clk), .rst(rst),
     .addr(csr_addr), .access(csr_access), .write_intent(csr_wi), .read_intent(csr_ri),
     .addr_illegal(csr_addr_illegal), .rdata(csr_rdata_raw), .we(csr_we), .wdata(csr_wdata),
     .retire(wb_retire),
     .trap(wb_trap_take), .trap_cause(wb_trap_cause), .trap_epc(wb_trap_epc), .trap_tval(wb_trap_tval),
-    .trap_vector(csr_trap_vector), .mret(wb_mret), .sret(1'b0),
+    .trap_vector(csr_trap_vector), .mret(wb_mret), .sret(wb_sret),
     .irq_msip(irq_msip), .irq_mtip(irq_mtip), .irq_meip(irq_meip),
     .irq_enabled(csr_irq_enabled), .irq_pending(csr_irq_pending), .irq_cause(csr_irq_cause),
-    .priv(priv), .mtvec_base(unused_mtvec), .mepc_out(csr_mepc), .sepc_out(unused_sepc),
+    .priv(priv), .mtvec_base(unused_mtvec), .mepc_out(csr_mepc), .sepc_out(csr_sepc),
     .satp_mode(unused_satp_mode), .satp_ppn(unused_satp_ppn), .st_sum_o(unused_sum), .st_mxr_o(unused_mxr),
     .st_mprv_o(unused_mprv), .st_mpp_o(unused_mpp),
     .dbg_sel(dbg_csr_sel), .dbg_val(dbg_csr_val));
@@ -296,11 +302,14 @@ module tcpu_core_pipe #(
             ((i[6:0] == `OP_OP) || ((i[6:0] == `OP_OP32) && (i[14:12] == 3'b000 || i[14] == 1'b1)));
   end endfunction
   // decode of one 32-bit instruction: class bits and legality (P1: RV64I + Zicsr + MRET/ECALL/EBREAK/WFI/FENCE[.I])
-  function [15:0] dec;  // {illegal, is_ld, is_st, is_br, is_jal, is_jalr, is_lui, is_auipc, is_alu, is_csr, is_ecall, is_ebreak, is_mret, is_wfi, is_fence, is_fencei}
+  // {is_sret, is_sfence, illegal, is_ld, is_st, is_br, is_jal, is_jalr, is_lui, is_auipc, is_alu, is_csr, is_ecall, is_ebreak,
+  //  is_mret, is_wfi, is_fence, is_fencei}. SRET and SFENCE.VMA exist only with S/U (PIPE_EXT_SU), as in the reference
+  // core (tcpu_core.v): TSR = TVM = TW = 0, so SRET and SFENCE.VMA are illegal only in U, WFI is legal everywhere.
+  function [17:0] dec;
     input [31:0] i;
     input [1:0]  pv;
     reg [6:0] op; reg [2:0] f3; reg [6:0] f7; reg [4:0] rd, rs1;
-    reg ld, st, br, jal, jalr, lui, auipc, alu, csr, ecall, ebreak, mret, wfi, fence, fencei, md, known, bad;
+    reg ld, st, br, jal, jalr, lui, auipc, alu, csr, ecall, ebreak, mret, wfi, fence, fencei, md, sret, sfence, known, bad;
     begin
       op = i[6:0]; f3 = i[14:12]; f7 = i[31:25]; rd = i[11:7]; rs1 = i[19:15];
       ld = (op == `OP_LOAD) && (f3 != 3'b111);
@@ -324,9 +333,12 @@ module tcpu_core_pipe #(
       fence  = (op == `OP_MISCMEM) && (f3 == 3'b000);
       fencei = (op == `OP_MISCMEM) && (f3 == 3'b001);
       md     = is_md(i);
-      known  = ld | st | br | jal | jalr | lui | auipc | alu | csr | ecall | ebreak | mret | wfi | fence | fencei | md;
-      bad    = (i[1:0] != 2'b11) || !known || (mret && pv != 2'd3);   // a compressed parcel is illegal in P1
-      dec = {bad, ld, st, br, jal, jalr, lui, auipc, alu, csr, ecall, ebreak, mret, wfi, fence, fencei};
+      sret   = (PIPE_EXT_SU != 0) && (i == 32'h10200073);
+      sfence = (PIPE_EXT_SU != 0) && (op == `OP_SYSTEM) && (f3 == 3'b000) && (f7 == 7'b0001001) && (rd == 5'd0);
+      known  = ld | st | br | jal | jalr | lui | auipc | alu | csr | ecall | ebreak | mret | wfi | fence | fencei | md | sret | sfence;
+      bad    = (i[1:0] != 2'b11) || !known || (mret && pv != 2'd3) ||   // a compressed parcel is illegal in P1
+               (sret && pv == 2'd0) || (sfence && pv == 2'd0);
+      dec = {sret, sfence, bad, ld, st, br, jal, jalr, lui, auipc, alu, csr, ecall, ebreak, mret, wfi, fence, fencei};
     end
   endfunction
   // does the instruction read rs1 / rs2 (for the interlock; a false match would only cost a cycle)
@@ -343,13 +355,14 @@ module tcpu_core_pipe #(
                 ((op == `OP_LOAD) || (op == `OP_JAL) || (op == `OP_JALR) || (op == `OP_LUI) || (op == `OP_AUIPC) ||
                  (op == `OP_OPIMM) || (op == `OP_OP) || (op == `OP_OPIMM32) || (op == `OP_OP32));
   end endfunction
-  function is_serial; input [31:0] i; reg [15:0] d; begin d = dec(i, 2'd3);
-    is_serial = d[6] | d[3] | d[2] | d[1] | d[0];                    // csr, mret, wfi, fence, fence.i
+  function is_serial; input [31:0] i; reg [17:0] d; begin d = dec(i, 2'd3);
+    is_serial = d[17] | d[16] | d[6] | d[3] | d[2] | d[1] | d[0];    // sret, sfence.vma, csr, mret, wfi, fence, fence.i
   end endfunction
 
   // ================================================================================================ WB
-  wire [15:0] wb_d = dec(wb_insn, priv);
+  wire [17:0] wb_d = dec(wb_insn, priv);
   wire wb_is_csr = wb_d[6], wb_is_mret = wb_d[3], wb_is_wfi = wb_d[2], wb_is_fence = wb_d[1], wb_is_fencei = wb_d[0];
+  wire wb_is_sret = wb_d[17], wb_is_sfence = wb_d[16];
   wire [2:0] wb_f3 = wb_insn[14:12];
   assign csr_addr   = wb_insn[31:20];
   assign csr_access = wb_v && !wb_irq && !wb_exc && wb_is_csr;
@@ -369,12 +382,14 @@ module tcpu_core_pipe #(
   assign wb_trap_epc   = wb_pc;
   assign wb_trap_tval  = wb_irq_take ? 64'd0 : (wb_exc ? wb_tval : {32'd0, wb_raw});
   wire wb_commit     = wb_v && !wb_irq && !wb_sync_trap && !halted;
-  wire wb_serial     = wb_commit && (wb_is_csr || wb_is_mret || wb_is_wfi || wb_is_fence || wb_is_fencei);
+  wire wb_serial     = wb_commit && (wb_is_csr || wb_is_mret || wb_is_wfi || wb_is_fence || wb_is_fencei ||
+                                    wb_is_sret || wb_is_sfence);
   assign wb_mret     = wb_commit && wb_is_mret;
+  assign wb_sret     = wb_commit && wb_is_sret;
   assign csr_we      = wb_commit && wb_is_csr;
   assign wb_retire   = wb_commit;
   wire wb_flush      = wb_trap_take || wb_irq_cancel || wb_serial;
-  wire [63:0] wb_flush_to = wb_trap_take ? csr_trap_vector : wb_irq_cancel ? wb_pc : wb_mret ? csr_mepc : (wb_pc + (wb_c ? 64'd2 : 64'd4));
+  wire [63:0] wb_flush_to = wb_trap_take ? csr_trap_vector : wb_irq_cancel ? wb_pc : wb_mret ? csr_mepc : wb_sret ? csr_sepc : (wb_pc + (wb_c ? 64'd2 : 64'd4));
   wire wb_normal     = wb_commit && !wb_serial;         // commits and flushes nothing
   wire [63:0] wb_rdval = wb_is_csr ? csr_rdata : wb_val;
   assign rf_we = wb_commit && ((wb_we && (wb_rd != 5'd0 || X0_WRITABLE != 0)) || (wb_is_csr && csr_ri && wb_insn[11:7] != 5'd0));
@@ -429,7 +444,7 @@ module tcpu_core_pipe #(
   wire mem_fire = mem_done && !wb_hold;
 
   // ================================================================================================ EX
-  wire [15:0] ex_d = dec(ex_insn, priv);
+  wire [17:0] ex_d = dec(ex_insn, priv);
   wire ex_isld = ex_d[14], ex_isst = ex_d[13], ex_isbr = ex_d[12], ex_isjal = ex_d[11], ex_isjalr = ex_d[10];
   wire ex_serial = ex_v && !ex_exc && !ex_irq && is_serial(ex_insn);
   wire [4:0] ex_rs1 = ex_insn[19:15], ex_rs2 = ex_insn[24:20];
@@ -583,7 +598,7 @@ module tcpu_core_pipe #(
   wire frozen = ex_serial;
 
   // ================================================================================================ ID
-  wire [15:0] id_d = dec(id_insn, priv);
+  wire [17:0] id_d = dec(id_insn, priv);
   assign id_rs1 = id_insn[19:15];
   assign id_rs2 = id_insn[24:20];
   wire wb_byp_ok = wb_v && !wb_irq && !wb_exc && wb_we && (PIPE_FAULT != PF_NO_WB_BYPASS);

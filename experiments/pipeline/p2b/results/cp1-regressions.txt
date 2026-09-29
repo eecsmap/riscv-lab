@@ -1,0 +1,3 @@
+# checkpoint-1 regressions on the same tree
+P2a p2a/runs/sims-5 + run-5: P2A_VERDICT PASS (0 failure reasons); every section identical to run-4 (U differs only in its directory path)
+P1  p1/runs/sims-10 + run-9: P1_VERDICT PASS (0 failure reasons, 4 named baseline exceptions); A B C D E F G identical to the accepted run-5

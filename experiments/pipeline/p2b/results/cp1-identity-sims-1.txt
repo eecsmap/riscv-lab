@@ -1,0 +1,5 @@
+IDOK   SU-injection-without-SU: rc=1, %Error: /home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p2b/runs/sims-1/src/pipeline/tcpu_core_pipe.v:143:84: Cannot find file containing module:
+IDOK   EXT_SU-2: rc=1, %Error: /home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p2b/runs/sims-1/src/pipeline/tcpu_core_pipe.v:144:74: Cannot find file containing module:
+IDOK   C-without-the-decoder-source: rc=1, %Error: /home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p2b/runs/sims-1/src/pipeline/tcpu_core_pipe.v:739:7: Cannot find file containing module: 
+IDOK   define-with-multicycle-list: rc=1, %Error: /home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p2b/runs/sims-1/src/tb/tcpu_harness.v:181:3: Cannot find file containing module: 'tcpu_co
+ID_FAILS=0
