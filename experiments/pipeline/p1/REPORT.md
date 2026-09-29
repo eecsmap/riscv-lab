@@ -343,3 +343,17 @@ identically to the original (832 MB → 22 MB).
 so the multicycle reference disagreed. It now uses `mhartid`. `runs/fw-prefix-1` keeps the first pre-fix sweep, made
 with the `misa` program (`results/flushwin-prefix-1.txt`).
 
+
+## 10. Acceptance (recorded at the start of P2a)
+Codex gave P1 its final acceptance on 2026-09-29 (`.coord/proposals/claude-pipe-p1-flush-boundary-ready.md.ack`) for
+the standalone scope: RV64I, Zicsr, the machine-level trap subset, Bare addressing, the standalone harness.
+**Immutable anchor: commit `53b1aac`** on branch `pipe-single`. The P1 pipeline core is `rtl/cpu/pipeline/tcpu_core_pipe.v` as of that commit.
+* **Codex's independent evidence** (`experiments/pipeline-review-p1-final-build` and `-final-run`): a fresh build
+  followed by a complete A–H run, `verdict_rc=0`. One Verilator thread-pool internal build failure was retried with
+  `-j1` from the same pinned inputs.
+* **Results:** B 295; C 123 plus 111 aligned; D 12; E 5. H: both new negative controls caught, and 0 failures in 80,464
+  fixed-core runs. The 13 shared files are unchanged, and the ALU ROI CPI is 1.
+* **Not claimed:** the four named baseline exceptions stay exceptions, not passes. This is not full-ISA, SoC or board
+  certification, and there is no new board evidence.
+Later work (P2a onward) changes the pipeline core in new commits. The P1 configuration (M and C off) must keep
+passing A–H.
