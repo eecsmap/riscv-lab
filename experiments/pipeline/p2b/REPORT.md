@@ -194,9 +194,80 @@ checkers unchanged; `results/cp5-soc-2.txt`):
   asserted after the program ends; kept in `results/cp5-soc-1.txt`). Four more points inside the pipeline's own
   atomic phase (cycles 42,383–44,225): all five restarts landed with an atomic in flight, drained, and the rerun
   completed with every Get matched by its Put.
-* Not covered by a negative control: the SoC checkers have no request-to-retirement association check, so the
-  isFetch classification above is justified by construction (and by the core-level differential that already
-  classifies PTE reads with the same metadata), not by a caught mutant.
+* The request-to-retirement association is checked by the gate of §6.1 (added after review), with negatives.
+
+**What `isFetch` means now.** For the multicycle core the wrapper's `obs.isFetch` is "the outstanding transaction is
+an instruction fetch". For the pipeline it is "the transaction is not an architectural data access": an instruction
+fetch or refill, **or a page-table read** (IF-PTE or D-PTE). The SoC event trace prints it as `fetch=`; on a pipeline
+configuration that field therefore does not identify instruction fetches exactly — a PTE read also shows `fetch=1`.
+
+### 6.1 The SoC retirement-association gate (task `codex-pipe-p2b-retirement-association`)
+No RTL, Scala, harness or production script changed for this gate: it is new files under `soc/assoc/` and a separate
+simulator build; the production configurations' generated Verilog is exactly gen-3's (judged in §5/§6).
+`soc/assoc/`: `p2b_assoc_chk.sv` (simulation only) is bound into the **generated** `RD2ZynqTop` of
+`RD2PipeBootConfig` — the generated Verilog is compiled unchanged; `build-assoc-sim.sh` finds RD2Soc's
+`awaitingRetire` register (FIRRTL names it `_T_467`) by its source locator, the line of `val awaitingRetire` in the
+scala that generation used, requires it to be unique in `RD2ZynqTop` and a term of `busy`, and writes the `bind`
+(`results/assoc-3-bind.sv`). The checker observes the wrapper's `isFetch`, the port's request/response handshakes, the
+commit and trap ports and the real `awaitingRetire` register. Ground truth is independent of the wrapper: each
+transaction's owner is recorded **at its request handshake** from the core's own metadata — the walker's request
+on the port with the walk's owner (`wk_own`: IF-PTE / D-PTE), else a fetch-owned request, else a data request whose
+requester is the instruction in MEM (pc, sequence number, kind). Checks:
+* `classify` — at each response, `isFetch` = 1 exactly for FETCH / IF-PTE / D-PTE;
+* `association` — after a DATA response the next retirement is that requester's (same pc and sequence number; a
+  synchronous trap of it counts; an interrupt or another instruction first is a failure), and a second DATA
+  response before the first requester retired is a failure;
+* `soc-register` — the real `awaitingRetire` equals a truth model every cycle (set by a DATA response, cleared by a
+  retirement — a retirement in the same cycle wins, as RD2Soc's last connect — and **not** cleared by a CPU reset,
+  since it is SoC state);
+* `same-cycle` — a DATA response in the same cycle as a retirement (it would leave `awaitingRetire` clear);
+* `protocol` / `stale` — a second request while one is outstanding, a walker request without a walk owner, a
+  response with nothing outstanding — after a CPU reset that is a pre-reset transaction's response reaching the core.
+
+**Reset-drain is recorded as physical outstanding safety, separately from the busy flag.** When the drain holds
+the CPU in reset, a core-port transaction may still be outstanding: the bridge completes it on the bus and discards
+its response. So the core-side guarantee is `stale` (no pre-reset response reaches the core after the reset), and
+the bus-side guarantee — every Get matched by its Put, the restart really asserted — is the accepted
+`check-drain.py`, run on the same logs. A DATA response whose requester is removed by a CPU reset before retiring is
+counted (`resets_abandoning_a_data_response`); the SoC's `awaitingRetire` then stays set until the first retirement
+after the reset, which the truth model reproduces. (My first checker treated "outstanding at reset" as a failure;
+the smoke run showed that this is the drain's designed behaviour — `runs/assoc-smoke-1`.)
+
+**Runs** (`results/assoc-3-chain.txt`; `runs/assoc-3`): 20 directed short runs on the delivered integration (gen-3),
+all `ASSOC END fails=0`, simulator and program exit 0 — the CPU-A SoC programs (boot09/10/11/12, hello), boot04
+(a load answered with a bus error → trap), tlb01, tlb02, ext04 (Sv39), P2b's S-mode Sv39 programs `p2b_walk_preempt`
+and hzsv1–3, `p1_store_trap`, `p2b_assoc_trap` (below), and R-BOOT restarts at the five points inside boot12's atomic
+phase (each also `check-drain.py` PASS, atomic in flight). Coverage summed (`results/assoc-3-pos-cover.txt`):
+
+| responses | count | of which killed |
+|---|---|---|
+| instruction fetch / refill | 79,565 | 501 |
+| IF-PTE | 143 | 6 (an aborted fetch walk's PTE read draining) |
+| D-PTE | 300 | 0 |
+| DATA: load / store / AMO / LR / SC | 3,306 / 1,012 / 577 / 146 / 152 | — |
+
+IF-PTE responses with an older instruction retiring while they were outstanding or in the same cycle: 10. Data
+responses followed by their own trap: 1. Largest response-to-retirement distance: 1 cycle. CPU resets: 5, three with
+a core-port transaction outstanding (completed and discarded by the bridge), none abandoning a data response.
+Same-cycle priority cases: none — no DATA response and no PTE response shared its cycle with a retirement.
+By construction, and matching the zeros: a data walk starts only when MEM holds the oldest instruction, so nothing
+older can retire during a D-PTE read, and a data walk is never aborted except by reset (no killed D-PTE).
+
+**Negatives** (each: the FIRST checker failure must be the named check):
+* **The old wrapper classification** — gen-2's `RD2PipeBootConfig` (the delivered integration before the fix, with
+  `isFetch = dbg_req_is_fetch`), same checker: on boot11, boot12, `p2b_walk_preempt` and hzsv1 the first failure is
+  `classify` on an IF-PTE response published as `isFetch=0`, followed next cycle by `soc-register` (RD2Soc's
+  `awaitingRetire` set by it) — `results/assoc-3-logs/neg-old-*.txt`.
+* **A real data response whose requester never retires** — gen-3 with the core's knob 4 STORE_UNDER_TRAP (a data
+  request raised in the cycle an older instruction traps; a copy of the generated Verilog with `.PIPE_FAULT(4)`
+  added to the instance, `results/assoc-3-neg-pf4-pipe-fault.diff`): on `p2b_assoc_trap` — a store right behind an
+  ECALL, with a handler whose first instructions are ALU operations — the first failure is `association`: the
+  store's pending response is met by the retirement of an unrelated handler instruction; on `p1_store_trap`
+  (handler starts with a load) it is `association` in its other form, the requester never retiring before the
+  next data response. Both programs pass on the delivered integration. Raw logs in `results/assoc-3-logs/`.
+* Found by that negative: the first checker version (`runs/assoc-1`) let the second form pass silently — the
+  stray response's pending slot was overwritten by the next data response before any retirement
+  (`results/assoc-1-blind-spot.txt`); the overwrite is now itself a failure.
 
 ## 7. Commands
 ```sh
@@ -210,6 +281,7 @@ bash $P/soc/chain-cp4-sim.sh $P/runs/gen-N $P/runs/rd2sim-N
 bash $P/soc/run-xv6-p2b.sh m4smoke|perf-short $P/runs/rd2sim-N/sim-pipe/obj_dir/sim $P/runs/xv6-...
 python3 $P/soc/xv6compare.py <label>=<run dir> ...        # the table of section 6
 bash $P/soc/chain-cp5c.sh $P/runs/gen-N $P/runs/soc-N     # SoC boot programs, R-BOOT gates, drain during atomics
+bash $P/soc/assoc/chain-assoc.sh $P/runs/assoc-N          # §6.1: checker builds (gen-3, gen-2, knob 4), runs, negatives
 ```
 Every entry point exits non-zero on a failed check, a missing output or a timeout; each ran as a coord job. The
 chain wrappers (`scripts/chain-cp3.sh`, `soc/chain-cp4-sim.sh`, `soc/chain-cp5.sh`, `soc/chain-cp5b.sh`) printed each
@@ -217,5 +289,15 @@ step's exit status but themselves exited 0 when they ran; they now exit non-zero
 recorded runs, every recorded step had passed).
 
 ## 8. Not in P2b
-Board, Vivado and timing (P3); a second pipeline hart (P4; refused today). The CPU-SU/M/C historical baselines
-(SU 9, M 6, C 16) are unchanged and still not diagnosed; the pipeline reproduces them exactly.
+Board, Vivado and timing (P3); a second pipeline hart (P4; refused today).
+
+Historical baselines — only what was rerun on the final P2b core source (the pipeline RTL is unchanged since
+`35c05eb`; simulators `runs/sims-4`, run `runs/run-4`, both cores):
+* CPU-SU su01–su11 at three timings: the reference and the pipeline both fail exactly su08 (exit 1), su09 (8) and
+  su11 (24) — the "SU 9" baseline — and pass the rest (`results/cp2-run-3-SA.txt`; run-4's SA is identical to it,
+  `results/cp3-regressions.txt`). Still not diagnosed.
+* CPU-SV39 sv01–06, sv09 and the CPU-A a01–a03: pass on both (`results/cp2-run-3-VA.txt`, identical in run-4;
+  `results/cp3-run-4-AA.txt`).
+* The full CPU-M and CPU-C suites (historical "M 6" and "C 16") were **not** rerun in P2b on either core, so P2b makes
+  no statement about those findings. What was rerun on the final source is P2a's M/C coverage (m01, c01, c02, the
+  directed and generated M/C programs; P2a run-7 PASS, `results/cp3-regressions.txt`).
