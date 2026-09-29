@@ -33,7 +33,9 @@ board_must "checking the launcher" "cd /root/xv6run && ./xv6-pipe.sh --check; ec
 printf '%s\n' "$BOARD_OUT" > "$H/launcher-check.txt"; [ "$(field RC)" = 0 ] && grep -q "CHECK OK" "$H/launcher-check.txt" || die $EX_GATE "the launcher check failed"
 say "== boot test of the launcher on a THROWAWAY disk copy"
 deploy_verified "$ART/fs-perf.img" /root/xv6run/fs-launchtest.img "$H/deploy.log"
-python3 "$P3B/launch-test.py" /root/xv6run/fs-launchtest.img "$H/launch-test.transcript" | tee "$H/launch-test.txt"; lt=${PIPESTATUS[0]}
+set +e; python3 "$P3B/launch-test.py" /root/xv6run/fs-launchtest.img "$H/launch-test.transcript" | tee "$H/launch-test.txt"; lt=${PIPESTATUS[0]}; set -e
+# whatever the test said, the throwaway disk is removed and the final state read before any verdict (the first
+# version stopped here on a failed test, leaving both undone)
 board_must "removing the throwaway disk and reading the final state" "rm -f /root/xv6run/fs-launchtest.img; echo F=\$(pgrep -x fesvr-teaching-static | wc -l); echo L=\$(test -e /var/lock/teaching-fesvr.lock && echo PRESENT || echo NO_LOCK); echo PD=\$(cat /sys/devices/amba.1/f8007000.devcfg/prog_done); echo BID=\$(cat /proc/sys/kernel/random/boot_id); cd /root/xv6run && ls -la && sha256sum *"
 printf '%s\n' "$BOARD_OUT" > "$H/final-state.txt"
 [ "$(field F)" = 0 ] && [ "$(field L)" = NO_LOCK ] || die $EX_BUSY "after the boot test a host or the lock remains: NOT handed over"

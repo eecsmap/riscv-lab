@@ -14,7 +14,8 @@ def expect(rx, sec):
     while time.time() - t < sec:
         c = s.read(4096)
         if c: log.write(c); log.flush(); buf += c
-        if re.search(rx, buf): m = re.search(rx, buf); rest = buf[m.end():]; buf = rest; return True
+        m = re.search(rx, buf, re.S)          # DOTALL: a prompt follows a CR/LF (the first version missed exactly this)
+        if m: buf = buf[m.end():]; return True
     return False
 def send(b): log.write(b"\n<<SEND " + repr(b).encode() + b">>\n"); s.write(b); s.flush()
 ok = True; steps = []
