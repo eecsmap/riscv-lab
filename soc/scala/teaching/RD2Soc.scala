@@ -928,3 +928,15 @@ class RD2AtomicBoardConfig extends Config(
   new WithTeachingCpu(TeachingCpuParams(traceEvents = false, extraDelay = false, bridgeFault = 0,
                                         tailIntercept = false)) ++
   new WithTeachingBootROM ++ new zynq.WithZynqAdapter ++ new freechips.rocketchip.system.DefaultConfig)
+
+// ---- PIPE-P3a: the single-pipeline board shape ------------------------------------------------------------
+// RD2AtomicBoardConfig with CORE_IMPL = pipeline, generated as RD2BoardTop: no monitors, no traces, no bus
+// instrumentation; the one hart behind the wrapper is tcpu_core_pipe (M, C, S/U, Sv39, A). Offline builds only.
+class RD2PipeBoardConfig extends Config(
+  new freechips.rocketchip.subsystem.WithoutTLMonitors ++
+  new WithAtomicHub(trace = false) ++
+  new WithRD2(RD2Params(atomic = true, traceEvents = false, atomicTrace = false, bdevTrace = false,
+                        busInstrumentation = false, coreImpl = "pipeline")) ++
+  new WithTeachingCpu(TeachingCpuParams(traceEvents = false, extraDelay = false, bridgeFault = 0,
+                                        tailIntercept = false)) ++
+  new WithTeachingBootROM ++ new zynq.WithZynqAdapter ++ new freechips.rocketchip.system.DefaultConfig)
