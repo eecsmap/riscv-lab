@@ -1,0 +1,14 @@
+device errors at 40000100 (dev4, first parcel), 40000142 (dev5 second parcel), 40000188 (dev6 second parcel, next word)
+old rd=0 rs=1 rc=0 pf=0 rd=0 rs=1 code=2 cycles=889 device_reads=13 non_parcel_reads=13 footprint_violations=30 payload_errors=0 asserts=0
+old rd=0 rs=2 rc=0 pf=0 rd=0 rs=2 code=2 cycles=987 device_reads=13 non_parcel_reads=13 footprint_violations=30 payload_errors=0 asserts=0
+old rd=0 rs=3 rc=0 pf=0 rd=0 rs=3 code=2 cycles=1085 device_reads=13 non_parcel_reads=13 footprint_violations=30 payload_errors=0 asserts=0
+old rd=0 rs=4 rc=0 pf=0 rd=0 rs=4 code=2 cycles=1183 device_reads=13 non_parcel_reads=13 footprint_violations=30 payload_errors=0 asserts=0
+old rd=1 rs=1 rc=0 pf=0 rd=1 rs=1 code=2 cycles=988 device_reads=13 non_parcel_reads=13 footprint_violations=30 payload_errors=0 asserts=0
+old rd=1 rs=2 rc=0 pf=0 rd=1 rs=2 code=2 cycles=1086 device_reads=13 non_parcel_reads=13 footprint_violations=30 payload_errors=0 asserts=0
+old rd=1 rs=3 rc=0 pf=0 rd=1 rs=3 code=2 cycles=1184 device_reads=13 non_parcel_reads=13 footprint_violations=30 payload_errors=0 asserts=0
+old rd=1 rs=4 rc=0 pf=0 rd=1 rs=4 code=2 cycles=1282 device_reads=13 non_parcel_reads=13 footprint_violations=30 payload_errors=0 asserts=0
+old rd=2 rs=1 rc=0 pf=0 rd=2 rs=1 code=2 cycles=1087 device_reads=13 non_parcel_reads=13 footprint_violations=30 payload_errors=0 asserts=0
+old rd=2 rs=2 rc=0 pf=0 rd=2 rs=2 code=2 cycles=1185 device_reads=13 non_parcel_reads=13 footprint_violations=30 payload_errors=0 asserts=0
+old rd=2 rs=3 rc=0 pf=0 rd=2 rs=3 code=2 cycles=1283 device_reads=13 non_parcel_reads=13 footprint_violations=30 payload_errors=0 asserts=0
+old rd=2 rs=4 rc=0 pf=0 rd=2 rs=4 code=2 cycles=1381 device_reads=13 non_parcel_reads=13 footprint_violations=30 payload_errors=0 asserts=0
+RUN_NC_DONE fail=0

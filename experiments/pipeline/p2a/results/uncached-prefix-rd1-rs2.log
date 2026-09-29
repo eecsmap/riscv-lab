@@ -1,0 +1,24 @@
+NC READ cyc=143 addr=40000000 size=8                      
+NC READ cyc=158 addr=40000008 size=8                      
+NC READ cyc=193 addr=40000040 size=8                      
+NC READ cyc=203 addr=40000048 size=8                      
+NC READ cyc=239 addr=40000080 size=8                      
+NC READ cyc=253 addr=40000088 size=8                      
+NC READ cyc=287 addr=400000c0 size=8                      
+NC READ cyc=300 addr=400000c8 size=8                      
+NC READ cyc=313 addr=400000d0 size=8                      
+NC READ cyc=395 addr=40000100 size=8 (answered with error)
+NC READ cyc=812 addr=40000140 size=8                      
+NC READ cyc=872 addr=40000180 size=8                      
+NC READ cyc=882 addr=40000188 size=8 (answered with error)
+NC FOOTPRINT halfword 0x4000000a: read 1 time(s), used by executed or faulting instructions 0 time(s)
+NC FOOTPRINT halfword 0x4000000c: read 1 time(s), used by executed or faulting instructions 0 time(s)
+NC FOOTPRINT halfword 0x4000000e: read 1 time(s), used by executed or faulting instructions 0 time(s)
+NC FOOTPRINT halfword 0x40000040: read 1 time(s), used by executed or faulting instructions 0 time(s)
+NC FOOTPRINT halfword 0x40000042: read 1 time(s), used by executed or faulting instructions 0 time(s)
+NC FOOTPRINT halfword 0x40000044: read 1 time(s), used by executed or faulting instructions 0 time(s)
+NC FOOTPRINT halfword 0x4000004c: read 1 time(s), used by executed or faulting instructions 0 time(s)
+NC FOOTPRINT halfword 0x4000004e: read 1 time(s), used by executed or faulting instructions 0 time(s)
+NC END pf=0 rd=1 rs=2 code=2 cycles=1086 device_reads=13 non_parcel_reads=13 footprint_violations=30 payload_errors=0
+- /home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p2a/runs/nc-prefix-1/src/nc_tb.v:127: Verilog $finish
+PIPE COVERAGE redirects=26 redirect_while_held=1 killed_fetch_responses=1 killed_after_two_flushes=0 flush_with_pending_valid=1 irq_tokens=0 irq_synthetic=0 irq_synthetic_fetch_ahead=0 irq_cancelled=0 drain_wait_cycles=90 loaduse_stall_cycles=28 fwd_exmem=37 fwd_memwb=7 wb_bypass=6 uncached_wait_cycles=12

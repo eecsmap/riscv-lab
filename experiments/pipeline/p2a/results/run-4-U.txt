@@ -1,0 +1,5 @@
+== U: uncached instruction-access footprint, C (codex-pipe-p2a-uncached-fetch)
+== uncached instruction-access footprint bench: /home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p2a/runs/run-4/U
+  fix: 12 profiles; the expected 21 parcel reads in order, 0 violations: PASS
+  wide (PIPE_FAULT 20): footprint violations in 12 of 12 profiles: CAUGHT
+NC_JUDGE PASS

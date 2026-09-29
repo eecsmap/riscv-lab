@@ -1,0 +1,9 @@
+# run-4 (at b3c02c5, with the uncached-fetch fix) against run-3 (at 16b6dcc):
+A.txt identical
+C.txt identical
+D.txt identical
+F.txt identical
+G.txt identical
+B/results.txt identical
+B/results-c.txt identical
+U.txt: new section

@@ -1,0 +1,15 @@
+# P1 A-H regression at b3c02c5 (p1/runs/sims-9 + run-8)
+== verdict
+  note  A: c06_targets m: FAIL(exit 3, want 0) -- baseline exception (multicycle baseline at tag mc-v1-dual; the pipeline passes)
+  note  A: d07_csr_cycle m: FAIL(exit 38, want 0) -- baseline exception (stale M2-1 expectation (cycle counter), fails on both)
+  note  A: d07_csr_cycle p: FAIL(exit 38, want 0) -- baseline exception (stale M2-1 expectation (cycle counter), fails on both)
+  note  A: p1_misa-PIPE-ONLY m: FAIL(exit 1, want 0) -- baseline exception (misa differs by design; the program is pipeline-only)
+P1_VERDICT PASS (0 failure reasons, 4 named baseline exceptions)
+A.txt identical to run-5
+D.txt identical to run-5
+E.txt identical to run-5
+F.txt identical to run-5
+G.txt identical to run-5
+B results identical to run-5
+C.txt identical to run-5
+H.txt identical to run-5 apart from its directory path

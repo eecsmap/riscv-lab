@@ -1,0 +1,10 @@
+case good: PASS  PASS
+case fix-exit: FAIL  PASS
+case fix-assert: FAIL  PASS
+case fix-payload: FAIL  PASS
+case fix-wide-read: FAIL  PASS
+case fix-violation: FAIL  PASS
+case fix-extra-read: FAIL  PASS
+case fix-log-missing: FAIL  PASS
+case wide-silent: FAIL  PASS
+SELFTEST_NCJUDGE 9/9

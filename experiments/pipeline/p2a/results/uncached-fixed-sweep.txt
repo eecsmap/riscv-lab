@@ -1,0 +1,12 @@
+fix rd=0 rs=1 rc=0 pf=0 rd=0 rs=1 code=0 cycles=1384 device_reads=21 non_parcel_reads=0 footprint_violations=0 payload_errors=0 asserts=0
+fix rd=0 rs=2 rc=0 pf=0 rd=0 rs=2 code=0 cycles=1541 device_reads=21 non_parcel_reads=0 footprint_violations=0 payload_errors=0 asserts=0
+fix rd=0 rs=3 rc=0 pf=0 rd=0 rs=3 code=0 cycles=1698 device_reads=21 non_parcel_reads=0 footprint_violations=0 payload_errors=0 asserts=0
+fix rd=0 rs=4 rc=0 pf=0 rd=0 rs=4 code=0 cycles=1855 device_reads=21 non_parcel_reads=0 footprint_violations=0 payload_errors=0 asserts=0
+fix rd=1 rs=1 rc=0 pf=0 rd=1 rs=1 code=0 cycles=1542 device_reads=21 non_parcel_reads=0 footprint_violations=0 payload_errors=0 asserts=0
+fix rd=1 rs=2 rc=0 pf=0 rd=1 rs=2 code=0 cycles=1699 device_reads=21 non_parcel_reads=0 footprint_violations=0 payload_errors=0 asserts=0
+fix rd=1 rs=3 rc=0 pf=0 rd=1 rs=3 code=0 cycles=1856 device_reads=21 non_parcel_reads=0 footprint_violations=0 payload_errors=0 asserts=0
+fix rd=1 rs=4 rc=0 pf=0 rd=1 rs=4 code=0 cycles=2013 device_reads=21 non_parcel_reads=0 footprint_violations=0 payload_errors=0 asserts=0
+fix rd=2 rs=1 rc=0 pf=0 rd=2 rs=1 code=0 cycles=1700 device_reads=21 non_parcel_reads=0 footprint_violations=0 payload_errors=0 asserts=0
+fix rd=2 rs=2 rc=0 pf=0 rd=2 rs=2 code=0 cycles=1857 device_reads=21 non_parcel_reads=0 footprint_violations=0 payload_errors=0 asserts=0
+fix rd=2 rs=3 rc=0 pf=0 rd=2 rs=3 code=0 cycles=2014 device_reads=21 non_parcel_reads=0 footprint_violations=0 payload_errors=0 asserts=0
+fix rd=2 rs=4 rc=0 pf=0 rd=2 rs=4 code=0 cycles=2171 device_reads=21 non_parcel_reads=0 footprint_violations=0 payload_errors=0 asserts=0

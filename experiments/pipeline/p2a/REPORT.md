@@ -10,7 +10,8 @@ integration was touched.
 | `293656e` | build tooling: a failed simulator build is retried once with `-j 1`, with the first log kept and the retry marked |
 | `eb6784f` | `tcpu_ptw_wrap` (pipeline-owned) around the unchanged `tcpu_ptw`, with its unit bench, judge and self-test |
 | `16b6dcc` | integer C through the unchanged shared `tcpu_cdecode` (Bare); knobs 17–19; the C tests and script sections |
-| (this commit) | the P2a verdict self-test, the gate mutants for the new judges, results, this report |
+| `d73b76e` | the P2a verdict self-test, the gate mutants for the new judges, results, this report |
+| `655dd2e`, `b3c02c5` | §11: uncached instruction access reads exact parcels (C); its bench, section U, gates |
 
 Final evidence, all from one pinned snapshot at `16b6dcc`: simulators `runs/sims-3` (33), run `runs/run-3`,
 walker bench `runs/wb-2`. The only worktree changes at build time were two test scripts; see
@@ -232,3 +233,51 @@ bash $P/p1/scripts/build-sims.sh $P/p1/runs/sims-N && bash $P/p1/scripts/run-p1.
 ## 10. Not in P2a
 S/U delegation, integrated Sv39 and TLB, A, Scala and SoC plumbing, xv6, Vivado, the board, a dual pipeline and a
 configuration framework. P2b integrates privilege, MMU and A, using this wrapper.
+
+## 11. Correction: uncached instruction access with C (task `codex-pipe-p2a-uncached-fetch`)
+Codex found this by reading the source. With C, an uncached fetch read the whole aligned 8-byte word: bytes before
+the pc, and bytes after the instruction. The extractor also took further instructions from that word. On a device
+that is a read with side effects the program never asked for.
+
+**Fix** (`655dd2e`, pipeline-owned front end, C only). M, the shared RTL and the P1 configuration are unchanged.
+* Each uncached read is one 16-bit parcel.
+* The second parcel is read only when the first opens a 32-bit instruction. At a word's last parcel, the existing
+  carry reads it from the next word.
+* F2 hands over one instruction, then returns to its uncached state. Every read still waits until nothing older is in
+  flight, as P1 required, so there is no look-ahead and nothing past a taken branch is read.
+* A second-parcel error reports mtval as that parcel's address, inside the word or across it.
+* `PIPE_FAULT` 20 C_NC_WORD restores the old whole-word read, as a negative control. The unknown-knob identity check
+  moves to 21.
+
+**Bench** (`uncached/`, run by `run-p2a.sh` as section U). The core runs with a 4 KiB device window at 0x4000_0000,
+which `tcpu_cacheable` treats as uncached. Every device read is recorded. For every halfword, the reads must equal the
+number of times the halfword belonged to a committed instruction, or to the fetched parcels of an instruction that
+took an instruction access fault (from its mepc up to its mtval). The program covers:
+* instructions at offsets 0, 2, 4 and 6;
+* a 32-bit instruction inside a word and one across a word;
+* a taken compressed jump and a taken branch over bytes that must never be read;
+* a first-parcel error, and second-parcel errors inside and across a word, with the mcause/mepc/mtval checks in the
+  program;
+* 12 back-pressure profiles.
+The judge also requires the exact sequence of device reads derived by hand: 21 parcel reads.
+
+| core | profiles | device reads | footprint violations | program |
+|---|---|---|---|---|
+| fixed (`runs/run-4/U`, `results/run-4-U.txt`) | 12 / 12 | the expected 21 two-byte reads, in order | 0 | exit 0 |
+| knob 20, the old read | 12 / 12 caught | 13 eight-byte reads | 30 | exit 2: its word reads never hit the parcel error addresses, so no fault |
+| the pre-fix core at `16b6dcc` (`runs/nc-prefix-1`) | 12 | 13 eight-byte reads | 30 | exit 2 |
+
+**The matrix after the fix** (`runs/sims-4`, `runs/run-4`, verdict PASS). Every section is identical to run-3
+(`results/run-4-vs-run-3.txt`), plus the new section U. The P1 A–H regression (`p1/runs/sims-9`, `run-8`) is again
+identical to the accepted run-5 (`results/p1-regression-run-8.txt`).
+
+**Gates.**
+| gate | result |
+|---|---|
+| uncached judge self-test | 9 / 9 |
+| P2a verdict self-test | 26 / 26, with 2 new U cases |
+| gate mutants | **81 / 81** (`results/gate-mutants-nc.txt`), adding 9 for the uncached judge and 1 for the U check |
+
+**Not claimed.** There is no platform rule about where code may run. Uncached instruction fetch is now exact, and it
+still requires the fetch to be non-speculative. Whether a given device may be executed from at all remains a platform
+decision (P2b/SoC). The multicycle core's uncached C fetch was not compared.

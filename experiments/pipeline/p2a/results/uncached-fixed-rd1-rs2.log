@@ -1,0 +1,24 @@
+NC READ cyc=143 addr=40000000 size=2                      
+NC READ cyc=156 addr=40000002 size=2                      
+NC READ cyc=169 addr=40000004 size=2                      
+NC READ cyc=177 addr=40000006 size=2                      
+NC READ cyc=190 addr=40000008 size=2                      
+NC READ cyc=225 addr=40000046 size=2                      
+NC READ cyc=235 addr=40000048 size=2                      
+NC READ cyc=248 addr=4000004a size=2                      
+NC READ cyc=283 addr=40000082 size=2                      
+NC READ cyc=291 addr=40000084 size=2                      
+NC READ cyc=304 addr=40000086 size=2                      
+NC READ cyc=317 addr=40000088 size=2                      
+NC READ cyc=351 addr=400000c0 size=2                      
+NC READ cyc=364 addr=400000c8 size=2                      
+NC READ cyc=372 addr=400000ca size=2                      
+NC READ cyc=385 addr=400000d0 size=2                      
+NC READ cyc=467 addr=40000100 size=2 (answered with error)
+NC READ cyc=884 addr=40000140 size=2                      
+NC READ cyc=892 addr=40000142 size=2 (answered with error)
+NC READ cyc=1128 addr=40000186 size=2                      
+NC READ cyc=1138 addr=40000188 size=2 (answered with error)
+NC END pf=0 rd=1 rs=2 code=0 cycles=1699 device_reads=21 non_parcel_reads=0 footprint_violations=0 payload_errors=0
+- /home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p2a/runs/run-4/U/src/nc_tb.v:127: Verilog $finish
+PIPE COVERAGE redirects=39 redirect_while_held=1 killed_fetch_responses=1 killed_after_two_flushes=0 flush_with_pending_valid=1 irq_tokens=0 irq_synthetic=0 irq_synthetic_fetch_ahead=0 irq_cancelled=0 drain_wait_cycles=136 loaduse_stall_cycles=42 fwd_exmem=51 fwd_memwb=11 wb_bypass=10 uncached_wait_cycles=34
