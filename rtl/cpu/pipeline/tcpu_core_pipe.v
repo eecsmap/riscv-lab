@@ -69,6 +69,8 @@ module tcpu_core_pipe #(
   // 17 C_LINK_LEN        (C) a compressed jump links pc + 4 instead of pc + 2
   // 18 C_CARRY_DROP      (C) the lower parcel of a 32-bit instruction that crosses a fetch word is dropped
   // 19 C_TVAL_FIRST      (C) a fetch fault on the SECOND parcel reports the first parcel's address in mtval
+  // 20 C_NC_WORD         (C) an uncached fetch reads the whole aligned 8-byte word (bytes before the pc and after the
+  //                      instruction) and the extractor takes every instruction in it
   parameter        PIPE_FAULT = 0,
   // ---- P2a extensions (0 = the accepted P1 configuration, RV64I)
   parameter        PIPE_EXT_M = 0,        // 1: M (mul/div) through the unchanged shared tcpu_muldiv
@@ -145,8 +147,8 @@ module tcpu_core_pipe #(
     if (FAULT_A_EARLY_RETIRE != 0) begin : refuse_FAULT_A_EARLY_RETIRE pipe_p1_unsupported_FAULT_A_EARLY_RETIRE u (); end
     if (FAULT_A_NO_RESV_CLEAR != 0) begin : refuse_FAULT_A_NO_RESV_CLEAR pipe_p1_unsupported_FAULT_A_NO_RESV_CLEAR u (); end
     if (ICACHE_BYTES != 0 && ICACHE_BYTES != 1024) begin : refuse_ICACHE_BYTES pipe_p1_unsupported_ICACHE_BYTES u (); end
-    if (PIPE_FAULT < 0 || PIPE_FAULT > 19) begin : refuse_PIPE_FAULT pipe_p1_unsupported_PIPE_FAULT u (); end
-    if (PIPE_FAULT >= 17 && PIPE_FAULT <= 19 && PIPE_EXT_C == 0) begin : refuse_PIPE_FAULT_C pipe_p1_unsupported_PIPE_FAULT_needs_C u (); end
+    if (PIPE_FAULT < 0 || PIPE_FAULT > 20) begin : refuse_PIPE_FAULT pipe_p1_unsupported_PIPE_FAULT u (); end
+    if (PIPE_FAULT >= 17 && PIPE_FAULT <= 20 && PIPE_EXT_C == 0) begin : refuse_PIPE_FAULT_C pipe_p1_unsupported_PIPE_FAULT_needs_C u (); end
     if ((PIPE_FAULT == 15 || PIPE_FAULT == 16) && PIPE_EXT_M == 0) begin : refuse_PIPE_FAULT_M pipe_p1_unsupported_PIPE_FAULT_needs_M u (); end
     if (PIPE_EXT_M != 0 && PIPE_EXT_M != 1) begin : refuse_PIPE_EXT_M pipe_p1_unsupported_PIPE_EXT_M u (); end
     if (PIPE_EXT_C != 0 && PIPE_EXT_C != 1) begin : refuse_PIPE_EXT_C pipe_p1_unsupported_PIPE_EXT_C u (); end
@@ -156,7 +158,10 @@ module tcpu_core_pipe #(
              PF_NO_LOADUSE = 5, PF_NO_FWD_EXMEM = 6, PF_NO_FWD_MEMWB = 7, PF_NO_WB_BYPASS = 8,
              PF_X0_FWD = 9, PF_IRQ_EPC_FETCHPTR = 10, PF_CSR_NO_DRAIN = 11, PF_SPEC_MMIO_FETCH = 12,
              PF_FLUSH_FILL = 13, PF_FLUSH_ALLOC = 14, PF_MD_STALE_RESULT = 15, PF_MD_RESTART = 16,
-             PF_C_LINK_LEN = 17, PF_C_CARRY_DROP = 18, PF_C_TVAL_FIRST = 19;
+             PF_C_LINK_LEN = 17, PF_C_CARRY_DROP = 18, PF_C_TVAL_FIRST = 19, PF_C_NC_WORD = 20;
+  // C: an uncached (possibly device) instruction access reads exact 16-bit parcels, never bytes the executed
+  // instruction does not occupy (codex-pipe-p2a-uncached-fetch)
+  localparam NC_PARCEL = (PIPE_EXT_C != 0) && (PIPE_FAULT != PF_C_NC_WORD);
   localparam [63:0] MISA_P1 = 64'h8000_0000_0000_0100;     // MXL = 2, I only
   // misa reads back what this build implements: I, plus M and C when enabled
   localparam [63:0] MISA_P = MISA_P1 | ((PIPE_EXT_M != 0) ? 64'h1000 : 64'd0) | ((PIPE_EXT_C != 0) ? 64'h4 : 64'd0);
@@ -647,6 +652,9 @@ module tcpu_core_pipe #(
   reg  [15:0] fe_carry_par;
   reg  [63:0] fe_carry_pc;
   reg  [1:0]  f2_pos;
+  reg         f2_isnc;        // C: F2's word is uncached: it is read parcel by parcel, one instruction at a time
+  reg         f2_ncp;         // C, uncached: the next parcel to read is the SECOND parcel of the instruction at f2_pos
+  reg         f2_errsec;      // C, uncached: the access error was on that second parcel
   function [15:0] parcel; input [63:0] w; input [1:0] k; parcel = w[{k, 4'b0000} +: 16]; endfunction
   reg         cx_r0_v, cx_r1_v, cx_done, cx_cap, cx_use_carry;
   reg  [63:0] cx_r0_pc, cx_r1_pc, cx_r0_tval, cx_cap_pc;
@@ -660,7 +668,8 @@ module tcpu_core_pipe #(
     if (f2_bad_now) begin
       cx_r0_v = 1'b1; cx_use_carry = fe_carry_v; cx_done = 1'b1;
       cx_r0_pc = fe_carry_v ? fe_carry_pc : (f2_base + {61'd0, f2_pos, 1'b0});
-      cx_r0_tval = !fe_carry_v ? cx_r0_pc : (PIPE_FAULT == PF_C_TVAL_FIRST) ? fe_carry_pc : (fe_carry_pc + 64'd2);
+      cx_r0_tval = !fe_carry_v ? (f2_errsec ? cx_r0_pc + 64'd2 : cx_r0_pc) :
+                   (PIPE_FAULT == PF_C_TVAL_FIRST) ? fe_carry_pc : (fe_carry_pc + 64'd2);
     end else begin
       // step 0: the carried instruction, or the one at f2_pos
       if (fe_carry_v) begin
@@ -679,7 +688,7 @@ module tcpu_core_pipe #(
       end
       cx_r0_tval = cx_r0_pc;
       // step 1: the next instruction, if the word has one
-      if (cx_r0_v && !cx_cap && cx_pos <= 3'd3) begin
+      if (cx_r0_v && !cx_cap && cx_pos <= 3'd3 && !(NC_PARCEL && f2_isnc)) begin     // uncached: one at a time
         cx_lo = parcel(f2_word_now, cx_pos[1:0]);
         if (cx_lo[1:0] != 2'b11) begin
           cx_r1_v = 1'b1; cx_r1_pc = f2_base + {60'd0, cx_pos, 1'b0}; cx_r1_insn = {16'd0, cx_lo}; cx_pos = cx_pos + 3'd1;
@@ -762,6 +771,7 @@ module tcpu_core_pipe #(
       flushes_since_eng <= 0; last_ret_seq <= 32'd0; fe_flush_q <= 1'b0;
       ex_md_started <= 1'b0; ex_md_have <= 1'b0; ex_md_res <= 64'd0; md_owner_seq <= 32'd0;
       fe_carry_v <= 1'b0; fe_carry_par <= 16'd0; fe_carry_pc <= 64'd0; f2_pos <= 2'd0;
+      f2_isnc <= 1'b0; f2_ncp <= 1'b0; f2_errsec <= 1'b0;
       id_raw <= 32'd0; ex_raw <= 32'd0; mem_raw <= 32'd0; wb_raw <= 32'd0; id_c <= 1'b0; ex_c <= 1'b0; mem_c <= 1'b0; wb_c <= 1'b0;
     end else begin
       fe_flush = 1'b0; fe_kill = 1'b0; fe_target = fe_pc;
@@ -806,6 +816,14 @@ module tcpu_core_pipe #(
                 if (!(eng_err || resp_error)) begin
                   ic_fill <= 1'b1; ic_fill_pa <= {eng_pa[31:4], 4'd0}; ic_fill_data <= {resp_rdata, eng_buf0};
                 end
+              end else if (eng_dsize == 2'd1) begin : nc_parcel
+                // C, uncached: one parcel, in its lane of the word; ask for the second parcel only if this one opens
+                // a 32-bit instruction inside the word (at the word's last parcel the carry takes over)
+                reg [15:0] par;
+                par = resp_rdata[{eng_pa[2:1], 4'b0000} +: 16];
+                f2_word[{eng_pa[2:1], 4'b0000} +: 16] <= par;
+                if (resp_error) begin f2_err <= 1'b1; f2_errsec <= f2_ncp; end
+                else if (!fe_carry_v && !f2_ncp && f2_pos != 2'd3 && par[1:0] == 2'b11) begin f2_ncp <= 1'b1; f2_st <= F2_NC; end
               end else begin
                 f2_word <= resp_rdata;
                 f2_slots <= (eng_dsize == 2'd3) ? (f2_pc[2] ? 2'b10 : 2'b11) : (f2_pc[2] ? 2'b10 : 2'b01);
@@ -962,7 +980,11 @@ module tcpu_core_pipe #(
       end
       // the word is finished, or (C) it still has parcels and stays in F2 at its next position
       if (f2_step) begin
-        if (rec_done) f2_consumed = 1'b1; else f2_pos <= cx_pos[1:0];
+        if (rec_done) f2_consumed = 1'b1;
+        else begin
+          f2_pos <= cx_pos[1:0];
+          if (NC_PARCEL && f2_isnc) begin f2_st <= F2_NC; f2_ncp <= 1'b0; f2_err <= 1'b0; f2_errsec <= 1'b0; end
+        end
         if (PIPE_EXT_C != 0) begin
           if (cx_use_carry) fe_carry_v <= 1'b0;
           if (cx_cap && PIPE_FAULT != PF_C_CARRY_DROP) begin fe_carry_v <= 1'b1; fe_carry_par <= cx_cap_par; fe_carry_pc <= cx_cap_pc; end
@@ -986,7 +1008,7 @@ module tcpu_core_pipe #(
             if (ic_hit) begin f2_st <= F2_READY; f2_word <= f2_word_now; f2_slots <= f2_slots_now; f2_err <= 1'b0; end
             else f2_st <= F2_WAIT;
           end else if (f2_cacheable) f2_st <= F2_WAIT;          // direct 8-byte read of cacheable RAM, speculative
-          else f2_st <= F2_NC;                                   // uncached: only when non-speculative
+          else begin f2_st <= F2_NC; f2_isnc <= 1'b1; end         // uncached: only when non-speculative
         end else if (f2_st == F2_LOOK && f2_pfault) begin
           f2_st <= F2_READY; f2_slots <= f2_slots_now; f2_err <= 1'b0;
         end
@@ -1002,8 +1024,11 @@ module tcpu_core_pipe #(
         end else if (f2_st == F2_NC) begin
           if (nonspec_f2 || PIPE_FAULT == PF_SPEC_MMIO_FETCH) begin
             if (!nonspec_f2) $display("PIPE ASSERT spec-uncached: uncached fetch of 0x%0h raised while the front end is speculative", f2_pc);
-            eng_pa <= f2_pc[31:0]; eng_killed <= 1'b0; eng_ep <= fe_ep; eng_err <= 1'b0; flushes_since_eng <= 0;
-            eng_st <= E_NEEDD; eng_dsize <= (PIPE_EXT_C != 0) ? 2'd3 : 2'd2; f2_st <= F2_WAIT;
+            // C: exactly the parcel needed now (the first of the instruction at f2_pos, or its second); without C
+            // the 4-byte instruction; PF_C_NC_WORD: the whole 8-byte word
+            eng_pa <= NC_PARCEL ? (f2_base[31:0] + {29'd0, f2_pos + {1'b0, f2_ncp}, 1'b0}) : f2_pc[31:0];
+            eng_killed <= 1'b0; eng_ep <= fe_ep; eng_err <= 1'b0; flushes_since_eng <= 0;
+            eng_st <= E_NEEDD; eng_dsize <= NC_PARCEL ? 2'd1 : (PIPE_EXT_C != 0) ? 2'd3 : 2'd2; f2_st <= F2_WAIT;
           end else cv_nc_wait <= cv_nc_wait + 1;
         end
       end
@@ -1018,7 +1043,7 @@ module tcpu_core_pipe #(
           eng_st <= (eng_st == E_NEED0) ? E_WAIT0 : E_WAIT1;
         end else if (eng_st == E_NEEDD) begin
           preq_valid <= 1'b1; preq_owner_f <= 1'b1; preq_killed <= 1'b0; preq_write <= 1'b0; preq_size <= eng_dsize;
-          preq_addr <= (eng_dsize == 2'd3) ? {eng_pa[31:3], 3'b000} : {eng_pa[31:2], 2'b00};
+          preq_addr <= (eng_dsize == 2'd3) ? {eng_pa[31:3], 3'b000} : (eng_dsize == 2'd1) ? {eng_pa[31:1], 1'b0} : {eng_pa[31:2], 2'b00};
           preq_wdata <= 64'd0; preq_wmask <= 8'd0;
           eng_st <= E_WAITD;
         end
@@ -1031,6 +1056,7 @@ module tcpu_core_pipe #(
       // ---------------------------------------------------------------- F1
       if (f1_v && (!f2_v || f2_consumed) && !fe_flush) begin
         f2_v <= 1'b1; f2_st <= F2_LOOK; f2_pc <= f1_pc; f2_pfault <= f1_pa_bad || f1_mis; f2_pos <= f1_pc[2:1];
+        f2_isnc <= 1'b0; f2_ncp <= 1'b0; f2_errsec <= 1'b0;
         f2_pcause <= f1_mis ? `CAUSE_INSN_MISALIGNED : `CAUSE_INSN_ACCESS; f2_err <= 1'b0;
         f1_v <= 1'b0;
         if (!frozen && !fe_park && !halted) begin
