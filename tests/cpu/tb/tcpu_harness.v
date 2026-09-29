@@ -184,6 +184,7 @@ module tcpu_harness #(
                    .EARLY_IRQ(EARLY_IRQ), .IRQ_BAD_MEPC(IRQ_BAD_MEPC), .STALE_MIE(STALE_MIE),
                    .PIPE_FAULT(PIPE_FAULT), .PIPE_EXT_M(PIPE_EXT_M), .PIPE_EXT_C(PIPE_EXT_C), .PIPE_EXT_SU(PIPE_EXT_SU),
                    .FAULT_NO_DELEG(FAULT_NO_DELEG), .FAULT_S_IRQ_IN_M(FAULT_S_IRQ_IN_M), .FAULT_SRET_SPP(FAULT_SRET_SPP),
+                   .FAULT_PTW_NO_PERM(FAULT_PTW_NO_PERM), .FAULT_IF2_NO_XLATE(FAULT_IF2_NO_XLATE), .FAULT_PPN_TRUNC(FAULT_PPN_TRUNC),
                    .FAULT_W_SEXT(FAULT_W_SEXT), .FAULT_MULH_SIGN(FAULT_MULH_SIGN),
                    .FAULT_C_IMM(FAULT_C_IMM), .FAULT_C_REG(FAULT_C_REG)) cpu (
     .clk(clk), .rst(rst | bd_core_rst),
@@ -255,10 +256,13 @@ module tcpu_harness #(
   reg [63:0] n_retired, lat_cnt, idle_cnt, max_lat;
   reg        trace_on;
   reg [63:0] irq_at_ret;          // IRQ_AT_RETIRE, or +irq-at-retire=N at run time (one build serves many positions)
+  reg [63:0] irq_at_cyc;          // PIPE-P2b: +irq-at-cycle=C raises the line at cycle C instead (aims at a cycle, e.g.
+                                  // one with a PTE read outstanding, which a retirement count cannot reach)
   final if (IRQ_LAT_BOUND != 0 || trace_on) $display("IRQ LATENCY max=%0d cycles (enabled line raised -> taken)", (lat_cnt > max_lat) ? lat_cnt : max_lat);
   initial begin
     trace_on = $test$plusargs("pipe-trace");
     if (!$value$plusargs("irq-at-retire=%d", irq_at_ret)) irq_at_ret = IRQ_AT_RETIRE;
+    if (!$value$plusargs("irq-at-cycle=%d", irq_at_cyc)) irq_at_cyc = 0;
   end
   wire irq_moment =
       (IRQ_POINT == 1) ? (cpu_state == S_IF_WAIT_  &&  req_valid && !req_ready) :
@@ -365,6 +369,11 @@ module tcpu_harness #(
   reg [63:0] n_fetch;
   // CPU-C: FETCH_ERR_AFTER counts instructions (first parcels); FETCH_ERR_ADDR may aim at either parcel
   wire       req_is_fetch1 = req_is_fetch && (cpu_state == S_IF_REQ_ || cpu_state == S_IF_WAIT_);
+`ifdef TCPU_IMPL_PIPE
+  wire       req_is_pte = (cpu_state == 4'd13) || (cpu_state == 4'd14);
+`else
+  wire       req_is_pte = (cpu_state == S_XLATE_) && !req_is_fetch;
+`endif
   // The bridge model for a core-only reset (R-BOOT's split domains): an offer that never fired is dropped,
   // an accepted request is answered by the memory and the answer swallowed, and no new request is accepted
   // until that has happened -- the restarted core can never receive a parcel it did not ask for.
@@ -466,7 +475,8 @@ module tcpu_harness #(
       end
       // PIPE-P1: raise the line once N instructions have retired (an architectural position, not a core state)
       if (commit_valid) n_retired <= n_retired + 64'd1;
-      if (irq_at_ret != 0 && n_retired >= irq_at_ret && !irq_any_high && irq_raised < IRQ_TIMES) begin
+      if (((irq_at_ret != 0 && n_retired >= irq_at_ret) || (irq_at_cyc != 0 && cyc >= irq_at_cyc)) &&
+          !irq_any_high && irq_raised < IRQ_TIMES) begin
         irq_raised <= irq_raised + 64'd1; irq_fires <= irq_fires + 64'd1;
         fire_cycle <= cyc; fire_pc <= cpu_pc; fire_enabled <= cpu_irq_enabled;
         case (IRQ_LINE) 0: irq_msip <= 1'b1; 1: irq_mtip <= 1'b1; default: irq_meip <= 1'b1; endcase
@@ -548,7 +558,11 @@ module tcpu_harness #(
                               : ((RESP_DELAY < 1) ? 8'd1 : RESP_DELAY[7:0]);
         n_req <= n_req + 64'd1;
         if (!req_is_fetch) n_data_req <= n_data_req + 64'd1;
-        if (trace_on && !req_is_fetch) $display("DREQ cyc=%0d addr=%h write=%0d size=%0d wdata=%h wmask=%h", cyc, req_addr, req_write, req_size, req_write ? req_wdata : 64'd0, req_wmask);
+        // PIPE-P2b: a PTE read is traced as PTE, not as a data access (owner metadata, not fetch = 0): the pipeline says
+        // so on dbg_state (13 fetch-side, 14 data-side walk); the multicycle core is in S_XLATE and not fetching.
+        // Without Sv39 neither ever happens, so the traces of every earlier configuration are unchanged.
+        if (trace_on && !req_is_fetch && !req_is_pte) $display("DREQ cyc=%0d addr=%h write=%0d size=%0d wdata=%h wmask=%h", cyc, req_addr, req_write, req_size, req_write ? req_wdata : 64'd0, req_wmask);
+        if (trace_on && req_is_pte) $display("PTE cyc=%0d addr=%h side=%0s", cyc, req_addr, (cpu_state == 4'd13) ? "fetch" : (cpu_state == 4'd14) ? "data" : "-");
         if (watch_hit) begin
           watch_req <= watch_req + 64'd1;
           if (req_write) watch_wreq <= watch_wreq + 64'd1;

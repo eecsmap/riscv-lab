@@ -1,0 +1,24 @@
+== VA: CPU-SV39 tests on both cores (priv = M and satp = 0 at exit)
+  sv01_bare_sv39 min: pipeline exit 0 errors 0 | multicycle exit 0
+  sv01_bare_sv39 fixed: pipeline exit 0 errors 0 | multicycle exit 0
+  sv01_bare_sv39 rnd12345: pipeline exit 0 errors 0 | multicycle exit 0
+  sv02_pages min: pipeline exit 0 errors 0 | multicycle exit 0
+  sv02_pages fixed: pipeline exit 0 errors 0 | multicycle exit 0
+  sv02_pages rnd12345: pipeline exit 0 errors 0 | multicycle exit 0
+  sv03_perms min: pipeline exit 0 errors 0 | multicycle exit 0
+  sv03_perms fixed: pipeline exit 0 errors 0 | multicycle exit 0
+  sv03_perms rnd12345: pipeline exit 0 errors 0 | multicycle exit 0
+  sv04_bad_pte min: pipeline exit 0 errors 0 | multicycle exit 0
+  sv04_bad_pte fixed: pipeline exit 0 errors 0 | multicycle exit 0
+  sv04_bad_pte rnd12345: pipeline exit 0 errors 0 | multicycle exit 0
+  sv05_straddle min: pipeline exit 0 errors 0 | multicycle exit 0
+  sv05_straddle fixed: pipeline exit 0 errors 0 | multicycle exit 0
+  sv05_straddle rnd12345: pipeline exit 0 errors 0 | multicycle exit 0
+  sv06_switch min: pipeline exit 0 errors 0 | multicycle exit 0
+  sv06_switch fixed: pipeline exit 0 errors 0 | multicycle exit 0
+  sv06_switch rnd12345: pipeline exit 0 errors 0 | multicycle exit 0
+  sv09_nonleaf min: pipeline exit 0 errors 0 | multicycle exit 0
+  sv09_nonleaf fixed: pipeline exit 0 errors 0 | multicycle exit 0
+  sv09_nonleaf rnd12345: pipeline exit 0 errors 0 | multicycle exit 0
+  sv03 no-retire (pipeline): exit 0 7 commit-count checks OK, 0 FAIL
+  sv09 no-retire (pipeline): exit 0 3 commit-count checks OK, 0 FAIL

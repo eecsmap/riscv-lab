@@ -120,6 +120,7 @@ int main(int argc, char** argv) {
     else if (key == "+pipe-trace")      { if (*val) bad("+pipe-trace takes no value"); }
     else if (key == "+pipe-debug")      { if (*val) bad("+pipe-debug takes no value"); }
     else if (key == "+irq-at-retire")   { parse_long(val, "+irq-at-retire", 1, 1000000000L); }
+    else if (key == "+irq-at-cycle")    { parse_long(val, "+irq-at-cycle", 1, 1000000000L); }
     else if (key == "+trace-out")       { if (!*val) bad("+trace-out needs a file"); else tracefile = val; }
     else if (key == "+commit-trace")    { if (!*val) bad("+commit-trace needs a file"); else commitfile = val; }
     // CPU-A: dump N 64-bit words of the model's memory at the end, so a checker can compare the real

@@ -2,7 +2,7 @@
 # PIPE-P2b: build every simulator the P2b run needs from ONE pinned source snapshot, sequentially (verilator -j 4).
 #   build-p2b.sh <fresh outdir>
 # Modes: m-* the multicycle reference (tag RTL: M, C, S/U, Sv39, A); pmcs-* the pipeline with PIPE_EXT_M, PIPE_EXT_C
-# and PIPE_EXT_SU. Output: src/, src.sha256, sims/, sims.txt, identity.txt (idcheck.sh, counted); exit != 0 on failure.
+# and PIPE_EXT_SU (S/U and Sv39: the pipeline's TLB and the shared walker inside tcpu_ptw_wrap). Output: src/, src.sha256, sims/, sims.txt, identity.txt (idcheck.sh, counted); exit != 0 on failure.
 set -u
 W=/home/engineer/fpga/worktrees/pipe-single; P1S=$W/experiments/pipeline/p1/scripts
 OUT=${1:?outdir}; [ -e "$OUT" ] && { echo "REFUSE: $OUT exists"; exit 2; }
@@ -18,7 +18,8 @@ git -C $W status --porcelain > $OUT/worktree-status.txt
 S=$OUT/src
 MULTI="-I$S/inc $S/rtl/tcpu_core.v $S/rtl/tcpu_regfile.v $S/rtl/tcpu_csr.v $S/rtl/tcpu_muldiv.v $S/rtl/tcpu_cdecode.v $S/rtl/tcpu_xlate.v $S/rtl/tcpu_tlb.v $S/rtl/tcpu_ptw.v $S/rtl/tcpu_permcheck.v $S/rtl/tcpu_ifill.v $S/rtl/tcpu_icache.v $S/rtl/tcpu_cacheable.v"
 PIPE1="-DTCPU_IMPL_PIPE -I$S/inc $S/pipeline/tcpu_core_pipe.v $S/rtl/tcpu_regfile.v $S/rtl/tcpu_csr.v $S/rtl/tcpu_icache.v $S/rtl/tcpu_cacheable.v"
-PIPEMCS="$PIPE1 $S/rtl/tcpu_muldiv.v $S/rtl/tcpu_cdecode.v -GPIPE_EXT_M=1 -GPIPE_EXT_C=1 -GPIPE_EXT_SU=1"
+SV39SRC="$S/pipeline/tcpu_tlb2.v $S/pipeline/tcpu_ptw_wrap.v $S/rtl/tcpu_ptw.v $S/rtl/tcpu_permcheck.v"
+PIPEMCS="$PIPE1 $S/rtl/tcpu_muldiv.v $S/rtl/tcpu_cdecode.v $SV39SRC -GPIPE_EXT_M=1 -GPIPE_EXT_C=1 -GPIPE_EXT_SU=1"
 TB="$S/tb/tcpu_top.v $S/tb/tcpu_harness.v $S/tb/tcpu_main.cpp"
 VL="verilator --cc --exe --build -j 4 -O2 -Wno-fatal -Wno-WIDTH -Wno-UNUSED -Wno-DECLFILENAME -Wno-UNSIGNED --top-module TeachingTop -CFLAGS -std=c++17"
 BOUNDS="-GIRQ_LAT_BOUND=2000 -GPROGRESS_BOUND=5000"
@@ -43,12 +44,24 @@ for mode in m pmcs; do
   build $mode-nodeleg $mode -GFAULT_NO_DELEG=1
   build $mode-sirqm   $mode -GFAULT_S_IRQ_IN_M=1
   build $mode-sretspp $mode -GFAULT_SRET_SPP=1
+  build $mode-noperm  $mode -GFAULT_PTW_NO_PERM=1
+  build $mode-if2     $mode -GFAULT_IF2_NO_XLATE=1
+  build $mode-trunc   $mode -GFAULT_PPN_TRUNC=1
 done
+for k in 21 22 23; do build pmcs-fault$k pmcs -GREADY_DELAY=2 -GRESP_DELAY=5 -GPIPE_FAULT=$k; done
 IDOUT=$OUT/logs; . $P1S/idcheck.sh
 {
   idcheck SU-injection-without-SU "pipe_p1_unsupported_FAULT_SRET_SPP" $PIPE1 -GFAULT_SRET_SPP=1 $TB
   idcheck EXT_SU-2 "pipe_p1_unsupported_PIPE_EXT_SU" $PIPEMCS -GPIPE_EXT_SU=2 $TB
   idcheck C-without-the-decoder-source "Cannot find file containing module: 'tcpu_cdecode'" $PIPE1 $S/rtl/tcpu_muldiv.v -GPIPE_EXT_M=1 -GPIPE_EXT_C=1 $TB
+  idcheck SU-without-the-TLB-source "Cannot find file containing module: 'tcpu_tlb2'" $PIPE1 $S/rtl/tcpu_muldiv.v $S/rtl/tcpu_cdecode.v $S/pipeline/tcpu_ptw_wrap.v $S/rtl/tcpu_ptw.v $S/rtl/tcpu_permcheck.v -GPIPE_EXT_M=1 -GPIPE_EXT_C=1 -GPIPE_EXT_SU=1 $TB
+  idcheck knob22-without-SU "pipe_p1_unsupported_PIPE_FAULT_needs_SU" $PIPE1 -GPIPE_FAULT=22 $TB
+  idcheck SV39-injection-without-SU "pipe_p1_unsupported_FAULT_PPN_TRUNC" $PIPE1 -GFAULT_PPN_TRUNC=1 $TB
+  # TLB_ENTRIES is the core's parameter (not the harness top's): this one elaborates the core itself as the top
+  VL_TB=$VL; VL="verilator --lint-only -Wno-fatal -Wno-WIDTH -Wno-UNUSED -Wno-DECLFILENAME -Wno-UNSIGNED --top-module tcpu_core_pipe"
+  idcheck TLB_ENTRIES-4 "pipe_p2b_unsupported_TLB_ENTRIES" $PIPEMCS -GTLB_ENTRIES=4
+  VL=$VL_TB
+  idcheck PIPE_FAULT-24 "pipe_p1_unsupported_PIPE_FAULT" $PIPEMCS -GPIPE_FAULT=24 $TB
   idcheck define-with-multicycle-list "Cannot find file containing module: 'tcpu_core_pipe'" -DTCPU_IMPL_PIPE $MULTI $TB
   echo "ID_FAILS=$ID_FAILS"
 } > $OUT/identity.txt 2>&1

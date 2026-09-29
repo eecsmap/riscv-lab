@@ -1,0 +1,7 @@
+== VE: Sv39 coverage on the pipeline, summed over VB (PIPE COVERAGE-SV39)
+  data_walks = 1284
+  fetch_walks = 513
+  pte_transactions_killed = 24
+  tlb_flushes = 498
+  walks_aborted = 24
+  walks_preempted_by_data = 18

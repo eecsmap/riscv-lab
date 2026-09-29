@@ -20,7 +20,8 @@
 //                                 4 KEEP_RESPONSE  a killed transaction's response is delivered to the walker
 `timescale 1ns/1ps
 module tcpu_ptw_wrap #(
-  parameter WRAP_FAULT = 0
+  parameter WRAP_FAULT = 0,
+  parameter FAULT_PTW_NO_PERM = 0   // passed to the walker (its own CPU-SV39 fault injection)
 ) (
   input             clk,
   input             rst,
@@ -44,6 +45,9 @@ module tcpu_ptw_wrap #(
   output     [55:0] pa,
   output     [43:0] leaf_ppn,
   output     [1:0]  leaf_level,
+  output     [5:0]  leaf_perm,       // P2b: the leaf's {r, w, x, u, a, d}, for the TLB fill
+  output            taking_port,     // P2b: the walker's request is forwarded onto the port this cycle
+  output            port_busy,       // P2b: the holding register holds a transaction (live or killed)
   // ---- the physical port (one request in flight; the holding register below)
   output            req_valid,
   input             req_ready,
@@ -80,7 +84,7 @@ module tcpu_ptw_wrap #(
                             (!spec || cacheable || WRAP_FAULT == 3);
   // the walker's response: only the live transaction's (WRAP_FAULT 4: a killed one too)
   wire        deliver = h_resp && (!h_killed || WRAP_FAULT == 4) && !abort;
-  tcpu_ptw walker (
+  tcpu_ptw #(.FAULT_PTW_NO_PERM(FAULT_PTW_NO_PERM)) walker (
     .clk(clk), .rst(rst || abort), .start(start && start_ok), .va(va), .acc_type(acc_type), .eff_priv(eff_priv),
     .sum(sum), .mxr(mxr), .root_ppn(root_ppn),
     .req_valid(w_req_valid), .req_ready(may_forward), .req_addr(w_req_addr),
@@ -98,6 +102,9 @@ module tcpu_ptw_wrap #(
   assign pa = w_pa;
   assign leaf_ppn = w_leaf_ppn;
   assign leaf_level = w_leaf_level;
+  assign leaf_perm = {w_lr, w_lw, w_lx, w_lu, w_la, w_ld};
+  assign taking_port = may_forward;
+  assign port_busy = h_valid || h_wait;
   assign dbg_killed_pending = h_killed && (h_valid || h_wait);
   assign dbg_unforwarded = w_req_valid;
 

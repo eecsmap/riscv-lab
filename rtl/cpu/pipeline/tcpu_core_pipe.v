@@ -71,12 +71,16 @@ module tcpu_core_pipe #(
   // 19 C_TVAL_FIRST      (C) a fetch fault on the SECOND parcel reports the first parcel's address in mtval
   // 20 C_NC_WORD         (C) an uncached fetch reads the whole aligned 8-byte word (bytes before the pc and after the
   //                      instruction) and the extractor takes every instruction in it
+  // 21 TLB_NO_FLUSH      (SU) sfence.vma and satp writes do not flush the TLB
+  // 22 TLB_HIT_NO_PERM   (SU) a TLB hit skips the permission check
+  // 23 DRAIN_NO_WALKER   (SU) a serialising instruction does not wait for the walker or its port transaction
   parameter        PIPE_FAULT = 0,
   // ---- P2a extensions (0 = the accepted P1 configuration, RV64I)
   parameter        PIPE_EXT_M = 0,        // 1: M (mul/div) through the unchanged shared tcpu_muldiv
   parameter        PIPE_EXT_C = 0,        // 1: integer C through the unchanged shared tcpu_cdecode; IALIGN 16
   // ---- P2b
   parameter        PIPE_EXT_SU = 0        // 1: S and U modes through the shared tcpu_csr (delegation, SRET, SFENCE.VMA)
+                                          //    and Sv39 (the pipeline's TLB, the shared walker through tcpu_ptw_wrap)
 ) (
   input             clk,
   input             rst,
@@ -142,16 +146,19 @@ module tcpu_core_pipe #(
     if (FAULT_S_IRQ_IN_M != 0 && PIPE_EXT_SU == 0) begin : refuse_FAULT_S_IRQ_IN_M pipe_p1_unsupported_FAULT_S_IRQ_IN_M u (); end
     if (FAULT_SRET_SPP != 0 && PIPE_EXT_SU == 0)   begin : refuse_FAULT_SRET_SPP   pipe_p1_unsupported_FAULT_SRET_SPP   u (); end
     if (PIPE_EXT_SU != 0 && PIPE_EXT_SU != 1) begin : refuse_PIPE_EXT_SU pipe_p1_unsupported_PIPE_EXT_SU u (); end
-    if (FAULT_PTW_NO_PERM != 0)  begin : refuse_FAULT_PTW_NO_PERM  pipe_p1_unsupported_FAULT_PTW_NO_PERM  u (); end
-    if (FAULT_IF2_NO_XLATE != 0) begin : refuse_FAULT_IF2_NO_XLATE pipe_p1_unsupported_FAULT_IF2_NO_XLATE u (); end
-    if (FAULT_PPN_TRUNC != 0)    begin : refuse_FAULT_PPN_TRUNC    pipe_p1_unsupported_FAULT_PPN_TRUNC    u (); end
+    // the CPU-SV39 fault injections exist only where Sv39 does
+    if (FAULT_PTW_NO_PERM != 0 && PIPE_EXT_SU == 0)  begin : refuse_FAULT_PTW_NO_PERM  pipe_p1_unsupported_FAULT_PTW_NO_PERM  u (); end
+    if (FAULT_IF2_NO_XLATE != 0 && PIPE_EXT_SU == 0) begin : refuse_FAULT_IF2_NO_XLATE pipe_p1_unsupported_FAULT_IF2_NO_XLATE u (); end
+    if (FAULT_PPN_TRUNC != 0 && PIPE_EXT_SU == 0)    begin : refuse_FAULT_PPN_TRUNC    pipe_p1_unsupported_FAULT_PPN_TRUNC    u (); end
+    if (PIPE_EXT_SU != 0 && TLB_ENTRIES != 8)        begin : refuse_TLB_ENTRIES        pipe_p2b_unsupported_TLB_ENTRIES       u (); end
     if (FAULT_A_W_NOSEXT != 0)   begin : refuse_FAULT_A_W_NOSEXT   pipe_p1_unsupported_FAULT_A_W_NOSEXT   u (); end
     if (FAULT_A_SC_RESULT != 0)  begin : refuse_FAULT_A_SC_RESULT  pipe_p1_unsupported_FAULT_A_SC_RESULT  u (); end
     if (FAULT_A_AMO_AS_LOAD != 0) begin : refuse_FAULT_A_AMO_AS_LOAD pipe_p1_unsupported_FAULT_A_AMO_AS_LOAD u (); end
     if (FAULT_A_EARLY_RETIRE != 0) begin : refuse_FAULT_A_EARLY_RETIRE pipe_p1_unsupported_FAULT_A_EARLY_RETIRE u (); end
     if (FAULT_A_NO_RESV_CLEAR != 0) begin : refuse_FAULT_A_NO_RESV_CLEAR pipe_p1_unsupported_FAULT_A_NO_RESV_CLEAR u (); end
     if (ICACHE_BYTES != 0 && ICACHE_BYTES != 1024) begin : refuse_ICACHE_BYTES pipe_p1_unsupported_ICACHE_BYTES u (); end
-    if (PIPE_FAULT < 0 || PIPE_FAULT > 20) begin : refuse_PIPE_FAULT pipe_p1_unsupported_PIPE_FAULT u (); end
+    if (PIPE_FAULT < 0 || PIPE_FAULT > 23) begin : refuse_PIPE_FAULT pipe_p1_unsupported_PIPE_FAULT u (); end
+    if (PIPE_FAULT >= 21 && PIPE_FAULT <= 23 && PIPE_EXT_SU == 0) begin : refuse_PIPE_FAULT_SU pipe_p1_unsupported_PIPE_FAULT_needs_SU u (); end
     if (PIPE_FAULT >= 17 && PIPE_FAULT <= 20 && PIPE_EXT_C == 0) begin : refuse_PIPE_FAULT_C pipe_p1_unsupported_PIPE_FAULT_needs_C u (); end
     if ((PIPE_FAULT == 15 || PIPE_FAULT == 16) && PIPE_EXT_M == 0) begin : refuse_PIPE_FAULT_M pipe_p1_unsupported_PIPE_FAULT_needs_M u (); end
     if (PIPE_EXT_M != 0 && PIPE_EXT_M != 1) begin : refuse_PIPE_EXT_M pipe_p1_unsupported_PIPE_EXT_M u (); end
@@ -162,7 +169,8 @@ module tcpu_core_pipe #(
              PF_NO_LOADUSE = 5, PF_NO_FWD_EXMEM = 6, PF_NO_FWD_MEMWB = 7, PF_NO_WB_BYPASS = 8,
              PF_X0_FWD = 9, PF_IRQ_EPC_FETCHPTR = 10, PF_CSR_NO_DRAIN = 11, PF_SPEC_MMIO_FETCH = 12,
              PF_FLUSH_FILL = 13, PF_FLUSH_ALLOC = 14, PF_MD_STALE_RESULT = 15, PF_MD_RESTART = 16,
-             PF_C_LINK_LEN = 17, PF_C_CARRY_DROP = 18, PF_C_TVAL_FIRST = 19, PF_C_NC_WORD = 20;
+             PF_C_LINK_LEN = 17, PF_C_CARRY_DROP = 18, PF_C_TVAL_FIRST = 19, PF_C_NC_WORD = 20,
+             PF_TLB_NO_FLUSH = 21, PF_TLB_HIT_NO_PERM = 22, PF_DRAIN_NO_WALKER = 23;
   // C: an uncached (possibly device) instruction access reads exact 16-bit parcels, never bytes the executed
   // instruction does not occupy (codex-pipe-p2a-uncached-fetch)
   localparam NC_PARCEL = (PIPE_EXT_C != 0) && (PIPE_FAULT != PF_C_NC_WORD);
@@ -194,9 +202,9 @@ module tcpu_core_pipe #(
   wire        wb_retire, wb_trap_take, wb_mret, wb_sret;
   wire [63:0] wb_trap_cause, wb_trap_epc, wb_trap_tval;
   wire [63:0] unused_mtvec, csr_sepc;
-  wire [43:0] unused_satp_ppn;
-  wire        unused_satp_mode, unused_sum, unused_mxr, unused_mprv;
-  wire [1:0]  unused_mpp;
+  wire [43:0] csr_satp_ppn;
+  wire        csr_satp_mode, csr_sum, csr_mxr, csr_mprv;
+  wire [1:0]  csr_mpp;
   tcpu_csr #(.HART_ID(HART_ID), .MISA_A(0), .TRAP_BAD_MEPC(TRAP_BAD_MEPC), .TRAP_COUNTS_RET(TRAP_COUNTS_RET),
              .ALLOW_RO_WRITE(ALLOW_RO_WRITE), .FAULT_NO_DELEG(FAULT_NO_DELEG), .FAULT_S_IRQ_IN_M(FAULT_S_IRQ_IN_M),
              .FAULT_SRET_SPP(FAULT_SRET_SPP)) csrfile (
@@ -209,8 +217,8 @@ module tcpu_core_pipe #(
     .irq_msip(irq_msip), .irq_mtip(irq_mtip), .irq_meip(irq_meip),
     .irq_enabled(csr_irq_enabled), .irq_pending(csr_irq_pending), .irq_cause(csr_irq_cause),
     .priv(priv), .mtvec_base(unused_mtvec), .mepc_out(csr_mepc), .sepc_out(csr_sepc),
-    .satp_mode(unused_satp_mode), .satp_ppn(unused_satp_ppn), .st_sum_o(unused_sum), .st_mxr_o(unused_mxr),
-    .st_mprv_o(unused_mprv), .st_mpp_o(unused_mpp),
+    .satp_mode(csr_satp_mode), .satp_ppn(csr_satp_ppn), .st_sum_o(csr_sum), .st_mxr_o(csr_mxr),
+    .st_mprv_o(csr_mprv), .st_mpp_o(csr_mpp),
     .dbg_sel(dbg_csr_sel), .dbg_val(dbg_csr_val));
   assign dbg_priv = priv;
   assign dbg_irq_enabled = csr_irq_enabled;
@@ -224,18 +232,24 @@ module tcpu_core_pipe #(
   reg  [63:0] preq_wdata;
   reg  [7:0]  preq_wmask;
   reg         withdrawn, withdrawing;
-  assign req_valid = preq_valid && !withdrawing;
-  assign req_addr  = preq_addr;
-  assign req_write = preq_write;
-  assign req_size  = preq_size;
-  assign req_wdata = preq_wdata;
-  assign req_wmask = preq_wmask;
+  // P2b: the walker wrapper's holding register shares the one port (Sv39 only; tied off otherwise). The arbiter lets
+  // only one of the two hold a transaction: the core allocates only when the wrapper's register is empty and the
+  // wrapper forwards only when granted (the core's register empty and MEM not allocating this cycle).
+  wire        wr_req_valid, wr_port_busy, wr_taking_port;
+  wire [31:0] wr_req_addr;
+  assign req_valid = (preq_valid && !withdrawing) || wr_req_valid;
+  assign req_addr  = wr_req_valid ? wr_req_addr : preq_addr;
+  assign req_write = wr_req_valid ? 1'b0 : preq_write;
+  assign req_size  = wr_req_valid ? 2'd3 : preq_size;       // a PTE read: 8 bytes
+  assign req_wdata = wr_req_valid ? 64'd0 : preq_wdata;
+  assign req_wmask = wr_req_valid ? 8'd0 : preq_wmask;
   assign req_amo   = 4'd0;
   assign req_lrsc  = 2'd0;
   assign resp_ready = 1'b1;
-  wire port_fire  = req_valid && req_ready;
+  wire port_fire  = preq_valid && !withdrawing && req_ready;    // the core's own transaction
   wire port_resp  = resp_valid && pwait;
-  wire port_free  = !preq_valid && !pwait;
+  wire core_port_idle = !preq_valid && !pwait && !wr_port_busy;
+  wire port_free  = core_port_idle && !wr_taking_port;          // for the fetch engine: the walker goes first
   assign dbg_req_is_fetch = (preq_valid || pwait) && preq_owner_f;
 
   // ---- front end
@@ -248,7 +262,8 @@ module tcpu_core_pipe #(
   localparam F2_LOOK = 2'd0, F2_WAIT = 2'd1, F2_READY = 2'd2, F2_NC = 2'd3;
   reg         f2_v;
   reg  [1:0]  f2_st;
-  reg  [63:0] f2_pc;
+  reg  [63:0] f2_pc;          // virtual (the instructions' pcs)
+  reg  [31:0] f2_pa;          // P2b: the word's physical address (= f2_pc without translation): I-cache, fetches
   reg         f2_pfault;      // F1 found this fetch un-issuable: fault carried, no access
   reg  [63:0] f2_pcause;
   reg  [63:0] f2_word;
@@ -413,13 +428,18 @@ module tcpu_core_pipe #(
   // ================================================================================================ MEM
   wire [2:0]  mem_f3 = mem_insn[14:12];
   wire        mem_memop = mem_isld || mem_isst;
-  wire        mem_pa_bad = (mem_addr[63:32] != 32'd0);
+  // Sv39 (assigned in the translation block below): whether this access is translated, whether its translation is
+  // known and permitted, whether it page-faults, and its physical address
+  wire        mem_xd, mem_xl_ok, mem_xl_pf;
+  wire [55:0] mem_pa;
+  wire        mem_pa_bad = mem_xl_ok && (mem_xd ? (mem_pa[55:32] != 24'd0 && FAULT_PPN_TRUNC == 0) : (mem_addr[63:32] != 32'd0));
+  wire        mem_bad_now = mem_v && !mem_exc && !mem_irq && (mem_isld || mem_isst) && (mem_xl_pf || mem_pa_bad);
   // the MEM instruction is the oldest in the machine: WB is empty, or commits this cycle without a flush
   wire        oldest_true = !wb_v || wb_normal;
   wire        oldest_ok   = (PIPE_FAULT == PF_STORE_UNDER_TRAP) ? 1'b1 : oldest_true;
-  wire        mem_want_req = mem_v && !mem_exc && !mem_irq && mem_memop && !mem_pa_bad &&
+  wire        mem_want_req = mem_v && !mem_exc && !mem_irq && mem_memop && mem_xl_ok && !mem_xl_pf && !mem_pa_bad &&
                              (mem_st == M_FIRST || mem_st == M_ISSUE) && !halted;
-  wire        mem_alloc = mem_want_req && oldest_ok && port_free;
+  wire        mem_alloc = mem_want_req && oldest_ok && core_port_idle;   // MEM has priority over the walker
   wire [5:0]  mem_lsh = {mem_addr[2:0], 3'b000};
   wire [7:0]  mem_mbase = (mem_f3[1:0] == 2'b00) ? 8'h01 : (mem_f3[1:0] == 2'b01) ? 8'h03 :
                           (mem_f3[1:0] == 2'b10) ? 8'h0f : 8'hff;
@@ -438,7 +458,7 @@ module tcpu_core_pipe #(
     endcase
   end
   wire mem_resp_now = port_resp && !preq_owner_f;
-  wire mem_done = mem_v && (mem_exc || mem_irq || !mem_memop || mem_pa_bad || mem_st == M_DONE ||
+  wire mem_done = mem_v && (mem_exc || mem_irq || !mem_memop || mem_bad_now || mem_st == M_DONE ||
                             (mem_st == M_PEND && mem_resp_now));
   wire wb_hold = (PIPE_FAULT == PF_WB_HOLD) && wb_commit && !mem_done;
   wire mem_fire = mem_done && !wb_hold;
@@ -587,8 +607,12 @@ module tcpu_core_pipe #(
   // computed from forwarded operands, so it is only meaningful when no load-use hazard holds EX
   wire ex_newexc = ex_v && !ex_exc && !ex_irq && !lu_haz && ((ex_tmis) || ((ex_isld || ex_isst) && ex_mmis));
   // serialisation: drain everything older AND everything already raised on the port
-  wire drained_true = !mem_v && !wb_v && !preq_valid && !pwait && (eng_st == E_IDLE);
-  wire drained      = (PIPE_FAULT == PF_CSR_NO_DRAIN) ? (!mem_v && !wb_v) : drained_true;
+  wire walker_idle;     // Sv39: no walk and no walker port transaction, live or killed (assigned below)
+  wire drained_true = !mem_v && !wb_v && !preq_valid && !pwait && (eng_st == E_IDLE) && walker_idle;
+  // what EX actually waits for: the real drain, or a negative control's weakened one (the assertion keeps the real)
+  wire drained      = (PIPE_FAULT == PF_CSR_NO_DRAIN) ? (!mem_v && !wb_v) :
+                      (PIPE_FAULT == PF_DRAIN_NO_WALKER) ? (!mem_v && !wb_v && !preq_valid && !pwait && (eng_st == E_IDLE)) :
+                      drained_true;
   wire ex_done = ex_v && (ex_exc || ex_irq || ex_newexc || (ex_serial ? drained : ex_ismd ? md_have_now : !lu_haz));
   wire mem_ready = !mem_v || mem_fire;
   wire ex_fire = ex_done && mem_ready;
@@ -617,7 +641,7 @@ module tcpu_core_pipe #(
   wire f1_pa_bad = (f1_pc[63:32] != 32'd0);
   wire f1_mis    = (PIPE_EXT_C != 0) ? f1_pc[0] : (f1_pc[1:0] != 2'b00);
   wire f2_cacheable;
-  tcpu_cacheable cb (.pa(f2_pc[31:0]), .cacheable(f2_cacheable));
+  tcpu_cacheable cb (.pa(f2_pa), .cacheable(f2_cacheable));
   wire         ic_hit;
   wire [127:0] ic_line;
   reg          ic_fill;
@@ -625,7 +649,7 @@ module tcpu_core_pipe #(
   reg  [127:0] ic_fill_data;
   wire         ic_inval = wb_commit && wb_is_fencei;
   tcpu_icache #(.BYTES(ICACHE_BYTES), .LINE_BYTES(16)) icache (
-    .clk(clk), .rst(rst), .invalidate(ic_inval), .pa(f2_pc[31:0]), .hit(ic_hit), .line_data(ic_line),
+    .clk(clk), .rst(rst), .invalidate(ic_inval), .pa(f2_pa), .hit(ic_hit), .line_data(ic_line),
     .fill(ic_fill), .fill_pa(ic_fill_pa), .fill_data(ic_fill_data));
   wire f2_look_hit = f2_v && f2_st == F2_LOOK && !f2_pfault && f2_cacheable && ICACHE_BYTES != 0 && ic_hit;
   wire f2_avail = f2_v && (f2_st == F2_READY || f2_look_hit || (f2_st == F2_LOOK && f2_pfault));
@@ -744,12 +768,124 @@ module tcpu_core_pipe #(
   endgenerate
   wire [31:0] idsrc_x = (idsrc_c && !cd_ill) ? cd_insn : idsrc_raw;
 
+  // ================================================================================================ Sv39 (PIPE_EXT_SU)
+  // Translation as in the reference core (tcpu_xlate.v): the TLB caches leaf PTE bits, the permission check
+  // (the shared tcpu_permcheck) runs on every hit with the access's own type, privilege, SUM and MXR; a
+  // non-canonical address never uses a hit; A/D are software-managed (A = 0, or D = 0 for a store, faults); only a
+  // walk that produced a PA fills; every sfence.vma and satp write flushes the whole TLB.
+  // Fetch: F1 translates its word (fetch privilege = priv; off in M). A miss starts a FETCH-side walk, speculative
+  // unless nothing older is in flight (the wrapper then forwards only cacheable PTE addresses); F1 holds meanwhile.
+  // Data: MEM translates on its first cycle (MPRV: the effective privilege is MPP). A miss starts a DATA-side walk
+  // only when MEM holds the oldest instruction; it preempts a fetch walk (abort through the wrapper).
+  // One walker (tcpu_ptw, unchanged, inside tcpu_ptw_wrap): a front-end flush or a serialisation freeze aborts a fetch
+  // walk; a killed PTE transaction stays on the port until answered and is drained before a serialiser proceeds.
+  localparam WK_NONE = 2'd0, WK_F = 2'd1, WK_D = 2'd2;
+  reg  [1:0]  wk_own;                 // the walk in progress belongs to fetch (F1) or data (MEM)
+  reg  [63:0] wk_va;                  // its virtual address (the TLB fill's tag)
+  reg         wr_port_f;              // the wrapper's port transaction belongs to a fetch-side walk (owner metadata)
+  reg         f1_wf_v;                // F1's walk faulted: the word goes to F2 as a fetch fault
+  reg  [63:0] f1_wf_cause;
+  reg         mem_xl_have;            // MEM's translation is done: its PA is in mem_pa_r (the TLB may change later)
+  reg  [55:0] mem_pa_r;
+  wire        su = (PIPE_EXT_SU != 0);
+  // ---- the translation context (privilege and satp change only through serialising instructions and traps)
+  wire        xf = su && csr_satp_mode && (priv != 2'd3);
+  wire [1:0]  eff_priv_d = (csr_mprv && priv == 2'd3) ? csr_mpp : priv;
+  assign      mem_xd = su && csr_satp_mode && (eff_priv_d != 2'd3);
+  // ---- the TLB, both lookups, and the per-access permission checks
+  wire        tlb_hit_f, tlb_hit_d;
+  wire [43:0] tlb_ppn_f, tlb_ppn_d;
+  wire [1:0]  tlb_lvl_f, tlb_lvl_d;
+  wire [5:0]  tlb_perm_f, tlb_perm_d;
+  wire        permok_f_raw, permok_d_raw;
+  wire        wr_start_ok, wr_busy, wr_done, wr_fault;
+  wire [3:0]  wr_cause;
+  wire [55:0] wr_pa;
+  wire [43:0] wr_leaf_ppn;
+  wire [1:0]  wr_leaf_lvl;
+  wire [5:0]  wr_leaf_perm;
+  wire        wr_killed_pending, wr_unforwarded;
+  wire        wk_abort, wk_start_f, wk_start_d;
+  wire        tlb_flush = wb_commit && (wb_is_sfence || (wb_is_csr && csr_wi && csr_addr == 12'h180));
+  wire        tlb_fill = su && wr_done && !wr_fault && (wk_own != WK_NONE);
+  // ---- fetch translation of F1's word
+  wire        f1_canon = (f1_pc[63:39] == {25{f1_pc[38]}});
+  wire        permok_f = permok_f_raw || (PIPE_FAULT == PF_TLB_HIT_NO_PERM);
+  wire [55:0] f1_hit_pa = (tlb_lvl_f == 2'd2) ? {tlb_ppn_f[43:18], f1_pc[29:0]} :
+                          (tlb_lvl_f == 2'd1) ? {tlb_ppn_f[43:9], f1_pc[20:0]} : {tlb_ppn_f, f1_pc[11:0]};
+  wire        f1_tr_pf    = xf && !f1_wf_v && (!f1_canon || (tlb_hit_f && !permok_f));   // page fault (12)
+  wire        f1_tr_ready = !xf || f1_wf_v || !f1_canon || tlb_hit_f;
+  wire        f1_tr_pabad = xf ? (!f1_wf_v && f1_canon && tlb_hit_f && permok_f && f1_hit_pa[55:32] != 24'd0 &&
+                                  FAULT_PPN_TRUNC == 0) : f1_pa_bad;
+  wire [31:0] f1_pa32 = xf ? f1_hit_pa[31:0] : f1_pc[31:0];
+  wire        f1_fault = f1_mis || f1_tr_pf || (xf && f1_wf_v) || f1_tr_pabad;
+  wire [63:0] f1_fcause = f1_mis ? `CAUSE_INSN_MISALIGNED : f1_tr_pf ? 64'd12 : (xf && f1_wf_v) ? f1_wf_cause : `CAUSE_INSN_ACCESS;
+  // ---- data translation of MEM's access
+  wire        d_canon = (mem_addr[63:39] == {25{mem_addr[38]}});
+  wire        permok_d = permok_d_raw || (PIPE_FAULT == PF_TLB_HIT_NO_PERM);
+  wire [55:0] d_hit_pa = (tlb_lvl_d == 2'd2) ? {tlb_ppn_d[43:18], mem_addr[29:0]} :
+                         (tlb_lvl_d == 2'd1) ? {tlb_ppn_d[43:9], mem_addr[20:0]} : {tlb_ppn_d, mem_addr[11:0]};
+  wire        mem_xl_need  = mem_v && !mem_exc && !mem_irq && mem_memop && mem_xd && !mem_xl_have;
+  assign      mem_xl_pf    = mem_xl_need && (!d_canon || (tlb_hit_d && !permok_d));
+  wire        mem_xl_hitok = mem_xl_need && d_canon && tlb_hit_d && permok_d;
+  wire        mem_xl_miss  = mem_xl_need && d_canon && !tlb_hit_d;
+  assign      mem_xl_ok = !mem_xd || mem_xl_have || mem_xl_hitok;
+  assign      mem_pa = mem_xl_have ? mem_pa_r : mem_xd ? d_hit_pa : {24'd0, mem_addr[31:0]};
+  // ---- the walker: a data walk (MEM oldest) preempts; a fetch walk is aborted by any front-end flush or freeze
+  wire        irq_attach_w = id_space && !(wb_flush && !halted) && !ex_redirect && !fe_park && !halted && can_irq;
+  wire        fe_flush_w   = (wb_flush && !halted) || ex_redirect || irq_attach_w;
+  wire        nonspec_f1   = nonspec_f2 && !f2_v;
+  wire        d_walk_req   = su && mem_xl_miss && oldest_true && !halted;
+  wire        f_walk_req   = su && f1_v && xf && f1_canon && !tlb_hit_f && !f1_wf_v && !frozen && !fe_park && !halted;
+  assign      wk_abort     = su && (((wk_own == WK_F) && (fe_flush_w || frozen || d_walk_req)) ||
+                                    ((wk_own == WK_D) && (wb_flush && !halted)));
+  assign      wk_start_d   = d_walk_req && (wk_own == WK_NONE) && wr_start_ok;
+  assign      wk_start_f   = f_walk_req && !d_walk_req && (wk_own == WK_NONE) && wr_start_ok && !fe_flush_w;
+  wire        wk_grant     = core_port_idle && !mem_alloc;          // MEM data first, then the walker, then refills
+  generate
+    if (PIPE_EXT_SU != 0) begin : g_sv39
+      tcpu_tlb2 #(.ENTRIES(TLB_ENTRIES), .NO_FLUSH(PIPE_FAULT == PF_TLB_NO_FLUSH)) tlb (
+        .clk(clk), .rst(rst), .flush(tlb_flush),
+        .va_a(f1_pc), .hit_a(tlb_hit_f), .ppn_a(tlb_ppn_f), .lvl_a(tlb_lvl_f), .perm_a(tlb_perm_f),
+        .va_b(mem_addr), .hit_b(tlb_hit_d), .ppn_b(tlb_ppn_d), .lvl_b(tlb_lvl_d), .perm_b(tlb_perm_d),
+        .fill(tlb_fill && !tlb_flush), .fill_va(wk_va), .fill_level(wr_leaf_lvl), .fill_ppn(wr_leaf_ppn),
+        .fill_perm(wr_leaf_perm));
+      tcpu_permcheck pc_f (.acc_type(2'd0), .eff_priv(priv), .sum(csr_sum), .mxr(csr_mxr),
+        .pte_r(tlb_perm_f[5]), .pte_w(tlb_perm_f[4]), .pte_x(tlb_perm_f[3]), .pte_u(tlb_perm_f[2]),
+        .pte_a(tlb_perm_f[1]), .pte_d(tlb_perm_f[0]), .ok(permok_f_raw));
+      tcpu_permcheck pc_d (.acc_type(mem_isst ? 2'd2 : 2'd1), .eff_priv(eff_priv_d), .sum(csr_sum), .mxr(csr_mxr),
+        .pte_r(tlb_perm_d[5]), .pte_w(tlb_perm_d[4]), .pte_x(tlb_perm_d[3]), .pte_u(tlb_perm_d[2]),
+        .pte_a(tlb_perm_d[1]), .pte_d(tlb_perm_d[0]), .ok(permok_d_raw));
+      tcpu_ptw_wrap #(.FAULT_PTW_NO_PERM(FAULT_PTW_NO_PERM)) walk (
+        .clk(clk), .rst(rst), .start(wk_start_d || wk_start_f),
+        .va(wk_start_d ? mem_addr : f1_pc), .acc_type(wk_start_d ? (mem_isst ? 2'd2 : 2'd1) : 2'd0),
+        .eff_priv(wk_start_d ? eff_priv_d : priv), .sum(csr_sum), .mxr(csr_mxr), .root_ppn(csr_satp_ppn),
+        .spec((wk_own == WK_F) && !nonspec_f1), .abort(wk_abort), .grant(wk_grant),
+        .start_ok(wr_start_ok), .busy(wr_busy), .done(wr_done), .fault(wr_fault), .cause(wr_cause), .pa(wr_pa),
+        .leaf_ppn(wr_leaf_ppn), .leaf_level(wr_leaf_lvl), .leaf_perm(wr_leaf_perm), .taking_port(wr_taking_port),
+        .req_valid(wr_req_valid), .req_ready(req_ready), .req_addr(wr_req_addr),
+        .resp_valid(resp_valid), .resp_rdata(resp_rdata), .resp_error(resp_error),
+        .dbg_killed_pending(wr_killed_pending), .dbg_unforwarded(wr_unforwarded), .port_busy(wr_port_busy));
+    end else begin : g_no_sv39
+      assign tlb_hit_f = 1'b0; assign tlb_ppn_f = 44'd0; assign tlb_lvl_f = 2'd0; assign tlb_perm_f = 6'd0;
+      assign tlb_hit_d = 1'b0; assign tlb_ppn_d = 44'd0; assign tlb_lvl_d = 2'd0; assign tlb_perm_d = 6'd0;
+      assign permok_f_raw = 1'b0; assign permok_d_raw = 1'b0;
+      assign wr_start_ok = 1'b0; assign wr_busy = 1'b0; assign wr_done = 1'b0; assign wr_fault = 1'b0;
+      assign wr_cause = 4'd0; assign wr_pa = 56'd0; assign wr_leaf_ppn = 44'd0; assign wr_leaf_lvl = 2'd0;
+      assign wr_leaf_perm = 6'd0; assign wr_taking_port = 1'b0; assign wr_req_valid = 1'b0; assign wr_req_addr = 32'd0;
+      assign wr_killed_pending = 1'b0; assign wr_unforwarded = 1'b0; assign wr_port_busy = 1'b0;
+    end
+  endgenerate
+  // the walker's work, for a serialising instruction's drain (PF_DRAIN_NO_WALKER forgets it)
+  assign      walker_idle = !wr_busy && !wr_port_busy && (wk_own == WK_NONE);
+
   // ================================================================================================ sequential
   integer k;
   // coverage (simulation only)
   reg [63:0] cv_redirect, cv_killed_resp, cv_irq_token, cv_irq_synth, cv_irq_cancel, cv_drain_wait, cv_loaduse,
              cv_fwd_exmem, cv_fwd_memwb, cv_wb_bypass, cv_two_flush, cv_nc_wait, cv_flush_pending_valid, cv_redirect_held,
              cv_irq_synth_ahead;
+  reg [63:0] cv_walk_f, cv_walk_d, cv_walk_preempt, cv_walk_abort, cv_tlb_flush, cv_pte_killed;   // Sv39
   reg [7:0]  flushes_since_eng;
   reg        fe_flush_q;     // simulation check only: a front-end flush happened in the previous cycle
   reg [31:0] last_ret_seq;
@@ -773,7 +909,7 @@ module tcpu_core_pipe #(
       preq_write <= 1'b0; preq_size <= 2'd0; preq_wdata <= 64'd0; preq_wmask <= 8'd0;
       withdrawn <= 1'b0; withdrawing <= 1'b0;
       fe_pc <= RESET_PC; fe_next_pc <= RESET_PC; fe_park <= 1'b0; fe_ep <= 1'b0;
-      f1_v <= 1'b0; f1_pc <= 64'd0; f2_v <= 1'b0; f2_st <= F2_LOOK; f2_pc <= 64'd0; f2_pfault <= 1'b0;
+      f1_v <= 1'b0; f1_pc <= 64'd0; f2_v <= 1'b0; f2_st <= F2_LOOK; f2_pc <= 64'd0; f2_pa <= 32'd0; f2_pfault <= 1'b0;
       f2_pcause <= 64'd0; f2_word <= 64'd0; f2_slots <= 2'b00; f2_err <= 1'b0;
       eng_st <= E_IDLE; eng_killed <= 1'b0; eng_ep <= 1'b0; eng_err <= 1'b0; eng_pa <= 32'd0; eng_buf0 <= 64'd0; eng_dsize <= 2'd0;
       fb_head <= 2'd0; fb_cnt <= 3'd0;
@@ -783,10 +919,13 @@ module tcpu_core_pipe #(
       cv_redirect <= 0; cv_killed_resp <= 0; cv_irq_token <= 0; cv_irq_synth <= 0; cv_irq_cancel <= 0;
       cv_drain_wait <= 0; cv_loaduse <= 0; cv_fwd_exmem <= 0; cv_fwd_memwb <= 0; cv_wb_bypass <= 0;
       cv_two_flush <= 0; cv_nc_wait <= 0; cv_flush_pending_valid <= 0; cv_redirect_held <= 0; cv_irq_synth_ahead <= 0;
+      cv_walk_f <= 0; cv_walk_d <= 0; cv_walk_preempt <= 0; cv_walk_abort <= 0; cv_tlb_flush <= 0; cv_pte_killed <= 0;
       flushes_since_eng <= 0; last_ret_seq <= 32'd0; fe_flush_q <= 1'b0;
       ex_md_started <= 1'b0; ex_md_have <= 1'b0; ex_md_res <= 64'd0; md_owner_seq <= 32'd0;
       fe_carry_v <= 1'b0; fe_carry_par <= 16'd0; fe_carry_pc <= 64'd0; f2_pos <= 2'd0;
       f2_isnc <= 1'b0; f2_ncp <= 1'b0; f2_errsec <= 1'b0;
+      wk_own <= WK_NONE; wk_va <= 64'd0; wr_port_f <= 1'b0; f1_wf_v <= 1'b0; f1_wf_cause <= 64'd0;
+      mem_xl_have <= 1'b0; mem_pa_r <= 56'd0;
       id_raw <= 32'd0; ex_raw <= 32'd0; mem_raw <= 32'd0; wb_raw <= 32'd0; id_c <= 1'b0; ex_c <= 1'b0; mem_c <= 1'b0; wb_c <= 1'b0;
     end else begin
       fe_flush = 1'b0; fe_kill = 1'b0; fe_target = fe_pc;
@@ -818,9 +957,9 @@ module tcpu_core_pipe #(
             eng_buf0 <= resp_rdata; eng_err <= resp_error; eng_st <= E_NEED1;
           end else if (eng_st == E_WAIT1 || eng_st == E_WAITD) begin
             // deliver to F2 (it is the requester: a live engine belongs to the current F2)
-            if (!(f2_v && f2_st == F2_WAIT && f2_pc[31:4] == eng_pa[31:4])) begin
+            if (!(f2_v && f2_st == F2_WAIT && f2_pa[31:4] == eng_pa[31:4])) begin
               $display("PIPE ASSERT fetch-delivery: engine line 0x%08x delivered, F2 %0s waiting for 0x%08x",
-                       {eng_pa[31:4], 4'd0}, (f2_v && f2_st == F2_WAIT) ? "is" : "is NOT", {f2_pc[31:4], 4'd0});
+                       {eng_pa[31:4], 4'd0}, (f2_v && f2_st == F2_WAIT) ? "is" : "is NOT", {f2_pa[31:4], 4'd0});
             end
             if (f2_v && f2_st == F2_WAIT) begin
               f2_st <= F2_READY;
@@ -869,10 +1008,30 @@ module tcpu_core_pipe #(
       if (mem_alloc) begin
         if (!oldest_true) $display("PIPE ASSERT oldest-issue: data request for pc 0x%0h raised while WB (pc 0x%0h) does not commit cleanly", mem_pc, wb_pc);
         preq_valid <= 1'b1; preq_owner_f <= 1'b0; preq_killed <= 1'b0;
-        preq_addr <= mem_addr[31:0]; preq_write <= mem_isst; preq_size <= mem_f3[1:0];
+        preq_addr <= mem_pa[31:0]; preq_write <= mem_isst; preq_size <= mem_f3[1:0];
         preq_wdata <= (mem_isst || LOAD_WDATA_LEAK != 0) ? (mem_sdata << mem_lsh) : 64'd0;
         preq_wmask <= mem_isst ? (mem_mbase << mem_addr[2:0]) : 8'd0;
         if (!wb_flush) mem_st <= M_PEND;
+      end
+      // ---- Sv39: MEM keeps its translation once known (a later fill may evict the TLB entry)
+      if (mem_xl_hitok) begin mem_xl_have <= 1'b1; mem_pa_r <= d_hit_pa; end
+      // ---- the walker: start, abort, result
+      if (wr_taking_port) wr_port_f <= (wk_own == WK_F);
+      if (wk_start_d) cv_walk_d <= cv_walk_d + 1;
+      if (wk_start_f) cv_walk_f <= cv_walk_f + 1;
+      if (wk_abort && d_walk_req) cv_walk_preempt <= cv_walk_preempt + 1;
+      if (wk_abort) cv_walk_abort <= cv_walk_abort + 1;
+      if (wk_abort && wr_port_busy && !wr_killed_pending) cv_pte_killed <= cv_pte_killed + 1;   // a PTE transaction killed
+      if (tlb_flush) cv_tlb_flush <= cv_tlb_flush + 1;
+      if (wk_start_d) begin wk_own <= WK_D; wk_va <= mem_addr; end
+      else if (wk_start_f) begin wk_own <= WK_F; wk_va <= f1_pc; end
+      if (wk_abort) wk_own <= WK_NONE;
+      else if (wr_done && wk_own != WK_NONE) begin
+        wk_own <= WK_NONE;
+        if (wr_fault) begin
+          if (wk_own == WK_F) begin f1_wf_v <= 1'b1; f1_wf_cause <= {60'd0, wr_cause}; end
+          else begin mem_exc <= 1'b1; mem_cause <= {60'd0, wr_cause}; mem_tval <= mem_addr; end
+        end
       end
       if (mem_v && mem_st == M_PEND && mem_resp_now) begin
         mem_st <= M_DONE;
@@ -882,8 +1041,10 @@ module tcpu_core_pipe #(
       if (mem_fire) begin
         wb_v <= 1'b1; wb_seq <= mem_seq; wb_pc <= mem_pc; wb_insn <= mem_insn; wb_irq <= mem_irq; wb_raw <= mem_raw; wb_c <= mem_c;
         wb_rd <= mem_rd; wb_src <= mem_sdata;
-        if (!mem_exc && !mem_irq && mem_memop && mem_pa_bad) begin
-          wb_exc <= 1'b1; wb_cause <= mem_isst ? `CAUSE_STORE_ACCESS : `CAUSE_LOAD_ACCESS; wb_tval <= mem_addr;
+        if (mem_bad_now) begin
+          // a page fault (Sv39) or a physical address outside the 32-bit space; mtval = the virtual address
+          wb_exc <= 1'b1; wb_tval <= mem_addr;
+          wb_cause <= mem_xl_pf ? (mem_isst ? 64'd15 : 64'd13) : (mem_isst ? `CAUSE_STORE_ACCESS : `CAUSE_LOAD_ACCESS);
           wb_we <= 1'b0; wb_val <= 64'd0;
         end else if (mem_st == M_PEND && mem_resp_now) begin
           wb_exc <= resp_error; wb_cause <= mem_isst ? `CAUSE_STORE_ACCESS : `CAUSE_LOAD_ACCESS; wb_tval <= mem_addr;
@@ -933,7 +1094,7 @@ module tcpu_core_pipe #(
         mem_isld <= ex_isld && !ex_exc && !ex_irq && !ex_newexc; mem_isst <= ex_isst && !ex_exc && !ex_irq && !ex_newexc;
         mem_we <= writes_rd(ex_insn) && !ex_exc && !ex_irq && !ex_newexc;
         mem_rd <= ex_insn[11:7]; mem_res <= ex_ismd ? md_value : alu_out; mem_addr <= ex_maddr; mem_sdata <= ex_isst ? b_reg : a;
-        mem_st <= M_FIRST;
+        mem_st <= M_FIRST; mem_xl_have <= 1'b0;
         ex_v <= 1'b0; ex_redirected <= 1'b0; ex_md_started <= 1'b0; ex_md_have <= 1'b0;
       end
       if (ex_v) begin
@@ -1033,7 +1194,7 @@ module tcpu_core_pipe #(
       // start the engine for F2 (not while frozen; one engine, idle only)
       if (f2_v && !f2_consumed && !frozen && !fe_flush && eng_st == E_IDLE) begin
         if (f2_st == F2_WAIT) begin
-          eng_pa <= f2_pc[31:0]; eng_killed <= 1'b0; eng_ep <= fe_ep; eng_err <= 1'b0; flushes_since_eng <= 0;
+          eng_pa <= f2_pa; eng_killed <= 1'b0; eng_ep <= fe_ep; eng_err <= 1'b0; flushes_since_eng <= 0;
           if (f2_cacheable && ICACHE_BYTES != 0) eng_st <= E_NEED0;
           else begin eng_st <= E_NEEDD; eng_dsize <= 2'd3; end
         end else if (f2_st == F2_NC) begin
@@ -1041,7 +1202,7 @@ module tcpu_core_pipe #(
             if (!nonspec_f2) $display("PIPE ASSERT spec-uncached: uncached fetch of 0x%0h raised while the front end is speculative", f2_pc);
             // C: exactly the parcel needed now (the first of the instruction at f2_pos, or its second); without C
             // the 4-byte instruction; PF_C_NC_WORD: the whole 8-byte word
-            eng_pa <= NC_PARCEL ? (f2_base[31:0] + {29'd0, f2_pos + {1'b0, f2_ncp}, 1'b0}) : f2_pc[31:0];
+            eng_pa <= NC_PARCEL ? ({f2_pa[31:3], 3'b000} + {29'd0, f2_pos + {1'b0, f2_ncp}, 1'b0}) : f2_pa;
             eng_killed <= 1'b0; eng_ep <= fe_ep; eng_err <= 1'b0; flushes_since_eng <= 0;
             eng_st <= E_NEEDD; eng_dsize <= NC_PARCEL ? 2'd1 : (PIPE_EXT_C != 0) ? 2'd3 : 2'd2; f2_st <= F2_WAIT;
           end else cv_nc_wait <= cv_nc_wait + 1;
@@ -1069,22 +1230,26 @@ module tcpu_core_pipe #(
       if (frozen && (eng_st == E_NEED0 || eng_st == E_NEED1 || eng_st == E_NEEDD)) eng_st <= E_IDLE;
 
       // ---------------------------------------------------------------- F1
-      if (f1_v && (!f2_v || f2_consumed) && !fe_flush) begin
-        f2_v <= 1'b1; f2_st <= F2_LOOK; f2_pc <= f1_pc; f2_pfault <= f1_pa_bad || f1_mis; f2_pos <= f1_pc[2:1];
+      if (f1_v && (!f2_v || f2_consumed) && !fe_flush && f1_tr_ready) begin
+        f2_v <= 1'b1; f2_st <= F2_LOOK; f2_pc <= f1_pc; f2_pfault <= f1_fault; f2_pos <= f1_pc[2:1];
+        // FAULT_IF2_NO_XLATE: the word completing a carried 32-bit instruction is fetched at the previous word's PA
+        // + 8 instead of its own translation (the multicycle core's fault: the second parcel at the first PA + 2)
+        // (the carry is pending: captured in this cycle's step, or earlier while this word's page was being walked)
+        f2_pa <= (FAULT_IF2_NO_XLATE != 0 && xf && (fe_carry_v || (cx_cap && f2_step))) ? (f2_pa + 32'd8) : f1_pa32;
         f2_isnc <= 1'b0; f2_ncp <= 1'b0; f2_errsec <= 1'b0;
-        f2_pcause <= f1_mis ? `CAUSE_INSN_MISALIGNED : `CAUSE_INSN_ACCESS; f2_err <= 1'b0;
+        f2_pcause <= f1_fcause; f2_err <= 1'b0; f1_wf_v <= 1'b0;
         f1_v <= 1'b0;
         if (!frozen && !fe_park && !halted) begin
           f1_v <= 1'b1; f1_pc <= fe_pc; fe_pc <= {fe_pc[63:3], 3'b000} + 64'd8;
         end
       end else if (!f1_v && !frozen && !fe_park && !halted && !fe_flush) begin
-        f1_v <= 1'b1; f1_pc <= fe_pc; fe_pc <= {fe_pc[63:3], 3'b000} + 64'd8;
+        f1_v <= 1'b1; f1_pc <= fe_pc; fe_pc <= {fe_pc[63:3], 3'b000} + 64'd8; f1_wf_v <= 1'b0;
       end
 
       // ---------------------------------------------------------------- flushes (applied last: they win)
       if (wb_flush && !halted) begin
         // everything younger than the retiring WB instruction, including what MEM handed to WB this cycle
-        id_v <= 1'b0; ex_v <= 1'b0; mem_v <= 1'b0; wb_v <= 1'b0; ex_redirected <= 1'b0;
+        id_v <= 1'b0; ex_v <= 1'b0; mem_v <= 1'b0; wb_v <= 1'b0; ex_redirected <= 1'b0; mem_xl_have <= 1'b0;
         if (PIPE_FAULT != PF_MD_STALE_RESULT) begin ex_md_started <= 1'b0; ex_md_have <= 1'b0; end
       end
       if (ex_redirect && !(wb_flush && !halted) && ex_fire) begin
@@ -1093,7 +1258,7 @@ module tcpu_core_pipe #(
       end
       if (fe_flush) begin
         // every younger fetch-side thing: F1, F2, the buffer; the raised or outstanding fetch transaction is killed
-        f1_v <= 1'b0; f2_v <= 1'b0; fb_cnt <= 3'd0; fb_head <= 2'd0; fe_carry_v <= 1'b0;
+        f1_v <= 1'b0; f2_v <= 1'b0; fb_cnt <= 3'd0; fb_head <= 2'd0; fe_carry_v <= 1'b0; f1_wf_v <= 1'b0;
         if (!(wb_flush && !halted) && ex_redirect && !new_id_irq) id_v <= 1'b0;  // an EX redirect also removes ID
         fe_ep <= ~fe_ep;
         if (flushes_since_eng != 8'hff) flushes_since_eng <= flushes_since_eng + 8'd1;
@@ -1130,7 +1295,9 @@ module tcpu_core_pipe #(
   // it just loaded (it is younger than the branch) -- handled above by clearing id_v under fe_flush from EX.
 
   // ================================================================================================ observation
-  assign dbg_state = 4'd0;
+  // P2b owner metadata: a PTE read on the port is 13 (fetch-side walk) or 14 (data-side walk), so a harness never takes
+  // a PTE read for a data access; 0 otherwise (and always 0 without Sv39: the accepted configurations are unchanged)
+  assign dbg_state = (su && wr_port_busy) ? (wr_port_f ? 4'd13 : 4'd14) : 4'd0;
   assign dbg_redirect = 1'b0;
   assign dbg_pc = wb_v ? wb_pc : mem_v ? mem_pc : ex_v ? ex_pc : id_v ? id_pc : fe_next_pc;
 
@@ -1150,6 +1317,9 @@ module tcpu_core_pipe #(
     $display("PIPE COVERAGE redirects=%0d redirect_while_held=%0d killed_fetch_responses=%0d killed_after_two_flushes=%0d flush_with_pending_valid=%0d irq_tokens=%0d irq_synthetic=%0d irq_synthetic_fetch_ahead=%0d irq_cancelled=%0d drain_wait_cycles=%0d loaduse_stall_cycles=%0d fwd_exmem=%0d fwd_memwb=%0d wb_bypass=%0d uncached_wait_cycles=%0d",
              cv_redirect, cv_redirect_held, cv_killed_resp, cv_two_flush, cv_flush_pending_valid, cv_irq_token, cv_irq_synth, cv_irq_synth_ahead,
              cv_irq_cancel, cv_drain_wait, cv_loaduse, cv_fwd_exmem, cv_fwd_memwb, cv_wb_bypass, cv_nc_wait);
+    if (PIPE_EXT_SU != 0)
+      $display("PIPE COVERAGE-SV39 fetch_walks=%0d data_walks=%0d walks_preempted_by_data=%0d walks_aborted=%0d pte_transactions_killed=%0d tlb_flushes=%0d",
+               cv_walk_f, cv_walk_d, cv_walk_preempt, cv_walk_abort, cv_pte_killed, cv_tlb_flush);
   end
 `endif
 endmodule

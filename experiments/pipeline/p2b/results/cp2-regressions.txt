@@ -1,0 +1,4 @@
+# checkpoint-2 regressions on the same tree
+P2a sims-6 + run-6: P2A_VERDICT PASS (0 failure reasons); every section identical to run-4 (U differs only in its directory path)
+P1  sims-11 + run-10: P1_VERDICT PASS (0 failure reasons, 4 named baseline exceptions); A B C D E F G identical to the accepted run-5, H identical apart from its path
+P2a walker unit bench wb-3 (the wrapper gained outputs): WB_JUDGE PASS; every variant's logs identical to wb-2

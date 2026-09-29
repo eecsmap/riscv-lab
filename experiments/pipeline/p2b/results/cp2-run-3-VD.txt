@@ -1,0 +1,19 @@
+== VD: Sv39 negative controls
+  knob 21 (TLB_NO_FLUSH) on sv06: CAUGHT first signal: TOHOST code=2 after 3714 cycles, retired=417 (store answered and retired)
+  knob 22 (TLB_HIT_NO_PERM) on sv03: CAUGHT first signal: TOHOST code=2 after 3039 cycles, retired=338 (store answered and retired)
+  knob 23 (DRAIN_NO_WALKER) on sv03: CAUGHT first signal: PIPE ASSERT drain: serialising pc 0x80000250 left EX with the port or fetch engine busy
+  FAULT_PPN_TRUNC on pmcs, sv04: CAUGHT first signal: TOHOST code=8 after 4280 cycles, retired=894 (store answered and retired)
+  FAULT_PPN_TRUNC on m, sv04: CAUGHT first signal: TOHOST code=8 after 8943 cycles, retired=894 (store answered and retired)
+  FAULT_IF2_NO_XLATE on m, sv05: CAUGHT first signal: TOHOST code=1 after 2587 cycles, retired=294 (store answered and retired)
+  FAULT_IF2_NO_XLATE on pmcs, sv05, against the uninjected reference: DIFF_FAIL exit=13 retired=63158 dreq=17515 :: exit code multi=0 pipe=13 | retirement stream differs at record 283: multi=0x0000000030002ffe 00550513 x10 0x0000000000000007 4 pipe=0x0000000030002ffe 00000513 x10 0x0000000000000000 4 (lengths 557/63158) | data-request stream differs at 50: multi=DREQ addr=80001018 write=0 size=3 w
+  FAULT_PTW_NO_PERM on m, sv03: CAUGHT first signal: TOHOST code=5 after 4190 cycles, retired=440 (store answered and retired)
+  FAULT_PTW_NO_PERM on pmcs, sv03 (masked by construction: every translation the pipeline uses is re-checked by tcpu_permcheck; knob 22 removes that check): exit 0, errors 0
+  control pmcs-fault21 on t01: exit 0, errors 0
+  control pmcs-fault22 on t01: exit 0, errors 0
+  control pmcs-fault23 on t01: exit 0, errors 0
+  control pmcs-noperm on t01: exit 0, errors 0
+  control pmcs-if2 on t01: exit 0, errors 0
+  control pmcs-trunc on t01: exit 0, errors 0
+  control m-noperm on t01: exit 0, errors 0
+  control m-if2 on t01: exit 0, errors 0
+  control m-trunc on t01: exit 0, errors 0
