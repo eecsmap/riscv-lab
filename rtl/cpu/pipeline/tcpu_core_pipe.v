@@ -66,10 +66,13 @@ module tcpu_core_pipe #(
   // 15 MD_STALE_RESULT   (M) a flush does not abandon the mul/div unit, and its result goes to whichever M
   //                      instruction occupies EX when it arrives (no ownership)
   // 16 MD_RESTART        (M) the unit is started again whenever it is idle and EX still holds an M instruction
+  // 17 C_LINK_LEN        (C) a compressed jump links pc + 4 instead of pc + 2
+  // 18 C_CARRY_DROP      (C) the lower parcel of a 32-bit instruction that crosses a fetch word is dropped
+  // 19 C_TVAL_FIRST      (C) a fetch fault on the SECOND parcel reports the first parcel's address in mtval
   parameter        PIPE_FAULT = 0,
   // ---- P2a extensions (0 = the accepted P1 configuration, RV64I)
   parameter        PIPE_EXT_M = 0,        // 1: M (mul/div) through the unchanged shared tcpu_muldiv
-  parameter        PIPE_EXT_C = 0         // 1: integer C (compressed) -- not implemented yet, refused
+  parameter        PIPE_EXT_C = 0         // 1: integer C through the unchanged shared tcpu_cdecode; IALIGN 16
 ) (
   input             clk,
   input             rst,
@@ -124,8 +127,9 @@ module tcpu_core_pipe #(
     // the M fault injections exist only where the unit does
     if (FAULT_W_SEXT != 0 && PIPE_EXT_M == 0)    begin : refuse_FAULT_W_SEXT    pipe_p1_unsupported_FAULT_W_SEXT    u (); end
     if (FAULT_MULH_SIGN != 0 && PIPE_EXT_M == 0) begin : refuse_FAULT_MULH_SIGN pipe_p1_unsupported_FAULT_MULH_SIGN u (); end
-    if (FAULT_C_IMM != 0)        begin : refuse_FAULT_C_IMM        pipe_p1_unsupported_FAULT_C_IMM        u (); end
-    if (FAULT_C_REG != 0)        begin : refuse_FAULT_C_REG        pipe_p1_unsupported_FAULT_C_REG        u (); end
+    // the C fault injections exist only where the decoder does
+    if (FAULT_C_IMM != 0 && PIPE_EXT_C == 0) begin : refuse_FAULT_C_IMM pipe_p1_unsupported_FAULT_C_IMM u (); end
+    if (FAULT_C_REG != 0 && PIPE_EXT_C == 0) begin : refuse_FAULT_C_REG pipe_p1_unsupported_FAULT_C_REG u (); end
     if (EARLY_IRQ != 0)          begin : refuse_EARLY_IRQ          pipe_p1_unsupported_EARLY_IRQ          u (); end
     if (IRQ_BAD_MEPC != 0)       begin : refuse_IRQ_BAD_MEPC       pipe_p1_unsupported_IRQ_BAD_MEPC       u (); end
     if (STALE_MIE != 0)          begin : refuse_STALE_MIE          pipe_p1_unsupported_STALE_MIE          u (); end
@@ -141,16 +145,18 @@ module tcpu_core_pipe #(
     if (FAULT_A_EARLY_RETIRE != 0) begin : refuse_FAULT_A_EARLY_RETIRE pipe_p1_unsupported_FAULT_A_EARLY_RETIRE u (); end
     if (FAULT_A_NO_RESV_CLEAR != 0) begin : refuse_FAULT_A_NO_RESV_CLEAR pipe_p1_unsupported_FAULT_A_NO_RESV_CLEAR u (); end
     if (ICACHE_BYTES != 0 && ICACHE_BYTES != 1024) begin : refuse_ICACHE_BYTES pipe_p1_unsupported_ICACHE_BYTES u (); end
-    if (PIPE_FAULT < 0 || PIPE_FAULT > 16) begin : refuse_PIPE_FAULT pipe_p1_unsupported_PIPE_FAULT u (); end
+    if (PIPE_FAULT < 0 || PIPE_FAULT > 19) begin : refuse_PIPE_FAULT pipe_p1_unsupported_PIPE_FAULT u (); end
+    if (PIPE_FAULT >= 17 && PIPE_FAULT <= 19 && PIPE_EXT_C == 0) begin : refuse_PIPE_FAULT_C pipe_p1_unsupported_PIPE_FAULT_needs_C u (); end
     if ((PIPE_FAULT == 15 || PIPE_FAULT == 16) && PIPE_EXT_M == 0) begin : refuse_PIPE_FAULT_M pipe_p1_unsupported_PIPE_FAULT_needs_M u (); end
     if (PIPE_EXT_M != 0 && PIPE_EXT_M != 1) begin : refuse_PIPE_EXT_M pipe_p1_unsupported_PIPE_EXT_M u (); end
-    if (PIPE_EXT_C != 0)         begin : refuse_PIPE_EXT_C         pipe_p2a_not_implemented_PIPE_EXT_C    u (); end
+    if (PIPE_EXT_C != 0 && PIPE_EXT_C != 1) begin : refuse_PIPE_EXT_C pipe_p1_unsupported_PIPE_EXT_C u (); end
   endgenerate
 
   localparam PF_WB_HOLD = 1, PF_REDIRECT_REPEAT = 2, PF_EPOCH_BIT = 3, PF_STORE_UNDER_TRAP = 4,
              PF_NO_LOADUSE = 5, PF_NO_FWD_EXMEM = 6, PF_NO_FWD_MEMWB = 7, PF_NO_WB_BYPASS = 8,
              PF_X0_FWD = 9, PF_IRQ_EPC_FETCHPTR = 10, PF_CSR_NO_DRAIN = 11, PF_SPEC_MMIO_FETCH = 12,
-             PF_FLUSH_FILL = 13, PF_FLUSH_ALLOC = 14, PF_MD_STALE_RESULT = 15, PF_MD_RESTART = 16;
+             PF_FLUSH_FILL = 13, PF_FLUSH_ALLOC = 14, PF_MD_STALE_RESULT = 15, PF_MD_RESTART = 16,
+             PF_C_LINK_LEN = 17, PF_C_CARRY_DROP = 18, PF_C_TVAL_FIRST = 19;
   localparam [63:0] MISA_P1 = 64'h8000_0000_0000_0100;     // MXL = 2, I only
   // misa reads back what this build implements: I, plus M and C when enabled
   localparam [63:0] MISA_P = MISA_P1 | ((PIPE_EXT_M != 0) ? 64'h1000 : 64'd0) | ((PIPE_EXT_C != 0) ? 64'h4 : 64'd0);
@@ -255,6 +261,8 @@ module tcpu_core_pipe #(
 
   // ---- back end (valid, sequence number, pc, instruction, exception, interrupt token)
   reg         id_v, id_irq, id_exc;
+  reg  [31:0] id_raw, ex_raw, mem_raw, wb_raw;   // the instruction as fetched: a 16-bit parcel zero-extended, or 32 bits
+  reg         id_c, ex_c, mem_c, wb_c;           // C: the instruction is a compressed parcel (length 2)
   reg  [31:0] id_seq;
   reg  [63:0] id_pc, id_cause, id_tval;
   reg  [31:0] id_insn;
@@ -354,14 +362,14 @@ module tcpu_core_pipe #(
   assign wb_trap_take = (wb_irq_take || wb_sync_trap) && !halted;
   assign wb_trap_cause = wb_irq_take ? csr_irq_cause : (wb_exc ? wb_cause : `CAUSE_ILLEGAL);
   assign wb_trap_epc   = wb_pc;
-  assign wb_trap_tval  = wb_irq_take ? 64'd0 : (wb_exc ? wb_tval : {32'd0, wb_insn});
+  assign wb_trap_tval  = wb_irq_take ? 64'd0 : (wb_exc ? wb_tval : {32'd0, wb_raw});
   wire wb_commit     = wb_v && !wb_irq && !wb_sync_trap && !halted;
   wire wb_serial     = wb_commit && (wb_is_csr || wb_is_mret || wb_is_wfi || wb_is_fence || wb_is_fencei);
   assign wb_mret     = wb_commit && wb_is_mret;
   assign csr_we      = wb_commit && wb_is_csr;
   assign wb_retire   = wb_commit;
   wire wb_flush      = wb_trap_take || wb_irq_cancel || wb_serial;
-  wire [63:0] wb_flush_to = wb_trap_take ? csr_trap_vector : wb_irq_cancel ? wb_pc : wb_mret ? csr_mepc : (wb_pc + 64'd4);
+  wire [63:0] wb_flush_to = wb_trap_take ? csr_trap_vector : wb_irq_cancel ? wb_pc : wb_mret ? csr_mepc : (wb_pc + (wb_c ? 64'd2 : 64'd4));
   wire wb_normal     = wb_commit && !wb_serial;         // commits and flushes nothing
   wire [63:0] wb_rdval = wb_is_csr ? csr_rdata : wb_val;
   assign rf_we = wb_commit && ((wb_we && (wb_rd != 5'd0 || X0_WRITABLE != 0)) || (wb_is_csr && csr_ri && wb_insn[11:7] != 5'd0));
@@ -369,8 +377,8 @@ module tcpu_core_pipe #(
   assign rf_wd = wb_rdval;
   assign commit_valid    = wb_commit;
   assign commit_pc       = wb_pc;
-  assign commit_insn     = wb_insn;
-  assign commit_len      = 3'd4;
+  assign commit_insn     = wb_raw;
+  assign commit_len      = wb_c ? 3'd2 : 3'd4;
   assign commit_rd_valid = rf_we && (rf_wa != 5'd0);
   assign commit_rd       = rf_wa;
   assign commit_rd_data  = wb_rdval;
@@ -497,7 +505,7 @@ module tcpu_core_pipe #(
       endcase
       `OP_LUI:   alu_out = imm_u;
       `OP_AUIPC: alu_out = ex_pc + imm_u;
-      `OP_JAL, `OP_JALR: alu_out = ex_pc + 64'd4;
+      `OP_JAL, `OP_JALR: alu_out = ex_pc + ((ex_c && PIPE_FAULT != PF_C_LINK_LEN) ? 64'd2 : 64'd4);
       default: ;
     endcase
   end
@@ -515,7 +523,8 @@ module tcpu_core_pipe #(
   end
   wire        ex_taken  = ex_isjal || ex_isjalr || (ex_isbr && br_taken);
   wire [63:0] ex_target = ex_isjal ? (ex_pc + imm_j) : ex_isjalr ? ((a + imm_i) & ~64'd1) : (ex_pc + imm_b);
-  wire        ex_tmis   = ex_taken && (ex_target[1:0] != 2'b00);       // IALIGN = 32 in P1
+  // IALIGN = 32 in the P1 configuration; 16 with C (a target's bit 0 is always clear: JALR clears it, offsets are even)
+  wire        ex_tmis   = ex_taken && ((PIPE_EXT_C != 0) ? ex_target[0] : (ex_target[1:0] != 2'b00));
   wire [63:0] ex_maddr  = a + (ex_isst ? imm_s : imm_i);
   reg ex_mmis;
   always @(*) case (ex_f3[1:0])
@@ -586,7 +595,7 @@ module tcpu_core_pipe #(
 
   // ================================================================================================ front end
   wire f1_pa_bad = (f1_pc[63:32] != 32'd0);
-  wire f1_mis    = (f1_pc[1:0] != 2'b00);
+  wire f1_mis    = (PIPE_EXT_C != 0) ? f1_pc[0] : (f1_pc[1:0] != 2'b00);
   wire f2_cacheable;
   tcpu_cacheable cb (.pa(f2_pc[31:0]), .cacheable(f2_cacheable));
   wire         ic_hit;
@@ -629,6 +638,88 @@ module tcpu_core_pipe #(
   wire [63:0] f2_i1_pc = f2_base + 64'd4;
   wire [31:0] f2_i1 = f2_word_now[63:32];
 
+  // ---- C: the parcel extractor (PIPE_EXT_C only). F2's 8-byte word holds four 16-bit parcels; up to two
+  // instructions are taken per cycle starting at parcel f2_pos. A 32-bit instruction whose lower parcel is the
+  // word's last is CARRIED: its lower parcel waits in fe_carry_* and the instruction completes with the first parcel
+  // of the next (sequential) word -- across a word, a cache line or a page boundary alike. A fetch fault on the word
+  // is one faulting instruction: with a carry, epc is the first parcel and mtval the second (the faulting address).
+  reg         fe_carry_v;
+  reg  [15:0] fe_carry_par;
+  reg  [63:0] fe_carry_pc;
+  reg  [1:0]  f2_pos;
+  function [15:0] parcel; input [63:0] w; input [1:0] k; parcel = w[{k, 4'b0000} +: 16]; endfunction
+  reg         cx_r0_v, cx_r1_v, cx_done, cx_cap, cx_use_carry;
+  reg  [63:0] cx_r0_pc, cx_r1_pc, cx_r0_tval, cx_cap_pc;
+  reg  [31:0] cx_r0_insn, cx_r1_insn;
+  reg  [15:0] cx_cap_par, cx_lo;
+  reg  [2:0]  cx_pos;
+  always @(*) begin
+    cx_r0_v = 1'b0; cx_r1_v = 1'b0; cx_done = 1'b0; cx_cap = 1'b0; cx_use_carry = 1'b0;
+    cx_r0_pc = 64'd0; cx_r1_pc = 64'd0; cx_r0_tval = 64'd0; cx_cap_pc = 64'd0; cx_r0_insn = 32'd0; cx_r1_insn = 32'd0;
+    cx_cap_par = 16'd0; cx_lo = 16'd0; cx_pos = {1'b0, f2_pos};
+    if (f2_bad_now) begin
+      cx_r0_v = 1'b1; cx_use_carry = fe_carry_v; cx_done = 1'b1;
+      cx_r0_pc = fe_carry_v ? fe_carry_pc : (f2_base + {61'd0, f2_pos, 1'b0});
+      cx_r0_tval = !fe_carry_v ? cx_r0_pc : (PIPE_FAULT == PF_C_TVAL_FIRST) ? fe_carry_pc : (fe_carry_pc + 64'd2);
+    end else begin
+      // step 0: the carried instruction, or the one at f2_pos
+      if (fe_carry_v) begin
+        cx_r0_v = 1'b1; cx_use_carry = 1'b1; cx_r0_pc = fe_carry_pc; cx_r0_insn = {parcel(f2_word_now, 2'd0), fe_carry_par};
+        cx_pos = 3'd1;
+      end else begin
+        cx_lo = parcel(f2_word_now, cx_pos[1:0]);
+        if (cx_lo[1:0] != 2'b11) begin
+          cx_r0_v = 1'b1; cx_r0_pc = f2_base + {60'd0, cx_pos, 1'b0}; cx_r0_insn = {16'd0, cx_lo}; cx_pos = cx_pos + 3'd1;
+        end else if (cx_pos != 3'd3) begin
+          cx_r0_v = 1'b1; cx_r0_pc = f2_base + {60'd0, cx_pos, 1'b0};
+          cx_r0_insn = {parcel(f2_word_now, cx_pos[1:0] + 2'd1), cx_lo}; cx_pos = cx_pos + 3'd2;
+        end else begin
+          cx_cap = 1'b1; cx_cap_par = cx_lo; cx_cap_pc = f2_base + 64'd6; cx_pos = 3'd4;
+        end
+      end
+      cx_r0_tval = cx_r0_pc;
+      // step 1: the next instruction, if the word has one
+      if (cx_r0_v && !cx_cap && cx_pos <= 3'd3) begin
+        cx_lo = parcel(f2_word_now, cx_pos[1:0]);
+        if (cx_lo[1:0] != 2'b11) begin
+          cx_r1_v = 1'b1; cx_r1_pc = f2_base + {60'd0, cx_pos, 1'b0}; cx_r1_insn = {16'd0, cx_lo}; cx_pos = cx_pos + 3'd1;
+        end else if (cx_pos != 3'd3) begin
+          cx_r1_v = 1'b1; cx_r1_pc = f2_base + {60'd0, cx_pos, 1'b0};
+          cx_r1_insn = {parcel(f2_word_now, cx_pos[1:0] + 2'd1), cx_lo}; cx_pos = cx_pos + 3'd2;
+        end else begin
+          cx_cap = 1'b1; cx_cap_par = cx_lo; cx_cap_pc = f2_base + 64'd6; cx_pos = 3'd4;
+        end
+      end
+      cx_done = (cx_pos >= 3'd4);
+    end
+  end
+  // ---- the records F2 offers this cycle: the C extractor's, or the P1 two-slot word's (identical to P1 when C = 0)
+  wire        rec0_v    = (PIPE_EXT_C != 0) ? cx_r0_v    : 1'b1;
+  wire [63:0] rec0_pc   = (PIPE_EXT_C != 0) ? cx_r0_pc   : f2_i0_pc;
+  wire [31:0] rec0_insn = (PIPE_EXT_C != 0) ? cx_r0_insn : f2_i0;
+  wire [63:0] rec0_tval = (PIPE_EXT_C != 0) ? cx_r0_tval : f2_i0_pc;
+  wire        rec1_v    = (PIPE_EXT_C != 0) ? cx_r1_v    : f2_two;
+  wire [63:0] rec1_pc   = (PIPE_EXT_C != 0) ? cx_r1_pc   : f2_i1_pc;
+  wire [31:0] rec1_insn = (PIPE_EXT_C != 0) ? cx_r1_insn : f2_i1;
+  wire        rec_done  = (PIPE_EXT_C != 0) ? cx_done    : 1'b1;
+  // ---- C: the instruction entering ID is expanded by the unchanged decoder; ID..WB see the 32-bit form, and the
+  // raw parcel and the length go with it (commit record, mtval, link, next pc). An illegal parcel stays raw, so the
+  // decode rejects it (cause 2, mtval = the parcel).
+  wire [31:0] idsrc_raw = fb_has ? fbh_insn : rec0_insn;
+  wire        idsrc_exc = fb_has ? fbh_exc : f2_bad_now;
+  wire        idsrc_c   = (PIPE_EXT_C != 0) && !idsrc_exc && (idsrc_raw[1:0] != 2'b11);
+  wire [31:0] cd_insn;
+  wire        cd_ill, cd_hint;
+  generate
+    if (PIPE_EXT_C != 0) begin : g_cdec
+      tcpu_cdecode #(.FAULT_C_IMM(FAULT_C_IMM), .FAULT_C_REG(FAULT_C_REG)) cdec (
+        .c(idsrc_raw[15:0]), .insn(cd_insn), .illegal(cd_ill), .hint(cd_hint));
+    end else begin : g_no_cdec
+      assign cd_insn = 32'd0; assign cd_ill = 1'b0; assign cd_hint = 1'b0;
+    end
+  endgenerate
+  wire [31:0] idsrc_x = (idsrc_c && !cd_ill) ? cd_insn : idsrc_raw;
+
   // ================================================================================================ sequential
   integer k;
   // coverage (simulation only)
@@ -650,7 +741,8 @@ module tcpu_core_pipe #(
     reg [1:0]  tail;
     reg        new_id_v, new_id_irq, new_id_exc;
     reg [63:0] new_id_pc, new_id_cause, new_id_tval;
-    reg [31:0] new_id_insn;
+    reg [31:0] new_id_insn, new_id_raw;
+    reg        new_id_c, f2_step;
     ic_fill <= 1'b0;
     if (rst) begin
       preq_valid <= 1'b0; pwait <= 1'b0; preq_owner_f <= 1'b0; preq_killed <= 1'b0; preq_addr <= 32'd0;
@@ -669,6 +761,8 @@ module tcpu_core_pipe #(
       cv_two_flush <= 0; cv_nc_wait <= 0; cv_flush_pending_valid <= 0; cv_redirect_held <= 0; cv_irq_synth_ahead <= 0;
       flushes_since_eng <= 0; last_ret_seq <= 32'd0; fe_flush_q <= 1'b0;
       ex_md_started <= 1'b0; ex_md_have <= 1'b0; ex_md_res <= 64'd0; md_owner_seq <= 32'd0;
+      fe_carry_v <= 1'b0; fe_carry_par <= 16'd0; fe_carry_pc <= 64'd0; f2_pos <= 2'd0;
+      id_raw <= 32'd0; ex_raw <= 32'd0; mem_raw <= 32'd0; wb_raw <= 32'd0; id_c <= 1'b0; ex_c <= 1'b0; mem_c <= 1'b0; wb_c <= 1'b0;
     end else begin
       fe_flush = 1'b0; fe_kill = 1'b0; fe_target = fe_pc;
       // ---- fetch-transaction ownership (CONTRACT rev. 3 section 3.1): a fetch request is raised or outstanding exactly
@@ -753,7 +847,7 @@ module tcpu_core_pipe #(
         else if (mem_isld) mem_res <= ld_val;
       end
       if (mem_fire) begin
-        wb_v <= 1'b1; wb_seq <= mem_seq; wb_pc <= mem_pc; wb_insn <= mem_insn; wb_irq <= mem_irq;
+        wb_v <= 1'b1; wb_seq <= mem_seq; wb_pc <= mem_pc; wb_insn <= mem_insn; wb_irq <= mem_irq; wb_raw <= mem_raw; wb_c <= mem_c;
         wb_rd <= mem_rd; wb_src <= mem_sdata;
         if (!mem_exc && !mem_irq && mem_memop && mem_pa_bad) begin
           wb_exc <= 1'b1; wb_cause <= mem_isst ? `CAUSE_STORE_ACCESS : `CAUSE_LOAD_ACCESS; wb_tval <= mem_addr;
@@ -799,7 +893,7 @@ module tcpu_core_pipe #(
         fe_flush = 1'b1; fe_kill = 1'b1; fe_target = ex_target;
       end
       if (ex_fire) begin
-        mem_v <= 1'b1; mem_seq <= ex_seq; mem_pc <= ex_pc; mem_insn <= ex_insn; mem_irq <= ex_irq;
+        mem_v <= 1'b1; mem_seq <= ex_seq; mem_pc <= ex_pc; mem_insn <= ex_insn; mem_irq <= ex_irq; mem_raw <= ex_raw; mem_c <= ex_c;
         mem_exc <= ex_exc || ex_newexc;
         mem_cause <= ex_exc ? ex_cause : ex_tmis ? `CAUSE_INSN_MISALIGNED : ex_isst ? `CAUSE_STORE_MISALIGNED : `CAUSE_LOAD_MISALIGNED;
         mem_tval  <= ex_exc ? ex_tval  : ex_tmis ? ex_target : ex_maddr;
@@ -816,7 +910,7 @@ module tcpu_core_pipe #(
 
       // ---------------------------------------------------------------- ID -> EX
       if (id_fire) begin
-        ex_v <= 1'b1; ex_seq <= id_seq; ex_pc <= id_pc; ex_insn <= id_insn; ex_irq <= id_irq;
+        ex_v <= 1'b1; ex_seq <= id_seq; ex_pc <= id_pc; ex_insn <= id_insn; ex_irq <= id_irq; ex_raw <= id_raw; ex_c <= id_c;
         ex_exc <= !id_irq && id_xexc; ex_cause <= id_xcause; ex_tval <= id_xtval;
         ex_a <= id_a; ex_b <= id_b; ex_redirected <= 1'b0; ex_md_started <= 1'b0; ex_md_have <= 1'b0;
         if (wb_byp_ok && ((wb_rd == id_rs1 && id_rs1 != 5'd0) || (wb_rd == id_rs2 && id_rs2 != 5'd0))) cv_wb_bypass <= cv_wb_bypass + 1;
@@ -826,21 +920,21 @@ module tcpu_core_pipe #(
       // ---------------------------------------------------------------- the ID load (and interrupt attachment)
       take_from_fb = 1'b0; take_from_f2 = 1'b0; f2_consumed = 1'b0;
       new_id_v = 1'b0; new_id_irq = 1'b0; new_id_exc = 1'b0; new_id_pc = 64'd0; new_id_insn = 32'd0;
-      new_id_cause = 64'd0; new_id_tval = 64'd0;
+      new_id_cause = 64'd0; new_id_tval = 64'd0; new_id_raw = 32'd0; new_id_c = 1'b0;
       if (id_space && !fe_flush && !fe_park && !halted) begin
         if (fb_has) begin
-          take_from_fb = 1'b1; new_id_v = 1'b1; new_id_pc = fbh_pc; new_id_insn = fbh_insn;
+          take_from_fb = 1'b1; new_id_v = 1'b1; new_id_pc = fbh_pc; new_id_insn = idsrc_x; new_id_raw = idsrc_raw; new_id_c = idsrc_c;
           new_id_exc = fbh_exc; new_id_cause = fbh_cause; new_id_tval = fbh_tval;
-        end else if (f2_avail) begin
-          take_from_f2 = 1'b1; new_id_v = 1'b1; new_id_pc = f2_i0_pc; new_id_insn = f2_i0;
-          new_id_exc = f2_bad_now; new_id_cause = f2_bad_cause; new_id_tval = f2_i0_pc;
+        end else if (f2_avail && rec0_v) begin
+          take_from_f2 = 1'b1; new_id_v = 1'b1; new_id_pc = rec0_pc; new_id_insn = idsrc_x; new_id_raw = idsrc_raw; new_id_c = idsrc_c;
+          new_id_exc = f2_bad_now; new_id_cause = f2_bad_cause; new_id_tval = rec0_tval;
         end
         if (can_irq) begin
           if (new_id_v) begin
             new_id_irq = 1'b1; cv_irq_token <= cv_irq_token + 1;
           end else begin
             // no instruction to attach to: synthesise a token at the architectural next pc
-            new_id_v = 1'b1; new_id_irq = 1'b1; new_id_insn = 32'h00000013;
+            new_id_v = 1'b1; new_id_irq = 1'b1; new_id_insn = 32'h00000013; new_id_raw = 32'h00000013; new_id_c = 1'b0;
             new_id_pc = (PIPE_FAULT == PF_IRQ_EPC_FETCHPTR) ? (f1_v ? f1_pc : fe_pc) : fe_next_pc;
             cv_irq_synth <= cv_irq_synth + 1;
             if ((f1_v ? f1_pc : fe_pc) != fe_next_pc) cv_irq_synth_ahead <= cv_irq_synth_ahead + 1;   // the fetch pointer is ahead
@@ -850,30 +944,38 @@ module tcpu_core_pipe #(
       end
       if (new_id_v) begin
         id_v <= 1'b1; id_seq <= seq_ctr; seq_ctr <= seq_ctr + 32'd1;
-        id_pc <= new_id_pc; id_insn <= new_id_insn; id_irq <= new_id_irq;
+        id_pc <= new_id_pc; id_insn <= new_id_insn; id_irq <= new_id_irq; id_raw <= new_id_raw; id_c <= new_id_c;
         id_exc <= new_id_exc && !new_id_irq; id_cause <= new_id_cause; id_tval <= new_id_tval;
-        fe_next_pc <= new_id_pc + 64'd4;
+        fe_next_pc <= new_id_pc + (new_id_c ? 64'd2 : 64'd4);
       end
 
       // ---------------------------------------------------------------- F2 / FB bookkeeping
       cnt_n = fb_cnt; head_n = fb_head;
       if (take_from_fb) begin cnt_n = cnt_n - 3'd1; head_n = head_n + 2'd1; end
-      push0 = 1'b0; push1 = 1'b0;
+      push0 = 1'b0; push1 = 1'b0; f2_step = 1'b0;
       if (f2_avail && !fe_flush) begin
         if (take_from_f2) begin
-          push1 = f2_two; f2_consumed = 1'b1;                     // the buffer is empty when the bypass is used
-        end else if (f2_two ? (cnt_n <= 3'd2) : (cnt_n <= 3'd3)) begin
-          push0 = 1'b1; push1 = f2_two; f2_consumed = 1'b1;
+          push1 = rec1_v; f2_step = 1'b1;                         // the buffer is empty when the bypass is used
+        end else if ({1'b0, cnt_n} + {3'd0, rec0_v} + {3'd0, rec1_v} <= 4'd4) begin
+          push0 = rec0_v; push1 = rec1_v; f2_step = 1'b1;
+        end
+      end
+      // the word is finished, or (C) it still has parcels and stays in F2 at its next position
+      if (f2_step) begin
+        if (rec_done) f2_consumed = 1'b1; else f2_pos <= cx_pos[1:0];
+        if (PIPE_EXT_C != 0) begin
+          if (cx_use_carry) fe_carry_v <= 1'b0;
+          if (cx_cap && PIPE_FAULT != PF_C_CARRY_DROP) begin fe_carry_v <= 1'b1; fe_carry_par <= cx_cap_par; fe_carry_pc <= cx_cap_pc; end
         end
       end
       tail = head_n + cnt_n[1:0];
       if (push0) begin
-        fbq_pc[tail] <= f2_i0_pc; fbq_insn[tail] <= f2_i0; fbq_exc[tail] <= f2_bad_now;
-        fbq_cause[tail] <= f2_bad_cause; fbq_tval[tail] <= f2_i0_pc;
+        fbq_pc[tail] <= rec0_pc; fbq_insn[tail] <= rec0_insn; fbq_exc[tail] <= f2_bad_now;
+        fbq_cause[tail] <= f2_bad_cause; fbq_tval[tail] <= rec0_tval;
       end
       if (push1) begin
-        fbq_pc[tail + {1'b0, push0}] <= f2_i1_pc; fbq_insn[tail + {1'b0, push0}] <= f2_i1; fbq_exc[tail + {1'b0, push0}] <= f2_bad_now;
-        fbq_cause[tail + {1'b0, push0}] <= f2_bad_cause; fbq_tval[tail + {1'b0, push0}] <= f2_i1_pc;
+        fbq_pc[tail + {1'b0, push0}] <= rec1_pc; fbq_insn[tail + {1'b0, push0}] <= rec1_insn; fbq_exc[tail + {1'b0, push0}] <= f2_bad_now;
+        fbq_cause[tail + {1'b0, push0}] <= f2_bad_cause; fbq_tval[tail + {1'b0, push0}] <= rec1_pc;
       end
       fb_cnt <= cnt_n + {2'd0, push0} + {2'd0, push1}; fb_head <= head_n;
 
@@ -901,7 +1003,7 @@ module tcpu_core_pipe #(
           if (nonspec_f2 || PIPE_FAULT == PF_SPEC_MMIO_FETCH) begin
             if (!nonspec_f2) $display("PIPE ASSERT spec-uncached: uncached fetch of 0x%0h raised while the front end is speculative", f2_pc);
             eng_pa <= f2_pc[31:0]; eng_killed <= 1'b0; eng_ep <= fe_ep; eng_err <= 1'b0; flushes_since_eng <= 0;
-            eng_st <= E_NEEDD; eng_dsize <= 2'd2; f2_st <= F2_WAIT;
+            eng_st <= E_NEEDD; eng_dsize <= (PIPE_EXT_C != 0) ? 2'd3 : 2'd2; f2_st <= F2_WAIT;
           end else cv_nc_wait <= cv_nc_wait + 1;
         end
       end
@@ -928,7 +1030,7 @@ module tcpu_core_pipe #(
 
       // ---------------------------------------------------------------- F1
       if (f1_v && (!f2_v || f2_consumed) && !fe_flush) begin
-        f2_v <= 1'b1; f2_st <= F2_LOOK; f2_pc <= f1_pc; f2_pfault <= f1_pa_bad || f1_mis;
+        f2_v <= 1'b1; f2_st <= F2_LOOK; f2_pc <= f1_pc; f2_pfault <= f1_pa_bad || f1_mis; f2_pos <= f1_pc[2:1];
         f2_pcause <= f1_mis ? `CAUSE_INSN_MISALIGNED : `CAUSE_INSN_ACCESS; f2_err <= 1'b0;
         f1_v <= 1'b0;
         if (!frozen && !fe_park && !halted) begin
@@ -950,7 +1052,7 @@ module tcpu_core_pipe #(
       end
       if (fe_flush) begin
         // every younger fetch-side thing: F1, F2, the buffer; the raised or outstanding fetch transaction is killed
-        f1_v <= 1'b0; f2_v <= 1'b0; fb_cnt <= 3'd0; fb_head <= 2'd0;
+        f1_v <= 1'b0; f2_v <= 1'b0; fb_cnt <= 3'd0; fb_head <= 2'd0; fe_carry_v <= 1'b0;
         if (!(wb_flush && !halted) && ex_redirect && !new_id_irq) id_v <= 1'b0;  // an EX redirect also removes ID
         fe_ep <= ~fe_ep;
         if (flushes_since_eng != 8'hff) flushes_since_eng <= flushes_since_eng + 8'd1;
