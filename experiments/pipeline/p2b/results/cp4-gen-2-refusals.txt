@@ -1,0 +1,10 @@
+== MC1UnsupportedPipelineConfig
+Caused by: java.lang.IllegalArgumentException: requirement failed: unsupported CORE_IMPL=pipeline with NUM_CORES=2: the pipeline is single-core only
+== P2bUnsupportedImplConfig
+Caused by: java.lang.IllegalArgumentException: requirement failed: unsupported CORE_IMPL=superscalar: implemented are multicycle, pipeline
+== P2bUnsupportedPipeV1Config
+Caused by: java.lang.IllegalArgumentException: requirement failed: unsupported CORE_IMPL=pipeline with atomic=false: the pipeline exists behind the V2 hart wrapper only
+== MC2UnsupportedQuadConfig
+Caused by: java.lang.IllegalArgumentException: requirement failed: unsupported NUM_CORES=4: MC-M2b implements 1 and 2 (4 is not implemented)
+== MC1UnsupportedZeroConfig
+Caused by: java.lang.IllegalArgumentException: requirement failed: unsupported NUM_CORES=0: MC-M2b implements 1 and 2 (no harts to bind)

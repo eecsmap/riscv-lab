@@ -33,7 +33,8 @@ object TeachingHart {
 
 class TeachingHart(val hartId: Int, resetPc: BigInt,
                    bridgeFault: Int, applyCycles: Int, drainTimeout: Int,
-                   atomicRegion: Seq[AddressSet], atomicTrace: Boolean, busInstrumentation: Boolean)
+                   atomicRegion: Seq[AddressSet], atomicTrace: Boolean, busInstrumentation: Boolean,
+                   coreImpl: String = "multicycle")   // PIPE-P2b: which core runs behind this boundary
                   (implicit p: Parameters) extends LazyModule {
   // MC-M2b: any non-negative hart id. Its identity -- the exact client name, the side-band slot the backend
   // binds by that name, its own reservation, its HART_ID parameter -- all come from this one number.
@@ -75,7 +76,7 @@ class TeachingHart(val hartId: Int, resetPc: BigInt,
     // The CPU is the soft domain: its reset is this module's reset OR the bridge's hold, exactly as the SoC
     // composed it before. withReset works here because TeachingCpuV2 is a plain Chisel Module instantiated
     // by this code, not a diplomatic child.
-    val cpu = withReset(reset.toBool || b.io.drain.cpuResetHold) { Module(new TeachingCpuV2(resetPc, hartId)) }
+    val cpu = withReset(reset.toBool || b.io.drain.cpuResetHold) { Module(new TeachingCpuV2(resetPc, hartId, coreImpl)) }
     b.io.phys <> cpu.io.phys
     cpu.io.irq.msip := io.irq.msip
     cpu.io.irq.mtip := io.irq.mtip

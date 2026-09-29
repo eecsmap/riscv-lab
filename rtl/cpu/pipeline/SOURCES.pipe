@@ -1,0 +1,17 @@
+# PIPE-P2b: the complete Verilog source list of the pipeline core as the SoC instantiates it (TcpuCoreBlackBox
+# impl = "pipeline": tcpu_core_pipe with PIPE_EXT_M/C/SU = 1, MISA_A = 1). Paths are relative to rtl/cpu. A build
+# compiles exactly these files and puts ONLY the include directory of tcpu_defs.vh on its search path, so a module
+# missing from this list is a build error, never a file Verilator found on its own (no -I auto-discovery).
+# kind  path
+top     pipeline/tcpu_core_pipe.v
+module  pipeline/tcpu_tlb2.v
+module  pipeline/tcpu_ptw_wrap.v
+module  tcpu_regfile.v
+module  tcpu_csr.v
+module  tcpu_icache.v
+module  tcpu_cacheable.v
+module  tcpu_muldiv.v
+module  tcpu_cdecode.v
+module  tcpu_ptw.v
+module  tcpu_permcheck.v
+include tcpu_defs.vh

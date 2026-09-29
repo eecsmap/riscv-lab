@@ -1,0 +1,10 @@
+RD2_PIPE_SIM_BUILD_OK dfc1f970458fe037
+BUILD_PIPE_RC=0
+NEG multicycle Verilog: rc=2 REFUSE: /home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p2b/runs/gen-2/after-RD2AtomicXv6FastConfig/RD2Harness.RD2AtomicXv6FastConfig.v does not instantiate tcpu_core_pipe
+NEG manifest without tcpu_tlb2.v (the file itself present in the rtl dir): rc=1; Cannot find file containing module: 'tcpu_tlb2'
+CHAIN_CP4_SIM_DONE
+
+# gen-2 first judgement (gen-cp4.sh's inline verdict at the time) failed the three trace-on configurations: the TileLink
+# monitors embed `(connected at RD2Soc.scala:L:C)` in assertion strings; judge-gen.sh normalizes that locator too and
+# was re-run on the stored Verilog (cp4-gen-2-judge.txt, PASS); its mutation self-test is cp4-gen-2-selftest-judge.txt.
+# gen-1 failed before and after alike (the boot ROM is read via ../common from the private common; fixed by the symlink).

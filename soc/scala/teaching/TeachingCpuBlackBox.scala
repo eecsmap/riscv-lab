@@ -7,14 +7,30 @@ import chisel3._
 import chisel3.experimental.IntParam
 import chisel3.util._
 
-class TcpuCoreBlackBox(resetPc: BigInt, misaA: Int = 0, hartId: BigInt = 0) extends BlackBox(Map(
+// PIPE-P2b: `impl` selects the Verilog module, explicitly -- "multicycle" is tcpu_core (the parameter map is exactly
+// the one it always had, so every existing configuration elaborates byte-identically), "pipeline" is
+// tcpu_core_pipe (rtl/cpu/pipeline, a DISTINCT module name, so a simulator or netlist built with the wrong source
+// list fails to find the module instead of silently running the other core) with M, C, S/U + Sv39 switched on
+// (the pipeline builds them only when asked; the multicycle core always has them). Nothing else is accepted.
+object TcpuCoreImpl {
+  val all = Seq("multicycle", "pipeline")
+  def moduleName(impl: String): String = impl match {
+    case "multicycle" => "tcpu_core"
+    case "pipeline"   => "tcpu_core_pipe"
+    case other        => throw new IllegalArgumentException(s"unsupported CORE_IMPL=$other: implemented are ${all.mkString(", ")}")
+  }
+}
+class TcpuCoreBlackBox(resetPc: BigInt, misaA: Int = 0, hartId: BigInt = 0, impl: String = "multicycle") extends BlackBox(Map(
       // the integration uses the SoC's own reset vector; the standalone harness keeps its own default
       "RESET_PC" -> IntParam(resetPc),
       // CPU-A: 1 only in a configuration that has the atomic path. With 0 the A instructions are illegal
       // and misa.A reads 0, so a configuration never claims support it does not have.
       "MISA_A" -> IntParam(misaA),
       // MC-M1: what mhartid reads. Every instance gets its own; the SoC passes 0 this round.
-      "HART_ID" -> IntParam(hartId))) {
+      "HART_ID" -> IntParam(hartId)) ++
+      (if (TcpuCoreImpl.moduleName(impl) == "tcpu_core_pipe")
+         Map("PIPE_EXT_M" -> IntParam(1), "PIPE_EXT_C" -> IntParam(1), "PIPE_EXT_SU" -> IntParam(1))
+       else Map.empty[String, IntParam])) {
   val io = IO(new Bundle {
     val clk = Input(Clock())
     val rst = Input(Bool())
@@ -67,8 +83,9 @@ class TcpuCoreBlackBox(resetPc: BigInt, misaA: Int = 0, hartId: BigInt = 0) exte
     val dbg_irq_enabled = Output(Bool())
   })
   // The Verilog itself is passed to the simulator build from teaching-cpu-work/cpu/rtl, which keeps one
-  // copy of the accepted core and one hash for it.
-  override def desiredName = "tcpu_core"
+  // copy of the accepted core and one hash for it. PIPE-P2b: the pipeline's sources are the explicit list in
+  // rtl/cpu/pipeline/SOURCES.pipe.
+  override def desiredName = TcpuCoreImpl.moduleName(impl)
 }
 
 // The wrapper: BlackBox + the PhysPortIO the bridge expects. The CPU is always ready for a response, which
@@ -147,7 +164,7 @@ class PhysObs extends Bundle {
 
 // CPU-A: the same BlackBox with its V2 port exposed. No logic of its own either -- the core that passed
 // the core-level gates is the core that runs here.
-class TeachingCpuV2(resetPc: BigInt, hartId: BigInt = 0) extends Module {
+class TeachingCpuV2(resetPc: BigInt, hartId: BigInt = 0, coreImpl: String = "multicycle") extends Module {
   val io = IO(new Bundle {
     val phys = new PhysPortV2IO
     val irq  = Input(new Bundle { val msip = Bool(); val mtip = Bool(); val meip = Bool() })
@@ -155,7 +172,7 @@ class TeachingCpuV2(resetPc: BigInt, hartId: BigInt = 0) extends Module {
     val impl = Output(new TeachingCpuImplObs)   // implementation detail, not contract (see the bundle)
     val physObs = Output(new PhysObs)
   })
-  val core = Module(new TcpuCoreBlackBox(resetPc, misaA = 1, hartId = hartId))   // this configuration has the atomic path
+  val core = Module(new TcpuCoreBlackBox(resetPc, misaA = 1, hartId = hartId, impl = coreImpl))   // this configuration has the atomic path
   core.io.clk := clock
   core.io.rst := reset.toBool
 
