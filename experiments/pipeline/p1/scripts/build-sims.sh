@@ -31,8 +31,15 @@ fail=0
 build() {  # build <name> <impl m|p> <flags...>
   local n=$1 impl=$2; shift 2
   local src; [ $impl = p ] && src="$PIPE" || src="$MULTI"
-  if timeout 900 $VL -Mdir $OUT/sims/$n -o tcpu_tb $BOUNDS "$@" $src $TB > $OUT/logs/build-$n.log 2>&1; then
-    echo "$n $impl $* $(sha256sum $OUT/sims/$n/tcpu_tb | cut -c1-16)" >> $OUT/sims.txt; echo "built $n"
+  local how=""
+  if ! timeout 900 $VL -Mdir $OUT/sims/$n -o tcpu_tb $BOUNDS "$@" $src $TB > $OUT/logs/build-$n.log 2>&1; then
+    # one retry with a single build thread from the same inputs (Verilator 5.022 has crashed tearing down its thread
+    # pool: "attempted to destroy locked Thread Pool"); the first log is kept, and the retry is marked in sims.txt
+    mv $OUT/logs/build-$n.log $OUT/logs/build-$n.first-failure.log; rm -rf $OUT/sims/$n; how=" [retried -j 1 after a failed build]"
+    timeout 900 ${VL/-j 4/-j 1} -Mdir $OUT/sims/$n -o tcpu_tb $BOUNDS "$@" $src $TB > $OUT/logs/build-$n.log 2>&1
+  fi
+  if [ $? = 0 ] && [ -x $OUT/sims/$n/tcpu_tb ]; then
+    echo "$n $impl $* $(sha256sum $OUT/sims/$n/tcpu_tb | cut -c1-16)$how" >> $OUT/sims.txt; echo "built $n$how"
   else echo "BUILD FAIL $n"; grep %Error $OUT/logs/build-$n.log | head -3; fail=1; fi
   rm -rf $OUT/sims/$n/*.o $OUT/sims/$n/*.d 2>/dev/null
 }
