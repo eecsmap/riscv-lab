@@ -1,0 +1,10 @@
+multicycle-board: 126 modules; pipeline-board: 126 modules
+only in multicycle-board (0): -
+only in pipeline-board (0): -
+in both, differing (1):
+  TeachingCpuV2: 2 changed lines
+--- TeachingCpuV2
+  @@ -66 +66 @@
+  -  tcpu_core #(.RESET_PC(65600), .MISA_A(1), .HART_ID(0)) core (
+  +  tcpu_core_pipe #(.MISA_A(1), .PIPE_EXT_SU(1), .PIPE_EXT_M(1), .HART_ID(0), .RESET_PC(65600), .PIPE_EXT_C(1)) core (
+VMODULE_DIFF identical=125 differing=1 only_a=0 only_b=0

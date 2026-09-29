@@ -1,0 +1,435 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2026 Advanced Micro Devices, Inc. All Rights Reserved.
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2025.2.1 (lin64) Build 6403652 Thu Mar 19 13:47:00 MDT 2026
+| Date         : Tue Sep 29 18:06:21 2026
+| Host         : ubuntu running 64-bit Ubuntu 24.04.2 LTS
+| Command      : report_timing -delay_type min -max_paths 10 -nworst 1 -path_type full -file /home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p3/runs/attempt-1/reports/post_route_critical_hold.rpt
+| Design       : rocketchip_wrapper
+| Device       : 7z020-clg400
+| Speed File   : -1  PRODUCTION 1.12 2019-11-22
+| Design State : Routed
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Timing Report
+
+Slack (MET) :             0.020ns  (arrival time - required time)
+  Source:                 rocketchip_wrapper/system/system_axi_interconnect_1_0/s00_couplers_imp_8CNLH6/system_axi_interconnect_1_imp_auto_pc_0/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_axi_protocol_converter/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_axi3_conv/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_a_axi3_conv__parameterized0/system_axi_interconnect_1_imp_auto_pc_0_axi_data_fifo_v2_1_36_axic_fifo__parameterized1/system_axi_interconnect_1_imp_auto_pc_0_axi_data_fifo_v2_1_36_fifo_gen__parameterized1/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>
+                            (rising edge-triggered cell FDCE clocked by host_clk_i  {rise@0.000ns fall@12.500ns period=25.000ns})
+  Destination:            rocketchip_wrapper/system/system_axi_interconnect_1_0/s00_couplers_imp_8CNLH6/system_axi_interconnect_1_imp_auto_pc_0/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_axi_protocol_converter/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_axi3_conv/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_a_axi3_conv__parameterized0/system_axi_interconnect_1_imp_auto_pc_0_axi_data_fifo_v2_1_36_axic_fifo__parameterized1/system_axi_interconnect_1_imp_auto_pc_0_axi_data_fifo_v2_1_36_fifo_gen__parameterized1/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>
+                            (rising edge-triggered cell RAMD32 clocked by host_clk_i  {rise@0.000ns fall@12.500ns period=25.000ns})
+  Path Group:             host_clk_i
+  Path Type:              Hold (Min at Fast Process Corner)
+  Requirement:            0.000ns  (host_clk_i rise@0.000ns - host_clk_i rise@0.000ns)
+  Data Path Delay:        0.233ns  (logic 0.141ns (60.453%)  route 0.092ns (39.547%))
+  Logic Levels:           0  
+  Clock Path Skew:        0.013ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    2.615ns
+    Source Clock Delay      (SCD):    2.056ns
+    Clock Pessimism Removal (CPR):    0.546ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock host_clk_i rise edge)
+                                                      0.000     0.000 r  
+                         clock source latency         0.709     0.709    
+                         propagated clock network latency
+                                                      1.347     2.056    
+    SLICE_X3Y46          FDCE                         0.000     2.056 r  rocketchip_wrapper/system/system_axi_interconnect_1_0/s00_couplers_imp_8CNLH6/system_axi_interconnect_1_imp_auto_pc_0/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_axi_protocol_converter/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_axi3_conv/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_a_axi3_conv__parameterized0/system_axi_interconnect_1_imp_auto_pc_0_axi_data_fifo_v2_1_36_axic_fifo__parameterized1/system_axi_interconnect_1_imp_auto_pc_0_axi_data_fifo_v2_1_36_fifo_gen__parameterized1/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>
+    SLICE_X3Y46          FDCE (Prop_fdce_C_Q)         0.141     2.197 r  rocketchip_wrapper/system/system_axi_interconnect_1_0/s00_couplers_imp_8CNLH6/system_axi_interconnect_1_imp_auto_pc_0/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_axi_protocol_converter/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_axi3_conv/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_a_axi3_conv__parameterized0/system_axi_interconnect_1_imp_auto_pc_0_axi_data_fifo_v2_1_36_axic_fifo__parameterized1/system_axi_interconnect_1_imp_auto_pc_0_axi_data_fifo_v2_1_36_fifo_gen__parameterized1/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>
+                         net (fo=5, routed)           0.092     2.289    rocketchip_wrapper/system/system_axi_interconnect_1_0/s00_couplers_imp_8CNLH6/system_axi_interconnect_1_imp_auto_pc_0/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_axi_protocol_converter/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_axi3_conv/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_a_axi3_conv__parameterized0/system_axi_interconnect_1_imp_auto_pc_0_axi_data_fifo_v2_1_36_axic_fifo__parameterized1/system_axi_interconnect_1_imp_auto_pc_0_axi_data_fifo_v2_1_36_fifo_gen__parameterized1/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>
+    SLICE_X2Y46          RAMD32                                       r  rocketchip_wrapper/system/system_axi_interconnect_1_0/s00_couplers_imp_8CNLH6/system_axi_interconnect_1_imp_auto_pc_0/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_axi_protocol_converter/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_axi3_conv/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_a_axi3_conv__parameterized0/system_axi_interconnect_1_imp_auto_pc_0_axi_data_fifo_v2_1_36_axic_fifo__parameterized1/system_axi_interconnect_1_imp_auto_pc_0_axi_data_fifo_v2_1_36_fifo_gen__parameterized1/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>
+  -------------------------------------------------------------------    -------------------
+
+                         (clock host_clk_i rise edge)
+                                                      0.000     0.000 r  
+                         clock source latency         0.939     0.939    
+                         propagated clock network latency
+                                                      1.676     2.615    
+                         clock pessimism             -0.546     2.069    
+    SLICE_X2Y46          RAMD32 (Hold_ramd32_CLK_WADR4)
+                                                      0.200     2.269    rocketchip_wrapper/system/system_axi_interconnect_1_0/s00_couplers_imp_8CNLH6/system_axi_interconnect_1_imp_auto_pc_0/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_axi_protocol_converter/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_axi3_conv/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_a_axi3_conv__parameterized0/system_axi_interconnect_1_imp_auto_pc_0_axi_data_fifo_v2_1_36_axic_fifo__parameterized1/system_axi_interconnect_1_imp_auto_pc_0_axi_data_fifo_v2_1_36_fifo_gen__parameterized1/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>
+  -------------------------------------------------------------------
+                         required time                         -2.269    
+                         arrival time                           2.289    
+  -------------------------------------------------------------------
+                         slack                                  0.020    
+
+Slack (MET) :             0.020ns  (arrival time - required time)
+  Source:                 rocketchip_wrapper/system/system_axi_interconnect_1_0/s00_couplers_imp_8CNLH6/system_axi_interconnect_1_imp_auto_pc_0/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_axi_protocol_converter/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_axi3_conv/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_a_axi3_conv__parameterized0/system_axi_interconnect_1_imp_auto_pc_0_axi_data_fifo_v2_1_36_axic_fifo__parameterized1/system_axi_interconnect_1_imp_auto_pc_0_axi_data_fifo_v2_1_36_fifo_gen__parameterized1/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>
+                            (rising edge-triggered cell FDCE clocked by host_clk_i  {rise@0.000ns fall@12.500ns period=25.000ns})
+  Destination:            rocketchip_wrapper/system/system_axi_interconnect_1_0/s00_couplers_imp_8CNLH6/system_axi_interconnect_1_imp_auto_pc_0/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_axi_protocol_converter/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_axi3_conv/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_a_axi3_conv__parameterized0/system_axi_interconnect_1_imp_auto_pc_0_axi_data_fifo_v2_1_36_axic_fifo__parameterized1/system_axi_interconnect_1_imp_auto_pc_0_axi_data_fifo_v2_1_36_fifo_gen__parameterized1/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>
+                            (rising edge-triggered cell RAMD32 clocked by host_clk_i  {rise@0.000ns fall@12.500ns period=25.000ns})
+  Path Group:             host_clk_i
+  Path Type:              Hold (Min at Fast Process Corner)
+  Requirement:            0.000ns  (host_clk_i rise@0.000ns - host_clk_i rise@0.000ns)
+  Data Path Delay:        0.233ns  (logic 0.141ns (60.453%)  route 0.092ns (39.547%))
+  Logic Levels:           0  
+  Clock Path Skew:        0.013ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    2.615ns
+    Source Clock Delay      (SCD):    2.056ns
+    Clock Pessimism Removal (CPR):    0.546ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock host_clk_i rise edge)
+                                                      0.000     0.000 r  
+                         clock source latency         0.709     0.709    
+                         propagated clock network latency
+                                                      1.347     2.056    
+    SLICE_X3Y46          FDCE                         0.000     2.056 r  rocketchip_wrapper/system/system_axi_interconnect_1_0/s00_couplers_imp_8CNLH6/system_axi_interconnect_1_imp_auto_pc_0/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_axi_protocol_converter/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_axi3_conv/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_a_axi3_conv__parameterized0/system_axi_interconnect_1_imp_auto_pc_0_axi_data_fifo_v2_1_36_axic_fifo__parameterized1/system_axi_interconnect_1_imp_auto_pc_0_axi_data_fifo_v2_1_36_fifo_gen__parameterized1/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>
+    SLICE_X3Y46          FDCE (Prop_fdce_C_Q)         0.141     2.197 r  rocketchip_wrapper/system/system_axi_interconnect_1_0/s00_couplers_imp_8CNLH6/system_axi_interconnect_1_imp_auto_pc_0/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_axi_protocol_converter/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_axi3_conv/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_a_axi3_conv__parameterized0/system_axi_interconnect_1_imp_auto_pc_0_axi_data_fifo_v2_1_36_axic_fifo__parameterized1/system_axi_interconnect_1_imp_auto_pc_0_axi_data_fifo_v2_1_36_fifo_gen__parameterized1/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>
+                         net (fo=5, routed)           0.092     2.289    rocketchip_wrapper/system/system_axi_interconnect_1_0/s00_couplers_imp_8CNLH6/system_axi_interconnect_1_imp_auto_pc_0/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_axi_protocol_converter/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_axi3_conv/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_a_axi3_conv__parameterized0/system_axi_interconnect_1_imp_auto_pc_0_axi_data_fifo_v2_1_36_axic_fifo__parameterized1/system_axi_interconnect_1_imp_auto_pc_0_axi_data_fifo_v2_1_36_fifo_gen__parameterized1/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>
+    SLICE_X2Y46          RAMD32                                       r  rocketchip_wrapper/system/system_axi_interconnect_1_0/s00_couplers_imp_8CNLH6/system_axi_interconnect_1_imp_auto_pc_0/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_axi_protocol_converter/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_axi3_conv/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_a_axi3_conv__parameterized0/system_axi_interconnect_1_imp_auto_pc_0_axi_data_fifo_v2_1_36_axic_fifo__parameterized1/system_axi_interconnect_1_imp_auto_pc_0_axi_data_fifo_v2_1_36_fifo_gen__parameterized1/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>
+  -------------------------------------------------------------------    -------------------
+
+                         (clock host_clk_i rise edge)
+                                                      0.000     0.000 r  
+                         clock source latency         0.939     0.939    
+                         propagated clock network latency
+                                                      1.676     2.615    
+                         clock pessimism             -0.546     2.069    
+    SLICE_X2Y46          RAMD32 (Hold_ramd32_CLK_WADR4)
+                                                      0.200     2.269    rocketchip_wrapper/system/system_axi_interconnect_1_0/s00_couplers_imp_8CNLH6/system_axi_interconnect_1_imp_auto_pc_0/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_axi_protocol_converter/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_axi3_conv/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_a_axi3_conv__parameterized0/system_axi_interconnect_1_imp_auto_pc_0_axi_data_fifo_v2_1_36_axic_fifo__parameterized1/system_axi_interconnect_1_imp_auto_pc_0_axi_data_fifo_v2_1_36_fifo_gen__parameterized1/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>
+  -------------------------------------------------------------------
+                         required time                         -2.269    
+                         arrival time                           2.289    
+  -------------------------------------------------------------------
+                         slack                                  0.020    
+
+Slack (MET) :             0.033ns  (arrival time - required time)
+  Source:                 rocketchip_wrapper/system/system_axi_interconnect_1_0/s00_couplers_imp_8CNLH6/system_axi_interconnect_1_imp_auto_pc_0/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_axi_protocol_converter/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_axi3_conv/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_a_axi3_conv__parameterized0/system_axi_interconnect_1_imp_auto_pc_0_axi_data_fifo_v2_1_36_axic_fifo__parameterized1/system_axi_interconnect_1_imp_auto_pc_0_axi_data_fifo_v2_1_36_fifo_gen__parameterized1/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>
+                            (rising edge-triggered cell FDCE clocked by host_clk_i  {rise@0.000ns fall@12.500ns period=25.000ns})
+  Destination:            rocketchip_wrapper/system/system_axi_interconnect_1_0/s00_couplers_imp_8CNLH6/system_axi_interconnect_1_imp_auto_pc_0/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_axi_protocol_converter/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_axi3_conv/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_a_axi3_conv__parameterized0/system_axi_interconnect_1_imp_auto_pc_0_axi_data_fifo_v2_1_36_axic_fifo__parameterized1/system_axi_interconnect_1_imp_auto_pc_0_axi_data_fifo_v2_1_36_fifo_gen__parameterized1/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>
+                            (rising edge-triggered cell RAMD32 clocked by host_clk_i  {rise@0.000ns fall@12.500ns period=25.000ns})
+  Path Group:             host_clk_i
+  Path Type:              Hold (Min at Fast Process Corner)
+  Requirement:            0.000ns  (host_clk_i rise@0.000ns - host_clk_i rise@0.000ns)
+  Data Path Delay:        0.286ns  (logic 0.141ns (49.242%)  route 0.145ns (50.758%))
+  Logic Levels:           0  
+  Clock Path Skew:        0.013ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    2.615ns
+    Source Clock Delay      (SCD):    2.056ns
+    Clock Pessimism Removal (CPR):    0.546ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock host_clk_i rise edge)
+                                                      0.000     0.000 r  
+                         clock source latency         0.709     0.709    
+                         propagated clock network latency
+                                                      1.347     2.056    
+    SLICE_X3Y46          FDCE                         0.000     2.056 r  rocketchip_wrapper/system/system_axi_interconnect_1_0/s00_couplers_imp_8CNLH6/system_axi_interconnect_1_imp_auto_pc_0/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_axi_protocol_converter/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_axi3_conv/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_a_axi3_conv__parameterized0/system_axi_interconnect_1_imp_auto_pc_0_axi_data_fifo_v2_1_36_axic_fifo__parameterized1/system_axi_interconnect_1_imp_auto_pc_0_axi_data_fifo_v2_1_36_fifo_gen__parameterized1/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>
+    SLICE_X3Y46          FDCE (Prop_fdce_C_Q)         0.141     2.197 r  rocketchip_wrapper/system/system_axi_interconnect_1_0/s00_couplers_imp_8CNLH6/system_axi_interconnect_1_imp_auto_pc_0/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_axi_protocol_converter/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_axi3_conv/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_a_axi3_conv__parameterized0/system_axi_interconnect_1_imp_auto_pc_0_axi_data_fifo_v2_1_36_axic_fifo__parameterized1/system_axi_interconnect_1_imp_auto_pc_0_axi_data_fifo_v2_1_36_fifo_gen__parameterized1/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>
+                         net (fo=5, routed)           0.145     2.342    rocketchip_wrapper/system/system_axi_interconnect_1_0/s00_couplers_imp_8CNLH6/system_axi_interconnect_1_imp_auto_pc_0/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_axi_protocol_converter/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_axi3_conv/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_a_axi3_conv__parameterized0/system_axi_interconnect_1_imp_auto_pc_0_axi_data_fifo_v2_1_36_axic_fifo__parameterized1/system_axi_interconnect_1_imp_auto_pc_0_axi_data_fifo_v2_1_36_fifo_gen__parameterized1/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>
+    SLICE_X2Y46          RAMD32                                       r  rocketchip_wrapper/system/system_axi_interconnect_1_0/s00_couplers_imp_8CNLH6/system_axi_interconnect_1_imp_auto_pc_0/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_axi_protocol_converter/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_axi3_conv/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_a_axi3_conv__parameterized0/system_axi_interconnect_1_imp_auto_pc_0_axi_data_fifo_v2_1_36_axic_fifo__parameterized1/system_axi_interconnect_1_imp_auto_pc_0_axi_data_fifo_v2_1_36_fifo_gen__parameterized1/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>
+  -------------------------------------------------------------------    -------------------
+
+                         (clock host_clk_i rise edge)
+                                                      0.000     0.000 r  
+                         clock source latency         0.939     0.939    
+                         propagated clock network latency
+                                                      1.676     2.615    
+                         clock pessimism             -0.546     2.069    
+    SLICE_X2Y46          RAMD32 (Hold_ramd32_CLK_WADR3)
+                                                      0.240     2.309    rocketchip_wrapper/system/system_axi_interconnect_1_0/s00_couplers_imp_8CNLH6/system_axi_interconnect_1_imp_auto_pc_0/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_axi_protocol_converter/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_axi3_conv/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_a_axi3_conv__parameterized0/system_axi_interconnect_1_imp_auto_pc_0_axi_data_fifo_v2_1_36_axic_fifo__parameterized1/system_axi_interconnect_1_imp_auto_pc_0_axi_data_fifo_v2_1_36_fifo_gen__parameterized1/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>
+  -------------------------------------------------------------------
+                         required time                         -2.309    
+                         arrival time                           2.342    
+  -------------------------------------------------------------------
+                         slack                                  0.033    
+
+Slack (MET) :             0.033ns  (arrival time - required time)
+  Source:                 rocketchip_wrapper/system/system_axi_interconnect_1_0/s00_couplers_imp_8CNLH6/system_axi_interconnect_1_imp_auto_pc_0/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_axi_protocol_converter/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_axi3_conv/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_a_axi3_conv__parameterized0/system_axi_interconnect_1_imp_auto_pc_0_axi_data_fifo_v2_1_36_axic_fifo__parameterized1/system_axi_interconnect_1_imp_auto_pc_0_axi_data_fifo_v2_1_36_fifo_gen__parameterized1/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>
+                            (rising edge-triggered cell FDCE clocked by host_clk_i  {rise@0.000ns fall@12.500ns period=25.000ns})
+  Destination:            rocketchip_wrapper/system/system_axi_interconnect_1_0/s00_couplers_imp_8CNLH6/system_axi_interconnect_1_imp_auto_pc_0/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_axi_protocol_converter/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_axi3_conv/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_a_axi3_conv__parameterized0/system_axi_interconnect_1_imp_auto_pc_0_axi_data_fifo_v2_1_36_axic_fifo__parameterized1/system_axi_interconnect_1_imp_auto_pc_0_axi_data_fifo_v2_1_36_fifo_gen__parameterized1/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>
+                            (rising edge-triggered cell RAMD32 clocked by host_clk_i  {rise@0.000ns fall@12.500ns period=25.000ns})
+  Path Group:             host_clk_i
+  Path Type:              Hold (Min at Fast Process Corner)
+  Requirement:            0.000ns  (host_clk_i rise@0.000ns - host_clk_i rise@0.000ns)
+  Data Path Delay:        0.286ns  (logic 0.141ns (49.242%)  route 0.145ns (50.758%))
+  Logic Levels:           0  
+  Clock Path Skew:        0.013ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    2.615ns
+    Source Clock Delay      (SCD):    2.056ns
+    Clock Pessimism Removal (CPR):    0.546ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock host_clk_i rise edge)
+                                                      0.000     0.000 r  
+                         clock source latency         0.709     0.709    
+                         propagated clock network latency
+                                                      1.347     2.056    
+    SLICE_X3Y46          FDCE                         0.000     2.056 r  rocketchip_wrapper/system/system_axi_interconnect_1_0/s00_couplers_imp_8CNLH6/system_axi_interconnect_1_imp_auto_pc_0/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_axi_protocol_converter/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_axi3_conv/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_a_axi3_conv__parameterized0/system_axi_interconnect_1_imp_auto_pc_0_axi_data_fifo_v2_1_36_axic_fifo__parameterized1/system_axi_interconnect_1_imp_auto_pc_0_axi_data_fifo_v2_1_36_fifo_gen__parameterized1/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>
+    SLICE_X3Y46          FDCE (Prop_fdce_C_Q)         0.141     2.197 r  rocketchip_wrapper/system/system_axi_interconnect_1_0/s00_couplers_imp_8CNLH6/system_axi_interconnect_1_imp_auto_pc_0/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_axi_protocol_converter/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_axi3_conv/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_a_axi3_conv__parameterized0/system_axi_interconnect_1_imp_auto_pc_0_axi_data_fifo_v2_1_36_axic_fifo__parameterized1/system_axi_interconnect_1_imp_auto_pc_0_axi_data_fifo_v2_1_36_fifo_gen__parameterized1/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>
+                         net (fo=5, routed)           0.145     2.342    rocketchip_wrapper/system/system_axi_interconnect_1_0/s00_couplers_imp_8CNLH6/system_axi_interconnect_1_imp_auto_pc_0/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_axi_protocol_converter/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_axi3_conv/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_a_axi3_conv__parameterized0/system_axi_interconnect_1_imp_auto_pc_0_axi_data_fifo_v2_1_36_axic_fifo__parameterized1/system_axi_interconnect_1_imp_auto_pc_0_axi_data_fifo_v2_1_36_fifo_gen__parameterized1/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>
+    SLICE_X2Y46          RAMD32                                       r  rocketchip_wrapper/system/system_axi_interconnect_1_0/s00_couplers_imp_8CNLH6/system_axi_interconnect_1_imp_auto_pc_0/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_axi_protocol_converter/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_axi3_conv/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_a_axi3_conv__parameterized0/system_axi_interconnect_1_imp_auto_pc_0_axi_data_fifo_v2_1_36_axic_fifo__parameterized1/system_axi_interconnect_1_imp_auto_pc_0_axi_data_fifo_v2_1_36_fifo_gen__parameterized1/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>
+  -------------------------------------------------------------------    -------------------
+
+                         (clock host_clk_i rise edge)
+                                                      0.000     0.000 r  
+                         clock source latency         0.939     0.939    
+                         propagated clock network latency
+                                                      1.676     2.615    
+                         clock pessimism             -0.546     2.069    
+    SLICE_X2Y46          RAMD32 (Hold_ramd32_CLK_WADR3)
+                                                      0.240     2.309    rocketchip_wrapper/system/system_axi_interconnect_1_0/s00_couplers_imp_8CNLH6/system_axi_interconnect_1_imp_auto_pc_0/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_axi_protocol_converter/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_axi3_conv/system_axi_interconnect_1_imp_auto_pc_0_axi_protocol_converter_v2_1_37_a_axi3_conv__parameterized0/system_axi_interconnect_1_imp_auto_pc_0_axi_data_fifo_v2_1_36_axic_fifo__parameterized1/system_axi_interconnect_1_imp_auto_pc_0_axi_data_fifo_v2_1_36_fifo_gen__parameterized1/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>/<hidden>
+  -------------------------------------------------------------------
+                         required time                         -2.309    
+                         arrival time                           2.342    
+  -------------------------------------------------------------------
+                         slack                                  0.033    
+
+Slack (MET) :             0.037ns  (arrival time - required time)
+  Source:                 top/teaching_board_top/target/harts/cpu/core/ic_fill_data_reg[117]/C
+                            (rising edge-triggered cell FDRE clocked by host_clk_i  {rise@0.000ns fall@12.500ns period=25.000ns})
+  Destination:            top/teaching_board_top/target/harts/cpu/core/icache/g_cache.data_reg_0_63_117_119/RAMA/I
+                            (rising edge-triggered cell RAMD64E clocked by host_clk_i  {rise@0.000ns fall@12.500ns period=25.000ns})
+  Path Group:             host_clk_i
+  Path Type:              Hold (Min at Fast Process Corner)
+  Requirement:            0.000ns  (host_clk_i rise@0.000ns - host_clk_i rise@0.000ns)
+  Data Path Delay:        0.197ns  (logic 0.141ns (71.611%)  route 0.056ns (28.389%))
+  Logic Levels:           0  
+  Clock Path Skew:        0.013ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    2.566ns
+    Source Clock Delay      (SCD):    2.011ns
+    Clock Pessimism Removal (CPR):    0.542ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock host_clk_i rise edge)
+                                                      0.000     0.000 r  
+                         clock source latency         0.709     0.709    
+                         propagated clock network latency
+                                                      1.302     2.011    
+    SLICE_X67Y16         FDRE                         0.000     2.011 r  top/teaching_board_top/target/harts/cpu/core/ic_fill_data_reg[117]/C
+    SLICE_X67Y16         FDRE (Prop_fdre_C_Q)         0.141     2.152 r  top/teaching_board_top/target/harts/cpu/core/ic_fill_data_reg[117]/Q
+                         net (fo=1, routed)           0.056     2.208    top/teaching_board_top/target/harts/cpu/core/icache/g_cache.data_reg_0_63_117_119/DIA
+    SLICE_X66Y16         RAMD64E                                      r  top/teaching_board_top/target/harts/cpu/core/icache/g_cache.data_reg_0_63_117_119/RAMA/I
+  -------------------------------------------------------------------    -------------------
+
+                         (clock host_clk_i rise edge)
+                                                      0.000     0.000 r  
+                         clock source latency         0.939     0.939    
+                         propagated clock network latency
+                                                      1.627     2.566    
+                         clock pessimism             -0.542     2.024    
+    SLICE_X66Y16         RAMD64E (Hold_ramd64e_CLK_I)
+                                                      0.147     2.171    top/teaching_board_top/target/harts/cpu/core/icache/g_cache.data_reg_0_63_117_119/RAMA
+  -------------------------------------------------------------------
+                         required time                         -2.171    
+                         arrival time                           2.208    
+  -------------------------------------------------------------------
+                         slack                                  0.037    
+
+Slack (MET) :             0.037ns  (arrival time - required time)
+  Source:                 top/teaching_board_top/target/harts/cpu/core/ic_fill_data_reg[66]/C
+                            (rising edge-triggered cell FDRE clocked by host_clk_i  {rise@0.000ns fall@12.500ns period=25.000ns})
+  Destination:            top/teaching_board_top/target/harts/cpu/core/icache/g_cache.data_reg_0_63_66_68/RAMA/I
+                            (rising edge-triggered cell RAMD64E clocked by host_clk_i  {rise@0.000ns fall@12.500ns period=25.000ns})
+  Path Group:             host_clk_i
+  Path Type:              Hold (Min at Fast Process Corner)
+  Requirement:            0.000ns  (host_clk_i rise@0.000ns - host_clk_i rise@0.000ns)
+  Data Path Delay:        0.197ns  (logic 0.141ns (71.611%)  route 0.056ns (28.389%))
+  Logic Levels:           0  
+  Clock Path Skew:        0.013ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    2.563ns
+    Source Clock Delay      (SCD):    2.008ns
+    Clock Pessimism Removal (CPR):    0.542ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock host_clk_i rise edge)
+                                                      0.000     0.000 r  
+                         clock source latency         0.709     0.709    
+                         propagated clock network latency
+                                                      1.299     2.008    
+    SLICE_X63Y19         FDRE                         0.000     2.008 r  top/teaching_board_top/target/harts/cpu/core/ic_fill_data_reg[66]/C
+    SLICE_X63Y19         FDRE (Prop_fdre_C_Q)         0.141     2.149 r  top/teaching_board_top/target/harts/cpu/core/ic_fill_data_reg[66]/Q
+                         net (fo=1, routed)           0.056     2.205    top/teaching_board_top/target/harts/cpu/core/icache/g_cache.data_reg_0_63_66_68/DIA
+    SLICE_X62Y19         RAMD64E                                      r  top/teaching_board_top/target/harts/cpu/core/icache/g_cache.data_reg_0_63_66_68/RAMA/I
+  -------------------------------------------------------------------    -------------------
+
+                         (clock host_clk_i rise edge)
+                                                      0.000     0.000 r  
+                         clock source latency         0.939     0.939    
+                         propagated clock network latency
+                                                      1.624     2.563    
+                         clock pessimism             -0.542     2.021    
+    SLICE_X62Y19         RAMD64E (Hold_ramd64e_CLK_I)
+                                                      0.147     2.168    top/teaching_board_top/target/harts/cpu/core/icache/g_cache.data_reg_0_63_66_68/RAMA
+  -------------------------------------------------------------------
+                         required time                         -2.168    
+                         arrival time                           2.205    
+  -------------------------------------------------------------------
+                         slack                                  0.037    
+
+Slack (MET) :             0.037ns  (arrival time - required time)
+  Source:                 top/teaching_board_top/target/harts/cpu/core/ic_fill_data_reg[87]/C
+                            (rising edge-triggered cell FDRE clocked by host_clk_i  {rise@0.000ns fall@12.500ns period=25.000ns})
+  Destination:            top/teaching_board_top/target/harts/cpu/core/icache/g_cache.data_reg_0_63_87_89/RAMA/I
+                            (rising edge-triggered cell RAMD64E clocked by host_clk_i  {rise@0.000ns fall@12.500ns period=25.000ns})
+  Path Group:             host_clk_i
+  Path Type:              Hold (Min at Fast Process Corner)
+  Requirement:            0.000ns  (host_clk_i rise@0.000ns - host_clk_i rise@0.000ns)
+  Data Path Delay:        0.197ns  (logic 0.141ns (71.611%)  route 0.056ns (28.389%))
+  Logic Levels:           0  
+  Clock Path Skew:        0.013ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    2.571ns
+    Source Clock Delay      (SCD):    2.015ns
+    Clock Pessimism Removal (CPR):    0.543ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock host_clk_i rise edge)
+                                                      0.000     0.000 r  
+                         clock source latency         0.709     0.709    
+                         propagated clock network latency
+                                                      1.306     2.015    
+    SLICE_X83Y16         FDRE                         0.000     2.015 r  top/teaching_board_top/target/harts/cpu/core/ic_fill_data_reg[87]/C
+    SLICE_X83Y16         FDRE (Prop_fdre_C_Q)         0.141     2.156 r  top/teaching_board_top/target/harts/cpu/core/ic_fill_data_reg[87]/Q
+                         net (fo=1, routed)           0.056     2.212    top/teaching_board_top/target/harts/cpu/core/icache/g_cache.data_reg_0_63_87_89/DIA
+    SLICE_X82Y16         RAMD64E                                      r  top/teaching_board_top/target/harts/cpu/core/icache/g_cache.data_reg_0_63_87_89/RAMA/I
+  -------------------------------------------------------------------    -------------------
+
+                         (clock host_clk_i rise edge)
+                                                      0.000     0.000 r  
+                         clock source latency         0.939     0.939    
+                         propagated clock network latency
+                                                      1.632     2.571    
+                         clock pessimism             -0.543     2.028    
+    SLICE_X82Y16         RAMD64E (Hold_ramd64e_CLK_I)
+                                                      0.147     2.175    top/teaching_board_top/target/harts/cpu/core/icache/g_cache.data_reg_0_63_87_89/RAMA
+  -------------------------------------------------------------------
+                         required time                         -2.175    
+                         arrival time                           2.212    
+  -------------------------------------------------------------------
+                         slack                                  0.037    
+
+Slack (MET) :             0.044ns  (arrival time - required time)
+  Source:                 top/teaching_board_top/target/harts/cpu/core/g_sv39.walk/walker/leaf_ppn_reg[1]/C
+                            (rising edge-triggered cell FDRE clocked by host_clk_i  {rise@0.000ns fall@12.500ns period=25.000ns})
+  Destination:            top/teaching_board_top/target/harts/cpu/core/g_sv39.tlb/ppn_reg[0][1]/D
+                            (rising edge-triggered cell FDRE clocked by host_clk_i  {rise@0.000ns fall@12.500ns period=25.000ns})
+  Path Group:             host_clk_i
+  Path Type:              Hold (Min at Fast Process Corner)
+  Requirement:            0.000ns  (host_clk_i rise@0.000ns - host_clk_i rise@0.000ns)
+  Data Path Delay:        0.376ns  (logic 0.141ns (37.501%)  route 0.235ns (62.499%))
+  Logic Levels:           0  
+  Clock Path Skew:        0.266ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    2.542ns
+    Source Clock Delay      (SCD):    1.982ns
+    Clock Pessimism Removal (CPR):    0.294ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock host_clk_i rise edge)
+                                                      0.000     0.000 r  
+                         clock source latency         0.709     0.709    
+                         propagated clock network latency
+                                                      1.273     1.982    
+    SLICE_X51Y18         FDRE                         0.000     1.982 r  top/teaching_board_top/target/harts/cpu/core/g_sv39.walk/walker/leaf_ppn_reg[1]/C
+    SLICE_X51Y18         FDRE (Prop_fdre_C_Q)         0.141     2.123 r  top/teaching_board_top/target/harts/cpu/core/g_sv39.walk/walker/leaf_ppn_reg[1]/Q
+                         net (fo=8, routed)           0.235     2.358    top/teaching_board_top/target/harts/cpu/core/g_sv39.tlb/ppn_reg[1][43]_0[1]
+    SLICE_X49Y16         FDRE                                         r  top/teaching_board_top/target/harts/cpu/core/g_sv39.tlb/ppn_reg[0][1]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock host_clk_i rise edge)
+                                                      0.000     0.000 r  
+                         clock source latency         0.939     0.939    
+                         propagated clock network latency
+                                                      1.603     2.542    
+                         clock pessimism             -0.294     2.248    
+    SLICE_X49Y16         FDRE (Hold_fdre_C_D)         0.066     2.314    top/teaching_board_top/target/harts/cpu/core/g_sv39.tlb/ppn_reg[0][1]
+  -------------------------------------------------------------------
+                         required time                         -2.314    
+                         arrival time                           2.358    
+  -------------------------------------------------------------------
+                         slack                                  0.044    
+
+Slack (MET) :             0.069ns  (arrival time - required time)
+  Source:                 top/teaching_board_top/target/harts/cpu/core/mem_sdata_reg[21]/C
+                            (rising edge-triggered cell FDRE clocked by host_clk_i  {rise@0.000ns fall@12.500ns period=25.000ns})
+  Destination:            top/teaching_board_top/target/harts/cpu/core/wb_src_reg[21]/D
+                            (rising edge-triggered cell FDRE clocked by host_clk_i  {rise@0.000ns fall@12.500ns period=25.000ns})
+  Path Group:             host_clk_i
+  Path Type:              Hold (Min at Fast Process Corner)
+  Requirement:            0.000ns  (host_clk_i rise@0.000ns - host_clk_i rise@0.000ns)
+  Data Path Delay:        0.393ns  (logic 0.141ns (35.901%)  route 0.252ns (64.099%))
+  Logic Levels:           0  
+  Clock Path Skew:        0.253ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    2.536ns
+    Source Clock Delay      (SCD):    1.989ns
+    Clock Pessimism Removal (CPR):    0.294ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock host_clk_i rise edge)
+                                                      0.000     0.000 r  
+                         clock source latency         0.709     0.709    
+                         propagated clock network latency
+                                                      1.280     1.989    
+    SLICE_X47Y34         FDRE                         0.000     1.989 r  top/teaching_board_top/target/harts/cpu/core/mem_sdata_reg[21]/C
+    SLICE_X47Y34         FDRE (Prop_fdre_C_Q)         0.141     2.130 r  top/teaching_board_top/target/harts/cpu/core/mem_sdata_reg[21]/Q
+                         net (fo=4, routed)           0.252     2.382    top/teaching_board_top/target/harts/cpu/core/mem_sdata[21]
+    SLICE_X53Y31         FDRE                                         r  top/teaching_board_top/target/harts/cpu/core/wb_src_reg[21]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock host_clk_i rise edge)
+                                                      0.000     0.000 r  
+                         clock source latency         0.939     0.939    
+                         propagated clock network latency
+                                                      1.597     2.536    
+                         clock pessimism             -0.294     2.242    
+    SLICE_X53Y31         FDRE (Hold_fdre_C_D)         0.070     2.312    top/teaching_board_top/target/harts/cpu/core/wb_src_reg[21]
+  -------------------------------------------------------------------
+                         required time                         -2.312    
+                         arrival time                           2.382    
+  -------------------------------------------------------------------
+                         slack                                  0.069    
+
+Slack (MET) :             0.073ns  (arrival time - required time)
+  Source:                 top/teaching_board_top/target/bh/TLBroadcastTracker_3/o_data/value_reg[1]/C
+                            (rising edge-triggered cell FDRE clocked by host_clk_i  {rise@0.000ns fall@12.500ns period=25.000ns})
+  Destination:            top/teaching_board_top/target/bh/TLBroadcastTracker_3/o_data/ram_data_reg_0_7_6_11/RAMA/WADR1
+                            (rising edge-triggered cell RAMD32 clocked by host_clk_i  {rise@0.000ns fall@12.500ns period=25.000ns})
+  Path Group:             host_clk_i
+  Path Type:              Hold (Min at Fast Process Corner)
+  Requirement:            0.000ns  (host_clk_i rise@0.000ns - host_clk_i rise@0.000ns)
+  Data Path Delay:        0.398ns  (logic 0.141ns (35.411%)  route 0.257ns (64.589%))
+  Logic Levels:           0  
+  Clock Path Skew:        0.016ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    2.613ns
+    Source Clock Delay      (SCD):    2.055ns
+    Clock Pessimism Removal (CPR):    0.542ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock host_clk_i rise edge)
+                                                      0.000     0.000 r  
+                         clock source latency         0.709     0.709    
+                         propagated clock network latency
+                                                      1.346     2.055    
+    SLICE_X5Y41          FDRE                         0.000     2.055 r  top/teaching_board_top/target/bh/TLBroadcastTracker_3/o_data/value_reg[1]/C
+    SLICE_X5Y41          FDRE (Prop_fdre_C_Q)         0.141     2.196 r  top/teaching_board_top/target/bh/TLBroadcastTracker_3/o_data/value_reg[1]/Q
+                         net (fo=99, routed)          0.257     2.453    top/teaching_board_top/target/bh/TLBroadcastTracker_3/o_data/ram_data_reg_0_7_6_11/ADDRD1
+    SLICE_X6Y40          RAMD32                                       r  top/teaching_board_top/target/bh/TLBroadcastTracker_3/o_data/ram_data_reg_0_7_6_11/RAMA/WADR1
+  -------------------------------------------------------------------    -------------------
+
+                         (clock host_clk_i rise edge)
+                                                      0.000     0.000 r  
+                         clock source latency         0.939     0.939    
+                         propagated clock network latency
+                                                      1.674     2.613    
+                         clock pessimism             -0.542     2.071    
+    SLICE_X6Y40          RAMD32 (Hold_ramd32_CLK_WADR1)
+                                                      0.309     2.380    top/teaching_board_top/target/bh/TLBroadcastTracker_3/o_data/ram_data_reg_0_7_6_11/RAMA
+  -------------------------------------------------------------------
+                         required time                         -2.380    
+                         arrival time                           2.453    
+  -------------------------------------------------------------------
+                         slack                                  0.073    
+
+
+
+

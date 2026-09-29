@@ -1,0 +1,13 @@
+GEN_CP4_RC=0
+GEN_CP4_DONE fails=0
+GEN_BOARD_RC=0 GEN_OK RD2BoardTop.RD2PipeBoardConfig.v ec2a7311f9ab1ee1 wall=39s
+error: unexpected argument '-1' found
+
+  tip: to pass '-1' as a value, use '-- -1'
+
+Usage: tail [FLAG]... [FILE]...
+
+For more information, try '--help'.
+  tcpu_core_pipe #(.MISA_A(1), .PIPE_EXT_SU(1), .PIPE_EXT_M(1), .HART_ID(0), .RESET_PC(65600), .PIPE_EXT_C(1)) core (
+  tcpu_core_pipe instances 1, tcpu_core instances 0
+GEN_P3_DONE bad=0

@@ -1,0 +1,47 @@
+gen3-pipe-xv6fast: 151 modules; pipeline-board: 126 modules
+only in gen3-pipe-xv6fast (39): AXI4Buffer AXI4RAM BlockDeviceDesser BlockDeviceDriver InFIFODriver InFIFODriver_1 OutFIFODriver OutFIFODriver_1 OutFIFODriver_2 Queue_10 Queue_12 Queue_15 Queue_16 Queue_20 Queue_5 Queue_53 Queue_54 Queue_55 Queue_56 Queue_62 Queue_63 Queue_65 Queue_66 Queue_8 Queue_9 RD2Harness RD2Throttle RD2Watch_2 ResetDriver SerialDriver SetRegisterDriver SetRegisterDriver_1 SimAXIMem TLToAXI4_1 TLXbar_2 TLXbar_6 TLXbar_7 TestHarnessDriver ZynqAdapterCore
+only in pipeline-board (14): Queue_1 Queue_2 Queue_3 Queue_43 Queue_44 Queue_45 Queue_46 Queue_47 Queue_48 Queue_50 Queue_58 RD2BoardTop ZynqAdapterRD2 ZynqAdapterRD2Core
+in both, differing (42):
+  AXI4Fragmenter: 87205 changed lines
+  AXI4IdIndexer: 24 changed lines
+  AXI4UserYanker: 88 changed lines
+  AtomicBackend: 2 changed lines
+  BlockDeviceFrontend: 2 changed lines
+  MemoryBus: 34 changed lines
+  PeripheryBus: 2 changed lines
+  Queue: 160 changed lines
+  Queue_11: 264 changed lines
+  Queue_52: 166 changed lines
+  Queue_57: 216 changed lines
+  Queue_59: 212 changed lines
+  Queue_6: 179 changed lines
+  Queue_61: 198 changed lines
+  Queue_7: 162 changed lines
+  RD2BlockDeviceController: 163 changed lines
+  RD2BlockDeviceRouter: 4 changed lines
+  RD2BridgeV2: 142 changed lines
+  RD2Clint: 4 changed lines
+  RD2SerialAdapter: 33 changed lines
+  RD2Watch: 79 changed lines
+  RD2Watch_1: 288 changed lines
+  RD2ZynqTop: 562 changed lines
+  SimpleLazyModule_16: 114 changed lines
+  SystemBus: 14 changed lines
+  TLAtomicAutomata: 20 changed lines
+  TLBroadcastTracker: 2 changed lines
+  TLBroadcastTracker_1: 2 changed lines
+  TLBroadcastTracker_2: 2 changed lines
+  TLBroadcastTracker_3: 2 changed lines
+  TLBuffer_1: 4 changed lines
+  TLBuffer_5: 4 changed lines
+  TLDebugModuleOuterAsync: 2 changed lines
+  TLError: 2 changed lines
+  TLPLIC: 2 changed lines
+  TLToAXI4: 2149 changed lines
+  TLXbar: 3198 changed lines
+  TLXbar_1: 1340 changed lines
+  TLXbar_3: 3133 changed lines
+  TLXbar_4: 1142 changed lines
+  TeachingCpuV2: 36 changed lines
+  TeachingHart: 258 changed lines
+VMODULE_DIFF identical=70 differing=42 only_a=39 only_b=14

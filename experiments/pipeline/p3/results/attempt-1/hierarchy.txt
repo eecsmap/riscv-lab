@@ -1,0 +1,31 @@
+## 16 Verilog sources, 141 module definitions
+## modules defined more than once: 0
+## reachable from rocketchip_wrapper: 140 modules
+## unresolved instantiations: 0
+   supplied by Vivado : ['BUFG', 'IBUFDS', 'IBUFG', 'MMCME2_BASE']
+   supplied by the BD : ['system']   (from pynqz1_bd.tcl)
+## the path the board top takes into the teaching design
+   Top                  reached      defined in teaching_top_shim.v
+   RD2BoardTop          reached      defined in RD2BoardTop.RD2PipeBoardConfig.v
+   RD2ZynqTop           reached      defined in RD2BoardTop.RD2PipeBoardConfig.v
+   TeachingCpuV2        reached      defined in RD2BoardTop.RD2PipeBoardConfig.v
+   tcpu_core_pipe       reached      defined in tcpu_core_pipe.v
+   tcpu_tlb2            reached      defined in tcpu_tlb2.v
+   tcpu_ptw_wrap        reached      defined in tcpu_ptw_wrap.v
+   tcpu_ptw             reached      defined in tcpu_ptw.v
+   tcpu_permcheck       reached      defined in tcpu_permcheck.v
+   tcpu_csr             reached      defined in tcpu_csr.v
+   tcpu_regfile         reached      defined in tcpu_regfile.v
+   tcpu_muldiv          reached      defined in tcpu_muldiv.v
+   tcpu_cdecode         reached      defined in tcpu_cdecode.v
+   tcpu_icache          reached      defined in tcpu_icache.v
+   tcpu_cacheable       reached      defined in tcpu_cacheable.v
+## the multicycle core must be neither reached nor in the list (no silent fallback)
+   tcpu_core      not reached, not defined
+   tcpu_xlate     not reached, not defined
+   tcpu_tlb       not reached, not defined
+   tcpu_ifill     not reached, not defined
+## anything from the Rocket subsystem must be absent
+   Rocket modules in the list: none
+
+HIERARCHY_CHECK fails=0

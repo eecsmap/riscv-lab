@@ -1,0 +1,8 @@
+90aee6278392adee47f066f9a82af088f075afe776b0837821628fa958e9c404  /home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p3/scripts/build-board-p3.sh
+4720b503c6d094a5bdb6944d6eafc40e7e827d6585298d2a4d1ee924fb26a2b8  /home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p3/tools/check-hierarchy-p3.py
+c64c59d84d842c6616779620a947aac3d311bea069726c55b84087a1010af8d6  /home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p3/tools/audit-board-rtl-p3.py
+1ac75feb616384632013c1c438171da492e952b6475e7a67f4e5128c2120420d  /home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p3/tools/make-build-manifest-p3.py
+ee29832944e6cda905529789a20869ef6f30be5754962c758b6404313ebe4998  /home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p3/tools/make-top-shim-p3.py
+ec76e26502e976889f9b73594fff7af80d7308cdee53e065918dbfd374b2f1ec  /home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p3/tools/run_impl_p3.tcl
+60d5a609ca6a9f039c01bba8233b85af0263314aa510393c37022488de02f4a2  /home/engineer/fpga/experiments/teaching-cpu/m4-prep/scripts/gen-project-tcl.py
+12f73265e871b1e421003ce4263991afa0bebc97178df9fa624b3fdbebefa4ba  /home/engineer/fpga/experiments/teaching-cpu/m4-prep/scripts/check-tcl.tcl
