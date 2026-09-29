@@ -94,6 +94,9 @@ cblocks = [x for x in f if re.match(r"  C (m|pmc) \((min|fixed)\):$", x)]
 if len(cblocks) != F_BLOCKS: bad.append(f"F: {len(cblocks)} C blocks, the plan has {F_BLOCKS}")
 rois = [x for x in f if re.match(r"    ROI\d retired=[1-9]\d* cycles=[1-9]\d* CPI=\d+\.\d+ ", x)]
 if len(blocks) != F_BLOCKS or len(rois) != 2 * F_BLOCKS * F_ROIS: bad.append(f"F: {len(blocks)} blocks / {len(rois)} ROI lines, the plan has {F_BLOCKS} / {2 * F_BLOCKS * F_ROIS}")
+# ---- U: the uncached instruction-access footprint (C)
+u = read("U.txt")
+if "NC_JUDGE PASS" not in u: bad.append("U: the uncached footprint judge did not pass")
 # ---- G
 g = read("G.txt")
 for x in g:

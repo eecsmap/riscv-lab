@@ -81,7 +81,7 @@ IDOUT=$OUT/logs; . $P1S/idcheck.sh
   idcheck knob18-without-C "pipe_p1_unsupported_PIPE_FAULT_needs_C" $PIPEM -GPIPE_FAULT=18 $TB
   idcheck C_IMM-injection-without-C "pipe_p1_unsupported_FAULT_C_IMM" $PIPEM -GFAULT_C_IMM=1 $TB
   idcheck EXT_C-2 "pipe_p1_unsupported_PIPE_EXT_C" $PIPEMC -GPIPE_EXT_C=2 $TB
-  idcheck PIPE_FAULT-20 "pipe_p1_unsupported_PIPE_FAULT" $PIPEMC -GPIPE_FAULT=20 $TB
+  idcheck PIPE_FAULT-21 "pipe_p1_unsupported_PIPE_FAULT" $PIPEMC -GPIPE_FAULT=21 $TB
   idcheck define-with-multicycle-list "Cannot find file containing module: 'tcpu_core_pipe'" -DTCPU_IMPL_PIPE $MULTI $TB
   echo "ID_FAILS=$ID_FAILS"
 } > $OUT/identity.txt 2>&1

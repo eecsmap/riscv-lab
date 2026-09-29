@@ -6,7 +6,7 @@
 set -u
 RUN=${1:?run}; OUT=${2:?work}; [ -e "$OUT" ] && { echo "REFUSE: $OUT exists"; exit 2; }
 V=$(dirname "$(readlink -f "$0")")/p2averdict.py; mkdir -p $OUT; ok=0; n=0
-fresh() { local d=$OUT/$1; mkdir -p $d/B; cp $RUN/{A,C,D,F,G}.txt $d/; cp $RUN/B/results.txt $RUN/B/results-c.txt $d/B/; echo $d; }
+fresh() { local d=$OUT/$1; mkdir -p $d/B; cp $RUN/{A,C,D,F,G,U}.txt $d/; cp $RUN/B/results.txt $RUN/B/results-c.txt $d/B/; echo $d; }
 case_() {  # case_ <name> <PASS|FAIL> <reason regex> <file> <sed script | DELETE>
   local name=$1 want=$2 rx=$3 file=$4 mut=$5 d; d=$(fresh $name); n=$((n+1))
   if [ "$mut" = DELETE ]; then rm $d/$file
@@ -39,5 +39,7 @@ case_ D-knob19-silent     FAIL 'knob 19 \(C_TVAL_FIRST\) NOT caught'            
 case_ D-control-fails     FAIL 'D: control failed: control pmc-creg'                D.txt '/control pmc-creg /s/exit 0, errors 0/exit 1, errors 0/'
 case_ F-c-block-missing   FAIL 'F: 3 C blocks'                                        F.txt '/^  C pmc \(min\):$/d'
 case_ G-changed           FAIL 'G: CHANGED tcpu_muldiv.v'                             G.txt 's/^  unchanged (tcpu_muldiv.v) (.*)/  CHANGED \1 tag=0 now=\2/'
+case_ U-judge-fails       FAIL 'U: the uncached footprint judge did not pass'       U.txt 's/^NC_JUDGE PASS/NC_JUDGE FAIL/'
+case_ U-missing           FAIL 'missing output: U.txt'                              U.txt DELETE
 case_ file-missing        FAIL 'missing output: D.txt'                                D.txt DELETE
 echo "SELFTEST_P2AVERDICT $ok/$n"; [ $ok = $n ]

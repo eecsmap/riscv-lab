@@ -102,5 +102,16 @@ mut $Q q-f-c      'if len(cblocks) != F_BLOCKS:' 'if False:' $P2RUN
 mut $Q q-g        'if "CHANGED" in x: bad.append("G: "' 'if False: bad.append("G: "' $P2RUN
 mut $Q q-missing  'except OSError: bad.append("missing output: " + name); return []' 'except OSError: return []' $P2RUN
 mut $Q q-exit     'sys.exit(1 if bad else 0)' 'sys.exit(0)' $P2RUN
+mut $Q q-u        'if "NC_JUDGE PASS" not in u:' 'if False:' $P2RUN
+N="../../p2a/uncached/ncjudge.py ../../p2a/uncached/selftest-ncjudge.sh"
+mut $N n-code     'if code != 0: why.append' 'if False: why.append' $P2RUN/U
+mut $N n-assert   'if asserts: why.append' 'if False: why.append' $P2RUN/U
+mut $N n-payload  'if perr: why.append' 'if False: why.append' $P2RUN/U
+mut $N n-wide     'if wide: why.append' 'if False: why.append' $P2RUN/U
+mut $N n-viol     'if viol: why.append' 'if False: why.append' $P2RUN/U
+mut $N n-seq      'if seq != EXPECTED: why.append' 'if False: why.append' $P2RUN/U
+mut $N n-caught   'if caught != len(PROFILES): bad.append' 'if False: bad.append' $P2RUN/U
+mut $N n-missing  'bad.append(f"{name}: missing {f}"); continue' 'continue' $P2RUN/U
+mut $N n-exit     'sys.exit(1 if bad else 0)' 'sys.exit(0)' $P2RUN/U
 fi
 echo "GATE_MUTANTS caught $caught/$n"; [ $caught = $n ]

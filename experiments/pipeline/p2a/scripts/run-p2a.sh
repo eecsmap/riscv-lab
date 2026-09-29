@@ -10,6 +10,7 @@
 #   D  negative controls: knob 15 (stale result) and 16 (duplicate start) by their named properties as the FIRST
 #      failure; the unit's fault injections by gen_m01's derived check numbers, on both implementations
 #   F  M ROIs, both implementations (reported, not gated)
+#   U  C: an uncached instruction access reads exactly the parcels of the executed instructions (uncached/)
 #   G  shared / multicycle sources unchanged against the tag
 set -u
 SIMS=${1:?sims dir}; OUT=${2:?outdir}; NHZ=${3:-40}
@@ -180,6 +181,11 @@ for prof in min fixed; do for impl in m pmc; do
   run $impl-$prof p2a_c_perf $OUT/F/cperf-$prof-$impl
   echo "  C $impl ($prof):" | tee -a $OUT/F.txt; python3 $SC/perf.py $OUT/F/cperf-$prof-$impl.log $OUT/elf/p2a_c_perf.sym | sed 's/^/    /' | tee -a $OUT/F.txt
 done; done
+
+# ---------------------------------------------------------------- U
+echo "== U: uncached instruction-access footprint, C (codex-pipe-p2a-uncached-fetch)" | tee $OUT/U.txt
+bash $P2/uncached/run-nc.sh $OUT/U $SIMS/src fix:0 wide:20 > $OUT/U-run.txt 2>&1
+python3 $P2/uncached/ncjudge.py $OUT/U | tee -a $OUT/U.txt
 
 # ---------------------------------------------------------------- G
 echo "== G: shared and multicycle sources compiled vs tag mc-v1-dual" | tee $OUT/G.txt
