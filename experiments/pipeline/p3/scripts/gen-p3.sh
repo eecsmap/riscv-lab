@@ -21,7 +21,13 @@ if [ -s $V ]; then
   python3 $P3/scripts/vmodule-diff.py $OUT/gen/after-RD2AtomicBoardConfig/RD2BoardTop.RD2AtomicBoardConfig.v $V --label-a multicycle-board --label-b pipeline-board --show 3 > $OUT/cmp-vs-atomic-board.txt
   python3 $P3/scripts/vmodule-diff.py $W/experiments/pipeline/p2b/runs/gen-3/after-RD2PipeXv6FastConfig/RD2Harness.RD2PipeXv6FastConfig.v $V --label-a gen3-pipe-xv6fast --label-b pipeline-board > $OUT/cmp-vs-gen3.txt
   python3 $P3/scripts/vmodule-diff.py $W/experiments/pipeline/p2b/runs/gen-3/after-RD2PipeXv6FastConfig/RD2Harness.RD2PipeXv6FastConfig.v $OUT/gen/after-RD2PipeXv6FastConfig/RD2Harness.RD2PipeXv6FastConfig.v --label-a gen3 --label-b fresh > $OUT/cmp-gen3-vs-fresh.txt
-  tail -1 $OUT/cmp-vs-atomic-board.txt $OUT/cmp-vs-gen3.txt $OUT/cmp-gen3-vs-fresh.txt
+  # the harness -> board differences, for both cores: they must be the same modules (only TeachingCpuV2 may differ)
+  python3 $P3/scripts/vmodule-diff.py $OUT/gen/after-RD2AtomicXv6FastConfig/RD2Harness.RD2AtomicXv6FastConfig.v $OUT/gen/after-RD2AtomicBoardConfig/RD2BoardTop.RD2AtomicBoardConfig.v --label-a multi-xv6fast --label-b multi-board > $OUT/cmp-multi-xv6fast-vs-board.txt
+  python3 $P3/scripts/vmodule-diff.py $OUT/gen/after-RD2PipeXv6FastConfig/RD2Harness.RD2PipeXv6FastConfig.v $V --label-a pipe-xv6fast --label-b pipe-board > $OUT/cmp-pipe-xv6fast-vs-board.txt
+  diff <(sed -E 's/(multi|pipe)-(xv6fast|board)/X-\2/g' $OUT/cmp-multi-xv6fast-vs-board.txt) <(sed -E 's/(multi|pipe)-(xv6fast|board)/X-\2/g' $OUT/cmp-pipe-xv6fast-vs-board.txt) > $OUT/cmp-board-delta-multi-vs-pipe.diff
+  grep -v "TeachingCpuV2" $OUT/cmp-board-delta-multi-vs-pipe.diff | grep -q '^[<>]' && { echo "  the harness->board delta differs beyond TeachingCpuV2"; bad=1; }
+  for f in cmp-vs-atomic-board cmp-vs-gen3 cmp-gen3-vs-fresh cmp-multi-xv6fast-vs-board cmp-pipe-xv6fast-vs-board; do echo "  $f: $(tail -n 1 $OUT/$f.txt)"; done
+  grep -q "differing=1 only_a=0 only_b=0" $OUT/cmp-vs-atomic-board.txt && grep -q "^  TeachingCpuV2:" $OUT/cmp-vs-atomic-board.txt || { echo "  the board RTL differs from the multicycle board beyond TeachingCpuV2"; bad=1; }
   grep -q "differing=0 only_a=0 only_b=0" $OUT/cmp-gen3-vs-fresh.txt || { echo "  the fresh RD2PipeXv6FastConfig differs from gen-3"; bad=1; }
   grep -m1 -E "^\s*tcpu_core_pipe #" $V | sed -E 's#\s*// @.*##' | tee $OUT/pipe-instance.txt
   echo "  tcpu_core_pipe instances $(grep -cE '^\s*tcpu_core_pipe\b' $V), tcpu_core instances $(grep -cE '^\s*tcpu_core\b' $V)" | tee -a $OUT/pipe-instance.txt
