@@ -1,0 +1,3 @@
+PROBE start=2026-09-29T23:01:45Z device=/dev/ttyUSB1
+PROBE passive 0 bytes: b''
+PROBE after-newline 17 bytes: b'\r\n/root/xv6run # '

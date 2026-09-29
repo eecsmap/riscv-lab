@@ -1,0 +1,32 @@
+BID=88e9acef-eb2e-4a25-8ea9-2c5df3d2e8da
+UP=143090
+PD=1
+FESVR=0
+LOCK=NO_LOCK
+TOOLS=timeout,gzip,base64,sha256sum,flock,
+df: /root: can't find mount point
+DF=Filesystem 1K-blocks Used Available Use% Mounted on
+rootfs on / type rootfs (rw,size=116144k,nr_inodes=29036)
+total 8064
+drwxr-xr-x    2 root     0              240 Jan  1 00:13 [1;34m.[m
+drwxr-xr-x    3 1000     1000           180 Jan  1 00:00 [1;34m..[m
+-rw-r--r--    1 root     0          4045564 Jan  1 00:08 [0;0mdual.bit.bin[m
+-rwxr-xr-x    1 root     0             7200 Jan  1 00:11 [1;32mdual01_boot.elf[m
+-rwxr-xr-x    1 root     0             7744 Jan  1 00:12 [1;32mdual02_clint.elf[m
+-rwxr-xr-x    1 root     0             9664 Jan  1 00:12 [1;32mdual03_lock.elf[m
+-rwxr-xr-x    1 root     0             7408 Jan  1 00:12 [1;32mdual04_pbus.elf[m
+-rwxr-xr-x    1 root     0             7264 Jan  1 00:12 [1;32mdual05_fencei.elf[m
+-rwxr-xr-x    1 root     0            26512 Jan  1 00:12 [1;32mdual07_long.elf[m
+-rwxr-xr-x    1 root     0          1806656 Jan  1 00:11 [1;32mfesvr-teaching-static[m
+-rw-r--r--    1 root     0          2048000 Jan  1 00:21 [0;0mfs-run.img[m
+-rw-r--r--    1 root     0           274448 Jan  1 00:13 [0;0mkernel-dual-128mib[m
+43e5b414c093f27854513f6ae08addbb431c6865b85f822685a824cda66e2841  dual.bit.bin
+aa1faca1d5b1456acca9cde25870788f4383603915877646a5077707a72e87bc  dual01_boot.elf
+beffce7e53733a293c13c14d2f50690ac3728b9ac61cbb8eb429e64ca157e718  dual02_clint.elf
+7bb6d1df99eea7b7fb548d482f1541292912442879c32d028e46b987e1604767  dual03_lock.elf
+ab568bd79abfbee3e167b8ee4d6a721d4eaec3424b7451d174611a1deea1be8a  dual04_pbus.elf
+495360cb6f21b745ef5f42084a6e8ccc90badb73b6988fd419754a46dca1ff37  dual05_fencei.elf
+459347189d79d4f10ba99f68a5119ee12fc2dcbebbdc6ae9eb4b647c8c02f117  dual07_long.elf
+c050eab30f80a21a7c92c8688faa2f043c67aa2900fbc08b80f3dd8de2ba1fb9  fesvr-teaching-static
+05a4562b72e3bace52602321372340262e0118801ffa6ef2aa13a49b7c5484f5  fs-run.img
+33021237cf1d82f1500bf7c0d7b8c8a2035a34c81669720fd71b3add75c99fb9  kernel-dual-128mib
