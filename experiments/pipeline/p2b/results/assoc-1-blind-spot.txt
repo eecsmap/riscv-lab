@@ -1,0 +1,6 @@
+# assoc-1 (first checker version): knob 4 fired (the core's oldest-issue assertion) but the checker stayed silent -- the stray response's pending slot was overwritten by the next data response before any retirement. Fixed by failing on that overwrite (assoc-2/3).
+PIPE ASSERT oldest-issue: data request for pc 0x80000174 raised while WB (pc 0x80000170) does not commit cleanly
+PIPE ASSERT data-response: a data response arrived with no MEM requester waiting
+ASSOC COVER responses fetch=342 if_pte=0 d_pte=0 data=10 load=3 store=7 amo=0 lr=0 sc=0 killed_fetch=1 killed_if_pte=0 killed_d_pte=0
+ASSOC COVER if_pte_overlapping_a_retirement=0 d_pte_overlapping_a_retirement=0 pte_same_cycle_as_a_retirement=0 data_responses_then_trap=0 same_cycle_data_priority=0 max_cycles_resp_to_retire=1 cpu_resets=0 resets_abandoning_a_data_response=0 resets_with_core_transaction_outstanding=0
+ASSOC END cycles=4263 fails=0

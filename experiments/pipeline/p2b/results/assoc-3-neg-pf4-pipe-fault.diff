@@ -1,0 +1,4 @@
+216285c216285
+<   tcpu_core_pipe #(.MISA_A(1), .PIPE_EXT_SU(1), .PIPE_EXT_M(1), .HART_ID(0), .RESET_PC(65600), .PIPE_EXT_C(1)) core ( // @[TeachingCpuBlackBox.scala 175:20:RD2Harness.RD2PipeBootConfig.fir@192586.4]
+---
+>   tcpu_core_pipe #(.PIPE_FAULT(4), .MISA_A(1), .PIPE_EXT_SU(1), .PIPE_EXT_M(1), .HART_ID(0), .RESET_PC(65600), .PIPE_EXT_C(1)) core ( // @[TeachingCpuBlackBox.scala 175:20:RD2Harness.RD2PipeBootConfig.fir@192586.4]

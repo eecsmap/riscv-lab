@@ -1,0 +1,40 @@
+ASSOC_SIM_BUILD_OK aw=_T_467 9afefbaf40c5bc15
+ASSOC_SIM_BUILD_OK aw=_T_467 7bc076c2f59c1d9a
+ASSOC_SIM_BUILD_OK aw=_T_467 ddd348dd60a2dc10
+== positive
+  boot09        sim=0 htif=0 ASSOC END cycles=21202 fails=0  ok
+  boot10        sim=0 htif=0 ASSOC END cycles=4445 fails=0  ok
+  boot11        sim=0 htif=0 ASSOC END cycles=44834 fails=0  ok
+  boot12        sim=0 htif=0 ASSOC END cycles=46798 fails=0  ok
+  hello         sim=0 htif=0 ASSOC END cycles=7880 fails=0  ok
+  boot04        sim=0 htif=0 ASSOC END cycles=6542 fails=0  ok
+  tlb01         sim=0 htif=0 ASSOC END cycles=30490 fails=0  ok
+  tlb02         sim=0 htif=0 ASSOC END cycles=49608 fails=0  ok
+  ext04         sim=0 htif=0 ASSOC END cycles=17329 fails=0  ok
+  walk_preempt  sim=0 htif=0 ASSOC END cycles=100421 fails=0  ok
+  hzsv1         sim=0 htif=0 ASSOC END cycles=85065 fails=0  ok
+  hzsv2         sim=0 htif=0 ASSOC END cycles=84097 fails=0  ok
+  hzsv3         sim=0 htif=0 ASSOC END cycles=84692 fails=0  ok
+  store_trap    sim=0 htif=0 ASSOC END cycles=5065 fails=0  ok
+  assoc_trap    sim=0 htif=0 ASSOC END cycles=4212 fails=0  ok
+  drain42751    sim=0 htif=0 ASSOC END cycles=90063 fails=0  ok | check-drain=0 DRAIN restarts=1 amo_started=76 get=76 put=76 reset_cycles=[42751] atomic_in_flight=True fails=0
+  drain43119    sim=0 htif=0 ASSOC END cycles=90346 fails=0  ok | check-drain=0 DRAIN restarts=1 amo_started=90 get=90 put=90 reset_cycles=[43119] atomic_in_flight=True fails=0
+  drain43488    sim=0 htif=0 ASSOC END cycles=90847 fails=0  ok | check-drain=0 DRAIN restarts=1 amo_started=104 get=104 put=104 reset_cycles=[43488] atomic_in_flight=True fails=0
+  drain43856    sim=0 htif=0 ASSOC END cycles=90637 fails=0  ok | check-drain=0 DRAIN restarts=1 amo_started=117 get=117 put=117 reset_cycles=[43856] atomic_in_flight=True fails=0
+  drain45000    sim=0 htif=0 ASSOC END cycles=91926 fails=0  ok | check-drain=0 DRAIN restarts=1 amo_started=128 get=128 put=128 reset_cycles=[45000] atomic_in_flight=True fails=0
+  coverage (summed): amo=577 cpu_resets=5 d_pte=300 d_pte_overlapping_a_retirement=0 data=5193 data_response_pending_at_end=0 data_responses_then_trap=1 fetch=79565 if_pte=143 if_pte_overlapping_a_retirement=10 killed_d_pte=0 killed_fetch=501 killed_if_pte=6 load=3306 lr=146 max_cycles_resp_to_retire=1 pte_same_cycle_as_a_retirement=0 resets_abandoning_a_data_response=0 resets_with_core_transaction_outstanding=3 same_cycle_data_priority=0 sc=152 store=1012 
+ASSOC_RUN_DONE bad=0
+== neg-old (programs: boot11 boot12 walk_preempt hzsv1; the first failure must be 'classify', followed by 'soc-register')
+  boot11        first failure: ASSOC FAIL classify cyc=41898: the response of a     IF-PTE transaction (owner recorded at its request) is published with isFetch=0 -- the SoC would wait for a retirement that is not this tr  -> caught as intended
+                 ASSOC FAIL soc-register cyc=41899: RD2Soc awaitingRetire=1, the truth model says 0 (pending      - pc=00000000800000b4 seq=1771)
+  boot12        first failure: ASSOC FAIL classify cyc=42289: the response of a     IF-PTE transaction (owner recorded at its request) is published with isFetch=0 -- the SoC would wait for a retirement that is not this tr  -> caught as intended
+                 ASSOC FAIL soc-register cyc=42290: RD2Soc awaitingRetire=1, the truth model says 0 (pending      - pc=00000000800000d0 seq=1791)
+  walk_preempt  first failure: ASSOC FAIL classify cyc=98746: the response of a     IF-PTE transaction (owner recorded at its request) is published with isFetch=0 -- the SoC would wait for a retirement that is not this tr  -> caught as intended
+                 ASSOC FAIL soc-register cyc=98747: RD2Soc awaitingRetire=1, the truth model says 0 (pending      - pc=0000000080001150 seq=4346)
+  hzsv1         first failure: ASSOC FAIL classify cyc=76228: the response of a     IF-PTE transaction (owner recorded at its request) is published with isFetch=0 -- the SoC would wait for a retirement that is not this tr  -> caught as intended
+                 ASSOC FAIL soc-register cyc=76229: RD2Soc awaitingRetire=1, the truth model says 0 (pending      - pc=0000000080000216 seq=3440)
+== neg-pf4 (programs: store_trap; the first failure must be 'association')
+  store_trap    first failure: ASSOC FAIL association cyc=4059: the  store of pc 0000000080000174 seq 189 had its response and never retired before the next data response (pc 0000000080000228 seq 192)  -> caught as intended
+== neg-pf4b (programs: assoc_trap; the first failure must be 'association')
+  assoc_trap    first failure: ASSOC FAIL association cyc=3746: the  store of pc 0000000080000174 seq 177 had its response; the next retirement is a commit of pc 00000000800001ac seq 180                 -> caught as intended
+CHAIN_ASSOC_DONE bad=0

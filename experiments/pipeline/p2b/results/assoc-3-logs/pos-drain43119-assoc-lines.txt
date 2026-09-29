@@ -1,0 +1,4 @@
+ASSOC COVER responses fetch=7139 if_pte=2 d_pte=6 data=346 load=157 store=53 amo=89 lr=23 sc=24 killed_fetch=19 killed_if_pte=0 killed_d_pte=0
+ASSOC COVER if_pte_overlapping_a_retirement=0 d_pte_overlapping_a_retirement=0 pte_same_cycle_as_a_retirement=0 data_responses_then_trap=0 same_cycle_data_priority=0 max_cycles_resp_to_retire=1 cpu_resets=1 resets_abandoning_a_data_response=0 resets_with_core_transaction_outstanding=1
+ASSOC COVER data_response_pending_at_end=0
+ASSOC END cycles=90346 fails=0

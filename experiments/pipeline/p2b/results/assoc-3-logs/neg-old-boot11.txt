@@ -1,0 +1,26 @@
+# boot11 on the old wrapper classification (gen-2): the ASSOC lines (first failure at checker cycle 41898)
+ASSOC FAIL classify cyc=41898: the response of a     IF-PTE transaction (owner recorded at its request) is published with isFetch=0 -- the SoC would wait for a retirement that is not this transaction's
+ASSOC FAIL soc-register cyc=41899: RD2Soc awaitingRetire=1, the truth model says 0 (pending      - pc=00000000800000b4 seq=1771)
+ASSOC FAIL soc-register cyc=41900: RD2Soc awaitingRetire=1, the truth model says 0 (pending      - pc=00000000800000b4 seq=1771)
+ASSOC FAIL soc-register cyc=41901: RD2Soc awaitingRetire=1, the truth model says 0 (pending      - pc=00000000800000b4 seq=1771)
+ASSOC FAIL soc-register cyc=41902: RD2Soc awaitingRetire=1, the truth model says 0 (pending      - pc=00000000800000b4 seq=1771)
+ASSOC FAIL soc-register cyc=41903: RD2Soc awaitingRetire=1, the truth model says 0 (pending      - pc=00000000800000b4 seq=1771)
+ASSOC FAIL soc-register cyc=41904: RD2Soc awaitingRetire=1, the truth model says 0 (pending      - pc=00000000800000b4 seq=1771)
+ASSOC FAIL soc-register cyc=41905: RD2Soc awaitingRetire=1, the truth model says 0 (pending      - pc=00000000800000b4 seq=1771)
+ASSOC FAIL soc-register cyc=41906: RD2Soc awaitingRetire=1, the truth model says 0 (pending      - pc=00000000800000b4 seq=1771)
+ASSOC FAIL soc-register cyc=41907: RD2Soc awaitingRetire=1, the truth model says 0 (pending      - pc=00000000800000b4 seq=1771)
+ASSOC FAIL soc-register cyc=41908: RD2Soc awaitingRetire=1, the truth model says 0 (pending      - pc=00000000800000b4 seq=1771)
+ASSOC FAIL soc-register cyc=41909: RD2Soc awaitingRetire=1, the truth model says 0 (pending      - pc=00000000800000b4 seq=1771)
+ASSOC FAIL soc-register cyc=41910: RD2Soc awaitingRetire=1, the truth model says 0 (pending      - pc=00000000800000b4 seq=1771)
+ASSOC FAIL soc-register cyc=41911: RD2Soc awaitingRetire=1, the truth model says 0 (pending      - pc=00000000800000b4 seq=1771)
+ASSOC FAIL soc-register cyc=41912: RD2Soc awaitingRetire=1, the truth model says 0 (pending      - pc=00000000800000b4 seq=1771)
+ASSOC FAIL soc-register cyc=41913: RD2Soc awaitingRetire=1, the truth model says 0 (pending      - pc=00000000800000b4 seq=1771)
+ASSOC FAIL soc-register cyc=41914: RD2Soc awaitingRetire=1, the truth model says 0 (pending      - pc=00000000800000b4 seq=1771)
+ASSOC FAIL soc-register cyc=41915: RD2Soc awaitingRetire=1, the truth model says 0 (pending      - pc=00000000800000b4 seq=1771)
+ASSOC FAIL soc-register cyc=41916: RD2Soc awaitingRetire=1, the truth model says 0 (pending      - pc=00000000800000b4 seq=1771)
+ASSOC FAIL soc-register cyc=41917: RD2Soc awaitingRetire=1, the truth model says 0 (pending      - pc=00000000800000b4 seq=1771)
+# ...
+ASSOC COVER responses fetch=3549 if_pte=1 d_pte=6 data=175 load=154 store=21 amo=0 lr=0 sc=0 killed_fetch=23 killed_if_pte=0 killed_d_pte=0
+ASSOC COVER if_pte_overlapping_a_retirement=0 d_pte_overlapping_a_retirement=0 pte_same_cycle_as_a_retirement=0 data_responses_then_trap=0 same_cycle_data_priority=0 max_cycles_resp_to_retire=1 cpu_resets=0 resets_abandoning_a_data_response=0 resets_with_core_transaction_outstanding=0
+ASSOC COVER data_response_pending_at_end=0
+ASSOC END cycles=44834 fails=125
