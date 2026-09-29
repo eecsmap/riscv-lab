@@ -1,0 +1,18 @@
+== existing configurations: before vs after (raw, normalized)
+  RD2AtomicXv6FastConfig: raw differs in 1378 lines; normalized IDENTICAL; tcpu_core instances 1, tcpu_core_pipe 0; sha before edcd1e6c2774e7bc after 1526476bcdb45fbd
+  RD2DualXv6FastConfig: raw differs in 2040 lines; normalized IDENTICAL; tcpu_core instances 2, tcpu_core_pipe 0; sha before 16f9bf3d940e5183 after 26d0b0830d9f56bb
+  RD2AtomicBootConfig: raw differs in 2064 lines; normalized IDENTICAL; tcpu_core instances 1, tcpu_core_pipe 0; sha before f2a2cf483cd526a3 after 3af89a127a58d0c6
+  RD2DualBootConfig: raw differs in 2930 lines; normalized IDENTICAL; tcpu_core instances 2, tcpu_core_pipe 0; sha before 6008f62166658152 after 1d4ea4d8c034ca0c
+  RD2BootConfig: raw differs in 1794 lines; normalized IDENTICAL; tcpu_core instances 1, tcpu_core_pipe 0; sha before 05a4691dd2264af4 after 6f0427cfb3ec8907
+  RD2AtomicBoardConfig: raw differs in 726 lines; normalized IDENTICAL; tcpu_core instances 1, tcpu_core_pipe 0; sha before aff082bb598ad856 after 106bf56426f29e09
+  RD2DualBoardConfig: raw differs in 1116 lines; normalized IDENTICAL; tcpu_core instances 2, tcpu_core_pipe 0; sha before 273463a2f43c99c8 after 0239b02e5744a53e
+== pipeline configurations
+  RD2PipeXv6FastConfig: generated e812f56c3ef6d17d; tcpu_core_pipe instances 1, tcpu_core instances 0; parameters ok=1:   tcpu_core_pipe #(.MISA_A(1), .PIPE_EXT_SU(1), .PIPE_EXT_M(1), .HART_ID(0), .RESET_PC(65600), .PIPE_EXT_C(1)) core (
+  RD2PipeBootConfig: generated 4ce0e5bf7bd2c524; tcpu_core_pipe instances 1, tcpu_core instances 0; parameters ok=1:   tcpu_core_pipe #(.MISA_A(1), .PIPE_EXT_SU(1), .PIPE_EXT_M(1), .HART_ID(0), .RESET_PC(65600), .PIPE_EXT_C(1)) core (
+== refusals
+  MC1UnsupportedPipelineConfig: refused: unsupported CORE_IMPL=pipeline with NUM_CORES=2
+  P2bUnsupportedImplConfig: refused: unsupported CORE_IMPL=superscalar
+  P2bUnsupportedPipeV1Config: refused: unsupported CORE_IMPL=pipeline with atomic=false
+  MC2UnsupportedQuadConfig: refused: unsupported NUM_CORES=4
+  MC1UnsupportedZeroConfig: refused: unsupported NUM_CORES=0
+JUDGE_GEN PASS

@@ -1,0 +1,71 @@
+# xv6-perf-short-multi-ref
+## cmd.txt
+sim=/home/engineer/fpga/experiments/multicore/m3/runs/sim-single/obj_dir/sim (d7ecb822bff087a7)
+kernel=/home/engineer/fpga/experiments/multicore/perf/sw/out/kernel-deploy-4 (d713744a5e4787645591ab4ea763c8cc92cc0b455c7234223dd140cf9bd2a031)
+disk=/home/engineer/fpga/experiments/multicore/perf/sw/out/fs-perf.img (d558e4444abcea6046147d85b81e538ecf604049b6d8ab15552f9a3d32bf688c)
+workload=perf-short max_cycles=2000000000 wall=3600 stage=1800 scheduler=[0x80001e4a,0x80001f00) (plusargs decimal 2147491402 2147491584)
+start=2026-09-28T01:49:06Z
+## verdict.txt
+XV6_RC=0 wall=1180s
+## check.txt
+INFO n1: retired 17048484 user 2380398 sched-range 52755 traps 347
+INFO disk: 56 block-device operations, strictly alternating request/completion, closed at EOF
+PASS /home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p2b/runs/xv6-perf-short-multi-ref harts={'n': 1, 'retired': [17048484, 0], 'traps': [347, 0], 'user': [2380398, 0], 'range': [52755, 0]}
+## perf-check.txt
+INFO mtimetest: 8 reads monotonic, consecutive deltas [133, 133, 132, 133, 133, 132, 133] mtime units; child 1201944 within [1196895,1218074]; spin100k=133902 mtime units (13390200 cycles, 134 cycles/iter)
+RESULT PERF-COMPUTE size=20000 dmtime=167357 readcost=132 ticks_diag=6 seconds=0.418 work_per_s=191208
+RESULT PERF-ARRAY size=1 dmtime=262904 readcost=131 ticks_diag=10 seconds=0.657 work_per_s=99711
+PASS /home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p2b/runs/xv6-perf-short-multi-ref (2 perf runs)
+## console.txt
+
+xv6 kernel is booting
+
+blkdev: 4000 sectors (1 MB), max request 16 sectors
+init: starting sh
+$ mtimetest
+MTIME-READS 1194377 1194510 1194643 1194775 1194908 1195041 1195173 1195306
+MTIME-SHARED p0=1196895 child=1201944 p1=1218074 ticks=1 spin100k=133902 x=723cc1865dd69690
+MTIME-DONE ok=1
+$ perfcompute 20000
+PERF-COMPUTE size=20000 children=4 mt0=1457550 mt1=1624907 dmtime=167357 readcost=132 ticks=6 ok=1
+PERF-COMPUTE-CHILD0 checksum=9fb000ba0962e1ec
+PERF-COMPUTE-CHILD1 checksum=537db65542ffaca6
+PERF-COMPUTE-CHILD2 checksum=6e4d363133375dba
+PERF-COMPUTE-CHILD3 checksum=a7a09d9b4d2a5984
+PERF-DONE ok=1
+$ perfarray 1
+PERF-ARRAY size=1 children=4 mt0=1739314 mt1=2002218 dmtime=262904 readcost=131 ticks=10 ok=1
+PERF-ARRAY-CHILD0 checksum=04f1a80698c9e000
+PERF-ARRAY-CHILD1 checksum=04f1a80698ca2000
+PERF-ARRAY-CHILD2 checksum=04f1a80698ca6000
+PERF-ARRAY-CHILD3 checksum=04f1a80698caa000
+PERF-DONE ok=1
+$ Completed after 201977719 cycles
+AXI ar=4997275 r=4998283 rlast=4997275 aw=2312018 w=2317282 wlast=2312018 b=2312018
+RD2HOST restarts_requested=0 restarts_completed=0
+RD2HOST FINAL aWaits=860746 aFires=5012008 dFires=5012008 epoch=1 injections=0 boot_ready=0 boot_timeout=0 bdev_queued=0
+HARTS n=1 retired0=17048484 traps0=347 cause0=0x8 maxawait0=230 awaits0=860746 epoch0=1 retired1=0 traps1=0 cause1=0x0 maxawait1=0 awaits1=0 epoch1=0
+HARTS_USER user0=2380398 range0=52755 user1=0 range1=0
+CYCLES total=201977719 host_done_at=201977719 drained=1
+## stages.txt
+ok	4.1	kernel banner
+ok	579.3	init started / first prompt
+ok	654.6	shell prompt
+ok	799.5	command mtimetest
+ok	959.8	command perfcompute
+ok	1178.9	command perfarray
+# driver: v3
+# platform: board
+# workload: perf-short
+# channel: multiplexed
+# console device: none (multiplexed)
+# bitstream sha256: 2cd8a9927cfa2f51da16bc6ba4865a407e985d00bf2accbb046f48c81c0fda52
+# host binary sha256: 0a0eba2e2abc33eef6f14e8238d00cbac11816f94871c5c3d8695b55b24db570
+# kernel sha256: d713744a5e4787645591ab4ea763c8cc92cc0b455c7234223dd140cf9bd2a031
+# disk at start sha256: d558e4444abcea6046147d85b81e538ecf604049b6d8ab15552f9a3d32bf688c
+# memory evidence session: 815c1e46-e6b5-43c7-9e0b-b0548015ae71
+# memory evidence digest: ddf3dca415c9f526c31f0d4e6f8cd0ff8823af92fae594f44139cbd19ce7fc11
+# board boot id: 815c1e46-e6b5-43c7-9e0b-b0548015ae71
+# host exit: 0
+# stop: deliberate-stop-after-all-commands
+# remote exit confirmed: yes

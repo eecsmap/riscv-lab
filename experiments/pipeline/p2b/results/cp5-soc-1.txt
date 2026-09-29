@@ -1,0 +1,36 @@
+# soc-1 (the same chain before 'not applicable' points existed): S1, S2 identical; S3 counted 50000/55000/60000 as failures -- no restart was asserted because the pipeline had already finished boot12 (HOSTDONE 46788)
+RD2_PIPE_SIM_BUILD_OK 214b7ae74cef673f
+== S1: the CPU-A SoC programs on the pipeline (RD2PipeBootConfig)
+  boot09                 sim=0 check-m3=0 check-axi=0 pipe-asserts=0  HOSTDONE exit_code=0
+  boot10                 sim=0 check-m3=0 check-axi=0 pipe-asserts=0  HOSTDONE exit_code=0
+  boot11                 sim=0 check-m3=0 check-axi=0 pipe-asserts=0  HOSTDONE exit_code=0
+  hello                  sim=0 check-m3=0 check-axi=0 pipe-asserts=0  HOSTDONE exit_code=0
+  boot12                 sim=0 check-m3=0 check-axi=0 pipe-asserts=0  HOSTDONE exit_code=0
+  boot12-events          score=0  BOOT12 amo=64 get=64 put=64 sc_ok=16 sc_fail=1 resv=16 fails=0
+== S2: the R-BOOT gates on the pipeline
+    g1-boot05-fixed        sim=0 check=ok
+    g2-read-inflight       sim=0 check=ok
+    g2-write-inflight      sim=0 check=ok
+    g2-read-target-neg     sim=2 check=ok
+    g2-queued-unconsumed   sim=0 check=ok
+    g3-three-rounds        sim=0 check=ok
+    g4-stuck-device        sim=2 check=ok
+    g4-late-recovery       sim=2 check=ok
+    g4-counterexample      rejected, as it must be: READY never happened
+  RBOOT_DONE fails=0 infra=0
+  gate lines identical to the multicycle's (m1/runs/rboot-after.log)
+== S3: a restart during boot12's atomic phase
+  the pipeline's atomic phase in S1: cycles 42383..44225
+  drain-45000            sim=0 score=0 pipe-asserts=0  DRAIN restarts=1 amo_started=128 get=128 put=128 reset_cycles=[45000] atomic_in_flight=True fails=0
+  drain-50000            sim=0 score=1 pipe-asserts=0  DRAIN restarts=0 amo_started=64 get=64 put=64 reset_cycles=[] atomic_in_flight=False fails=1
+        FAIL: no restart was asserted: the scenario proves nothing about a drain
+  drain-55000            sim=0 score=1 pipe-asserts=0  DRAIN restarts=0 amo_started=64 get=64 put=64 reset_cycles=[] atomic_in_flight=False fails=1
+        FAIL: no restart was asserted: the scenario proves nothing about a drain
+  drain-60000            sim=0 score=1 pipe-asserts=0  DRAIN restarts=0 amo_started=64 get=64 put=64 reset_cycles=[] atomic_in_flight=False fails=1
+        FAIL: no restart was asserted: the scenario proves nothing about a drain
+  drain-42751            sim=0 score=0 pipe-asserts=0  DRAIN restarts=1 amo_started=76 get=76 put=76 reset_cycles=[42751] atomic_in_flight=True fails=0
+  drain-43119            sim=0 score=0 pipe-asserts=0  DRAIN restarts=1 amo_started=90 get=90 put=90 reset_cycles=[43119] atomic_in_flight=True fails=0
+  drain-43488            sim=0 score=0 pipe-asserts=0  DRAIN restarts=1 amo_started=104 get=104 put=104 reset_cycles=[43488] atomic_in_flight=True fails=0
+  drain-43856            sim=0 score=0 pipe-asserts=0  DRAIN restarts=1 amo_started=117 get=117 put=117 reset_cycles=[43856] atomic_in_flight=True fails=0
+  5 restart(s) landed with an atomic in flight
+SOC_PIPE_DONE infra=0 fails=3

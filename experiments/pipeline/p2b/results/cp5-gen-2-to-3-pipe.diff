@@ -1,0 +1,26 @@
+== RD2PipeXv6FastConfig: gen-2 -> gen-3, normalized
+63073a63074,63076
+>   wire  _T_38;
+>   wire  _T_39;
+>   wire  _T_41;
+63118a63122,63124
+>   assign _T_38 = core_dbg_state == 4'hd;
+>   assign _T_39 = core_dbg_req_is_fetch | _T_38;
+>   assign _T_41 = core_dbg_state == 4'he;
+63136c63142
+<   assign io_obs_isFetch = core_dbg_req_is_fetch;
+---
+>   assign io_obs_isFetch = _T_39 | _T_41;
+== RD2PipeBootConfig: gen-2 -> gen-3, normalized
+216281a216282,216284
+>   wire  _T_38;
+>   wire  _T_39;
+>   wire  _T_41;
+216326a216330,216332
+>   assign _T_38 = core_dbg_state == 4'hd;
+>   assign _T_39 = core_dbg_req_is_fetch | _T_38;
+>   assign _T_41 = core_dbg_state == 4'he;
+216346c216352
+<   assign io_obs_isFetch = core_dbg_req_is_fetch;
+---
+>   assign io_obs_isFetch = _T_39 | _T_41;

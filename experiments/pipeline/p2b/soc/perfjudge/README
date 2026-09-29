@@ -1,0 +1,3 @@
+tests/m3_check.py is multicore/m4/tests/m3_check.py byte for byte (sha256 d39b760a3e07a67d75ff6317b8b4fabf3e79a3c9e87831da6012c96e39883c8c).
+It finds its production checker at ../tools/xv6-boot/scripts/check-xv6.py; tools -> multicore/perf/tools, whose
+check-xv6.py knows the perf-short profile (M4's does not). Nothing here is edited; this is only placement.

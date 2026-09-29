@@ -208,7 +208,18 @@ class TeachingCpuV2(resetPc: BigInt, hartId: BigInt = 0, coreImpl: String = "mul
   io.obs.trapTval    := core.io.trap_tval
   io.obs.pc          := core.io.dbg_pc
   io.obs.irqEnabled  := core.io.dbg_irq_enabled
-  io.obs.isFetch     := core.io.dbg_req_is_fetch
+  // PIPE-P2b: the SoC reads isFetch for its busy/settle rule (and prints it as the event trace's fetch= field): a
+  // response with isFetch = 0 is a DATA response, and the hart counts as busy until the next commit or trap, which
+  // must then be that instruction's (RD2Soc awaitingRetire). The
+  // multicycle core has one instruction in flight, so its PTE reads can count as data: the next commit or trap is the
+  // walking instruction's. The pipeline has several: a PTE read -- of a fetch walk, or of a data walk not yet done --
+  // is not a data response of the next instruction to retire, and fetch = 0 alone must not make it one. So for the
+  // pipeline a transaction the core's owner metadata marks as a PTE read (dbg_state 13 IF-PTE / 14 D-PTE, held by
+  // the walker wrapper through its response cycle; the same rule the core-level harness uses) is not a data
+  // response. A data request is only ever issued by the oldest instruction, so after its response the next commit
+  // or trap is exactly that instruction. Chosen at elaboration: the multicycle path is untouched.
+  io.obs.isFetch     := (if (coreImpl == "pipeline") core.io.dbg_req_is_fetch || core.io.dbg_state === 13.U || core.io.dbg_state === 14.U
+                         else core.io.dbg_req_is_fetch)
   io.obs.halted      := core.io.halted
   io.impl.state      := core.io.dbg_state
   io.impl.redirect   := core.io.dbg_redirect

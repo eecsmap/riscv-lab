@@ -1,0 +1,73 @@
+# xv6-perf-short-pipe-1
+## cmd.txt
+sim=/home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p2b/runs/rd2sim-1/sim-pipe/obj_dir/sim (dfc1f970458fe037)
+kernel=/home/engineer/fpga/experiments/multicore/perf/sw/out/kernel-deploy-4 (d713744a5e4787645591ab4ea763c8cc92cc0b455c7234223dd140cf9bd2a031)
+disk=/home/engineer/fpga/experiments/multicore/perf/sw/out/fs-perf.img (d558e4444abcea6046147d85b81e538ecf604049b6d8ab15552f9a3d32bf688c)
+workload=perf-short max_cycles=2000000000 wall=7200 stage=3600 scheduler=[0x80001e4a,0x80001f00) (plusargs decimal 2147491402 2147491584)
+start=2026-09-29T06:48:16Z
+## verdict.txt
+XV6_RC=0 wall=484s
+## check.txt
+INFO n1: retired 16352354 user 2364058 sched-range 40922 traps 257
+INFO disk: 56 block-device operations, strictly alternating request/completion, closed at EOF
+PASS /home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p2b/runs/xv6-perf-short-pipe-1 harts={'n': 1, 'retired': [16352354, 0], 'traps': [257, 0], 'user': [2364058, 0], 'range': [40922, 0]}
+## perf-check.txt
+INFO mtimetest: 8 reads monotonic, consecutive deltas [64, 64, 64, 64, 64, 64, 64] mtime units; child 414294 within [412627,418959]; spin100k=78952 mtime units (7895200 cycles, 79 cycles/iter)
+RESULT PERF-COMPUTE size=20000 dmtime=83410 readcost=64 ticks_diag=3 seconds=0.209 work_per_s=383647
+RESULT PERF-ARRAY size=1 dmtime=75472 readcost=63 ticks_diag=3 seconds=0.189 work_per_s=347339
+PASS /home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p2b/runs/xv6-perf-short-pipe-1 (2 perf runs)
+## console.txt
+
+xv6 kernel is booting
+
+blkdev: 4000 sectors (1 MB), max request 16 sectors
+init: starting sh
+$ mtimetest
+MTIME-READS 411390 411454 411518 411582 411646 411710 411774 411838
+MTIME-SHARED p0=412627 child=414294 p1=418959 ticks=0 spin100k=78952 x=723cc1865dd69690
+MTIME-DONE ok=1
+$ perfcompute 20000
+PERF-COMPUTE size=20000 children=4 mt0=532515 mt1=615925 dmtime=83410 readcost=64 ticks=3 ok=1
+PERF-COMPUTE-CHILD0 checksum=9fb000ba0962e1ec
+PERF-COMPUTE-CHILD1 checksum=537db65542ffaca6
+PERF-COMPUTE-CHILD2 checksum=6e4d363133375dba
+PERF-COMPUTE-CHILD3 checksum=a7a09d9b4d2a5984
+PERF-DONE ok=1
+$ perfarray 1
+PERF-ARRAY size=1 children=4 mt0=651511 mt1=726983 dmtime=75472 readcost=63 ticks=3 ok=1
+PERF-ARRAY-CHILD0 checksum=04f1a80698c9e000
+PERF-ARRAY-CHILD1 checksum=04f1a80698ca2000
+PERF-ARRAY-CHILD2 checksum=04f1a80698ca6000
+PERF-ARRAY-CHILD3 checksum=04f1a80698caa000
+PERF-DONE ok=1
+$ Completed after 73565235 cycles
+PIPE COVERAGE redirects=2446251 redirect_while_held=192451 killed_fetch_responses=175075 killed_after_two_flushes=41 flush_with_pending_valid=103327 irq_tokens=25 irq_synthetic=33 irq_synthetic_fetch_ahead=3 irq_cancelled=0 drain_wait_cycles=725796 loaduse_stall_cycles=7319873 fwd_exmem=4660408 fwd_memwb=1447778 wb_bypass=1316773 uncached_wait_cycles=13548
+PIPE COVERAGE-SV39 fetch_walks=22419 data_walks=29345 walks_preempted_by_data=223 walks_aborted=2137 pte_transactions_killed=1373 tlb_flushes=1264
+AXI ar=3670710 r=3671718 rlast=3670710 aw=2203511 w=2208775 wlast=2203511 b=2203511
+RD2HOST restarts_requested=0 restarts_completed=0
+RD2HOST FINAL aWaits=1017992 aFires=4983782 dFires=4983782 epoch=1 injections=0 boot_ready=0 boot_timeout=0 bdev_queued=0
+HARTS n=1 retired0=16352354 traps0=257 cause0=0x8 maxawait0=231 awaits0=1017992 epoch0=1 retired1=0 traps1=0 cause1=0x0 maxawait1=0 awaits1=0 epoch1=0
+HARTS_USER user0=2364058 range0=40922 user1=0 range1=0
+CYCLES total=73565235 host_done_at=73565228 drained=8
+## stages.txt
+ok	4.2	kernel banner
+ok	228.3	init started / first prompt
+ok	257.1	shell prompt
+ok	332.8	command mtimetest
+ok	409.0	command perfcompute
+ok	483.1	command perfarray
+# driver: v3
+# platform: board
+# workload: perf-short
+# channel: multiplexed
+# console device: none (multiplexed)
+# bitstream sha256: 2cd8a9927cfa2f51da16bc6ba4865a407e985d00bf2accbb046f48c81c0fda52
+# host binary sha256: 78a385b36e04179c79f5f13f8aeed4eabee8329aa071cb4cf43445469a95a233
+# kernel sha256: d713744a5e4787645591ab4ea763c8cc92cc0b455c7234223dd140cf9bd2a031
+# disk at start sha256: d558e4444abcea6046147d85b81e538ecf604049b6d8ab15552f9a3d32bf688c
+# memory evidence session: 815c1e46-e6b5-43c7-9e0b-b0548015ae71
+# memory evidence digest: ddf3dca415c9f526c31f0d4e6f8cd0ff8823af92fae594f44139cbd19ce7fc11
+# board boot id: 815c1e46-e6b5-43c7-9e0b-b0548015ae71
+# host exit: 0
+# stop: deliberate-stop-after-all-commands
+# remote exit confirmed: yes

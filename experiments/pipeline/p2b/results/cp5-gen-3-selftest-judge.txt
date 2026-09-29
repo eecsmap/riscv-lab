@@ -1,0 +1,9 @@
+  unmutated copy: PASS
+  mutant logic refused:   RD2AtomicXv6FastConfig: raw differs in 1380 lines; normalized DIFFERS (2 lines); tcpu_core instances 1, tcpu_core_pipe
+  mutant string refused:   RD2BootConfig: raw differs in 1796 lines; normalized DIFFERS (2 lines); tcpu_core instances 1, tcpu_core_pipe 0; sha b
+  mutant pipe-in-old refused:   RD2DualBoardConfig: raw differs in 1116 lines; normalized DIFFERS (2 lines); tcpu_core instances 1, tcpu_core_pipe 1; 
+  mutant wrong-core refused:   RD2PipeXv6FastConfig: generated 0550d4959b106f1a; tcpu_core_pipe instances 0, tcpu_core instances 1; parameters ok=0: 
+  mutant no-A refused:   RD2PipeBootConfig: generated 22bebb682005e51d; tcpu_core_pipe instances 1, tcpu_core instances 0; parameters ok=0:   t
+  mutant elaborated refused:   P2bUnsupportedPipeV1Config: ELABORATED -- must refuse
+  mutant missing refused:   RD2DualXv6FastConfig: MISSING generated Verilog
+SELFTEST_JUDGE_GEN PASS

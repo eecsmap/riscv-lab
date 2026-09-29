@@ -1,0 +1,7 @@
+| run | workload | sim | kernel | disk | judges | harts | retired | traps | user commits | cycles | cycles/retired | fixed-work dmtime (mtime units) |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| pipe-m4smoke | m4smoke | dfc1f970458fe037 | 1e4749c0f7c1e7ee | d8e502693bba1b14 | PASS | 1 | 28,021,830 | 301 | 4,264,205 | 129,715,887 | 4.63 | - |
+| multi-m4smoke | m4smoke | d7ecb822bff087a7 | 1e4749c0f7c1e7ee | d8e502693bba1b14 | PASS | 1 | 28,870,226 | 465 | 4,280,107 | 348,475,997 | 12.07 | - |
+| pipe-perf-short | perf-short | dfc1f970458fe037 | d713744a5e478764 | d558e4444abcea60 | PASS/PASS | 1 | 16,352,354 | 257 | 2,364,058 | 73,565,235 | 4.50 | array 75,472, compute 83,410 |
+| multi-perf-short | perf-short | d7ecb822bff087a7 | d713744a5e478764 | d558e4444abcea60 | PASS/PASS | 1 | 17,048,484 | 347 | 2,380,398 | 201,977,719 | 11.85 | array 262,904, compute 167,357 |
+XV6_COMPARE PASS
