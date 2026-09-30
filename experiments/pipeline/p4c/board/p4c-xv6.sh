@@ -23,6 +23,7 @@ board_must "reading the state" "mkdir -p /var/lock; echo BID=\$(cat /proc/sys/ke
 [ "$(field PD)" = 1 ] || die $EX_PROG "prog_done is not 1"
 [ "$(field F)" = 0 ] || die $EX_BUSY "a host is running"; [ "$(field L)" = NO_LOCK ] || die $EX_BUSY "the host lock is present"
 [ "$(field PSHA)" = "$PAYLOAD_SHA" ] || die $EX_HASH "the payload file on the board is not $PAYLOAD_SHA"
+p4c_no_host "checking for a host by comm scan, pgrep and the lock"
 say "== deploy the kernel and a FRESH disk copy (hash-verified on the board)"
 deploy_verified "$ART/$K" /root/xv6run/$K "$X/deploy.log"; deploy_verified "$ART/$D" $RUN_DISK "$X/deploy.log"
 { echo "config=dual pipeline (payload $PAYLOAD_SHA, bit $BIT_SHA) workload=$WL stage_timeout=$STAGE wall=$WALL"; echo "kernel=/root/xv6run/$K ($KSHA)"
@@ -35,7 +36,7 @@ timeout "$WALL" python3 "$P4C/tools/board/scripts/board-runner.py" "$X/run" \
   --bitstream-sha "$BIT_SHA" --workload "$WL" --stage-timeout "$STAGE" --startup-timeout "$STAGE" --stop-timeout 120 > "$X/runner.log" 2>&1
 rc=$?; set -e; e=$(date +%s)
 echo "XV6_RC=$rc wall=$((e-s))s" | tee "$X/verdict.txt"; tail -3 "$X/runner.log" | cut -c1-200
-board "echo PD=\$(cat /sys/devices/amba.1/f8007000.devcfg/prog_done); echo FESVR=\$(pgrep -x fesvr-teaching-static | wc -l); echo LOCK=\$(test -e /var/lock/teaching-fesvr.lock && echo PRESENT || echo NO_LOCK); echo BID=\$(cat /proc/sys/kernel/random/boot_id)" || true
+board "echo PD=\$(cat /sys/devices/amba.1/f8007000.devcfg/prog_done); echo FESVR=\$(pgrep -x fesvr-teaching-static | wc -l); echo COMMHOSTS=\$(cat /proc/[0-9]*/comm 2>/dev/null | grep -cx fesvr-teaching-); echo LOCK=\$(test -e /var/lock/teaching-fesvr.lock && echo PRESENT || echo NO_LOCK); echo BID=\$(cat /proc/sys/kernel/random/boot_id)" || true
 printf '%s\n' "$BOARD_OUT" > "$X/post-state.txt"; say "$BOARD_OUT"
 set +e; $JUDGE "$X" | tee "$X/check.txt"; jr=${PIPESTATUS[0]}
 python3 "$P4C/hart_check.py" "$X/run/console.txt" | tee "$X/hart-check.txt"; hr=${PIPESTATUS[0]}; set -e

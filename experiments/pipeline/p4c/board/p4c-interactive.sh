@@ -24,6 +24,7 @@ board_must "reading the state" "mkdir -p /var/lock; echo BID=\$(cat /proc/sys/ke
 [ "$(field PD)" = 1 ] || die $EX_PROG "prog_done is not 1"; [ "$(field F)" = 0 ] || die $EX_BUSY "a host is running"
 [ "$(field L)" = NO_LOCK ] || die $EX_BUSY "the host lock is present"; [ "$(field PSHA)" = "$PAYLOAD_SHA" ] || die $EX_HASH "the payload file on the board is not $PAYLOAD_SHA"
 [ "$(field USERDISK)" = NONE ] || die $EX_BUSY "fs-user.img already exists on this boot (sha $(field USERDISK)): not overwriting it"
+p4c_no_host "checking for a host by comm scan, pgrep and the lock"
 say "== the launcher, the measurement kernel"
 deploy_verified "$P4C/xv6-pipe-dual.sh" /root/xv6run/xv6-pipe-dual.sh "$H/deploy.log"
 deploy_verified "$ART/kernel-perf-128mib" /root/xv6run/kernel-perf-128mib "$H/deploy.log"

@@ -24,6 +24,16 @@ p4c_check_artefacts() {
     [ "$got" = "$PAYLOAD_SHA" ] || die $EX_HASH "pipedual.bit.bin hashes $got, not the accepted payload $PAYLOAD_SHA"
     say "  frozen artefact set verified: $(grep -c . "$P4C/artefacts.sha256") artefacts; payload ${PAYLOAD_SHA:0:16}… (bit ${BIT_SHA:0:16}…)"
 }
+# "No host is running" is NOT taken from `pgrep -x fesvr-teaching-static` alone: procps' pgrep cannot match that
+# 21-character name (the kernel keeps 15: "fesvr-teaching-"), and the board's pgrep is measured only in install step
+# 6b. The /proc/*/comm scan (exact match, so the scanning shell, cat and grep never match themselves), pgrep, and the
+# host lock must ALL say "none"; anything else stops the session (Codex, P4c review).
+p4c_no_host() {
+    board_must "$1" "mkdir -p /var/lock; echo HC=\$(cat /proc/[0-9]*/comm 2>/dev/null | grep -cx fesvr-teaching-); echo HP=\$(pgrep -x fesvr-teaching-static | wc -l); echo HL=\$(test -e /var/lock/teaching-fesvr.lock && echo PRESENT || echo NO_LOCK)"
+    local c p l; c=$(field HC); p=$(field HP); l=$(field HL)
+    [ "$c" = 0 ] && [ "$p" = 0 ] && [ "$l" = NO_LOCK ] || die $EX_BUSY "a host or the lock is present, or the state is unreadable (comm scan '${c}', pgrep '${p}', lock '${l}'): stopping"
+    say "  no host running: comm scan 0, pgrep 0, lock free"
+}
 p4c_deploy_install() {   # payload, host, the 6 dual gates, the two (two-hart) frequency programs
     local S=$1 f
     deploy_verified "$ART/pipedual.bit.bin" /root/xv6run/pipedual.bit.bin "$S/deploy.log"

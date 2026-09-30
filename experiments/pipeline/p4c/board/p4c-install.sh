@@ -19,10 +19,12 @@ say "== step 1: the cold cycle"
 verify_power_record "$O/power.txt" "$O/pin.txt"
 verify_cold_cycle   "$O/pin.txt" "$S/boot-id.txt" 600
 NEWBID=$(cat "$S/boot-id.txt")
+p4c_no_host "checking for a host by comm scan, pgrep and the lock"
 say "== step 2: this boot's memory evidence, then the production preflight"
 capture_memory_evidence "$S/memory" "$NEWBID"; run_mem_preflight "$S/memory" "$NEWBID" "$S/mem-preflight.json"
 say "== step 3: deploy, each artefact hash-verified on the board"; p4c_deploy_install "$S"
 say "== step 4: program from the cold, quiescent platform"
+p4c_no_host "checking again for a host before programming"
 board_must "reading prog_done before programming" "echo PD=\$(cat /sys/devices/amba.1/f8007000.devcfg/prog_done)"
 printf 'prog_done_before=%s\n' "$(field PD)" > "$S/program.txt"
 program_payload /root/xv6run/pipedual.bit.bin
@@ -51,7 +53,7 @@ say "  while a host ran: pgrep -x=$(field PGX) comm-scan=$(field COMM) pidof=$(f
 [ "$(field COMM)" = 1 ] || die $EX_GATE "the comm scan did not see the running host (got '$(field COMM)'): the launcher's guard would be blind"
 [ "$(field PGX)" = 1 ] || say "  NOTE: pgrep -x does NOT see a running host on this board: the accepted library's 'no host' checks are blind (reported, not changed here); the lock is the effective guard"
 say "== step 7: state and health"
-board_must "reading the final state" "echo BOOTID=\$(cat /proc/sys/kernel/random/boot_id); echo UP=\$(cut -d. -f1 /proc/uptime); echo PD=\$(cat /sys/devices/amba.1/f8007000.devcfg/prog_done); echo FESVR=\$(pgrep -x fesvr-teaching-static | wc -l); echo LOCK=\$(test -e /var/lock/teaching-fesvr.lock && echo PRESENT || echo NO_LOCK); echo LOAD=\$(cut -d' ' -f1-3 /proc/loadavg); cd /root/xv6run && sha256sum *; dmesg | tail -5"
+board_must "reading the final state" "echo BOOTID=\$(cat /proc/sys/kernel/random/boot_id); echo UP=\$(cut -d. -f1 /proc/uptime); echo PD=\$(cat /sys/devices/amba.1/f8007000.devcfg/prog_done); echo FESVR=\$(pgrep -x fesvr-teaching-static | wc -l); echo COMMHOSTS=\$(cat /proc/[0-9]*/comm 2>/dev/null | grep -cx fesvr-teaching-); echo LOCK=\$(test -e /var/lock/teaching-fesvr.lock && echo PRESENT || echo NO_LOCK); echo LOAD=\$(cut -d' ' -f1-3 /proc/loadavg); cd /root/xv6run && sha256sum *; dmesg | tail -5"
 printf '%s\n' "$BOARD_OUT" > "$S/final-state.txt"
 printf 'variant=pipedual\ncompleted_utc=%s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > "$S/completed.txt"
 say "P4C_INSTALL_DONE session=$S"
