@@ -82,8 +82,8 @@ Device xc7z020: 53,200 LUT (17,400 usable as LUTRAM), 106,400 FF, 13,300 slices,
 | pipeline × 1 | 10,826 / 5,604 | 7,382 / 3,550 |
 | **pipeline × 2** | **10,829 / 5,604 and 10,598 / 5,602** | **8,063 / 4,275** |
 
-* Pipeline × 2 vs multicycle × 2: +6,859 LUT (+30%), +4,300 FF (+38%), all in the two harts (the rest differs by
-  157 LUT, 0 FF). Pipeline × 2 vs pipeline × 1: +11,282 LUT, +6,327 FF (the second hart plus the second hart's
+* Pipeline × 2 vs multicycle × 2: +6,859 LUT (+30%), +4,300 FF (+38%), mainly in the two harts; outside the harts
+  the design grows by 157 LUT (0 FF). Pipeline × 2 vs pipeline × 1: +11,282 LUT, +6,327 FF (the second hart plus the second hart's
   bridge/port/CLINT/PLIC share, as in multicycle).
 * Headroom: 45% of the LUTs, 85% of the FFs, 35% of the slices, all BRAM and DSP remain.
 * Hierarchical numbers are attribution after cross-boundary optimisation, not isolated feature costs.
