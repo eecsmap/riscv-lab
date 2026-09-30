@@ -52,7 +52,8 @@ case class RD2Params(
   // none at all. Defaults to on, so every existing configuration elaborates exactly as it did.
   busInstrumentation: Boolean = true,
   // MC-M1: the configuration matrix the multicore plan names, CORE_IMPL x NUM_CORES. Implemented: multicycle/1,
-  // multicycle/2 (MC-M2b), pipeline/1 on the atomic path (PIPE-P2b). Anything else must be REFUSED at elaboration
+  // multicycle/2 (MC-M2b), pipeline/1 (PIPE-P2b) and pipeline/2 (PIPE-P4a), both on the atomic path. Core
+  // implementation and hart count are independent choices. Anything else must be REFUSED at elaboration
   // with the value in the message -- never silently replaced by an implementation that exists.
   numCores: Int = 1,
   coreImpl: String = "multicycle")
@@ -118,9 +119,9 @@ class RD2ZynqTop(implicit p: Parameters) extends RocketSubsystem   // RocketTile
   // message. Nothing else in this file may quietly substitute the one implementation that exists.
   require(TcpuCoreImpl.all.contains(rd2Cfg.coreImpl),
           s"unsupported CORE_IMPL=${rd2Cfg.coreImpl}: implemented are ${TcpuCoreImpl.all.mkString(", ")}")
-  // PIPE-P2b: the pipeline runs one hart, behind the V2 (atomic) hart wrapper only
-  require(rd2Cfg.coreImpl != "pipeline" || rd2Cfg.numCores == 1,
-          s"unsupported CORE_IMPL=pipeline with NUM_CORES=${rd2Cfg.numCores}: the pipeline is single-core only")
+  // PIPE-P2b/P4a: the pipeline exists behind the V2 (atomic) hart wrapper only; its hart count is the same
+  // NUM_CORES choice as the multicycle core's (1 or 2, checked below), so pipeline/2 is two hart wrappers exactly as
+  // multicycle/2 is
   require(rd2Cfg.coreImpl != "pipeline" || rd2Cfg.atomic,
           s"unsupported CORE_IMPL=pipeline with atomic=false: the pipeline exists behind the V2 hart wrapper only")
   require(rd2Cfg.numCores == 1 || rd2Cfg.numCores == 2,
@@ -844,10 +845,11 @@ class RD2AtomicXv6FastConfig extends Config(
 // The same machine as RD2AtomicXv6FastConfig with one field of the CORE_IMPL x NUM_CORES matrix set to a
 // value that does not exist yet. Each must fail at elaboration with "unsupported" and the value in the
 // message -- never elaborate as multicycle/1 and pretend. (The left-hand WithRD2 wins over the one inside.)
-// PIPE-P2b: pipeline/1 exists now (RD2PipeXv6FastConfig below), so this matrix entry became pipeline/2 -- the
-// name is kept because the MC-M1/M2b regressions refer to it; it must still refuse, now for NUM_CORES.
+// PIPE-P2b: pipeline/1 exists (RD2PipeXv6FastConfig), PIPE-P4a: pipeline/2 exists (RD2PipeDualXv6FastConfig), so
+// this matrix entry is now pipeline/4 -- the name is kept because the MC-M1/M2b regressions refer to it; it must
+// still refuse, for NUM_CORES.
 class MC1UnsupportedPipelineConfig extends Config(
-  new WithRD2(RD2Params(atomic = true, traceEvents = false, atomicTrace = false, coreImpl = "pipeline", numCores = 2)) ++
+  new WithRD2(RD2Params(atomic = true, traceEvents = false, atomicTrace = false, coreImpl = "pipeline", numCores = 4)) ++
   new RD2AtomicXv6FastConfig)
 // PIPE-P2b: an implementation name that does not exist, and the pipeline on the V1 (non-atomic) path
 class P2bUnsupportedImplConfig extends Config(
@@ -892,6 +894,23 @@ class RD2PipeXv6FastConfig extends Config(
 class RD2PipeBootConfig extends Config(
   new WithAtomicHub() ++
   new WithRD2(RD2Params(atomic = true, coreImpl = "pipeline")) ++
+  new WithTeachingCpu(TeachingCpuParams(traceEvents = true, extraDelay = false, bridgeFault = 0,
+                                        tailIntercept = false)) ++
+  new WithTeachingBootROM ++ new zynq.WithZynqAdapter ++ new freechips.rocketchip.system.DefaultConfig)
+// ---- PIPE-P4a: two pipeline harts on the RD2 chain ----------------------------------------------------------
+// RD2DualXv6FastConfig / RD2DualBootConfig with CORE_IMPL = pipeline: two TeachingHarts (HART_ID 0/1), each a
+// tcpu_core_pipe with its own TLB and I-cache, the same bridges, shared serial atomic backend, CLINT/PLIC per hart
+// and aligned drain as multicycle/2. Simulation only.
+class RD2PipeDualXv6FastConfig extends Config(
+  new freechips.rocketchip.subsystem.WithoutTLMonitors ++
+  new WithAtomicHub(trace = false) ++
+  new WithRD2(RD2Params(atomic = true, traceEvents = false, atomicTrace = false, numCores = 2, coreImpl = "pipeline")) ++
+  new WithTeachingCpu(TeachingCpuParams(traceEvents = false, extraDelay = false, bridgeFault = 0,
+                                        tailIntercept = false)) ++
+  new WithTeachingBootROM ++ new zynq.WithZynqAdapter ++ new freechips.rocketchip.system.DefaultConfig)
+class RD2PipeDualBootConfig extends Config(
+  new WithAtomicHub() ++
+  new WithRD2(RD2Params(atomic = true, numCores = 2, coreImpl = "pipeline")) ++
   new WithTeachingCpu(TeachingCpuParams(traceEvents = true, extraDelay = false, bridgeFault = 0,
                                         tailIntercept = false)) ++
   new WithTeachingBootROM ++ new zynq.WithZynqAdapter ++ new freechips.rocketchip.system.DefaultConfig)
