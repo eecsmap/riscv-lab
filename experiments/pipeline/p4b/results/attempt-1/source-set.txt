@@ -1,0 +1,25 @@
+# every file Vivado has in sources_1, in compile order, as the tool reports it
+# top: rocketchip_wrapper
+# verilog_define: SYNTHESIS
+# include_dirs: /home/engineer/fpga/teaching-cpu-work/fpga-zynq/pynqz1/src/verilog /home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4b/runs/attempt-1/inputs/inc
+/home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4b/runs/attempt-1/inputs/teaching_top_shim.v
+/home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4b/runs/gen-1/after-RD2PipeDualBoardConfig/RD2BoardTop.RD2PipeDualBoardConfig.v
+/home/engineer/fpga/teaching-cpu-work/fpga-zynq/pynqz1/src/verilog/rocketchip_wrapper.v
+/home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4b/runs/attempt-1/inputs/rtl/tcpu_core_pipe.v
+/home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4b/runs/attempt-1/inputs/rtl/tcpu_tlb2.v
+/home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4b/runs/attempt-1/inputs/rtl/tcpu_ptw_wrap.v
+/home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4b/runs/attempt-1/inputs/rtl/tcpu_regfile.v
+/home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4b/runs/attempt-1/inputs/rtl/tcpu_csr.v
+/home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4b/runs/attempt-1/inputs/rtl/tcpu_icache.v
+/home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4b/runs/attempt-1/inputs/rtl/tcpu_cacheable.v
+/home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4b/runs/attempt-1/inputs/rtl/tcpu_muldiv.v
+/home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4b/runs/attempt-1/inputs/rtl/tcpu_cdecode.v
+/home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4b/runs/attempt-1/inputs/rtl/tcpu_ptw.v
+/home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4b/runs/attempt-1/inputs/rtl/tcpu_permcheck.v
+/home/engineer/fpga/teaching-cpu-work/fpga-zynq/pynqz1/src/verilog/AsyncResetReg.v
+/home/engineer/fpga/teaching-cpu-work/fpga-zynq/pynqz1/src/verilog/plusarg_reader.v
+/home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4b/runs/attempt-1/project/teaching_pynqz1.srcs/sources_1/bd/system/system.bd
+/home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4b/runs/attempt-1/project/teaching_pynqz1.srcs/sources_1/bd/system/ip/system_proc_sys_reset_0_0/system_proc_sys_reset_0_0.xci
+/home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4b/runs/attempt-1/project/teaching_pynqz1.srcs/sources_1/bd/system/ip/system_processing_system7_0_0/system_processing_system7_0_0.xci
+# constraints
+/home/engineer/fpga/teaching-cpu-work/fpga-zynq/pynqz1/src/constrs/base.xdc

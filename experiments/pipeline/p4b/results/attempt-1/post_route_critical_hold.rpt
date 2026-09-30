@@ -1,0 +1,434 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2026 Advanced Micro Devices, Inc. All Rights Reserved.
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2025.2.1 (lin64) Build 6403652 Thu Mar 19 13:47:00 MDT 2026
+| Date         : Wed Sep 30 05:41:50 2026
+| Host         : ubuntu running 64-bit Ubuntu 24.04.2 LTS
+| Command      : report_timing -delay_type min -max_paths 10 -nworst 1 -path_type full -file /home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4b/runs/attempt-1/reports/post_route_critical_hold.rpt
+| Design       : rocketchip_wrapper
+| Device       : 7z020-clg400
+| Speed File   : -1  PRODUCTION 1.12 2019-11-22
+| Design State : Routed
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Timing Report
+
+Slack (MET) :             0.028ns  (arrival time - required time)
+  Source:                 top/teaching_board_top/target/harts_1/cpu/core/g_sv39.walk/walker/a_reg[25]/C
+                            (rising edge-triggered cell FDRE clocked by host_clk_i  {rise@0.000ns fall@12.500ns period=25.000ns})
+  Destination:            top/teaching_board_top/target/harts_1/cpu/core/g_sv39.walk/walker/req_addr_reg[25]/D
+                            (rising edge-triggered cell FDRE clocked by host_clk_i  {rise@0.000ns fall@12.500ns period=25.000ns})
+  Path Group:             host_clk_i
+  Path Type:              Hold (Min at Fast Process Corner)
+  Requirement:            0.000ns  (host_clk_i rise@0.000ns - host_clk_i rise@0.000ns)
+  Data Path Delay:        0.359ns  (logic 0.141ns (39.274%)  route 0.218ns (60.726%))
+  Logic Levels:           0  
+  Clock Path Skew:        0.265ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    2.544ns
+    Source Clock Delay      (SCD):    1.985ns
+    Clock Pessimism Removal (CPR):    0.294ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock host_clk_i rise edge)
+                                                      0.000     0.000 r  
+                         clock source latency         0.709     0.709    
+                         propagated clock network latency
+                                                      1.276     1.985    
+    SLICE_X53Y14         FDRE                         0.000     1.985 r  top/teaching_board_top/target/harts_1/cpu/core/g_sv39.walk/walker/a_reg[25]/C
+    SLICE_X53Y14         FDRE (Prop_fdre_C_Q)         0.141     2.126 r  top/teaching_board_top/target/harts_1/cpu/core/g_sv39.walk/walker/a_reg[25]/Q
+                         net (fo=1, routed)           0.218     2.344    top/teaching_board_top/target/harts_1/cpu/core/g_sv39.walk/walker/a_reg_n_0_[25]
+    SLICE_X48Y13         FDRE                                         r  top/teaching_board_top/target/harts_1/cpu/core/g_sv39.walk/walker/req_addr_reg[25]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock host_clk_i rise edge)
+                                                      0.000     0.000 r  
+                         clock source latency         0.939     0.939    
+                         propagated clock network latency
+                                                      1.605     2.544    
+                         clock pessimism             -0.294     2.250    
+    SLICE_X48Y13         FDRE (Hold_fdre_C_D)         0.066     2.316    top/teaching_board_top/target/harts_1/cpu/core/g_sv39.walk/walker/req_addr_reg[25]
+  -------------------------------------------------------------------
+                         required time                         -2.316    
+                         arrival time                           2.344    
+  -------------------------------------------------------------------
+                         slack                                  0.028    
+
+Slack (MET) :             0.034ns  (arrival time - required time)
+  Source:                 top/teaching_board_top/target/harts/cpu/core/mem_raw_reg[17]/C
+                            (rising edge-triggered cell FDRE clocked by host_clk_i  {rise@0.000ns fall@12.500ns period=25.000ns})
+  Destination:            top/teaching_board_top/target/harts/cpu/core/wb_raw_reg[17]/D
+                            (rising edge-triggered cell FDRE clocked by host_clk_i  {rise@0.000ns fall@12.500ns period=25.000ns})
+  Path Group:             host_clk_i
+  Path Type:              Hold (Min at Fast Process Corner)
+  Requirement:            0.000ns  (host_clk_i rise@0.000ns - host_clk_i rise@0.000ns)
+  Data Path Delay:        0.363ns  (logic 0.141ns (38.835%)  route 0.222ns (61.165%))
+  Logic Levels:           0  
+  Clock Path Skew:        0.259ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    2.540ns
+    Source Clock Delay      (SCD):    1.987ns
+    Clock Pessimism Removal (CPR):    0.294ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock host_clk_i rise edge)
+                                                      0.000     0.000 r  
+                         clock source latency         0.709     0.709    
+                         propagated clock network latency
+                                                      1.278     1.987    
+    SLICE_X47Y56         FDRE                         0.000     1.987 r  top/teaching_board_top/target/harts/cpu/core/mem_raw_reg[17]/C
+    SLICE_X47Y56         FDRE (Prop_fdre_C_Q)         0.141     2.128 r  top/teaching_board_top/target/harts/cpu/core/mem_raw_reg[17]/Q
+                         net (fo=1, routed)           0.222     2.350    top/teaching_board_top/target/harts/cpu/core/mem_raw[17]
+    SLICE_X53Y55         FDRE                                         r  top/teaching_board_top/target/harts/cpu/core/wb_raw_reg[17]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock host_clk_i rise edge)
+                                                      0.000     0.000 r  
+                         clock source latency         0.939     0.939    
+                         propagated clock network latency
+                                                      1.601     2.540    
+                         clock pessimism             -0.294     2.246    
+    SLICE_X53Y55         FDRE (Hold_fdre_C_D)         0.070     2.316    top/teaching_board_top/target/harts/cpu/core/wb_raw_reg[17]
+  -------------------------------------------------------------------
+                         required time                         -2.316    
+                         arrival time                           2.350    
+  -------------------------------------------------------------------
+                         slack                                  0.034    
+
+Slack (MET) :             0.036ns  (arrival time - required time)
+  Source:                 top/teaching_board_top/target/harts/cpu/core/g_sv39.walk/walker/req_addr_reg[21]/C
+                            (rising edge-triggered cell FDRE clocked by host_clk_i  {rise@0.000ns fall@12.500ns period=25.000ns})
+  Destination:            top/teaching_board_top/target/harts/cpu/core/g_sv39.walk/h_addr_reg[21]/D
+                            (rising edge-triggered cell FDRE clocked by host_clk_i  {rise@0.000ns fall@12.500ns period=25.000ns})
+  Path Group:             host_clk_i
+  Path Type:              Hold (Min at Fast Process Corner)
+  Requirement:            0.000ns  (host_clk_i rise@0.000ns - host_clk_i rise@0.000ns)
+  Data Path Delay:        0.363ns  (logic 0.141ns (38.885%)  route 0.222ns (61.115%))
+  Logic Levels:           0  
+  Clock Path Skew:        0.273ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    2.550ns
+    Source Clock Delay      (SCD):    1.988ns
+    Clock Pessimism Removal (CPR):    0.289ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock host_clk_i rise edge)
+                                                      0.000     0.000 r  
+                         clock source latency         0.709     0.709    
+                         propagated clock network latency
+                                                      1.279     1.988    
+    SLICE_X44Y50         FDRE                         0.000     1.988 r  top/teaching_board_top/target/harts/cpu/core/g_sv39.walk/walker/req_addr_reg[21]/C
+    SLICE_X44Y50         FDRE (Prop_fdre_C_Q)         0.141     2.129 r  top/teaching_board_top/target/harts/cpu/core/g_sv39.walk/walker/req_addr_reg[21]/Q
+                         net (fo=1, routed)           0.222     2.351    top/teaching_board_top/target/harts/cpu/core/g_sv39.walk/w_req_addr[21]
+    SLICE_X38Y48         FDRE                                         r  top/teaching_board_top/target/harts/cpu/core/g_sv39.walk/h_addr_reg[21]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock host_clk_i rise edge)
+                                                      0.000     0.000 r  
+                         clock source latency         0.939     0.939    
+                         propagated clock network latency
+                                                      1.611     2.550    
+                         clock pessimism             -0.289     2.261    
+    SLICE_X38Y48         FDRE (Hold_fdre_C_D)         0.053     2.314    top/teaching_board_top/target/harts/cpu/core/g_sv39.walk/h_addr_reg[21]
+  -------------------------------------------------------------------
+                         required time                         -2.314    
+                         arrival time                           2.351    
+  -------------------------------------------------------------------
+                         slack                                  0.036    
+
+Slack (MET) :             0.037ns  (arrival time - required time)
+  Source:                 top/teaching_board_top/target/harts_1/cpu/core/ic_fill_data_reg[75]/C
+                            (rising edge-triggered cell FDRE clocked by host_clk_i  {rise@0.000ns fall@12.500ns period=25.000ns})
+  Destination:            top/teaching_board_top/target/harts_1/cpu/core/icache/g_cache.data_reg_0_63_75_77/RAMA/I
+                            (rising edge-triggered cell RAMD64E clocked by host_clk_i  {rise@0.000ns fall@12.500ns period=25.000ns})
+  Path Group:             host_clk_i
+  Path Type:              Hold (Min at Fast Process Corner)
+  Requirement:            0.000ns  (host_clk_i rise@0.000ns - host_clk_i rise@0.000ns)
+  Data Path Delay:        0.197ns  (logic 0.141ns (71.611%)  route 0.056ns (28.389%))
+  Logic Levels:           0  
+  Clock Path Skew:        0.013ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    2.546ns
+    Source Clock Delay      (SCD):    1.990ns
+    Clock Pessimism Removal (CPR):    0.543ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock host_clk_i rise edge)
+                                                      0.000     0.000 r  
+                         clock source latency         0.709     0.709    
+                         propagated clock network latency
+                                                      1.281     1.990    
+    SLICE_X51Y1          FDRE                         0.000     1.990 r  top/teaching_board_top/target/harts_1/cpu/core/ic_fill_data_reg[75]/C
+    SLICE_X51Y1          FDRE (Prop_fdre_C_Q)         0.141     2.131 r  top/teaching_board_top/target/harts_1/cpu/core/ic_fill_data_reg[75]/Q
+                         net (fo=1, routed)           0.056     2.187    top/teaching_board_top/target/harts_1/cpu/core/icache/g_cache.data_reg_0_63_75_77/DIA
+    SLICE_X50Y1          RAMD64E                                      r  top/teaching_board_top/target/harts_1/cpu/core/icache/g_cache.data_reg_0_63_75_77/RAMA/I
+  -------------------------------------------------------------------    -------------------
+
+                         (clock host_clk_i rise edge)
+                                                      0.000     0.000 r  
+                         clock source latency         0.939     0.939    
+                         propagated clock network latency
+                                                      1.607     2.546    
+                         clock pessimism             -0.543     2.003    
+    SLICE_X50Y1          RAMD64E (Hold_ramd64e_CLK_I)
+                                                      0.147     2.150    top/teaching_board_top/target/harts_1/cpu/core/icache/g_cache.data_reg_0_63_75_77/RAMA
+  -------------------------------------------------------------------
+                         required time                         -2.150    
+                         arrival time                           2.187    
+  -------------------------------------------------------------------
+                         slack                                  0.037    
+
+Slack (MET) :             0.037ns  (arrival time - required time)
+  Source:                 top/teaching_board_top/target/harts/cpu/core/ic_fill_data_reg[102]/C
+                            (rising edge-triggered cell FDRE clocked by host_clk_i  {rise@0.000ns fall@12.500ns period=25.000ns})
+  Destination:            top/teaching_board_top/target/harts/cpu/core/icache/g_cache.data_reg_0_63_102_104/RAMA/I
+                            (rising edge-triggered cell RAMD64E clocked by host_clk_i  {rise@0.000ns fall@12.500ns period=25.000ns})
+  Path Group:             host_clk_i
+  Path Type:              Hold (Min at Fast Process Corner)
+  Requirement:            0.000ns  (host_clk_i rise@0.000ns - host_clk_i rise@0.000ns)
+  Data Path Delay:        0.197ns  (logic 0.141ns (71.611%)  route 0.056ns (28.389%))
+  Logic Levels:           0  
+  Clock Path Skew:        0.013ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    2.546ns
+    Source Clock Delay      (SCD):    1.990ns
+    Clock Pessimism Removal (CPR):    0.543ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock host_clk_i rise edge)
+                                                      0.000     0.000 r  
+                         clock source latency         0.709     0.709    
+                         propagated clock network latency
+                                                      1.281     1.990    
+    SLICE_X35Y50         FDRE                         0.000     1.990 r  top/teaching_board_top/target/harts/cpu/core/ic_fill_data_reg[102]/C
+    SLICE_X35Y50         FDRE (Prop_fdre_C_Q)         0.141     2.131 r  top/teaching_board_top/target/harts/cpu/core/ic_fill_data_reg[102]/Q
+                         net (fo=1, routed)           0.056     2.187    top/teaching_board_top/target/harts/cpu/core/icache/g_cache.data_reg_0_63_102_104/DIA
+    SLICE_X34Y50         RAMD64E                                      r  top/teaching_board_top/target/harts/cpu/core/icache/g_cache.data_reg_0_63_102_104/RAMA/I
+  -------------------------------------------------------------------    -------------------
+
+                         (clock host_clk_i rise edge)
+                                                      0.000     0.000 r  
+                         clock source latency         0.939     0.939    
+                         propagated clock network latency
+                                                      1.607     2.546    
+                         clock pessimism             -0.543     2.003    
+    SLICE_X34Y50         RAMD64E (Hold_ramd64e_CLK_I)
+                                                      0.147     2.150    top/teaching_board_top/target/harts/cpu/core/icache/g_cache.data_reg_0_63_102_104/RAMA
+  -------------------------------------------------------------------
+                         required time                         -2.150    
+                         arrival time                           2.187    
+  -------------------------------------------------------------------
+                         slack                                  0.037    
+
+Slack (MET) :             0.037ns  (arrival time - required time)
+  Source:                 top/teaching_board_top/target/harts/cpu/core/ic_fill_data_reg[114]/C
+                            (rising edge-triggered cell FDRE clocked by host_clk_i  {rise@0.000ns fall@12.500ns period=25.000ns})
+  Destination:            top/teaching_board_top/target/harts/cpu/core/icache/g_cache.data_reg_0_63_114_116/RAMA/I
+                            (rising edge-triggered cell RAMD64E clocked by host_clk_i  {rise@0.000ns fall@12.500ns period=25.000ns})
+  Path Group:             host_clk_i
+  Path Type:              Hold (Min at Fast Process Corner)
+  Requirement:            0.000ns  (host_clk_i rise@0.000ns - host_clk_i rise@0.000ns)
+  Data Path Delay:        0.197ns  (logic 0.141ns (71.611%)  route 0.056ns (28.389%))
+  Logic Levels:           0  
+  Clock Path Skew:        0.013ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    2.546ns
+    Source Clock Delay      (SCD):    1.990ns
+    Clock Pessimism Removal (CPR):    0.543ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock host_clk_i rise edge)
+                                                      0.000     0.000 r  
+                         clock source latency         0.709     0.709    
+                         propagated clock network latency
+                                                      1.281     1.990    
+    SLICE_X33Y51         FDRE                         0.000     1.990 r  top/teaching_board_top/target/harts/cpu/core/ic_fill_data_reg[114]/C
+    SLICE_X33Y51         FDRE (Prop_fdre_C_Q)         0.141     2.131 r  top/teaching_board_top/target/harts/cpu/core/ic_fill_data_reg[114]/Q
+                         net (fo=1, routed)           0.056     2.187    top/teaching_board_top/target/harts/cpu/core/icache/g_cache.data_reg_0_63_114_116/DIA
+    SLICE_X32Y51         RAMD64E                                      r  top/teaching_board_top/target/harts/cpu/core/icache/g_cache.data_reg_0_63_114_116/RAMA/I
+  -------------------------------------------------------------------    -------------------
+
+                         (clock host_clk_i rise edge)
+                                                      0.000     0.000 r  
+                         clock source latency         0.939     0.939    
+                         propagated clock network latency
+                                                      1.607     2.546    
+                         clock pessimism             -0.543     2.003    
+    SLICE_X32Y51         RAMD64E (Hold_ramd64e_CLK_I)
+                                                      0.147     2.150    top/teaching_board_top/target/harts/cpu/core/icache/g_cache.data_reg_0_63_114_116/RAMA
+  -------------------------------------------------------------------
+                         required time                         -2.150    
+                         arrival time                           2.187    
+  -------------------------------------------------------------------
+                         slack                                  0.037    
+
+Slack (MET) :             0.037ns  (arrival time - required time)
+  Source:                 top/teaching_board_top/target/harts_1/cpu/core/ic_fill_data_reg[111]/C
+                            (rising edge-triggered cell FDRE clocked by host_clk_i  {rise@0.000ns fall@12.500ns period=25.000ns})
+  Destination:            top/teaching_board_top/target/harts_1/cpu/core/icache/g_cache.data_reg_0_63_111_113/RAMA/I
+                            (rising edge-triggered cell RAMD64E clocked by host_clk_i  {rise@0.000ns fall@12.500ns period=25.000ns})
+  Path Group:             host_clk_i
+  Path Type:              Hold (Min at Fast Process Corner)
+  Requirement:            0.000ns  (host_clk_i rise@0.000ns - host_clk_i rise@0.000ns)
+  Data Path Delay:        0.197ns  (logic 0.141ns (71.611%)  route 0.056ns (28.389%))
+  Logic Levels:           0  
+  Clock Path Skew:        0.013ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    2.573ns
+    Source Clock Delay      (SCD):    2.016ns
+    Clock Pessimism Removal (CPR):    0.544ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock host_clk_i rise edge)
+                                                      0.000     0.000 r  
+                         clock source latency         0.709     0.709    
+                         propagated clock network latency
+                                                      1.307     2.016    
+    SLICE_X67Y6          FDRE                         0.000     2.016 r  top/teaching_board_top/target/harts_1/cpu/core/ic_fill_data_reg[111]/C
+    SLICE_X67Y6          FDRE (Prop_fdre_C_Q)         0.141     2.157 r  top/teaching_board_top/target/harts_1/cpu/core/ic_fill_data_reg[111]/Q
+                         net (fo=1, routed)           0.056     2.213    top/teaching_board_top/target/harts_1/cpu/core/icache/g_cache.data_reg_0_63_111_113/DIA
+    SLICE_X66Y6          RAMD64E                                      r  top/teaching_board_top/target/harts_1/cpu/core/icache/g_cache.data_reg_0_63_111_113/RAMA/I
+  -------------------------------------------------------------------    -------------------
+
+                         (clock host_clk_i rise edge)
+                                                      0.000     0.000 r  
+                         clock source latency         0.939     0.939    
+                         propagated clock network latency
+                                                      1.634     2.573    
+                         clock pessimism             -0.544     2.029    
+    SLICE_X66Y6          RAMD64E (Hold_ramd64e_CLK_I)
+                                                      0.147     2.176    top/teaching_board_top/target/harts_1/cpu/core/icache/g_cache.data_reg_0_63_111_113/RAMA
+  -------------------------------------------------------------------
+                         required time                         -2.176    
+                         arrival time                           2.213    
+  -------------------------------------------------------------------
+                         slack                                  0.037    
+
+Slack (MET) :             0.037ns  (arrival time - required time)
+  Source:                 top/teaching_board_top/target/harts_1/cpu/core/ic_fill_data_reg[21]/C
+                            (rising edge-triggered cell FDRE clocked by host_clk_i  {rise@0.000ns fall@12.500ns period=25.000ns})
+  Destination:            top/teaching_board_top/target/harts_1/cpu/core/icache/g_cache.data_reg_0_63_21_23/RAMA/I
+                            (rising edge-triggered cell RAMD64E clocked by host_clk_i  {rise@0.000ns fall@12.500ns period=25.000ns})
+  Path Group:             host_clk_i
+  Path Type:              Hold (Min at Fast Process Corner)
+  Requirement:            0.000ns  (host_clk_i rise@0.000ns - host_clk_i rise@0.000ns)
+  Data Path Delay:        0.197ns  (logic 0.141ns (71.611%)  route 0.056ns (28.389%))
+  Logic Levels:           0  
+  Clock Path Skew:        0.013ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    2.572ns
+    Source Clock Delay      (SCD):    2.014ns
+    Clock Pessimism Removal (CPR):    0.545ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock host_clk_i rise edge)
+                                                      0.000     0.000 r  
+                         clock source latency         0.709     0.709    
+                         propagated clock network latency
+                                                      1.305     2.014    
+    SLICE_X59Y3          FDRE                         0.000     2.014 r  top/teaching_board_top/target/harts_1/cpu/core/ic_fill_data_reg[21]/C
+    SLICE_X59Y3          FDRE (Prop_fdre_C_Q)         0.141     2.155 r  top/teaching_board_top/target/harts_1/cpu/core/ic_fill_data_reg[21]/Q
+                         net (fo=1, routed)           0.056     2.211    top/teaching_board_top/target/harts_1/cpu/core/icache/g_cache.data_reg_0_63_21_23/DIA
+    SLICE_X58Y3          RAMD64E                                      r  top/teaching_board_top/target/harts_1/cpu/core/icache/g_cache.data_reg_0_63_21_23/RAMA/I
+  -------------------------------------------------------------------    -------------------
+
+                         (clock host_clk_i rise edge)
+                                                      0.000     0.000 r  
+                         clock source latency         0.939     0.939    
+                         propagated clock network latency
+                                                      1.633     2.572    
+                         clock pessimism             -0.545     2.027    
+    SLICE_X58Y3          RAMD64E (Hold_ramd64e_CLK_I)
+                                                      0.147     2.174    top/teaching_board_top/target/harts_1/cpu/core/icache/g_cache.data_reg_0_63_21_23/RAMA
+  -------------------------------------------------------------------
+                         required time                         -2.174    
+                         arrival time                           2.211    
+  -------------------------------------------------------------------
+                         slack                                  0.037    
+
+Slack (MET) :             0.037ns  (arrival time - required time)
+  Source:                 top/teaching_board_top/target/harts_1/cpu/core/ic_fill_pa_reg[16]/C
+                            (rising edge-triggered cell FDRE clocked by host_clk_i  {rise@0.000ns fall@12.500ns period=25.000ns})
+  Destination:            top/teaching_board_top/target/harts_1/cpu/core/icache/g_cache.tag_reg_0_63_6_8/RAMA/I
+                            (rising edge-triggered cell RAMD64E clocked by host_clk_i  {rise@0.000ns fall@12.500ns period=25.000ns})
+  Path Group:             host_clk_i
+  Path Type:              Hold (Min at Fast Process Corner)
+  Requirement:            0.000ns  (host_clk_i rise@0.000ns - host_clk_i rise@0.000ns)
+  Data Path Delay:        0.197ns  (logic 0.141ns (71.611%)  route 0.056ns (28.389%))
+  Logic Levels:           0  
+  Clock Path Skew:        0.013ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    2.550ns
+    Source Clock Delay      (SCD):    1.994ns
+    Clock Pessimism Removal (CPR):    0.543ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock host_clk_i rise edge)
+                                                      0.000     0.000 r  
+                         clock source latency         0.709     0.709    
+                         propagated clock network latency
+                                                      1.285     1.994    
+    SLICE_X43Y0          FDRE                         0.000     1.994 r  top/teaching_board_top/target/harts_1/cpu/core/ic_fill_pa_reg[16]/C
+    SLICE_X43Y0          FDRE (Prop_fdre_C_Q)         0.141     2.135 r  top/teaching_board_top/target/harts_1/cpu/core/ic_fill_pa_reg[16]/Q
+                         net (fo=1, routed)           0.056     2.191    top/teaching_board_top/target/harts_1/cpu/core/icache/g_cache.tag_reg_0_63_6_8/DIA
+    SLICE_X42Y0          RAMD64E                                      r  top/teaching_board_top/target/harts_1/cpu/core/icache/g_cache.tag_reg_0_63_6_8/RAMA/I
+  -------------------------------------------------------------------    -------------------
+
+                         (clock host_clk_i rise edge)
+                                                      0.000     0.000 r  
+                         clock source latency         0.939     0.939    
+                         propagated clock network latency
+                                                      1.611     2.550    
+                         clock pessimism             -0.543     2.007    
+    SLICE_X42Y0          RAMD64E (Hold_ramd64e_CLK_I)
+                                                      0.147     2.154    top/teaching_board_top/target/harts_1/cpu/core/icache/g_cache.tag_reg_0_63_6_8/RAMA
+  -------------------------------------------------------------------
+                         required time                         -2.154    
+                         arrival time                           2.191    
+  -------------------------------------------------------------------
+                         slack                                  0.037    
+
+Slack (MET) :             0.037ns  (arrival time - required time)
+  Source:                 top/teaching_board_top/target/harts/cpu/core/ic_fill_data_reg[0]/C
+                            (rising edge-triggered cell FDRE clocked by host_clk_i  {rise@0.000ns fall@12.500ns period=25.000ns})
+  Destination:            top/teaching_board_top/target/harts/cpu/core/icache/g_cache.data_reg_0_63_0_2/RAMA/I
+                            (rising edge-triggered cell RAMD64E clocked by host_clk_i  {rise@0.000ns fall@12.500ns period=25.000ns})
+  Path Group:             host_clk_i
+  Path Type:              Hold (Min at Fast Process Corner)
+  Requirement:            0.000ns  (host_clk_i rise@0.000ns - host_clk_i rise@0.000ns)
+  Data Path Delay:        0.197ns  (logic 0.141ns (71.611%)  route 0.056ns (28.389%))
+  Logic Levels:           0  
+  Clock Path Skew:        0.013ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    2.544ns
+    Source Clock Delay      (SCD):    1.987ns
+    Clock Pessimism Removal (CPR):    0.544ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock host_clk_i rise edge)
+                                                      0.000     0.000 r  
+                         clock source latency         0.709     0.709    
+                         propagated clock network latency
+                                                      1.278     1.987    
+    SLICE_X43Y53         FDRE                         0.000     1.987 r  top/teaching_board_top/target/harts/cpu/core/ic_fill_data_reg[0]/C
+    SLICE_X43Y53         FDRE (Prop_fdre_C_Q)         0.141     2.128 r  top/teaching_board_top/target/harts/cpu/core/ic_fill_data_reg[0]/Q
+                         net (fo=1, routed)           0.056     2.184    top/teaching_board_top/target/harts/cpu/core/icache/g_cache.data_reg_0_63_0_2/DIA
+    SLICE_X42Y53         RAMD64E                                      r  top/teaching_board_top/target/harts/cpu/core/icache/g_cache.data_reg_0_63_0_2/RAMA/I
+  -------------------------------------------------------------------    -------------------
+
+                         (clock host_clk_i rise edge)
+                                                      0.000     0.000 r  
+                         clock source latency         0.939     0.939    
+                         propagated clock network latency
+                                                      1.605     2.544    
+                         clock pessimism             -0.544     2.000    
+    SLICE_X42Y53         RAMD64E (Hold_ramd64e_CLK_I)
+                                                      0.147     2.147    top/teaching_board_top/target/harts/cpu/core/icache/g_cache.data_reg_0_63_0_2/RAMA
+  -------------------------------------------------------------------
+                         required time                         -2.147    
+                         arrival time                           2.184    
+  -------------------------------------------------------------------
+                         slack                                  0.037    
+
+
+
+

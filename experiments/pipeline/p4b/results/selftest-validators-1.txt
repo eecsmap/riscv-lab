@@ -1,0 +1,10 @@
+  unmutated hierarchy: pass
+  unmutated audit: pass
+  refused  hierarchy + the multicycle tcpu_core.v: HIERARCHY_CHECK fails=1: multicycle module tcpu_core present
+  refused  hierarchy - tcpu_tlb2.v: HIERARCHY_CHECK fails=2: unresolved tcpu_tlb2; tcpu_tlb2 not reached or not uniquely defined
+  refused  audit on the multicycle DUAL board RTL: BOARD_RTL_AUDIT fails=3: tcpu_core_pipe count, tcpu_core present, HART_ID
+  refused  audit with .PIPE_FAULT(4) passed: BOARD_RTL_AUDIT fails=2: extra parameter passed, extra parameter passed
+  refused  audit with PIPE_EXT_C(0): FAIL: PIPE_EXT_C = 0, wanted 1
+  refused  audit with both harts HART_ID(0): FAIL: HART_ID parameters ['0', '0'], wanted 0 and 1
+  refused  audit with a PIPE_FAULT default of 4: BOARD_RTL_AUDIT fails=1: non-zero fault default
+SELFTEST_VALIDATORS PASS

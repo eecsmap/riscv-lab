@@ -1,0 +1,45 @@
+## 1. the board top's ports, against the baseline's
+   teaching RD2BoardTop           : 76 ports
+   baseline Top                    : 76 ports
+   identical field for field       : True
+## 2. what is in the RTL that should not be
+   plusarg_reader instances      0   (baseline    1)   ok
+   TLMonitor modules             0   (baseline    0)   ok
+   teaching event printfs        0   (baseline    0)   ok
+   RD2 master-trace printfs      0   (baseline    0)   ok
+   R-BOOT block-dev printfs      0   (baseline    0)   ok
+   atomic-path printfs           0   (baseline    0)   ok
+   TAILHIT printfs               0   (baseline    0)   ok
+## 3. simulation-only constructs, under this build's defines (no SYNTHESIS, no RANDOMIZE_*)
+    4563  ifdef RANDOMIZE & ifdef RANDOMIZE_REG_INIT
+     362  ifndef SYNTHESIS
+     136  ifdef RANDOMIZE
+       0  with no guard at all
+## 4. the instrumentation, module by module
+   RD2ZynqTop              72 ports, 0 instrumentation, 9 functional status
+   TeachingCpuV2           20 ports, 0 instrumentation, 0 functional status
+   TeachingCpu: not present
+## 5. the CPU black boxes: parameters actually passed (PIPE-P4b: exactly two pipeline harts, HART_ID 0 and 1)
+   tcpu_core_pipe instantiations: 2; tcpu_core instantiations: 0
+   core: {'MISA_A': '1', 'PIPE_EXT_SU': '1', 'PIPE_EXT_M': '1', 'HART_ID': '0', 'RESET_PC': '65600', 'PIPE_EXT_C': '1'}
+   core: {'MISA_A': '1', 'PIPE_EXT_SU': '1', 'PIPE_EXT_M': '1', 'HART_ID': '1', 'RESET_PC': '65600', 'PIPE_EXT_C': '1'}
+   HART_ID 0 and 1 present, one each  ok
+## 6. the fault / knob parameters' declared defaults, read from the black-box source
+   27 fault / knob parameters declared, 0 with a non-zero default
+## 7. the V2 physical port reaches the black box
+   .req_amo      connected 2 time(s)  ok
+   .req_lrsc     connected 2 time(s)  ok
+   .resp_scfail  connected 2 time(s)  ok
+   .resv_clear   connected 2 time(s)  ok
+## 8. the status word's bit order, as built in the RTL
+   _T_469,_T_465
+## 9. the boot ROM, extracted from this RTL (not read from a file beside it)
+   2048 bytes from 256 words
+   first 156 bytes match bootrom.teaching.rv64.img: True
+   device tree magic at 0x9c, totalsize 1453; bytes after the dtb all zero: True
+   sha256 of the extracted ROM: f1010b83e56803652552e39cc26066cd1fd839bde048b298778ce25f332dfd38
+   extracted ROM written to rom_from_rtl.bin
+   the stored rom_from_rtl.bin equals the extraction: True
+
+   sha256 75e4374bc3b96583ab12bd1fd2086f9ed6756d067080f3b520eb2b11b94706b4  RD2BoardTop.RD2PipeDualBoardConfig.v
+BOARD_RTL_AUDIT fails=0

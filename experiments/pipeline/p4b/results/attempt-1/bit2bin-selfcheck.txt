@@ -1,0 +1,2 @@
+BIT2BIN_OK payload at 132, 4045564 bytes, sync word 48 bytes into it
+  sha256 43e5b414c093f27854513f6ae08addbb431c6865b85f822685a824cda66e2841

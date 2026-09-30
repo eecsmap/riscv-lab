@@ -1,0 +1,30 @@
+=== 0. the pipeline RTL from commit aa24497 (rtl/cpu/pipeline/SOURCES.pipe), the shim, the manifest
+=== 1. the build scripts themselves
+=== 2. generating the project script
+=== 3. the validators (one pipeline hart)
+=== 4. recording the inputs
+=== 5. recording the environment
+=== 6. creating the project (vivado, batch)
+  vivado create exit=0
+=== 7. synthesis, implementation to route, the gate, then (only if it passes) the bitstream
+  vivado impl exit=0 wall=777s
+  @@@ project opened: teaching_pynqz1, part xc7z020clg400-1
+  @@@ source set written to /home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4b/runs/attempt-1/reports/source-set.txt
+  @@@ PS preset: crystal=50 MHz, S_AXI_HP0=1, M_AXI_GP0=1
+  @@@ launching synth_1 with 4 jobs
+  @@@ synth_1 STATUS='synth_design Complete!' PROGRESS=100%
+  @@@ black boxes after synthesis: 0
+  @@@ synthesis checks written
+  @@@ launching impl_1 to route_design with 4 jobs
+  @@@ impl_1 STATUS='route_design Complete!' PROGRESS=100%
+  @@@ impl_1 stats: WNS=0.641254 TNS=0.000000 WHS=0.027619 THS=0.000000
+  @@@ GATE_OK: setup/hold met, routed, no DRC errors -- writing the bitstream
+  @@@ bitstream: /home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4b/runs/attempt-1/project/teaching_pynqz1.runs/impl_1/rocketchip_wrapper.bit
+  @@@ BUILD_OK
+  gate: WNS 0.641254 TNS 0.000000 WHS 0.027619 THS 0.000000
+  gate: route: fully routed nets 41746, nets with routing errors 0
+  gate: DRC: errors 0, critical warnings 0
+  gate: check_timing: register/latch pins with no clock 0, unconstrained (endpoints/ports/pins) 0 (reported, see post_route_check_timing.rpt)
+  gate: gate failures: 0
+=== 8. the payload (.bit -> .bit.bin, the accepted converter, self-checked on the accepted M4 payload first)
+BUILD_P4B_OK /home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4b/runs/attempt-1 (NOT programmed; board use needs a separate authorisation)

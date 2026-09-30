@@ -1,0 +1,89 @@
+## pipeline-dual: worktrees/pipe-dual/experiments/pipeline/p4b/runs/attempt-1/reports
+   routed timing: WNS 0.641 ns, TNS 0.000, failing setup endpoints 0 of 47425; WHS 0.028 ns, THS 0.000, failing hold endpoints 0 of 47425
+   full system: 29490 LUT (1263 LUTRAM), 15481 FF, 0 BRAM tiles, 0 DSP
+   hart cpu (TeachingCpuV2): 10829 LUT (288 LUTRAM), 5604 FF, DSP 0
+     core                         tcpu_core_pipe            10829 LUT   288 LUTRAM   5604 FF   0 DSP
+       (core)                       tcpu_core_pipe             3334 LUT     0 LUTRAM   3381 FF   0 DSP
+       csrfile                      tcpu_csr                   1726 LUT     0 LUTRAM    848 FF   0 DSP
+       g_md.muldiv                  tcpu_muldiv_71             1696 LUT     0 LUTRAM    466 FF   0 DSP
+       g_sv39.tlb                   tcpu_tlb2_72                790 LUT     0 LUTRAM    643 FF   0 DSP
+       g_sv39.walk                  tcpu_ptw_wrap_73            790 LUT     0 LUTRAM    202 FF   0 DSP
+         (g_sv39.walk)                tcpu_ptw_wrap_73             99 LUT     0 LUTRAM     32 FF   0 DSP
+         walker                       tcpu_ptw_76                 691 LUT     0 LUTRAM    170 FF   0 DSP
+       icache                       tcpu_icache_74             2266 LUT   200 LUTRAM     64 FF   0 DSP
+       rf                           tcpu_regfile_75             245 LUT    88 LUTRAM      0 FF   0 DSP
+   hart cpu (TeachingCpuV2_1): 10598 LUT (288 LUTRAM), 5602 FF, DSP 0
+     core                         tcpu_core_pipe__paramete  10598 LUT   288 LUTRAM   5602 FF   0 DSP
+       (core)                       tcpu_core_pipe__paramete   3007 LUT     0 LUTRAM   3380 FF   0 DSP
+       csrfile                      tcpu_csr__parameterized0   2034 LUT     0 LUTRAM    848 FF   0 DSP
+       g_cdec.cdec                  tcpu_cdecode                104 LUT     0 LUTRAM      0 FF   0 DSP
+       g_md.muldiv                  tcpu_muldiv                1474 LUT     0 LUTRAM    465 FF   0 DSP
+       g_sv39.tlb                   tcpu_tlb2                   799 LUT     0 LUTRAM    643 FF   0 DSP
+       g_sv39.walk                  tcpu_ptw_wrap               873 LUT     0 LUTRAM    202 FF   0 DSP
+         (g_sv39.walk)                tcpu_ptw_wrap                97 LUT     0 LUTRAM     32 FF   0 DSP
+         walker                       tcpu_ptw                    776 LUT     0 LUTRAM    170 FF   0 DSP
+       icache                       tcpu_icache                2098 LUT   200 LUTRAM     64 FF   0 DSP
+       rf                           tcpu_regfile                220 LUT    88 LUTRAM      0 FF   0 DSP
+   everything outside the hart(s): 8063 LUT, 4275 FF
+## pipeline-single: worktrees/pipe-single/experiments/pipeline/p3/runs/attempt-1/reports
+   routed timing: WNS 0.440 ns, TNS 0.000, failing setup endpoints 0 of 29147; WHS 0.020 ns, THS 0.000, failing hold endpoints 0 of 29147
+   full system: 18208 LUT (963 LUTRAM), 9154 FF, 0 BRAM tiles, 0 DSP
+   hart cpu (TeachingCpuV2): 10826 LUT (288 LUTRAM), 5604 FF, DSP 0
+     core                         tcpu_core_pipe            10826 LUT   288 LUTRAM   5604 FF   0 DSP
+       (core)                       tcpu_core_pipe             3329 LUT     0 LUTRAM   3381 FF   0 DSP
+       csrfile                      tcpu_csr                   1731 LUT     0 LUTRAM    848 FF   0 DSP
+       g_md.muldiv                  tcpu_muldiv                1696 LUT     0 LUTRAM    466 FF   0 DSP
+       g_sv39.tlb                   tcpu_tlb2                   789 LUT     0 LUTRAM    643 FF   0 DSP
+       g_sv39.walk                  tcpu_ptw_wrap               791 LUT     0 LUTRAM    202 FF   0 DSP
+         (g_sv39.walk)                tcpu_ptw_wrap               100 LUT     0 LUTRAM     32 FF   0 DSP
+         walker                       tcpu_ptw                    691 LUT     0 LUTRAM    170 FF   0 DSP
+       icache                       tcpu_icache                2265 LUT   200 LUTRAM     64 FF   0 DSP
+       rf                           tcpu_regfile                245 LUT    88 LUTRAM      0 FF   0 DSP
+   everything outside the hart(s): 7382 LUT, 3550 FF
+## multicycle-dual: experiments/multicore/m4/build/attempt-1/reports
+   routed timing: WNS 0.396 ns, TNS 0.000, failing setup endpoints 0 of 37958; WHS 0.035 ns, THS 0.000, failing hold endpoints 0 of 37958
+   full system: 22631 LUT (1265 LUTRAM), 11181 FF, 0 BRAM tiles, 0 DSP
+   hart cpu (TeachingCpuV2): 7396 LUT (288 LUTRAM), 3460 FF, DSP 0
+     core                         tcpu_core                  7396 LUT   288 LUTRAM   3460 FF   0 DSP
+       (core)                       tcpu_core                   438 LUT     0 LUTRAM    838 FF   0 DSP
+       csrfile                      tcpu_csr                   1165 LUT     0 LUTRAM    848 FF   0 DSP
+       ifill                        tcpu_ifill_71              1078 LUT   200 LUTRAM    321 FF   0 DSP
+         (ifill)                      tcpu_ifill_71               744 LUT     0 LUTRAM    257 FF   0 DSP
+         ic                           tcpu_icache_77              337 LUT   200 LUTRAM     64 FF   0 DSP
+       muldiv                       tcpu_muldiv_72             1112 LUT     0 LUTRAM    466 FF   0 DSP
+       ptw                          tcpu_xlate_73               724 LUT     0 LUTRAM    987 FF   0 DSP
+         (ptw)                        tcpu_xlate_73                16 LUT     0 LUTRAM    132 FF   0 DSP
+         ptw                          tcpu_ptw_75                 295 LUT     0 LUTRAM    212 FF   0 DSP
+         tlb                          tcpu_tlb_76                 413 LUT     0 LUTRAM    643 FF   0 DSP
+       rf                           tcpu_regfile_74            2903 LUT    88 LUTRAM      0 FF   0 DSP
+   hart cpu (TeachingCpuV2_1): 7329 LUT (290 LUTRAM), 3446 FF, DSP 0
+     core                         tcpu_core__parameterized   7329 LUT   290 LUTRAM   3446 FF   0 DSP
+       (core)                       tcpu_core__parameterized    451 LUT     0 LUTRAM    824 FF   0 DSP
+       csrfile                      tcpu_csr__parameterized0   1124 LUT     0 LUTRAM    848 FF   0 DSP
+       ifill                        tcpu_ifill                 1055 LUT   202 LUTRAM    321 FF   0 DSP
+         (ifill)                      tcpu_ifill                  719 LUT     0 LUTRAM    257 FF   0 DSP
+         ic                           tcpu_icache                 338 LUT   202 LUTRAM     64 FF   0 DSP
+       muldiv                       tcpu_muldiv                1112 LUT     0 LUTRAM    466 FF   0 DSP
+       ptw                          tcpu_xlate                  708 LUT     0 LUTRAM    987 FF   0 DSP
+         (ptw)                        tcpu_xlate                   16 LUT     0 LUTRAM    132 FF   0 DSP
+         ptw                          tcpu_ptw                    279 LUT     0 LUTRAM    212 FF   0 DSP
+         tlb                          tcpu_tlb                    413 LUT     0 LUTRAM    643 FF   0 DSP
+       rf                           tcpu_regfile               2904 LUT    88 LUTRAM      0 FF   0 DSP
+   everything outside the hart(s): 7906 LUT, 4275 FF
+## multicycle-single-cache: worktrees/ips-cache/experiments/IPS-campaign/build-cache/reports
+   routed timing: WNS 0.424 ns, TNS 0.000, failing setup endpoints 0 of 24530; WHS 0.036 ns, THS 0.000, failing hold endpoints 0 of 24530
+   full system: 14554 LUT (963 LUTRAM), 7011 FF, 0 BRAM tiles, 0 DSP
+   hart cpuV2 (TeachingCpuV2): 7399 LUT (288 LUTRAM), 3460 FF, DSP 0
+     core                         tcpu_core                  7399 LUT   288 LUTRAM   3460 FF   0 DSP
+       (core)                       tcpu_core                   439 LUT     0 LUTRAM    838 FF   0 DSP
+       csrfile                      tcpu_csr                   1164 LUT     0 LUTRAM    848 FF   0 DSP
+       ifill                        tcpu_ifill                 1081 LUT   200 LUTRAM    321 FF   0 DSP
+         (ifill)                      tcpu_ifill                  746 LUT     0 LUTRAM    257 FF   0 DSP
+         ic                           tcpu_icache                 337 LUT   200 LUTRAM     64 FF   0 DSP
+       muldiv                       tcpu_muldiv                1112 LUT     0 LUTRAM    466 FF   0 DSP
+       ptw                          tcpu_xlate                  720 LUT     0 LUTRAM    987 FF   0 DSP
+         (ptw)                        tcpu_xlate                   16 LUT     0 LUTRAM    132 FF   0 DSP
+         ptw                          tcpu_ptw                    291 LUT     0 LUTRAM    212 FF   0 DSP
+         tlb                          tcpu_tlb                    413 LUT     0 LUTRAM    643 FF   0 DSP
+       rf                           tcpu_regfile               2904 LUT    88 LUTRAM      0 FF   0 DSP
+   everything outside the hart(s): 7155 LUT, 3551 FF

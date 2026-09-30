@@ -1,0 +1,5 @@
+WNS 0.641254 TNS 0.000000 WHS 0.027619 THS 0.000000
+route: fully routed nets 41746, nets with routing errors 0
+DRC: errors 0, critical warnings 0
+check_timing: register/latch pins with no clock 0, unconstrained (endpoints/ports/pins) 0 (reported, see post_route_check_timing.rpt)
+gate failures: 0
