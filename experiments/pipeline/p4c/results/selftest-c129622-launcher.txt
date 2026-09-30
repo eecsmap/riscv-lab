@@ -1,0 +1,21 @@
+ok   check
+ok   default
+ok   lock free after: default
+ok   lock held while the host ran
+ok   other-disk
+ok   lock free after: other-disk
+ok   bench
+ok   lock free after: bench
+ok   --bench re-made fs-bench.img from the pristine copy
+ok   bench-pristine-changed
+ok   lock free after: bench-pristine-changed
+ok   check-pristine-changed
+ok   missing-disk
+ok   not-programmed
+ok   lock-held
+ok   lock-held-check
+ok   host-running
+ok   lock free after: host-running
+ok   Ctrl-C: host exited, 'lock released' printed
+ok   lock free after: ctrl-c
+SELFTEST PASS

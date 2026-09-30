@@ -1,0 +1,15 @@
+SELFTEST PASS  <- bash /home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4c/runs/frozen-68eea3d/experiments/pipeline/p4c/board/selftest/test-no-host.sh
+SELFTEST PASS  <- python3 /home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4c/runs/frozen-68eea3d/experiments/pipeline/p4c/board/selftest/test-console-stop.py
+SELFTEST PASS  <- bash /home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4c/runs/frozen-68eea3d/experiments/pipeline/p4c/board/selftest/test-freq-judge.sh
+SELFTEST PASS  <- bash /home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4c/runs/frozen-68eea3d/experiments/pipeline/p4c/board/selftest/test-hart-check.sh
+SELFTEST FAIL 3  <- bash /home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4c/runs/frozen-68eea3d/experiments/pipeline/p4c/board/selftest/test-launcher.sh
+    cp: cannot stat '/home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4c/runs/frozen-68eea3d/experiments/pipeline/p4c/board/selftest/../../ws/artefacts/fs-perf.img': No such file or directory
+    the pristine benchmark disk /tmp/tmp.rSwXF892ci/xv6run/fs-bench-pristine.img is missing or changed | 
+    sha256sum: can't open '/tmp/tmp.rSwXF892ci/xv6run/fs-bench-pristine.img': No such file or directory
+    the pristine benchmark disk is missing or changed: not starting | 
+    FAIL fs-bench.img is not the pristine copy
+    cp: cannot stat '/tmp/tmp.rSwXF892ci/xv6run/fs-bench-pristine.img': No such file or directory
+    cp: cannot stat '/tmp/tmp.rSwXF892ci/p.bak': No such file or directory
+    SELFTEST FAIL 3
+SELFTEST PASS  <- python3 /home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4c/runs/frozen-68eea3d/experiments/pipeline/p4c/board/selftest/test-launch-test.py
+P4C_SELFTESTS FAIL 1
