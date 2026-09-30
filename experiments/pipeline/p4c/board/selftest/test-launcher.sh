@@ -10,7 +10,7 @@ echo "ARGS \$*" >> $T/host.log; echo "LOCKOWNER \$(cat $T/lockdir/teaching-fesvr
 [ -n "\$STUB_SLEEP" ] && sleep "\$STUB_SLEEP"; exit 0
 STUB
 chmod +x $X/fesvr-teaching-static; echo k > $X/kernel-perf-128mib; echo user > $X/fs-user.img
-cp "$(dirname "$0")/../../ws/artefacts/fs-perf.img" $X/fs-bench-pristine.img
+cp "${P4C_WS:-/home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4c/ws}/artefacts/fs-perf.img" $X/fs-bench-pristine.img || { echo "FAIL no fs-perf.img in the workspace"; exit 1; }
 t() { local name=$1 want=$2 pat=$3; shift 3; : > $T/host.log; out=$(cd $X && "$@" 2>&1); rc=$?
   if [ $rc = $want ] && grep -q -- "$pat" <<<"$out$(cat $T/host.log)"; then echo "ok   $name"; else echo "FAIL $name rc=$rc (want $want, '$pat'): $out | $(cat $T/host.log)"; bad=$((bad+1)); fi; }
 lockfree() { [ ! -e $T/lockdir/teaching-fesvr.lock ] && echo "ok   lock free after: $1" || { echo "FAIL lock left after: $1"; bad=$((bad+1)); rm -rf $T/lockdir/teaching-fesvr.lock; }; }
