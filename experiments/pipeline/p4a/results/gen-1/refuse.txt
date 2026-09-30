@@ -1,0 +1,6 @@
+== refusals
+  MC1UnsupportedPipelineConfig: refused: unsupported NUM_CORES=4
+  MC2UnsupportedQuadConfig: refused: unsupported NUM_CORES=4
+  MC1UnsupportedZeroConfig: refused: unsupported NUM_CORES=0
+  P2bUnsupportedImplConfig: refused: unsupported CORE_IMPL=superscalar
+  P2bUnsupportedPipeV1Config: refused: unsupported CORE_IMPL=pipeline with atomic=false

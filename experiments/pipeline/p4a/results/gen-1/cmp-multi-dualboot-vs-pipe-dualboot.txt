@@ -1,0 +1,4 @@
+in both, differing (2):
+  TeachingCpuV2: 10 changed lines
+  TeachingCpuV2_1: 10 changed lines
+VMODULE_DIFF identical=220 differing=2 only_a=0 only_b=0

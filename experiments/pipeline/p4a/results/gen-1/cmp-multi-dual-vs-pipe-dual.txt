@@ -1,0 +1,7 @@
+multicycle-dual: 154 modules; pipeline-dual: 154 modules
+only in multicycle-dual (0): -
+only in pipeline-dual (0): -
+in both, differing (2):
+  TeachingCpuV2: 10 changed lines
+  TeachingCpuV2_1: 10 changed lines
+VMODULE_DIFF identical=152 differing=2 only_a=0 only_b=0

@@ -1,0 +1,11 @@
+== existing configurations: before vs after
+  RD2AtomicXv6FastConfig: raw differs in 986 lines; normalized IDENTICAL; tcpu_core 1, tcpu_core_pipe 0; after 96707806fa3666db
+  RD2DualXv6FastConfig: raw differs in 1260 lines; normalized IDENTICAL; tcpu_core 2, tcpu_core_pipe 0; after f2a4f1bc6f96d958
+  RD2AtomicBootConfig: raw differs in 1290 lines; normalized IDENTICAL; tcpu_core 1, tcpu_core_pipe 0; after 5c7c46ba9db7085f
+  RD2DualBootConfig: raw differs in 1722 lines; normalized IDENTICAL; tcpu_core 2, tcpu_core_pipe 0; after 71d885b75d3e2df7
+  RD2BootConfig: raw differs in 1786 lines; normalized IDENTICAL; tcpu_core 1, tcpu_core_pipe 0; after 43554813333d0c30
+  RD2AtomicBoardConfig: raw differs in 444 lines; normalized IDENTICAL; tcpu_core 1, tcpu_core_pipe 0; after 23537544450c535f
+  RD2DualBoardConfig: raw differs in 552 lines; normalized IDENTICAL; tcpu_core 2, tcpu_core_pipe 0; after 0d19f50a99476c37
+  RD2PipeXv6FastConfig: raw differs in 986 lines; normalized IDENTICAL; tcpu_core 0, tcpu_core_pipe 1; after 88d900790429be11
+  RD2PipeBootConfig: raw differs in 1290 lines; normalized IDENTICAL; tcpu_core 0, tcpu_core_pipe 1; after 948756c3867c116e
+  RD2PipeBoardConfig: raw differs in 444 lines; normalized IDENTICAL; tcpu_core 0, tcpu_core_pipe 1; after 2320824680148bf6

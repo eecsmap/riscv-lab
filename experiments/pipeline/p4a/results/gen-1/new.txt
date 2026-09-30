@@ -1,0 +1,7 @@
+== the dual-pipeline configurations
+  RD2PipeDualXv6FastConfig: 330b8643202c7167; tcpu_core_pipe instances 2 (HART_ID 0: 1, 1: 1; M/C/SU/A on both: 2), tcpu_core 0; other parameters: none; ok=1
+      tcpu_core_pipe #(.MISA_A(1), .PIPE_EXT_SU(1), .PIPE_EXT_M(1), .HART_ID(0), .RESET_PC(65600), .PIPE_EXT_C(1)) core (
+      tcpu_core_pipe #(.MISA_A(1), .PIPE_EXT_SU(1), .PIPE_EXT_M(1), .HART_ID(1), .RESET_PC(65600), .PIPE_EXT_C(1)) core (
+  RD2PipeDualBootConfig: ece248347ac5aa15; tcpu_core_pipe instances 2 (HART_ID 0: 1, 1: 1; M/C/SU/A on both: 2), tcpu_core 0; other parameters: none; ok=1
+      tcpu_core_pipe #(.MISA_A(1), .PIPE_EXT_SU(1), .PIPE_EXT_M(1), .HART_ID(0), .RESET_PC(65600), .PIPE_EXT_C(1)) core (
+      tcpu_core_pipe #(.MISA_A(1), .PIPE_EXT_SU(1), .PIPE_EXT_M(1), .HART_ID(1), .RESET_PC(65600), .PIPE_EXT_C(1)) core (
