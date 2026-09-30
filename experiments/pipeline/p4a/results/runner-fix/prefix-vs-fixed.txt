@@ -1,0 +1,3 @@
+# the PRE-FIX p4a build-rd2-pipe-sim.sh (commit 5a5dd0e) vs the fixed one, same verilator stand-in that creates <Mdir>/sim and exits 1
+pre-fix: RD2_PIPE_SIM_BUILD_OK 306c6ca740756034
+fixed:   RD2_PIPE_SIM_BUILD_FAIL rc=1

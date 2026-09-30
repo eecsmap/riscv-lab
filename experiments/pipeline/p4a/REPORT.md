@@ -50,7 +50,7 @@ The accepted MC-M2b runner, programs and judge, unchanged, on the two-pipeline s
 | traced SoC, **association checker on each hart** (P3b checker, one copy per hart) | dual01 boot, dual02 CLINT (5 timer + 1 software interrupt on hart 1), dual04 pbus/PLIC, dual05 fence.i, dual03 lock/LR-SC/AMO with the backend trace, dual06 soft reset with BOTH harts in flight + reload, dual08 (new: hart-1 store behind ECALL) | 7/7 PASS, `ASSOC H0` and `ASSOC H1` clean in every run |
 | fast SoC | dual03 under 10 throttle timings, dual07 long run | 11/11 PASS |
 | M2b injected-defect programs | neg01 no hart 1, neg02 wrong hart, neg03 wrong count, neg04 early report | 4/4 rejected |
-| integration negatives | HART_ID swapped between the two harts (dual01, dual02); the core's knob 4 on hart 1 only (dual08) | 3/3 caught: both HART_ID runs rejected; knob 4 → first failure `ASSOC H1 FAIL association`, hart 0 clean |
+| integration negatives | HART_ID swapped between the two harts (dual01, dual02); the core's knob 4 on hart 1 only (dual08) | 3/3 caught for the intended reason: HART_ID swap → `identity_check.py`: "hart 0 took the ROM path for mhartid != 0" (§3a); knob 4 → first failure `ASSOC H1 FAIL association`, hart 0 clean |
 
 * **Simultaneous requests, backpressure, ownership**: both harts issue concurrently through their own bridges; the
   per-hart association checker records each transaction's owner at its request handshake from that hart's core
@@ -63,6 +63,15 @@ The accepted MC-M2b runner, programs and judge, unchanged, on the two-pipeline s
 * **Reset/drain with both harts in flight** (dual06): 7,750 CPU DRAM writes, each bound to exactly one AXI write;
   the pre-hold writes of both harts (1,555 / 1,553) survive the reload; no stale response reached either core
   (association `stale`/`protocol` clean).
+
+### 3a. Identity (added with the runner fix)
+The first HART_ID-swap result was only a generic rejection: the dual judge saw the harts hang in the boot ROM
+(exit 2, no entry commit) -- the effect of the defect, not the defect named. `scripts/identity_check.py` names it:
+the ROM reads `mhartid` at 0x10004 and branches at 0x10008 to 0x10010 (hartid 0) or 0x1000c (otherwise); the hart on
+port/CLINT slot 0 must take 0x10010 and slot 1 0x1000c. Replayed on the recorded traces
+(`results/runner-fix/identity-replay.txt`): dual01 and dual02 on the delivered integration PASS; both HART_ID-swap
+runs FAIL with "hart 0 took the ROM path for mhartid != 0: its HART_ID does not match its port/CLINT slot 0".
+`run-dual-suite.sh` now requires identity PASS on the traced dual01 and exactly this reason for the negatives.
 
 ## 4. Atomics, reservations, ordering
 * dual03 (both harts, lock + LR/SC counter + AMO counter + publish): every count exactly 20,000; SC failures on the
@@ -130,8 +139,21 @@ m4smoke totals include idle time while the runner types commands).
 P=experiments/pipeline/p4a
 bash $P/scripts/gen-p4a.sh pipe-v1-single $P/runs/gen-N
 bash $P/scripts/chain-sims.sh $P/runs/gen-N $P/runs/sims-N          # fast, traced+association, two negatives
-bash $P/scripts/run-dual-suite.sh $P/runs/sims-N $P/runs/suite-N-<group> <traced|fast|neg|integ|all>
+bash $P/scripts/run-dual-all.sh $P/runs/sims-N $P/runs/suite-N              # every group, status per group and overall
+bash $P/scripts/run-dual-suite.sh $P/runs/sims-N $P/runs/suite-N-<group> <traced|fast|neg|integ>
+bash $P/scripts/selftest-runners.sh $P/runs/gen-N                        # the failure-propagation self-test (stubs only)
 bash $P/scripts/chain-xv6.sh $P/runs/sims-N $P/runs/gen-N $P/runs/xv6-N   # m4smoke, perf-short, single-pipeline subset
 ```
-Every entry point exits non-zero on a failed check, a missing output or a timeout; each ran as a coord job
-(≤ 4 build workers).
+Each ran as a coord job (≤ 4 build workers). **Correction (runner fix, `codex-pipe-p4a-runner-exit-fix`):** as
+delivered in `5a5dd0e` this section claimed every entry point fails on a failed step; three did not reliably --
+`chain-sims.sh` piped each build into `tail` (a failed build was masked, only the later executable check could
+catch it), `chain-xv6.sh` ignored the single-pipeline build's status, and the build scripts reported success
+whenever an executable existed, whatever verilator returned; the suite groups were also launched as `a; b; c; d`,
+so only the last group's status was the job's. None of this changed a recorded result (every recorded build and
+group succeeded, per their own logs), but it could have. Fixed in the runner-fix commit: the four build scripts
+(`p4a/scripts/build-rd2-pipe-sim.sh`, `build-assoc-dual.sh`, and in this branch `p2b/soc/build-rd2-pipe-sim.sh`,
+`p2b/soc/assoc/build-assoc-sim.sh`) require verilator status 0 AND the executable; the chains capture every step's
+own status; `run-dual-all.sh` reports each group and fails if any does. `selftest-runners.sh` (16 cases, stubbed
+verilator and steps that leave an executable and then fail): every non-zero producer status yields an overall
+failure, every all-success run passes (`results/runner-fix/selftest-runners.txt`); against the pre-fix build script
+the same failing stub was reported `BUILD_OK` (`results/runner-fix/prefix-vs-fixed.txt`).

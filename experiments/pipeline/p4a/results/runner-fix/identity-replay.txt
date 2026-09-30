@@ -1,0 +1,18 @@
+== suite-1-traced/dual01_boot
+hart 0 (port/CLINT slot 0): after the mhartid branch it went to 0x10010, the path for mhartid 0
+hart 1 (port/CLINT slot 1): after the mhartid branch it went to 0x1000c, the path for mhartid != 0
+IDENTITY PASS
+== suite-1-traced/dual02_clint
+hart 0 (port/CLINT slot 0): after the mhartid branch it went to 0x10010, the path for mhartid 0
+hart 1 (port/CLINT slot 1): after the mhartid branch it went to 0x1000c, the path for mhartid != 0
+IDENTITY PASS
+== suite-1-integ/neg-hartid-dual01_boot
+hart 0 (port/CLINT slot 0): after the mhartid branch it went to 0x1000c, NOT the path for mhartid 0
+  FAIL: hart 0 took the ROM path for mhartid != 0: its HART_ID does not match its port/CLINT slot 0
+  FAIL: hart 1: never reached the ROM's mhartid branch at 0x10008
+IDENTITY FAIL
+== suite-1-integ/neg-hartid-dual02_clint
+hart 0 (port/CLINT slot 0): after the mhartid branch it went to 0x1000c, NOT the path for mhartid 0
+  FAIL: hart 0 took the ROM path for mhartid != 0: its HART_ID does not match its port/CLINT slot 0
+  FAIL: hart 1: never reached the ROM's mhartid branch at 0x10008
+IDENTITY FAIL

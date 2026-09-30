@@ -1,0 +1,21 @@
+== the build scripts: verilator status 1 with an executable left behind must FAIL; status 0 must pass
+  ok   p4a build-rd2-pipe-sim.sh, verilator exit 1                    exit 1 (wanted nonzero)
+  ok   p4a build-assoc-dual.sh, verilator exit 1                      exit 1 (wanted nonzero)
+  ok   p2b build-assoc-sim.sh, verilator exit 1                       exit 1 (wanted nonzero)
+  ok   p2b build-rd2-pipe-sim.sh, verilator exit 1                    exit 1 (wanted nonzero)
+  ok   p4a build-rd2-pipe-sim.sh, verilator exit 0                    exit 0 (wanted 0)
+  ok   p4a build-assoc-dual.sh, verilator exit 0                      exit 0 (wanted 0)
+  ok   p2b build-assoc-sim.sh, verilator exit 0                       exit 0 (wanted 0)
+  ok   p2b build-rd2-pipe-sim.sh, verilator exit 0                    exit 0 (wanted 0)
+== chain-sims.sh: one builder fails (its executable present) -> the chain FAILS; all succeed -> passes
+  ok   chain-sims, sim-fast builder fails                             exit 1 (wanted nonzero)
+  ok   chain-sims, a negative's builder fails                         exit 1 (wanted nonzero)
+  ok   chain-sims, all builders succeed                               exit 0 (wanted 0)
+== chain-xv6.sh: the single-pipeline BUILD fails (executable present) -> FAILS; one run fails -> FAILS; all ok -> passes
+  ok   chain-xv6, single-assoc build fails                            exit 1 (wanted nonzero)
+  ok   chain-xv6, m4smoke fails                                       exit 1 (wanted nonzero)
+  ok   chain-xv6, all steps succeed                                   exit 0 (wanted 0)
+== run-dual-all.sh: an EARLIER group fails, the last passes -> overall FAILS; all pass -> passes
+  ok   run-dual-all, group traced fails                               exit 1 (wanted nonzero)
+  ok   run-dual-all, all groups pass                                  exit 0 (wanted 0)
+SELFTEST_RUNNERS PASS (16 cases, 0 bad)

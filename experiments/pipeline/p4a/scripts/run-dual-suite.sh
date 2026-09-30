@@ -28,6 +28,9 @@ judge() { local d=$1 prog=$2; shift 2; n=$((n+1)); python3 $T/dual_check.py $d -
 if [ $G = traced ] || [ $G = all ]; then W_ASSOC=1; echo "== traced two-pipeline SoC, association checker on each hart =="
   for p in dual01_boot:400000:120 dual02_clint:8000000:900 dual04_pbus:3000000:600 dual05_fencei:400000:120; do IFS=: read nm cyc wall <<<"$p"
     bash $T/run-dual.sh $BOOT $P/$nm.elf $OUT/$nm $cyc $wall > /dev/null 2>&1; judge $OUT/$nm $nm --elf $P/$nm.elf; done
+  # identity: each hart's HART_ID matches its port / CLINT slot (the ROM path after reading mhartid)
+  n=$((n+1)); if python3 $HERE/identity_check.py $OUT/dual01_boot > $OUT/dual01_boot.identity 2>&1; then echo "  dual01 identity           PASS (hart 0 -> 0x10010, hart 1 -> 0x1000c)"
+  else echo "  dual01 identity           FAIL: $(grep -m1 FAIL $OUT/dual01_boot.identity)"; bad=$((bad+1)); fi
   bash $T/run-dual.sh $BOOT $P/dual03_lock.elf $OUT/dual03-trace 60000000 3600 > /dev/null 2>&1; judge $OUT/dual03-trace dual03_lock --atomic-floor 20000
   bash $T/run-dual.sh $BOOT $P/dual06_drain.elf $OUT/dual06-drain 4000000 900 +rd2_reset_at=46000 +rd2_reset_when=10 +rd2_reset_len=0 +rd2_reload_after_inject=1 > /dev/null 2>&1
   judge $OUT/dual06-drain dual06_drain --drain
@@ -49,8 +52,13 @@ if [ $G = neg ] || [ $G = all ]; then echo "== M2b injected-defect programs: eac
 if [ $G = integ ] || [ $G = all ]; then echo "== integration negatives =="
   for nm in dual01_boot dual02_clint; do cyc=400000; wall=120; [ $nm = dual02_clint ] && { cyc=8000000; wall=900; }
     bash $T/run-dual.sh $SIMS/sim-neg-hartid-swap/obj_dir/sim $P/$nm.elf $OUT/neg-hartid-$nm $cyc $wall > /dev/null 2>&1; n=$((n+1))
-    if python3 $T/dual_check.py $OUT/neg-hartid-$nm --prog $nm --elf $P/$nm.elf > $OUT/neg-hartid-$nm.check 2>&1; then printf "  %-24s ACCEPTED (must be rejected)\n" neg-hartid-$nm; bad=$((bad+1))
-    else printf "  %-24s rejected: %s\n" neg-hartid-$nm "$(grep -m1 '^  FAIL' $OUT/neg-hartid-$nm.check | cut -c3-140)"; fi; done
+    # the intended defect is the identity/binding mismatch: it must be named by identity_check (the dual judge's
+    # rejection alone -- a hang in the ROM -- is recorded too, but a generic failure is not the evidence)
+    python3 $T/dual_check.py $OUT/neg-hartid-$nm --prog $nm --elf $P/$nm.elf > $OUT/neg-hartid-$nm.check 2>&1; dc=$?
+    python3 $HERE/identity_check.py $OUT/neg-hartid-$nm > $OUT/neg-hartid-$nm.identity 2>&1; ic=$?
+    if [ $dc != 0 ] && [ $ic != 0 ] && grep -q "FAIL: hart 0 took the ROM path for mhartid != 0" $OUT/neg-hartid-$nm.identity; then
+      printf "  %-24s rejected for the intended reason: %s\n" neg-hartid-$nm "$(grep -m1 'FAIL: hart 0 took' $OUT/neg-hartid-$nm.identity | cut -c9-130)"
+    else printf "  %-24s NOT caught as intended (dual_check %s, identity %s)\n" neg-hartid-$nm $dc $ic; bad=$((bad+1)); fi; done
   bash $T/run-dual.sh $SIMS/sim-neg-pf4-h1/obj_dir/sim $OUT/p4a-progs/dual08_h1trap.elf $OUT/neg-pf4-h1-dual08 400000 300 > /dev/null 2>&1; n=$((n+1))
   f=$(grep -m1 -E '^ASSOC H[01] FAIL' $OUT/neg-pf4-h1-dual08/console.txt); h0=$(grep -c '^ASSOC H0 FAIL' $OUT/neg-pf4-h1-dual08/console.txt)
   if echo "$f" | grep -q '^ASSOC H1 FAIL association' && [ "$h0" = 0 ]; then printf "  %-24s caught on hart 1 only: %s\n" neg-pf4-h1-dual08 "$(echo $f | cut -c1-140)"
