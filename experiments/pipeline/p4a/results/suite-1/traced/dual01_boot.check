@@ -1,0 +1,1 @@
+PASS dual01_boot exit=0 marker='M2B-BOOT-OK sp1=0x0000000080003000' harts={'n': 2, 'retired': [2002, 2010], 'traps': [1, 1], 'cause': [9223372036854775811, 9223372036854775811], 'maxawait': [8, 10], 'awaits': [343, 230], 'epoch': [1, 1]}

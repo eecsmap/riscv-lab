@@ -1,0 +1,13 @@
+ASSOC H1 FAIL association cyc=3231: the   load of pc 0000000080000238 seq 157 had its response and never retired before the next data response (pc 0000000080000238 seq 159)
+ASSOC H1 FAIL association cyc=3400: the  store of pc 00000000800001c8 seq 178 had its response; the next retirement is a commit of pc 000000008000022c seq 184               
+ASSOC H1 FAIL association cyc=3426: the   load of pc 0000000080000238 seq 190 had its response and never retired before the next data response (pc 0000000080000238 seq 193)
+ASSOC H1 FAIL association cyc=3528: the  store of pc 00000000800001c8 seq 215 had its response; the next retirement is a commit of pc 000000008000022c seq 221               
+ASSOC H1 FAIL association cyc=3554: the   load of pc 0000000080000238 seq 227 had its response and never retired before the next data response (pc 0000000080000238 seq 230)
+ASSOC H0 COVER responses fetch=252 if_pte=0 d_pte=0 data=59 load=55 store=4 amo=0 lr=0 sc=0 killed_fetch=2 killed_if_pte=0 killed_d_pte=0
+ASSOC H0 COVER if_pte_overlapping_a_retirement=0 d_pte_overlapping_a_retirement=0 pte_same_cycle_as_a_retirement=0 data_responses_then_trap=0 same_cycle_data_priority=0 max_cycles_resp_to_retire=1 cpu_resets=0 resets_abandoning_a_data_response=0 resets_with_core_transaction_outstanding=0
+ASSOC H0 COVER data_response_pending_at_end=0
+ASSOC H0 END cycles=3928 fails=0
+ASSOC H1 COVER responses fetch=275 if_pte=0 d_pte=0 data=31 load=16 store=15 amo=0 lr=0 sc=0 killed_fetch=2 killed_if_pte=0 killed_d_pte=0
+ASSOC H1 COVER if_pte_overlapping_a_retirement=0 d_pte_overlapping_a_retirement=0 pte_same_cycle_as_a_retirement=0 data_responses_then_trap=0 same_cycle_data_priority=0 max_cycles_resp_to_retire=3 cpu_resets=0 resets_abandoning_a_data_response=0 resets_with_core_transaction_outstanding=0
+ASSOC H1 COVER data_response_pending_at_end=0
+ASSOC H1 END cycles=3928 fails=5

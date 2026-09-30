@@ -1,0 +1,5 @@
+sim=/home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4a/runs/sims-1/sim-boot-assoc/obj_dir/sim
+elf=/home/engineer/fpga/experiments/multicore/m2b/progs/build/dual06_drain.elf (3d1451e280f0cf0a)
+max_cycles=4000000 wall=900 plusargs=+rd2_reset_at=46000 +rd2_reset_when=10 +rd2_reset_len=0 +rd2_reload_after_inject=1
+start=2026-09-30T01:20:21Z
+wall_s=17

@@ -1,0 +1,22 @@
+  boot09        sim=0 htif=0 ASSOC END cycles=21202 fails=0  ok
+  boot10        sim=0 htif=0 ASSOC END cycles=4445 fails=0  ok
+  boot11        sim=0 htif=0 ASSOC END cycles=44834 fails=0  ok
+  boot12        sim=0 htif=0 ASSOC END cycles=46798 fails=0  ok
+  hello         sim=0 htif=0 ASSOC END cycles=7880 fails=0  ok
+  boot04        sim=0 htif=0 ASSOC END cycles=6542 fails=0  ok
+  tlb01         sim=0 htif=0 ASSOC END cycles=30490 fails=0  ok
+  tlb02         sim=0 htif=0 ASSOC END cycles=49608 fails=0  ok
+  ext04         sim=0 htif=0 ASSOC END cycles=17329 fails=0  ok
+  walk_preempt  sim=0 htif=0 ASSOC END cycles=100421 fails=0  ok
+  hzsv1         sim=0 htif=0 ASSOC END cycles=85065 fails=0  ok
+  hzsv2         sim=0 htif=0 ASSOC END cycles=84097 fails=0  ok
+  hzsv3         sim=0 htif=0 ASSOC END cycles=84692 fails=0  ok
+  store_trap    sim=0 htif=0 ASSOC END cycles=5065 fails=0  ok
+  assoc_trap    sim=0 htif=0 ASSOC END cycles=4212 fails=0  ok
+  drain42751    sim=0 htif=0 ASSOC END cycles=90063 fails=0  ok | check-drain=0 DRAIN restarts=1 amo_started=76 get=76 put=76 reset_cycles=[42751] atomic_in_flight=True fails=0
+  drain43119    sim=0 htif=0 ASSOC END cycles=90346 fails=0  ok | check-drain=0 DRAIN restarts=1 amo_started=90 get=90 put=90 reset_cycles=[43119] atomic_in_flight=True fails=0
+  drain43488    sim=0 htif=0 ASSOC END cycles=90847 fails=0  ok | check-drain=0 DRAIN restarts=1 amo_started=104 get=104 put=104 reset_cycles=[43488] atomic_in_flight=True fails=0
+  drain43856    sim=0 htif=0 ASSOC END cycles=90637 fails=0  ok | check-drain=0 DRAIN restarts=1 amo_started=117 get=117 put=117 reset_cycles=[43856] atomic_in_flight=True fails=0
+  drain45000    sim=0 htif=0 ASSOC END cycles=91926 fails=0  ok | check-drain=0 DRAIN restarts=1 amo_started=128 get=128 put=128 reset_cycles=[45000] atomic_in_flight=True fails=0
+  coverage (summed): amo=577 cpu_resets=5 d_pte=300 d_pte_overlapping_a_retirement=0 data=5193 data_response_pending_at_end=0 data_responses_then_trap=1 fetch=79565 if_pte=143 if_pte_overlapping_a_retirement=10 killed_d_pte=0 killed_fetch=501 killed_if_pte=6 load=3306 lr=146 max_cycles_resp_to_retire=1 pte_same_cycle_as_a_retirement=0 resets_abandoning_a_data_response=0 resets_with_core_transaction_outstanding=3 same_cycle_data_priority=0 sc=152 store=1012 
+ASSOC_RUN_DONE bad=0

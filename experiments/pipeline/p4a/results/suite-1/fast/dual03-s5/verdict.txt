@@ -1,0 +1,1 @@
+RUN exit=0 wall=29s Completed after 3502336 cycles M2B-LOCK-OK lock=0x0000000000004e20 lrsc=0x0000000000004e20 amo=0x0000000000004e20 scf_shar

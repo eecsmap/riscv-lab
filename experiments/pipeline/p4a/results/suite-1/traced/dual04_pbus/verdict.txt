@@ -1,0 +1,1 @@
+RUN exit=0 wall=6s Completed after 57160 cycles M2B-PBUS-OK senable_rb=0x0000000000000002 0x0000000000000000 sprio_rb=0x0000000000000000 0x

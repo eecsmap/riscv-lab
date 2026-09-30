@@ -1,0 +1,5 @@
+FAIL dual01_boot exit=99 marker=None harts={'n': 2, 'retired': [1919, 2353], 'traps': [2, 2], 'cause': [5, 5], 'maxawait': [8, 10], 'awaits': [249, 136], 'epoch': [1, 1]}
+  FAIL: simulator exit 99, expected 0
+  FAIL: no "Completed after" from the simulator (a timeout or a host failure is not a pass)
+  FAIL: expected marker M2B-BOOT-OK absent from the recovered console
+  FAIL: a failure marker is present

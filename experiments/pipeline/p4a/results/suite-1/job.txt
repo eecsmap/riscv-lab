@@ -1,0 +1,33 @@
+== traced two-pipeline SoC, association checker on each hart ==
+  dual01_boot              RUN exit=0 wall=1s Completed after 13450 cycles M2B-BOOT-OK  | PASS dual01_boot exit=0 marker='M2B-BOOT | assoc H0/H1 clean
+  dual02_clint             RUN exit=0 wall=28s Completed after 279195 cycles M2B-CLINT- | PASS dual02_clint exit=0 marker='M2B-CLI | assoc H0/H1 clean
+  dual04_pbus              RUN exit=0 wall=6s Completed after 57160 cycles M2B-PBUS-OK  | PASS dual04_pbus exit=0 marker='M2B-PBUS | assoc H0/H1 clean
+  dual05_fencei            RUN exit=0 wall=2s Completed after 19300 cycles M2B-FENCEI-O | PASS dual05_fencei exit=0 marker='M2B-FE | assoc H0/H1 clean
+  dual03-trace             RUN exit=0 wall=322s Completed after 3237783 cycles M2B-LOCK | PASS dual03_lock exit=0 marker='M2B-LOCK | assoc H0/H1 clean
+  dual06-drain             RUN exit=0 wall=17s Completed after 158579 cycles M2B-DRAIN- | PASS dual06_drain exit=0 marker='M2B-DRA | assoc H0/H1 clean
+  dual08                   exit=0 marker=1 | assoc H0/H1 clean
+P4A_DUAL_SUITE_DONE group=traced runs=7 bad=0
+== M2b injected-defect programs: each must be REJECTED ==
+  neg01_nohart1            rejected: FAIL: simulator exit 2, expected 0
+  neg02_wronghart          rejected: FAIL: simulator exit 99, expected 0
+  neg03_wrongcount         rejected: FAIL: lock-protected counter = 19999, expected 20000
+  neg04_early              rejected: FAIL: dual07: hart 1 iteration count in the report is 0, expected 100000 (hart 0 reported before hart 1 finished, or hart 1 did not run th
+P4A_DUAL_SUITE_DONE group=neg runs=4 bad=0
+== integration negatives ==
+  neg-hartid-dual01_boot   rejected: FAIL: simulator exit 2, expected 0
+  neg-hartid-dual02_clint  rejected: FAIL: simulator exit 2, expected 0
+  neg-pf4-h1-dual08        caught on hart 1 only: ASSOC H1 FAIL association cyc=3231: the load of pc 0000000080000238 seq 157 had its response and never retired before the next data response
+P4A_DUAL_SUITE_DONE group=integ runs=3 bad=0
+== fast two-pipeline SoC ==
+  dual03-s1                RUN exit=0 wall=32s Completed after 3791686 cycles M2B-LOCK- | PASS dual03_lock exit=0 marker='M2B-LOCK | -
+  dual03-s2                RUN exit=0 wall=33s Completed after 3922453 cycles M2B-LOCK- | PASS dual03_lock exit=0 marker='M2B-LOCK | -
+  dual03-s3                RUN exit=0 wall=37s Completed after 4463469 cycles M2B-LOCK- | PASS dual03_lock exit=0 marker='M2B-LOCK | -
+  dual03-s4                RUN exit=0 wall=28s Completed after 3404353 cycles M2B-LOCK- | PASS dual03_lock exit=0 marker='M2B-LOCK | -
+  dual03-s5                RUN exit=0 wall=29s Completed after 3502336 cycles M2B-LOCK- | PASS dual03_lock exit=0 marker='M2B-LOCK | -
+  dual03-s6                RUN exit=0 wall=33s Completed after 4030365 cycles M2B-LOCK- | PASS dual03_lock exit=0 marker='M2B-LOCK | -
+  dual03-s7                RUN exit=0 wall=34s Completed after 4190082 cycles M2B-LOCK- | PASS dual03_lock exit=0 marker='M2B-LOCK | -
+  dual03-s8                RUN exit=0 wall=31s Completed after 3713320 cycles M2B-LOCK- | PASS dual03_lock exit=0 marker='M2B-LOCK | -
+  dual03-s9                RUN exit=0 wall=30s Completed after 3648948 cycles M2B-LOCK- | PASS dual03_lock exit=0 marker='M2B-LOCK | -
+  dual03-s10               RUN exit=0 wall=32s Completed after 3832121 cycles M2B-LOCK- | PASS dual03_lock exit=0 marker='M2B-LOCK | -
+  dual07-long              RUN exit=0 wall=30s Completed after 3517565 cycles M2B-LONG- | PASS dual07_long exit=0 marker='M2B-LONG | -
+P4A_DUAL_SUITE_DONE group=fast runs=11 bad=0

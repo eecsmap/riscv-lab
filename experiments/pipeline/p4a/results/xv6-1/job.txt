@@ -1,0 +1,35 @@
+XV6_RC=0 wall=1071s
+  [phase 1071.34s] teardown: closing logs
+BOARD_RUN stages=6 failed=0 host_exit=0 (deliberate-stop-after-all-commands)
+AXI ar=9335105 r=9345073 rlast=9335105 aw=6195779 w=6204291 wlast=6195779 b=6195779
+RD2HOST FINAL aWaits=25196671 aFires=13875390 dFires=13875390 epoch=1 injections=0 boot_ready=0 boot_timeout=0 bdev_queued=0
+HARTS n=2 retired0=23451838 traps0=125 cause0=0x8 maxawait0=258 awaits0=13004707 epoch0=1 retired1=23539954 traps1=253 cause1=0x8 maxawait1=253 awaits1=12191964 epoch1=1
+HARTS_USER user0=1218649 range0=677904 user1=3059044 range1=167237
+CYCLES total=113776545 host_done_at=113776541 drained=5
+PASS /home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4a/runs/xv6-1/xv6-m4smoke-pipe-dual harts={'n': 2, 'retired': [23451838, 23539954], 'traps': [125, 253], 'user': [1218649, 3059044], 'range': [677904, 167237]}
+HARTS n=2 retired0=23451838 traps0=125 cause0=0x8 maxawait0=258 awaits0=13004707 epoch0=1 retired1=23539954 traps1=253 cause1=0x8 maxawait1=253 awaits1=12191964 epoch1=1
+HARTS_USER user0=1218649 range0=677904 user1=3059044 range1=167237
+CYCLES total=113776545 host_done_at=113776541 drained=5
+XV6_P2B_DONE case=m4smoke rc=0 fails=0
+M4SMOKE_RC=0
+XV6_RC=0 wall=674s
+  [phase  673.88s] teardown: closing logs
+BOARD_RUN stages=6 failed=0 host_exit=0 (deliberate-stop-after-all-commands)
+AXI ar=6151178 r=6152186 rlast=6151178 aw=4151661 w=4156925 wlast=4151661 b=4151661
+RD2HOST FINAL aWaits=15272150 aFires=9188809 dFires=9188809 epoch=1 injections=0 boot_ready=0 boot_timeout=0 bdev_queued=0
+HARTS n=2 retired0=15975890 traps0=137 cause0=0x8 maxawait0=253 awaits0=7883159 epoch0=1 retired1=14354973 traps1=173 cause1=0x8 maxawait1=253 awaits1=7388991 epoch1=1
+HARTS_USER user0=1006858 range0=450734 user1=1370694 range1=133814
+CYCLES total=71954765 host_done_at=71954761 drained=5
+PASS /home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4a/runs/xv6-1/xv6-perf-short-pipe-dual (2 perf runs)
+PASS /home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4a/runs/xv6-1/xv6-perf-short-pipe-dual harts={'n': 2, 'retired': [15975890, 14354973], 'traps': [137, 173], 'user': [1006858, 1370694], 'range': [450734, 133814]}
+HARTS n=2 retired0=15975890 traps0=137 cause0=0x8 maxawait0=253 awaits0=7883159 epoch0=1 retired1=14354973 traps1=173 cause1=0x8 maxawait1=253 awaits1=7388991 epoch1=1
+HARTS_USER user0=1006858 range0=450734 user1=1370694 range1=133814
+CYCLES total=71954765 host_done_at=71954761 drained=5
+XV6_P2B_DONE case=perf-short rc=0 fails=0
+PERF_RC=0
+ASSOC_SIM_BUILD_OK aw=_T_467 f89f4e1c8596a486
+  drain45000    sim=0 htif=0 ASSOC END cycles=91926 fails=0  ok | check-drain=0 DRAIN restarts=1 amo_started=128 get=128 put=128 reset_cycles=[45000] atomic_in_flight=True fails=0
+  coverage (summed): amo=577 cpu_resets=5 d_pte=300 d_pte_overlapping_a_retirement=0 data=5193 data_response_pending_at_end=0 data_responses_then_trap=1 fetch=79565 if_pte=143 if_pte_overlapping_a_retirement=10 killed_d_pte=0 killed_fetch=501 killed_if_pte=6 load=3306 lr=146 max_cycles_resp_to_retire=1 pte_same_cycle_as_a_retirement=0 resets_abandoning_a_data_response=0 resets_with_core_transaction_outstanding=3 same_cycle_data_priority=0 sc=152 store=1012 
+ASSOC_RUN_DONE bad=0
+SINGLE_ASSOC_RC=0
+CHAIN_XV6_DONE bad=0

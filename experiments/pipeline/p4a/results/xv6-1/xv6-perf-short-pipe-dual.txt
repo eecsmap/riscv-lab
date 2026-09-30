@@ -1,0 +1,76 @@
+# xv6-perf-short-pipe-dual
+## cmd.txt
+sim=/home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4a/runs/sims-1/sim-fast/obj_dir/sim (eb6441a06b0425b9)
+kernel=/home/engineer/fpga/experiments/multicore/perf/sw/out/kernel-deploy-4 (d713744a5e4787645591ab4ea763c8cc92cc0b455c7234223dd140cf9bd2a031)
+disk=/home/engineer/fpga/experiments/multicore/perf/sw/out/fs-perf.img (d558e4444abcea6046147d85b81e538ecf604049b6d8ab15552f9a3d32bf688c)
+workload=perf-short max_cycles=2000000000 wall=7200 stage=3600 scheduler=[0x80001e4a,0x80001f00) (plusargs decimal 2147491402 2147491584)
+start=2026-09-30T02:00:29Z
+## verdict.txt
+XV6_RC=0 wall=674s
+## check.txt
+INFO harts: retired [15975890, 14354973] user [1006858, 1370694] sched-range [450734, 133814] traps [137, 173]; hart1 user growth steps 2/2
+INFO disk: 56 block-device operations, strictly alternating request/completion, closed at EOF
+PASS /home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4a/runs/xv6-1/xv6-perf-short-pipe-dual harts={'n': 2, 'retired': [15975890, 14354973], 'traps': [137, 173], 'user': [1006858, 1370694], 'range': [450734, 133814]}
+## perf-check.txt
+INFO mtimetest: 8 reads monotonic, consecutive deltas [73, 75, 75, 75, 74, 74, 74] mtime units; child 462205 within [460145,466488]; spin100k=78291 mtime units (7829100 cycles, 78 cycles/iter)
+RESULT PERF-COMPUTE size=20000 dmtime=46470 readcost=74 ticks_diag=2 seconds=0.116 work_per_s=688616
+RESULT PERF-ARRAY size=1 dmtime=51664 readcost=75 ticks_diag=2 seconds=0.129 work_per_s=507402
+PASS /home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4a/runs/xv6-1/xv6-perf-short-pipe-dual (2 perf runs)
+## run/console.txt
+
+xv6 kernel is booting
+
+blkdev: 4000 sectors (1 MB), max request 16 sectors
+hart 1 starting
+init: starting sh
+$ mtimetest
+MTIME-READS 458745 458818 458893 458968 459043 459117 459191 459265
+MTIME-SHARED p0=460145 child=462205 p1=466488 ticks=0 spin100k=78291 x=723cc1865dd69690
+MTIME-DONE ok=1
+$ perfcompute 20000
+PERF-COMPUTE size=20000 children=4 mt0=577133 mt1=623603 dmtime=46470 readcost=74 ticks=2 ok=1
+PERF-COMPUTE-CHILD0 checksum=9fb000ba0962e1ec
+PERF-COMPUTE-CHILD1 checksum=537db65542ffaca6
+PERF-COMPUTE-CHILD2 checksum=6e4d363133375dba
+PERF-COMPUTE-CHILD3 checksum=a7a09d9b4d2a5984
+PERF-DONE ok=1
+$ perfarray 1
+PERF-ARRAY size=1 children=4 mt0=660296 mt1=711960 dmtime=51664 readcost=75 ticks=2 ok=1
+PERF-ARRAY-CHILD0 checksum=04f1a80698c9e000
+PERF-ARRAY-CHILD1 checksum=04f1a80698ca2000
+PERF-ARRAY-CHILD2 checksum=04f1a80698ca6000
+PERF-ARRAY-CHILD3 checksum=04f1a80698caa000
+PERF-DONE ok=1
+$ Completed after 71954765 cycles
+PIPE COVERAGE redirects=2512974 redirect_while_held=209281 killed_fetch_responses=98926 killed_after_two_flushes=4592 flush_with_pending_valid=64917 irq_tokens=27 irq_synthetic=35 irq_synthetic_fetch_ahead=1 irq_cancelled=0 drain_wait_cycles=892049 loaduse_stall_cycles=8818577 fwd_exmem=4124425 fwd_memwb=1578579 wb_bypass=1198597 uncached_wait_cycles=13573
+PIPE COVERAGE-SV39 fetch_walks=9250 data_walks=16413 walks_preempted_by_data=53 walks_aborted=1346 pte_transactions_killed=853 tlb_flushes=502
+PIPE COVERAGE redirects=2390503 redirect_while_held=185066 killed_fetch_responses=79703 killed_after_two_flushes=18 flush_with_pending_valid=41954 irq_tokens=26 irq_synthetic=32 irq_synthetic_fetch_ahead=0 irq_cancelled=0 drain_wait_cycles=3734802 loaduse_stall_cycles=7475823 fwd_exmem=4092939 fwd_memwb=1277486 wb_bypass=921808 uncached_wait_cycles=13575
+PIPE COVERAGE-SV39 fetch_walks=17069 data_walks=23104 walks_preempted_by_data=174 walks_aborted=1750 pte_transactions_killed=1082 tlb_flushes=754
+AXI ar=6151178 r=6152186 rlast=6151178 aw=4151661 w=4156925 wlast=4151661 b=4151661
+RD2HOST restarts_requested=0 restarts_completed=0
+RD2HOST FINAL aWaits=15272150 aFires=9188809 dFires=9188809 epoch=1 injections=0 boot_ready=0 boot_timeout=0 bdev_queued=0
+HARTS n=2 retired0=15975890 traps0=137 cause0=0x8 maxawait0=253 awaits0=7883159 epoch0=1 retired1=14354973 traps1=173 cause1=0x8 maxawait1=253 awaits1=7388991 epoch1=1
+HARTS_USER user0=1006858 range0=450734 user1=1370694 range1=133814
+CYCLES total=71954765 host_done_at=71954761 drained=5
+## run/stages.txt
+ok	4.2	kernel banner
+ok	363.1	init started / first prompt
+ok	408.1	shell prompt
+ok	516.0	command mtimetest
+ok	589.8	command perfcompute
+ok	673.1	command perfarray
+# driver: v3
+# platform: board
+# workload: perf-short
+# channel: multiplexed
+# console device: none (multiplexed)
+# bitstream sha256: 2cd8a9927cfa2f51da16bc6ba4865a407e985d00bf2accbb046f48c81c0fda52
+# host binary sha256: 309bca48cd3560bf77355d8e39d555f76d662f24e4b96e150e913578ea966a22
+# kernel sha256: d713744a5e4787645591ab4ea763c8cc92cc0b455c7234223dd140cf9bd2a031
+# disk at start sha256: d558e4444abcea6046147d85b81e538ecf604049b6d8ab15552f9a3d32bf688c
+# memory evidence session: 815c1e46-e6b5-43c7-9e0b-b0548015ae71
+# memory evidence digest: ddf3dca415c9f526c31f0d4e6f8cd0ff8823af92fae594f44139cbd19ce7fc11
+# board boot id: 815c1e46-e6b5-43c7-9e0b-b0548015ae71
+# host exit: 0
+# stop: deliberate-stop-after-all-commands
+# remote exit confirmed: yes

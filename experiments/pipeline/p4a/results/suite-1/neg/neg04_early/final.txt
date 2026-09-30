@@ -1,0 +1,6 @@
+Completed after 3472373 cycles
+AXI ar=242368 r=242368 rlast=242368 aw=206046 w=206046 wlast=206046 b=206046
+RD2HOST FINAL aWaits=183780 aFires=412820 dFires=412820 epoch=1 injections=0 boot_ready=0 boot_timeout=0 bdev_queued=0
+HARTS n=2 retired0=1207629 traps0=1 cause0=0x8000000000000003 maxawait0=15 awaits0=91087 epoch0=1 retired1=1210232 traps1=1 cause1=0x8000000000000003 maxawait1=12 awaits1=92693 epoch1=1
+HARTS_USER user0=1725 range0=0 user1=1732 range1=0
+CYCLES total=3472373 host_done_at=3472373 drained=1

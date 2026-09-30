@@ -1,0 +1,2 @@
+INFO dual04: xv6 S-context addresses read back after writing 2/0: enable(hart0 @0xc002080)=0x2 enable(hart1 @0xc002180)=0x0 threshold(hart0 @0xc201000)=0x0 threshold(hart1 @0xc203000)=0x0
+PASS dual04_pbus exit=0 marker='M2B-PBUS-OK senable_rb=0x0000000000000002 0x0000000000000000 sprio_rb=0x0000000000000000 0x0000000000000000' harts={'n': 2, 'retired': [9864, 9861], 'traps': [1, 1], 'cause': [9223372036854775811, 9223372036854775811], 'maxawait': [8, 11], 'awaits': [654, 289], 'epoch': [1, 1]}

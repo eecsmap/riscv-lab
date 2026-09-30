@@ -1,0 +1,5 @@
+sim=/home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4a/runs/sims-1/sim-boot-assoc/obj_dir/sim
+elf=/home/engineer/fpga/experiments/multicore/m2b/progs/build/neg01_nohart1.elf (69eee8c15ac5993f)
+max_cycles=400000 wall=120 plusargs=
+start=2026-09-30T01:20:44Z
+wall_s=40

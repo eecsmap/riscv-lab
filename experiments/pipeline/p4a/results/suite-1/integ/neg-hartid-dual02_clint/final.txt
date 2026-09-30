@@ -1,0 +1,6 @@
+*** FAILED *** (no host result, seed 1788724095) after 8000000 cycles
+AXI ar=86799 r=86799 rlast=86799 aw=185 w=185 wlast=185 b=185
+RD2HOST FINAL aWaits=39584 aFires=1417782 dFires=1417780 epoch=1 injections=0 boot_ready=0 boot_timeout=0 bdev_queued=0
+HARTS n=2 retired0=301004 traps0=1 cause0=0x8000000000000003 maxawait0=2 awaits0=23750 epoch0=1 retired1=332673 traps1=0 cause1=0x0 maxawait1=2 awaits1=15834 epoch1=1
+HARTS_USER user0=301004 range0=0 user1=332673 range1=0
+CYCLES total=8000000 host_done_at=0 drained=0

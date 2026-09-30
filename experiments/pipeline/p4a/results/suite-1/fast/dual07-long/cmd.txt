@@ -1,0 +1,5 @@
+sim=/home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4a/runs/sims-1/sim-fast/obj_dir/sim
+elf=/home/engineer/fpga/experiments/multicore/m2b/progs/build/dual07_long.elf (459347189d79d4f1)
+max_cycles=200000000 wall=5400 plusargs=+rd2_progress=5000000
+start=2026-09-30T01:41:57Z
+wall_s=30

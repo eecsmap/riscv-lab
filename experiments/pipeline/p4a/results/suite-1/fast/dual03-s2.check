@@ -1,0 +1,1 @@
+PASS dual03_lock exit=0 marker='M2B-LOCK-OK lock=0x0000000000004e20 lrsc=0x0000000000004e20 amo=0x0000000000004e20 scf_shared=0x0000000000001384 0x0000000000001388' harts={'n': 2, 'retired': [394757, 396449], 'traps': [2, 2], 'cause': [7, 5], 'maxawait': [19, 19], 'awaits': [943437, 932907], 'epoch': [1, 1]}

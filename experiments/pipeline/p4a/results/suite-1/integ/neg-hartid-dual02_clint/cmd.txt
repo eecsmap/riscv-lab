@@ -1,0 +1,5 @@
+sim=/home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4a/runs/sims-1/sim-neg-hartid-swap/obj_dir/sim
+elf=/home/engineer/fpga/experiments/multicore/m2b/progs/build/dual02_clint.elf (beffce7e53733a29)
+max_cycles=8000000 wall=900 plusargs=
+start=2026-09-30T01:23:09Z
+wall_s=778

@@ -1,0 +1,4 @@
+INFO drain: 7750 CPU DRAM writes, 7750 bound to exactly one AXI write each; 8111 AXI writes total (host load included)
+INFO dual06: hart 0: 1555 scratch writes issued before the hold (last one in flight: (0, 1, 3528)), 1555 read back intact after the reload
+INFO dual06: hart 1: 1553 scratch writes issued before the hold (last one in flight: (1, 1, 3525)), 1553 read back intact after the reload
+PASS dual06_drain exit=0 marker='M2B-DRAIN-OK epoch=0x0000000000000001 survived=0x0000000000000613 0x0000000000000611' harts={'n': 2, 'retired': [49631, 49589], 'traps': [2, 2], 'cause': [9223372036854775811, 9223372036854775811], 'maxawait': [15, 17], 'awaits': [18100, 17777], 'epoch': [2, 2]}

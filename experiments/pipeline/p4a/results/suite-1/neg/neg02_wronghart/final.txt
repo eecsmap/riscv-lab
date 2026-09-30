@@ -1,0 +1,7 @@
+*** FAILED *** (tohost = 99)
+*** FAILED *** (code = 99, seed 1788738460) after 13081 cycles
+AXI ar=832 r=832 rlast=832 aw=264 w=264 wlast=264 b=264
+RD2HOST FINAL aWaits=385 aFires=1455 dFires=1455 epoch=1 injections=0 boot_ready=0 boot_timeout=0 bdev_queued=0
+HARTS n=2 retired0=1919 traps0=2 cause0=0x5 maxawait0=8 awaits0=249 epoch0=1 retired1=2353 traps1=2 cause1=0x5 maxawait1=10 awaits1=136 epoch1=1
+HARTS_USER user0=149 range0=0 user1=155 range1=0
+CYCLES total=13081 host_done_at=13081 drained=1

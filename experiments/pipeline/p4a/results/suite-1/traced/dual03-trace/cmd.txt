@@ -1,0 +1,5 @@
+sim=/home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4a/runs/sims-1/sim-boot-assoc/obj_dir/sim
+elf=/home/engineer/fpga/experiments/multicore/m2b/progs/build/dual03_lock.elf (7bb6d1df99eea7b7)
+max_cycles=60000000 wall=3600 plusargs=
+start=2026-09-30T01:14:36Z
+wall_s=322

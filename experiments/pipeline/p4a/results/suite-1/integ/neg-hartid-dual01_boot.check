@@ -1,0 +1,7 @@
+FAIL dual01_boot exit=2 marker=None harts={'n': 2, 'retired': [15061, 16633], 'traps': [1, 0], 'cause': [9223372036854775811, 0], 'maxawait': [2, 2], 'awaits': [1180, 786], 'epoch': [1, 1]}
+  FAIL: simulator exit 2, expected 0
+  FAIL: no "Completed after" from the simulator (a timeout or a host failure is not a pass)
+  FAIL: no HOSTDONE: the host never saw the program finish
+  FAIL: expected marker M2B-BOOT-OK absent from the recovered console
+  FAIL: hart 0 never committed the entry instruction at 0x80000000
+  FAIL: hart 1 never committed the entry instruction at 0x80000000

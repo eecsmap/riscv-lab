@@ -1,0 +1,64 @@
+# xv6-m4smoke-pipe-dual
+## cmd.txt
+sim=/home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4a/runs/sims-1/sim-fast/obj_dir/sim (eb6441a06b0425b9)
+kernel=/home/engineer/fpga/experiments/multicore/m4/sw/out/kernel-deploy-4 (1e4749c0f7c1e7eec77d5d44023b0fec214a32eeec293e356ddeed0e8d802b92)
+disk=/home/engineer/fpga/experiments/multicore/m4/sw/out/fs-deploy.img (d8e502693bba1b14625d0f7b9a165f2ece055c64382887cb19610d0db41d7281)
+workload=m4smoke max_cycles=2000000000 wall=7200 stage=3600 scheduler=[0x80001e4a,0x80001f00) (plusargs decimal 2147491402 2147491584)
+start=2026-09-30T01:42:37Z
+## verdict.txt
+XV6_RC=0 wall=1071s
+## check.txt
+INFO harts: retired [23451838, 23539954] user [1218649, 3059044] sched-range [677904, 167237] traps [125, 253]; hart1 user growth steps 4/4
+INFO disk: 165 block-device operations, strictly alternating request/completion, closed at EOF
+PASS /home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4a/runs/xv6-1/xv6-m4smoke-pipe-dual harts={'n': 2, 'retired': [23451838, 23539954], 'traps': [125, 253], 'user': [1218649, 3059044], 'range': [677904, 167237]}
+## run/console.txt
+
+xv6 kernel is booting
+
+blkdev: 4000 sectors (1 MB), max request 16 sectors
+hart 1 starting
+init: starting sh
+$ b0compute
+B0-COMPUTE-CHECKSUM=5ADF55920BF7696
+B0-COMPUTE-DONE
+$ m3par2
+M4-PAR-CHILD0 checksum=f6d983767e3c5638 harts=0x0
+M4-PAR-CHILD1 checksum=01d86a21f972f3fa harts=0x0
+M4-PAR-DONE children=2 ok=1
+$ m3fs
+M3-FS-CHILD0 ok=1
+M3-FS-CHILD1 ok=1
+M3-FS-DONE ok=1
+$ Completed after 113776545 cycles
+PIPE COVERAGE redirects=3755645 redirect_while_held=341630 killed_fetch_responses=24860 killed_after_two_flushes=4580 flush_with_pending_valid=19373 irq_tokens=38 irq_synthetic=60 irq_synthetic_fetch_ahead=1 irq_cancelled=0 drain_wait_cycles=1460550 loaduse_stall_cycles=11303755 fwd_exmem=5876432 fwd_memwb=2463751 wb_bypass=1805024 uncached_wait_cycles=13567
+PIPE COVERAGE-SV39 fetch_walks=14278 data_walks=23566 walks_preempted_by_data=87 walks_aborted=2468 pte_transactions_killed=1874 tlb_flushes=250
+PIPE COVERAGE redirects=3782097 redirect_while_held=324272 killed_fetch_responses=221421 killed_after_two_flushes=3569 flush_with_pending_valid=12327 irq_tokens=36 irq_synthetic=54 irq_synthetic_fetch_ahead=4 irq_cancelled=0 drain_wait_cycles=4320708 loaduse_stall_cycles=10498473 fwd_exmem=7036793 fwd_memwb=2208846 wb_bypass=1979793 uncached_wait_cycles=13569
+PIPE COVERAGE-SV39 fetch_walks=31058 data_walks=37794 walks_preempted_by_data=295 walks_aborted=3217 pte_transactions_killed=2318 tlb_flushes=1060
+AXI ar=9335105 r=9345073 rlast=9335105 aw=6195779 w=6204291 wlast=6195779 b=6195779
+RD2HOST restarts_requested=0 restarts_completed=0
+RD2HOST FINAL aWaits=25196671 aFires=13875390 dFires=13875390 epoch=1 injections=0 boot_ready=0 boot_timeout=0 bdev_queued=0
+HARTS n=2 retired0=23451838 traps0=125 cause0=0x8 maxawait0=258 awaits0=13004707 epoch0=1 retired1=23539954 traps1=253 cause1=0x8 maxawait1=253 awaits1=12191964 epoch1=1
+HARTS_USER user0=1218649 range0=677904 user1=3059044 range1=167237
+CYCLES total=113776545 host_done_at=113776541 drained=5
+## run/stages.txt
+ok	4.1	kernel banner
+ok	358.7	init started / first prompt
+ok	401.9	shell prompt
+ok	457.1	command b0compute
+ok	631.2	command m3par2
+ok	1070.6	command m3fs
+# driver: v3
+# platform: board
+# workload: m4smoke
+# channel: multiplexed
+# console device: none (multiplexed)
+# bitstream sha256: 2cd8a9927cfa2f51da16bc6ba4865a407e985d00bf2accbb046f48c81c0fda52
+# host binary sha256: 309bca48cd3560bf77355d8e39d555f76d662f24e4b96e150e913578ea966a22
+# kernel sha256: 1e4749c0f7c1e7eec77d5d44023b0fec214a32eeec293e356ddeed0e8d802b92
+# disk at start sha256: d8e502693bba1b14625d0f7b9a165f2ece055c64382887cb19610d0db41d7281
+# memory evidence session: 815c1e46-e6b5-43c7-9e0b-b0548015ae71
+# memory evidence digest: ddf3dca415c9f526c31f0d4e6f8cd0ff8823af92fae594f44139cbd19ce7fc11
+# board boot id: 815c1e46-e6b5-43c7-9e0b-b0548015ae71
+# host exit: 0
+# stop: deliberate-stop-after-all-commands
+# remote exit confirmed: yes

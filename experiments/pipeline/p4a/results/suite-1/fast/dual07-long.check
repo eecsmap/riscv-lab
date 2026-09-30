@@ -1,0 +1,2 @@
+INFO dual07: retired [1207643, 1207497], maxAWait [15, 11], aWaits [125390, 125073]
+PASS dual07_long exit=0 marker='M2B-LONG-OK iter=0x00000000000186a0 0x00000000000186a0 sum=0xdaf8a24a417f9318 0xdaf8a24a417f9318' harts={'n': 2, 'retired': [1207643, 1207497], 'traps': [1, 1], 'cause': [9223372036854775811, 9223372036854775811], 'maxawait': [15, 11], 'awaits': [125390, 125073], 'epoch': [1, 1]}

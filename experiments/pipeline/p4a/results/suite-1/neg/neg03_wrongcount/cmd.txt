@@ -1,0 +1,5 @@
+sim=/home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4a/runs/sims-1/sim-fast/obj_dir/sim
+elf=/home/engineer/fpga/experiments/multicore/m2b/progs/build/neg03_wrongcount.elf (85f0dfcf37a5206b)
+max_cycles=60000000 wall=1800 plusargs=
+start=2026-09-30T01:21:29Z
+wall_s=29

@@ -1,0 +1,2 @@
+INFO dual05: without fence.i hart 1 executed the OLD code at X (observed on this implementation, not an ISA claim); new code committed after fence.i: True
+PASS dual05_fencei exit=0 marker='M2B-FENCEI-OK nofence=0x0000000000000001 fence=0x0000000000000002' harts={'n': 2, 'retired': [3322, 3264], 'traps': [1, 1], 'cause': [9223372036854775811, 9223372036854775811], 'maxawait': [9, 8], 'awaits': [327, 97], 'epoch': [1, 1]}

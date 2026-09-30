@@ -1,0 +1,1 @@
+RUN exit=99 wall=1s *** FAILED *** (tohost = 99) M2B-TRAP-FAIL unexpected trap on hart 0

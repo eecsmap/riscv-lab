@@ -1,0 +1,5 @@
+sim=/home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4a/runs/sims-1/sim-boot-assoc/obj_dir/sim
+elf=/home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4a/runs/suite-1-traced/p4a-progs/dual08_h1trap.elf (3dfe01c2b1cb1eb6)
+max_cycles=400000 wall=300 plusargs=
+start=2026-09-30T01:20:42Z
+wall_s=1

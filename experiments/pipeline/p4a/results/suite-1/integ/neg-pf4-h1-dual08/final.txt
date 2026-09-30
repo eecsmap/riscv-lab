@@ -1,0 +1,7 @@
+*** FAILED *** (tohost = 1)
+*** FAILED *** (code = 1, seed 1788707271) after 3918 cycles
+AXI ar=141 r=141 rlast=141 aw=128 w=128 wlast=128 b=128
+RD2HOST FINAL aWaits=194 aFires=617 dFires=617 epoch=1 injections=0 boot_ready=0 boot_timeout=0 bdev_queued=0
+HARTS n=2 retired0=363 traps0=1 cause0=0x8000000000000003 maxawait0=9 awaits0=85 epoch0=1 retired1=256 traps1=4 cause1=0xb maxawait1=11 awaits1=109 epoch1=1
+HARTS_USER user0=114 range0=0 user1=120 range1=0
+CYCLES total=3918 host_done_at=3918 drained=1

@@ -1,0 +1,2 @@
+FAIL dual03_lock exit=0 marker='M2B-LOCK-OK lock=0x0000000000004e1f lrsc=0x0000000000004e20 amo=0x0000000000004e20 scf_shared=0x0000000000000fa0 0x00000000000011c8' harts={'n': 2, 'retired': [416249, 418752], 'traps': [2, 2], 'cause': [7, 5], 'maxawait': [17, 18], 'awaits': [729912, 693106], 'epoch': [1, 1]}
+  FAIL: lock-protected counter = 19999, expected 20000
