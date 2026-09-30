@@ -157,3 +157,15 @@ own status; `run-dual-all.sh` reports each group and fails if any does. `selftes
 verilator and steps that leave an executable and then fail): every non-zero producer status yields an overall
 failure, every all-success run passes (`results/runner-fix/selftest-runners.txt`); against the pre-fix build script
 the same failing stub was reported `BUILD_OK` (`results/runner-fix/prefix-vs-fixed.txt`).
+
+## 9. Independent review closeout (Codex, recorded 2026-09-30)
+P4a was accepted at `5a5dd0e` + `1cd67b1`. Codex's independent evidence: a fresh fast simulator built from the
+submitted gen-1 Verilog (`eb6441a06b0425b9`, the same hash as this delivery's), and with scripts frozen at `1cd67b1`:
+the 16 runner self-tests PASS, the 11 fast dual cases PASS, and a fresh xv6 perf-short PASS with user-mode commits
+905,089 / 1,472,463 and compute 46,537 / array 52,159 mtime units
+(`experiments/pipeline-review-p4a-resume-20260930`, `.coord/jobs/logs/codex-pipe-p4a-resume-20260930-034006.log`,
+`CODEX_P4A_RESUME_PASS`). This delivery's own run gave compute 46,470 / array 51,664 with user-mode commits
+1,006,858 / 1,370,694: the runs are not cycle-deterministic (host-driven console timing), so both are kept and
+neither replaces the other. Codex did not independently re-elaborate the Chisel or rerun the traced, negative and
+m4smoke groups; those rest on the evidence delivered here. Codex's first review attempt was interrupted because I
+rewrote `run-dual-suite.sh` in place while it was executing that file; that attempt is not a passing run.
