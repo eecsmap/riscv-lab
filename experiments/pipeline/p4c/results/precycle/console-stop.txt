@@ -1,0 +1,1 @@
+CONSOLE ARM prompt, nothing running (b'\n/root/xv6run # ')

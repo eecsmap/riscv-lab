@@ -1,0 +1,4 @@
+
+<<SEND b'\n'>>
+
+/root/xv6run # 

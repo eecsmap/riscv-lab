@@ -1,0 +1,32 @@
+== local artefacts
+  frozen artefact set verified: 14 artefacts; payload f330769dac6172da… (bit 646d88b73b908ad7…)
+== leases, before any transport
+  claimed lease: board
+  claimed lease: serial
+== no process on this host may hold the board's serial ports
+  none
+== the console: stop a running user session only the documented way
+== pre-state (read-only)
+BID=4d45136e-7c10-46fd-b6f8-dfcd30775917
+UP=26082
+PD=1
+FESVR=0
+LOCK=NO_LOCK
+LOCKOWNER=
+TOOLS=timeout,gzip,base64,sha256sum,flock,
+DF=Filesystem 1K-blocks Used Available Use% Mounted on
+== backups: every disk image, and every file that is not a known accepted artefact
+  reading back /root/xv6run/fs-run.img (sha 8b147b4566acccc7…) over the console
+  backed up fs-run.img: 8b147b4566acccc7d612a12d79d9a2689dc61664186d545075bc09d9050218f5 (matches the board)
+  reading back /root/xv6run/fs-user-previous.img (sha 05a4562b72e3bace…) over the console
+  backed up fs-user-previous.img: 05a4562b72e3bace52602321372340262e0118801ffa6ef2aa13a49b7c5484f5 (matches the board)
+  reading back /root/xv6run/fs-user.img (sha 8b147b4566acccc7…) over the console
+  backed up fs-user.img: 8b147b4566acccc7d612a12d79d9a2689dc61664186d545075bc09d9050218f5 (matches the board)
+== re-reading the board's hashes after the backups (nothing may have changed while reading)
+== the board's timeout builtin
+  timeout: yes
+== pinning the current boot id
+pinned pre-cycle boot id: 4d45136e-7c10-46fd-b6f8-dfcd30775917 (/home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4c/ws/state/precycle-20260930T062519Z/pin.txt; /home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4c/ws/state/current-precycle -> precycle-20260930T062519Z)
+P4C_READY_FOR_COLD_CYCLE precycle=/home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4c/ws/state/precycle-20260930T062519Z
+  released lease: board
+  released lease: serial
