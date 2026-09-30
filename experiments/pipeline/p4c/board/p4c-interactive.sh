@@ -11,6 +11,9 @@
 set -euo pipefail
 cd "$(dirname "$0")"; . ./p4c-lib.sh
 S=${1:?install session}; O=$(cat "$S/precycle.txt")
+# the user disks come from the pre-cycle step that backed them up: when a later pre-cycle step re-pinned an already
+# empty board (P4c: the first install refused a 1811 s uptime), P4C_BACKUP_DIR names the original backups
+BK=${P4C_BACKUP_DIR:-$O/backup}; [ -s "$BK/backup.txt" ] && ( cd "$BK" && sha256sum -c backup.sha256 > /dev/null ) || die $EX_HASH "no verified backup set in $BK"
 [ -s "$S/completed.txt" ] || die 2 "$S is not a completed install session"
 for wl in m4smoke perf-board; do   # both judged runs must have passed on this boot, or there is nothing verified to hand over
   ok=0; for x in "$S"/xv6-$wl-*; do [ -f "$x/check.txt" ] && grep -q "^XV6_RC=0 " "$x/verdict.txt" && tail -n 1 "$x/check.txt" | grep -q "^PASS" \
@@ -28,11 +31,11 @@ p4c_no_host "checking for a host by comm scan, pgrep and the lock"
 say "== the launcher, the measurement kernel"
 deploy_verified "$P4C/xv6-pipe-dual.sh" /root/xv6run/xv6-pipe-dual.sh "$H/deploy.log"
 deploy_verified "$ART/kernel-perf-128mib" /root/xv6run/kernel-perf-128mib "$H/deploy.log"
-say "== the user's disks, restored from the pre-cycle backups ($O/backup)"
+say "== the user's disks, restored from the pre-cycle backups ($BK)"
 : > "$H/disks.txt"
-for n in $(awk '$1=="BACKUP" && $3 ~ /\.img$/ && $3 != "fs-run.img" {print $3}' "$O/backup/backup.txt"); do
-  deploy_verified "$O/backup/$n" "/root/xv6run/$n" "$H/deploy.log"
-  echo "$n $(sha256sum "$O/backup/$n" | cut -d' ' -f1) restored from the pre-cycle backup" | tee -a "$H/disks.txt"; done
+for n in $(awk '$1=="BACKUP" && $3 ~ /\.img$/ && $3 != "fs-run.img" {print $3}' "$BK/backup.txt"); do
+  deploy_verified "$BK/$n" "/root/xv6run/$n" "$H/deploy.log"
+  echo "$n $(sha256sum "$BK/$n" | cut -d' ' -f1) restored from the pre-cycle backup" | tee -a "$H/disks.txt"; done
 grep -q '^fs-user.img ' "$H/disks.txt" || { deploy_verified "$ART/fs-perf.img" $USER_DISK "$H/deploy.log"; echo "fs-user.img $(sha256sum "$ART/fs-perf.img" | cut -d' ' -f1) fresh copy of fs-perf.img (no backup existed)" | tee -a "$H/disks.txt"; }
 say "== the benchmark disks"
 deploy_verified "$ART/fs-perf.img" /root/xv6run/fs-bench-pristine.img "$H/deploy.log"

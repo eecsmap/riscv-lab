@@ -33,7 +33,7 @@ set +e; python3 "$P4C/console-stop.py" "$O/console-stop.transcript" --wait 30 | 
 case $cs in 0) ;; 2) die $EX_BUSY "the console is not at a prompt (a command may be running): the USER must bring it to the xv6 or ARM prompt; nothing was sent but one newline";;
   *) die $EX_BUSY "console-stop.py returned $cs: the session did not stop cleanly; see $O/console-stop.transcript";; esac
 say "== pre-state (read-only)"
-board_must "reading the pre-state" "echo BID=\$(cat /proc/sys/kernel/random/boot_id); echo UP=\$(cut -d. -f1 /proc/uptime); echo PD=\$(cat /sys/devices/amba.1/f8007000.devcfg/prog_done); echo FESVR=\$(pgrep -x fesvr-teaching-static | wc -l); echo LOCK=\$(test -e /var/lock/teaching-fesvr.lock && echo PRESENT || echo NO_LOCK); echo LOCKOWNER=\$(cat /var/lock/teaching-fesvr.lock/owner 2>/dev/null); echo TOOLS=\$(for t in timeout gzip base64 sha256sum flock; do command -v \$t >/dev/null && printf '%s,' \$t; done); echo DF=\$(df -k /root | tail -1); ps; mount | grep -vE 'proc|sysfs|devpts|tmpfs' ; ls -la /root/xv6run; cd /root/xv6run && sha256sum * 2>/dev/null"
+board_must "reading the pre-state" "echo BID=\$(cat /proc/sys/kernel/random/boot_id); echo UP=\$(cut -d. -f1 /proc/uptime); echo PD=\$(cat /sys/devices/amba.1/f8007000.devcfg/prog_done); echo FESVR=\$(pgrep -x fesvr-teaching-static | wc -l); echo LOCK=\$(test -e /var/lock/teaching-fesvr.lock && echo PRESENT || echo NO_LOCK); echo LOCKOWNER=\$(cat /var/lock/teaching-fesvr.lock/owner 2>/dev/null); echo TOOLS=\$(for t in timeout gzip base64 sha256sum flock; do command -v \$t >/dev/null && printf '%s,' \$t; done); echo DF=\$(df -k /root | tail -1); ps; mount | grep -vE 'proc|sysfs|devpts|tmpfs' ; ls -la /root/xv6run; cd /root/xv6run && { sha256sum * 2>/dev/null; echo LISTED=\$(ls -A | wc -l); }"
 printf '%s\n' "$BOARD_OUT" > "$O/pre-state.txt"; say "$(tr -d '\r' < "$O/pre-state.txt" | grep -E '^(BID|UP|PD|FESVR|LOCK|LOCKOWNER|TOOLS|DF)=')"
 [ "$(field FESVR)" = 0 ] || die $EX_BUSY "a host is still running on the board after the stop; not touching it further"
 [ "$(field LOCK)" = NO_LOCK ] || die $EX_BUSY "the host lock is present (owner '$(field LOCKOWNER)'); it must not be cleared by hand"
@@ -55,7 +55,7 @@ for n in $(awk '$1=="BACKUP"{print $3}' "$O/backup/backup.txt"); do
 done
 ( cd "$O/backup" && awk '$1=="BACKUP"{print $3}' backup.txt | xargs -r sha256sum ) > "$O/backup/backup.sha256"
 say "== re-reading the board's hashes after the backups (nothing may have changed while reading)"
-board_must "re-reading the hashes" "echo FESVR=\$(pgrep -x fesvr-teaching-static | wc -l); cd /root/xv6run && sha256sum * 2>/dev/null"
+board_must "re-reading the hashes" "echo FESVR=\$(pgrep -x fesvr-teaching-static | wc -l); cd /root/xv6run && { sha256sum * 2>/dev/null; echo LISTED=\$(ls -A | wc -l); }"
 printf '%s\n' "$BOARD_OUT" > "$O/post-backup-hashes.txt"
 diff <(tr -d '\r' < "$O/pre-state.txt" | grep -E '^[0-9a-f]{64}  ' | sort) <(tr -d '\r' < "$O/post-backup-hashes.txt" | grep -E '^[0-9a-f]{64}  ' | sort) \
   || die $EX_HASH "the files in /root/xv6run changed during the backup"
