@@ -1,0 +1,7 @@
+== the dual-pipeline board shape
+  RD2PipeDualBoardConfig: 75e4374bc3b96583; tcpu_core_pipe instances 2 (HART_ID 0: 1, 1: 1; M/C/SU/A on both: 2), tcpu_core 0; other parameters: none; ok=1
+      tcpu_core_pipe #(.MISA_A(1), .PIPE_EXT_SU(1), .PIPE_EXT_M(1), .HART_ID(0), .RESET_PC(65600), .PIPE_EXT_C(1)) core (
+      tcpu_core_pipe #(.MISA_A(1), .PIPE_EXT_SU(1), .PIPE_EXT_M(1), .HART_ID(1), .RESET_PC(65600), .PIPE_EXT_C(1)) core (
+  cmp-vs-multicycle-dual-board: VMODULE_DIFF identical=126 differing=2 only_a=0 only_b=0
+  cmp-multi-dual-xv6fast-vs-board: VMODULE_DIFF identical=70 differing=44 only_a=40 only_b=14
+  cmp-pipe-dual-xv6fast-vs-board: VMODULE_DIFF identical=70 differing=44 only_a=40 only_b=14
