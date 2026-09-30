@@ -939,6 +939,18 @@ class RD2DualBoardConfig extends Config(
                                         tailIntercept = false)) ++
   new WithTeachingBootROM ++ new zynq.WithZynqAdapter ++ new freechips.rocketchip.system.DefaultConfig)
 
+// ---- PIPE-P4b: the dual-pipeline board shape ---------------------------------------------------------------
+// RD2DualBoardConfig with CORE_IMPL = pipeline, generated as RD2BoardTop: numCores = 2, no monitors, no traces, no bus
+// instrumentation; each hart is a tcpu_core_pipe (HART_ID 0/1) with its own TLB and I-cache. Offline builds only.
+class RD2PipeDualBoardConfig extends Config(
+  new freechips.rocketchip.subsystem.WithoutTLMonitors ++
+  new WithAtomicHub(trace = false) ++
+  new WithRD2(RD2Params(atomic = true, traceEvents = false, atomicTrace = false, bdevTrace = false,
+                        busInstrumentation = false, numCores = 2, coreImpl = "pipeline")) ++
+  new WithTeachingCpu(TeachingCpuParams(traceEvents = false, extraDelay = false, bridgeFault = 0,
+                                        tailIntercept = false)) ++
+  new WithTeachingBootROM ++ new zynq.WithZynqAdapter ++ new freechips.rocketchip.system.DefaultConfig)
+
 class RD2AtomicBoardConfig extends Config(
   new freechips.rocketchip.subsystem.WithoutTLMonitors ++
   new WithAtomicHub(trace = false) ++
