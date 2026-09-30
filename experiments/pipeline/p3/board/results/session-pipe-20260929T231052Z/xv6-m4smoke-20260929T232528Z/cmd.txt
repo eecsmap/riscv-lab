@@ -1,0 +1,6 @@
+config=single pipeline (payload 5f97d4abf2778c1a443a1df0932527e415a01dd1a63e82c0c1b4875373d1b460, bit b687f77f6b7cc69a251e51f0c5901e646c71de5ee85fe76ec99080b753794aed) workload=m4smoke stage_timeout=900 wall=5400
+kernel=/root/xv6run/kernel-dual-128mib (33021237cf1d82f1500bf7c0d7b8c8a2035a34c81669720fd71b3add75c99fb9)
+disk=/root/xv6run/fs-run.img (d8e502693bba1b14625d0f7b9a165f2ece055c64382887cb19610d0db41d7281, fresh copy of fs-dual-deploy.img)
+host=/root/xv6run/fesvr-teaching-static (c050eab30f80a21a7c92c8688faa2f043c67aa2900fbc08b80f3dd8de2ba1fb9)
+evidence=/home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p3/board/sessions/session-pipe-20260929T231052Z/memory boot_id=4d45136e-7c10-46fd-b6f8-dfcd30775917
+start=2026-09-29T23:30:09Z

@@ -1,0 +1,8 @@
+INFO mtimetest: 8 reads monotonic, consecutive deltas [126, 125, 126, 126, 127, 126, 125] mtime units; child 275465407 within [275462463,275475651]; spin100k=81405 mtime units (8140500 cycles, 81 cycles/iter)
+RESULT PERF-COMPUTE size=2000000 dmtime=6333371 readcost=126 ticks_diag=254 seconds=15.833 work_per_s=505260
+RESULT PERF-COMPUTE size=2000000 dmtime=6331669 readcost=125 ticks_diag=253 seconds=15.829 work_per_s=505396
+RESULT PERF-COMPUTE size=2000000 dmtime=6331646 readcost=125 ticks_diag=253 seconds=15.829 work_per_s=505398
+RESULT PERF-ARRAY size=128 dmtime=5079868 readcost=125 ticks_diag=203 seconds=12.700 work_per_s=660537
+RESULT PERF-ARRAY size=128 dmtime=5076538 readcost=124 ticks_diag=203 seconds=12.691 work_per_s=660971
+RESULT PERF-ARRAY size=128 dmtime=5078334 readcost=125 ticks_diag=203 seconds=12.696 work_per_s=660737
+PASS /home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p3/board/sessions/session-pipe-20260929T231052Z/xv6-perf-board-20260929T233029Z (6 perf runs)

@@ -1,0 +1,6 @@
+POWER_REMOVED=yes
+AT=2026-09-29T23:10:52Z
+VARIANT=pipe
+BY=engineer
+SOURCE=the user's message '已冷上电' in the Claude session, 2026-09-29T23:10:52Z, in reply to OPEN claude-pipe-p3b-ready-for-cold-cycle
+MEANS=attested by the user, not measured. This host cannot distinguish a power cycle from a warm reboot.

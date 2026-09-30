@@ -1,0 +1,2 @@
+CHECK OK: prog_done=1, host, kernel /root/xv6run/kernel-perf-128mib, disk /root/xv6run/fs-user.img present; no host running; lock free
+RC=0

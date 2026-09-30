@@ -1,0 +1,44 @@
+  frozen artefact set verified: 20 artefacts; payload 5f97d4abf2778c1a… (bit b687f77f6b7cc69a…)
+  claimed lease: board
+  claimed lease: serial
+== deploy the kernel and a FRESH disk copy (hash-verified on the board)
+  deployed+verified: /root/xv6run/kernel-dual-128mib
+  deployed+verified: /root/xv6run/fs-run.img
+XV6_RC=0 wall=19s
+  [phase   14.56s] teardown: drain done
+  [phase   15.79s] teardown: closing logs
+BOARD_RUN stages=6 failed=0 host_exit=0 (deliberate-stop-after-all-commands)
+PD=1
+FESVR=0
+LOCK=NO_LOCK
+BID=4d45136e-7c10-46fd-b6f8-dfcd30775917
+INFO check-xv6.py --require-commands: XV6_CHECK segments=4 prompts=4 stages=6 console_bytes=516 fails=0
+PASS /home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p3/board/sessions/session-pipe-20260929T231052Z/xv6-m4smoke-20260929T232528Z
+P3B_XV6_DONE workload=m4smoke rc=0 judge=0 dir=/home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p3/board/sessions/session-pipe-20260929T231052Z/xv6-m4smoke-20260929T232528Z
+  released lease: board
+  released lease: serial
+  frozen artefact set verified: 20 artefacts; payload 5f97d4abf2778c1a… (bit b687f77f6b7cc69a…)
+  claimed lease: board
+  claimed lease: serial
+== deploy the kernel and a FRESH disk copy (hash-verified on the board)
+  deployed+verified: /root/xv6run/kernel-perf-128mib
+  deployed+verified: /root/xv6run/fs-run.img
+XV6_RC=0 wall=105s
+  [phase   99.80s] teardown: drain done
+  [phase  101.04s] teardown: closing logs
+BOARD_RUN stages=10 failed=0 host_exit=0 (deliberate-stop-after-all-commands)
+PD=1
+FESVR=0
+LOCK=NO_LOCK
+BID=4d45136e-7c10-46fd-b6f8-dfcd30775917
+INFO mtimetest: 8 reads monotonic, consecutive deltas [126, 125, 126, 126, 127, 126, 125] mtime units; child 275465407 within [275462463,275475651]; spin100k=81405 mtime units (8140500 cycles, 81 cycles/iter)
+RESULT PERF-COMPUTE size=2000000 dmtime=6333371 readcost=126 ticks_diag=254 seconds=15.833 work_per_s=505260
+RESULT PERF-COMPUTE size=2000000 dmtime=6331669 readcost=125 ticks_diag=253 seconds=15.829 work_per_s=505396
+RESULT PERF-COMPUTE size=2000000 dmtime=6331646 readcost=125 ticks_diag=253 seconds=15.829 work_per_s=505398
+RESULT PERF-ARRAY size=128 dmtime=5079868 readcost=125 ticks_diag=203 seconds=12.700 work_per_s=660537
+RESULT PERF-ARRAY size=128 dmtime=5076538 readcost=124 ticks_diag=203 seconds=12.691 work_per_s=660971
+RESULT PERF-ARRAY size=128 dmtime=5078334 readcost=125 ticks_diag=203 seconds=12.696 work_per_s=660737
+PASS /home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p3/board/sessions/session-pipe-20260929T231052Z/xv6-perf-board-20260929T233029Z (6 perf runs)
+P3B_XV6_DONE workload=perf-board rc=0 judge=0 dir=/home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p3/board/sessions/session-pipe-20260929T231052Z/xv6-perf-board-20260929T233029Z
+  released lease: board
+  released lease: serial

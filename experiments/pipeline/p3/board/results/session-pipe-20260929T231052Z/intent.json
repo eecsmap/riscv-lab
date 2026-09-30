@@ -1,0 +1,1 @@
+{ "variant": "pipe", "payload_sha256": "5f97d4abf2778c1a443a1df0932527e415a01dd1a63e82c0c1b4875373d1b460", "bit_sha256": "b687f77f6b7cc69a251e51f0c5901e646c71de5ee85fe76ec99080b753794aed", "expected_gates": 8, "expected_probes": ["perf02_sv39","perf03_fetch","perf04_where","perf06_iws"], "min_samples": 3, "started_utc": "2026-09-29T23:10:52Z" }

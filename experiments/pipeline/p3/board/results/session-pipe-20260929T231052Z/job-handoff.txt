@@ -1,0 +1,24 @@
+  frozen artefact set verified: 20 artefacts; payload 5f97d4abf2778c1a… (bit b687f77f6b7cc69a…)
+  claimed lease: board
+  claimed lease: serial
+== the launcher, the performance kernel, the user's disk
+  deployed+verified: /root/xv6run/xv6-pipe.sh
+  deployed+verified: /root/xv6run/kernel-perf-128mib
+  deployed+verified: /root/xv6run/fs-user.img
+  fs-user.img: a fresh copy of fs-perf.img (d558e444…)
+  deployed+verified: /root/xv6run/fs-user-previous.img
+  the pre-cycle backup of fs-run.img is /root/xv6run/fs-user-previous.img
+  executable mode set
+== boot test of the launcher on a THROWAWAY disk copy
+  deployed+verified: /root/xv6run/fs-launchtest.img
+LAUNCH ok   ARM prompt
+LAUNCH FAIL xv6 shell prompt
+LAUNCH FAIL ls listing and next prompt
+LAUNCH ok   mtimetest present on the disk
+LAUNCH ok   perfcompute present on the disk
+LAUNCH ok   perfarray present on the disk
+LAUNCH ok   host exited, lock released
+LAUNCH ok   ARM prompt again
+LAUNCH_TEST FAIL
+  released lease: board
+  released lease: serial

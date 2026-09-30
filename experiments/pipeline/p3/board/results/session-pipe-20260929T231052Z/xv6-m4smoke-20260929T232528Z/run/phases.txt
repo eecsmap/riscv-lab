@@ -1,0 +1,8 @@
+    0.00  commands: begin
+   12.31  commands: end; teardown begins
+   12.31  teardown: settle pump
+   12.91  teardown: stop()
+   14.56  teardown: stop() returned 0
+   14.56  teardown: final drain
+   14.56  teardown: drain done
+   15.79  teardown: closing logs

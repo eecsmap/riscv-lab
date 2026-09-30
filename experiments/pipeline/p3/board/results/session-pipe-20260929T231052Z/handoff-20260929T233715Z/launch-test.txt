@@ -1,0 +1,9 @@
+LAUNCH ok   ARM prompt
+LAUNCH FAIL xv6 shell prompt
+LAUNCH FAIL ls listing and next prompt
+LAUNCH ok   mtimetest present on the disk
+LAUNCH ok   perfcompute present on the disk
+LAUNCH ok   perfarray present on the disk
+LAUNCH ok   host exited, lock released
+LAUNCH ok   ARM prompt again
+LAUNCH_TEST FAIL

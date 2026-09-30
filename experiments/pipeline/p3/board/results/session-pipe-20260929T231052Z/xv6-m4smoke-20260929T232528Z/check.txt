@@ -1,0 +1,2 @@
+INFO check-xv6.py --require-commands: XV6_CHECK segments=4 prompts=4 stages=6 console_bytes=516 fails=0
+PASS /home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p3/board/sessions/session-pipe-20260929T231052Z/xv6-m4smoke-20260929T232528Z

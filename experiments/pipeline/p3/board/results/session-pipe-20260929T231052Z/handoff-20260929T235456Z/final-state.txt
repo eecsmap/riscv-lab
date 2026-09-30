@@ -1,0 +1,51 @@
+F=0
+L=NO_LOCK
+PD=1
+BID=4d45136e-7c10-46fd-b6f8-dfcd30775917
+total 12412
+drwxr-xr-x    2 root     0              480 Jan  1 00:53 [1;34m.[m
+drwxr-xr-x    3 1000     1000           180 Jan  1 00:00 [1;34m..[m
+-rwxr-xr-x    1 root     0             5600 Jan  1 00:11 [1;32mboot01_marker.elf[m
+-rwxr-xr-x    1 root     0             6824 Jan  1 00:11 [1;32mboot02_clint.elf[m
+-rwxr-xr-x    1 root     0             7384 Jan  1 00:11 [1;32mboot03_ddr.elf[m
+-rwxr-xr-x    1 root     0             6536 Jan  1 00:12 [1;32mboot04_badaddr.elf[m
+-rwxr-xr-x    1 root     0             5880 Jan  1 00:12 [1;32mext01_m.elf[m
+-rwxr-xr-x    1 root     0             5776 Jan  1 00:12 [1;32mext02_c.elf[m
+-rwxr-xr-x    1 root     0             6048 Jan  1 00:12 [1;32mext03_a.elf[m
+-rwxr-xr-x    1 root     0            13912 Jan  1 00:12 [1;32mext04_sv39.elf[m
+-rwxr-xr-x    1 root     0          1806656 Jan  1 00:11 [1;32mfesvr-teaching-static[m
+-rwxr-xr-x    1 root     0             5896 Jan  1 00:13 [1;32mfreq_spin_long.elf[m
+-rwxr-xr-x    1 root     0             5896 Jan  1 00:12 [1;32mfreq_spin_short.elf[m
+-rw-r--r--    1 root     0          2048000 Jan  1 00:24 [0;0mfs-run.img[m
+-rw-r--r--    1 root     0          2048000 Jan  1 00:48 [0;0mfs-user-previous.img[m
+-rw-r--r--    1 root     0          2048000 Jan  1 00:31 [0;0mfs-user.img[m
+-rw-r--r--    1 root     0           274448 Jan  1 00:15 [0;0mkernel-dual-128mib[m
+-rw-r--r--    1 root     0           274800 Jan  1 00:44 [0;0mkernel-perf-128mib[m
+-rwxr-xr-x    1 root     0            26584 Jan  1 00:12 [1;32mperf02_sv39.elf[m
+-rwxr-xr-x    1 root     0             6480 Jan  1 00:12 [1;32mperf03_fetch.elf[m
+-rwxr-xr-x    1 root     0             6408 Jan  1 00:12 [1;32mperf04_where.elf[m
+-rwxr-xr-x    1 root     0            10904 Jan  1 00:12 [1;32mperf06_iws.elf[m
+-rw-r--r--    1 root     0          4045564 Jan  1 00:08 [0;0mpipe.bit.bin[m
+-rwxr-xr-x    1 root     0             1960 Jan  1 00:44 [1;32mxv6-pipe.sh[m
+69ca91994567a44f9afb0303013bb8412eb6142749c28b631000e92156da61a2  boot01_marker.elf
+0c4ebbb7648a34c013bbf77b0c7a5f03f901993fbe0e690732c46f15f8fb2c0f  boot02_clint.elf
+3089c7e72514eded26b80b02f9dcd57c0ee74609ca42803dd800e360daff39d0  boot03_ddr.elf
+fc3b16962f69e53abfa37a30ddd1490091926a47f4dda1c16fa04e37ea592380  boot04_badaddr.elf
+b57e1b63d9d29688fd9ce3a04390d5eddf26edc6007e78fd6314da5df11d07e4  ext01_m.elf
+f8f9f75e2134c084f53561efd77ae77e8ed05f6eeaf752b52b2ff86a9711abd6  ext02_c.elf
+3d1cda4b1d6af6f8a8a3fe3a97277bfc01714a77ad4901993ca36c6addaf8ced  ext03_a.elf
+0251f1512a16cf6b9c3bf2ad98663105a82b5ce304642378a94cc3dc0bf50023  ext04_sv39.elf
+c050eab30f80a21a7c92c8688faa2f043c67aa2900fbc08b80f3dd8de2ba1fb9  fesvr-teaching-static
+662702ec89d9a3c645376fb481b11b9d0539b5e9e08743a40ec8a877afb8e8e7  freq_spin_long.elf
+4d8c3d4402414b72075af19bfb44522d3544cd7786a294c38426891c2f30882c  freq_spin_short.elf
+8b147b4566acccc7d612a12d79d9a2689dc61664186d545075bc09d9050218f5  fs-run.img
+05a4562b72e3bace52602321372340262e0118801ffa6ef2aa13a49b7c5484f5  fs-user-previous.img
+d558e4444abcea6046147d85b81e538ecf604049b6d8ab15552f9a3d32bf688c  fs-user.img
+33021237cf1d82f1500bf7c0d7b8c8a2035a34c81669720fd71b3add75c99fb9  kernel-dual-128mib
+133f5b72290781ad47d766beeede7d7a07d9af63985caeb34c669dfeba67081c  kernel-perf-128mib
+bc6185566c5de9da7a4dbce1942262dbeb68b1c8e556ac8f72f15fc1465596ab  perf02_sv39.elf
+6498f89970d429e92a944036d91b20801410be8b14df88f7f59d6512efff05b5  perf03_fetch.elf
+235f2318149ed2064904c92d4cab6849115d576fe80f478eea603e77c067315d  perf04_where.elf
+e6be12db60bd76683f9c5286c759316466cc68c4e79eac9e3d1a3985ccb8d64a  perf06_iws.elf
+5f97d4abf2778c1a443a1df0932527e415a01dd1a63e82c0c1b4875373d1b460  pipe.bit.bin
+983c67ff01c7a5aeffd856a12654cf7583749656d5921b16e6b79bbc9d09197e  xv6-pipe.sh

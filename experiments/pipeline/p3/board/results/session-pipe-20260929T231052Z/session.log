@@ -1,0 +1,98 @@
+=== PIPE-P3b single-pipeline board session, /home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p3/board/sessions/session-pipe-20260929T231052Z
+  frozen artefact set verified: 20 artefacts; payload 5f97d4abf2778c1a… (bit b687f77f6b7cc69a…)
+  board has 'timeout' (recorded by the precheck): probes bounded on both sides
+== leases, before any transport
+  claimed lease: board
+  claimed lease: serial
+== step 1: the cold cycle
+  power removal: ATTESTED by the user at 2026-09-29T23:10:52Z (attested, not measured)
+  boot id now    : 4d45136e-7c10-46fd-b6f8-dfcd30775917
+  pinned before  : 88e9acef-eb2e-4a25-8ea9-2c5df3d2e8da
+  uptime         : 9 s;  /root/xv6run entries: 0;  fesvr: 0;  lock: NO_LOCK
+  boot evidence consistent with a cold start (new boot id 4d45136e-7c10-46fd-b6f8-dfcd30775917)
+== step 2: this boot's memory evidence, then the production preflight
+  captured memory evidence for session 4d45136e-7c10-46fd-b6f8-dfcd30775917
+## evidence: /home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p3/board/sessions/session-pipe-20260929T231052Z/memory
+   session 4d45136e-7c10-46fd-b6f8-dfcd30775917
+   #address-cells=1 #size-cells=1
+   DT memory: 0x00000000 + 0x10000000 (256 MiB)
+   no reserved-memory captured (absent is acceptable; unreadable is not)
+   iomem System RAM: 0x00000000-0x0fffffff
+   MemTotal 247 MiB
+## target window: 0x10000000-0x1fffffff
+MEM_PREFLIGHT OK refusals=0
+  MEM_PREFLIGHT passed for session 4d45136e-7c10-46fd-b6f8-dfcd30775917
+== step 3: deploy, each artefact hash-verified on the board
+  deployed+verified: /root/xv6run/pipe.bit.bin
+  deployed+verified: /root/xv6run/fesvr-teaching-static
+  deployed+verified: /root/xv6run/boot01_marker.elf
+  deployed+verified: /root/xv6run/boot02_clint.elf
+  deployed+verified: /root/xv6run/boot03_ddr.elf
+  deployed+verified: /root/xv6run/boot04_badaddr.elf
+  deployed+verified: /root/xv6run/ext01_m.elf
+  deployed+verified: /root/xv6run/ext02_c.elf
+  deployed+verified: /root/xv6run/ext03_a.elf
+  deployed+verified: /root/xv6run/ext04_sv39.elf
+  deployed+verified: /root/xv6run/perf02_sv39.elf
+  deployed+verified: /root/xv6run/perf03_fetch.elf
+  deployed+verified: /root/xv6run/perf04_where.elf
+  deployed+verified: /root/xv6run/perf06_iws.elf
+  deployed+verified: /root/xv6run/freq_spin_short.elf
+  deployed+verified: /root/xv6run/freq_spin_long.elf
+  executable mode set
+== step 4: program from the cold, quiescent platform
+  programming /root/xv6run/pipe.bit.bin
+  programming reported rc=0 and prog_done=1
+  the payload on the board still hashes 5f97d4abf2778c1a… after programming
+== step 5: the eight single-hart startup gates (exact marker AND RC=0)
+  gate boot01_marker: ok (TEACHING-CPU-M3-OK)
+  gate boot02_clint: ok (M3-CLINT-OK)
+  gate boot03_ddr: ok (M3-DDR-OK)
+  gate boot04_badaddr: ok (M3-BADADDR-OK)
+  gate ext01_m: ok (TEACHING-EXT-M-OK)
+  gate ext02_c: ok (TEACHING-EXT-C-OK)
+  gate ext03_a: ok (TEACHING-EXT-A-OK)
+  gate ext04_sv39: ok (TEACHING-EXT-SV39-OK)
+  STARTUP GATES 8/8
+  adapter status recorded: status=0x00000011 cpu_restart_safe=1 pl_reconfig_safe=0 draining=0 dra
+== step 6: perf02 / perf03 / perf04 / perf06, >= 3 valid samples each
+USABLE /home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p3/board/sessions/session-pipe-20260929T231052Z/samples/perf02_sv39.1.out: bare_alu=60048c, bare_load=238285c, k4_alu=60011c, k4_load=238202c, mega_alu=60011c, mega_load=238225c
+  perf02_sv39 sample 1: usable
+USABLE /home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p3/board/sessions/session-pipe-20260929T231052Z/samples/perf02_sv39.2.out: bare_alu=60048c, bare_load=238329c, k4_alu=60011c, k4_load=238185c, mega_alu=60011c, mega_load=238173c
+  perf02_sv39 sample 2: usable
+USABLE /home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p3/board/sessions/session-pipe-20260929T231052Z/samples/perf02_sv39.3.out: bare_alu=60048c, bare_load=238251c, k4_alu=60011c, k4_load=238221c, mega_alu=60011c, mega_load=238192c
+  perf02_sv39 sample 3: usable
+  perf02_sv39: 3/3 usable
+USABLE /home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p3/board/sessions/session-pipe-20260929T231052Z/samples/perf03_fetch.1.out: insn16=60060c, insn32=60066c
+  perf03_fetch sample 1: usable
+USABLE /home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p3/board/sessions/session-pipe-20260929T231052Z/samples/perf03_fetch.2.out: insn16=60047c, insn32=60066c
+  perf03_fetch sample 2: usable
+USABLE /home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p3/board/sessions/session-pipe-20260929T231052Z/samples/perf03_fetch.3.out: insn16=60048c, insn32=60072c
+  perf03_fetch sample 3: usable
+  perf03_fetch: 3/3 usable
+USABLE /home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p3/board/sessions/session-pipe-20260929T231052Z/samples/perf04_where.1.out: load_clint=130011c, load_dram=238293c
+  perf04_where sample 1: usable
+USABLE /home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p3/board/sessions/session-pipe-20260929T231052Z/samples/perf04_where.2.out: load_clint=130011c, load_dram=238279c
+  perf04_where sample 2: usable
+USABLE /home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p3/board/sessions/session-pipe-20260929T231052Z/samples/perf04_where.3.out: load_clint=130011c, load_dram=238324c
+  perf04_where sample 3: usable
+  perf04_where: 3/3 usable
+USABLE /home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p3/board/sessions/session-pipe-20260929T231052Z/samples/perf06_iws.1.out: iws_exceeds=686745c, iws_resident=76349c
+  perf06_iws sample 1: usable
+USABLE /home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p3/board/sessions/session-pipe-20260929T231052Z/samples/perf06_iws.2.out: iws_exceeds=686940c, iws_resident=76354c
+  perf06_iws sample 2: usable
+USABLE /home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p3/board/sessions/session-pipe-20260929T231052Z/samples/perf06_iws.3.out: iws_exceeds=686380c, iws_resident=76352c
+  perf06_iws sample 3: usable
+  perf06_iws: 3/3 usable
+== step 7: the frequency reference: short and long spins timed by the PS's own clock (/proc/uptime), 3 pairs
+  freq_spin_short #1: T0=802.94 T1=804.01 FREQ-SPIN cycles=0x0000000002625a08 mtime_delta=0x0000000000061a81
+  freq_spin_long #1: T0=804.67 T1=825.73 FREQ-SPIN cycles=0x0000000032116208 mtime_delta=0x0000000000802c80
+  freq_spin_short #2: T0=826.43 T1=827.49 FREQ-SPIN cycles=0x0000000002625a08 mtime_delta=0x0000000000061a80
+  freq_spin_long #2: T0=828.18 T1=849.24 FREQ-SPIN cycles=0x0000000032116208 mtime_delta=0x0000000000802c80
+  freq_spin_short #3: T0=849.91 T1=850.97 FREQ-SPIN cycles=0x0000000002625a08 mtime_delta=0x0000000000061a80
+  freq_spin_long #3: T0=851.64 T1=872.71 FREQ-SPIN cycles=0x0000000032116208 mtime_delta=0x0000000000802c80
+== step 8: state and health
+P3B_INSTALL_DONE session=/home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p3/board/sessions/session-pipe-20260929T231052Z
+The board holds the single-pipeline bitstream (payload 5f97d4abf2778c1a…). Next: ./p3b-xv6.sh /home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p3/board/sessions/session-pipe-20260929T231052Z m4smoke ; ./p3b-xv6.sh /home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p3/board/sessions/session-pipe-20260929T231052Z perf-board ; ./p3b-interactive.sh /home/engineer/fpga/worktrees/pipe-single/experiments/pipeline/p3/board/sessions/session-pipe-20260929T231052Z
+  released lease: board
+  released lease: serial

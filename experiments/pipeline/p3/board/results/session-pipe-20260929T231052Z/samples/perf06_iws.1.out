@@ -1,0 +1,7 @@
+teaching: ready after 50 ms; status=0x00001111 cpu_restart_safe=1 pl_reconfig_safe=0 draining=0 drain_timeout=0 boot_ready=1 boot_timeout=0 epoch=17 ndrained=0
+IWS-CYC-RESIDENT=0000000000012a3d
+IWS-INS-RESIDENT=0000000000011171
+IWS-CYC-EXCEEDS=00000000000a7a99
+IWS-INS-EXCEEDS=00000000000100c1
+TEACHING-PERF-IWS-OK
+RC=0

@@ -1,0 +1,13 @@
+{
+ "verdict": "OK",
+ "session": "4d45136e-7c10-46fd-b6f8-dfcd30775917",
+ "refusals": [],
+ "notes": [
+  "session 4d45136e-7c10-46fd-b6f8-dfcd30775917",
+  "#address-cells=1 #size-cells=1",
+  "DT memory: 0x00000000 + 0x10000000 (256 MiB)",
+  "no reserved-memory captured (absent is acceptable; unreadable is not)",
+  "iomem System RAM: 0x00000000-0x0fffffff",
+  "MemTotal 247 MiB"
+ ]
+}

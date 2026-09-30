@@ -1,0 +1,281 @@
+### 23:54:57 xv6-pipe.sh -> /root/xv6run/xv6-pipe.sh: 1960 bytes, sha256 983c67ff01c7a5ae
+mkdir -p $(dirname /root/xv6run/xv6-pipe.sh); echo __R97920__=$?
+__R97920__=0
+/root/xv6run # stty -echo ixoff; echo __R98426__=$?
+__R98426__=0
+/root/xv6run # ### 23:54:59 128/2616 b64 chars, 10.6 KB/s, eta 0.0 min
+### 23:55:00 stream finished in 1s
+__R101666__=0
+/root/xv6run # sha256sum /root/xv6run/xv6-pipe.sh; echo __R102170__=$?
+983c67ff01c7a5aeffd856a12654cf7583749656d5921b16e6b79bbc9d09197e  /root/xv6run/xv6-pipe.sh
+__R102170__=0
+/root/xv6run # ### 23:55:02 sha256 verified on the board: 983c67ff01c7a5aeffd856a12654cf7583749656d5921b16e6b79bbc9d09197e
+### 23:55:02 SEND_OK /root/xv6run/xv6-pipe.sh 1960 bytes in 1s (1.6 KB/s)
+### 23:55:02 kernel-perf-128mib -> /root/xv6run/kernel-perf-128mib: 274800 bytes, sha256 133f5b72290781ad
+mkdir -p $(dirname /root/xv6run/kernel-perf-128mib); echo __R1027
+25__=$?
+__R102725__=0
+/root/xv6run # stty -echo ixoff; echo __R103234__=$?
+__R103234__=0
+/root/xv6run # ### 23:55:04 128/366400 b64 chars, 10.5 KB/s, eta 0.6 min
+### 23:55:06 25728/366400 b64 chars, 11.2 KB/s, eta 0.5 min
+### 23:55:08 51328/366400 b64 chars, 11.2 KB/s, eta 0.5 min
+### 23:55:10 76928/366400 b64 chars, 11.2 KB/s, eta 0.4 min
+### 23:55:13 102528/366400 b64 chars, 11.2 KB/s, eta 0.4 min
+### 23:55:15 128128/366400 b64 chars, 11.2 KB/s, eta 0.3 min
+### 23:55:17 153728/366400 b64 chars, 11.2 KB/s, eta 0.3 min
+### 23:55:19 179328/366400 b64 chars, 11.2 KB/s, eta 0.3 min
+### 23:55:22 204928/366400 b64 chars, 11.2 KB/s, eta 0.2 min
+### 23:55:24 230528/366400 b64 chars, 11.2 KB/s, eta 0.2 min
+### 23:55:26 256128/366400 b64 chars, 11.2 KB/s, eta 0.2 min
+### 23:55:28 281728/366400 b64 chars, 11.2 KB/s, eta 0.1 min
+### 23:55:31 307328/366400 b64 chars, 11.2 KB/s, eta 0.1 min
+### 23:55:33 332928/366400 b64 chars, 11.2 KB/s, eta 0.0 min
+### 23:55:35 358528/366400 b64 chars, 11.2 KB/s, eta 0.0 min
+### 23:55:37 stream finished in 33s
+__R138295__=0
+/root/xv6run # sha256sum /root/xv6run/kernel-perf-128mib; echo __R138801__=$?
+133f5b72290781ad47d766beeede7d7a07d9af63985caeb34c669dfeba67081c  /root/xv6run/kernel-perf-128mib
+__R138801__=0
+/root/xv6run # ### 23:55:39 sha256 verified on the board: 133f5b72290781ad47d766beeede7d7a07d9af63985caeb34c669dfeba67081c
+### 23:55:39 SEND_OK /root/xv6run/kernel-perf-128mib 274800 bytes in 33s (8.1 KB/s)
+### 23:55:39 fs-run.img -> /root/xv6run/fs-user-previous.img: 2048000 bytes, sha256 05a4562b72e3bace
+mkdir -p $(dirname /root/xv6run/fs-user-previous.img); echo __R13
+9367__=$?
+__R139367__=0
+/root/xv6run # stty -echo ixoff; echo __R139876__=$?
+__R139876__=0
+/root/xv6run # ### 23:55:40 128/2730668 b64 chars, 10.5 KB/s, eta 4.3 min
+### 23:55:43 25728/2730668 b64 chars, 11.2 KB/s, eta 3.9 min
+### 23:55:45 51328/2730668 b64 chars, 11.2 KB/s, eta 3.9 min
+### 23:55:47 76928/2730668 b64 chars, 11.2 KB/s, eta 3.9 min
+### 23:55:49 102528/2730668 b64 chars, 11.2 KB/s, eta 3.8 min
+### 23:55:52 128128/2730668 b64 chars, 11.2 KB/s, eta 3.8 min
+### 23:55:54 153728/2730668 b64 chars, 11.2 KB/s, eta 3.8 min
+### 23:55:56 179328/2730668 b64 chars, 11.2 KB/s, eta 3.7 min
+### 23:55:58 204928/2730668 b64 chars, 11.2 KB/s, eta 3.7 min
+### 23:56:01 230528/2730668 b64 chars, 11.2 KB/s, eta 3.6 min
+### 23:56:03 256128/2730668 b64 chars, 11.2 KB/s, eta 3.6 min
+### 23:56:05 281728/2730668 b64 chars, 11.2 KB/s, eta 3.6 min
+### 23:56:07 307328/2730668 b64 chars, 11.2 KB/s, eta 3.5 min
+### 23:56:10 332928/2730668 b64 chars, 11.2 KB/s, eta 3.5 min
+### 23:56:12 358528/2730668 b64 chars, 11.2 KB/s, eta 3.5 min
+### 23:56:14 384128/2730668 b64 chars, 11.2 KB/s, eta 3.4 min
+### 23:56:16 409728/2730668 b64 chars, 11.2 KB/s, eta 3.4 min
+### 23:56:18 435328/2730668 b64 chars, 11.2 KB/s, eta 3.3 min
+### 23:56:21 460928/2730668 b64 chars, 11.2 KB/s, eta 3.3 min
+### 23:56:23 486528/2730668 b64 chars, 11.2 KB/s, eta 3.3 min
+### 23:56:25 512128/2730668 b64 chars, 11.2 KB/s, eta 3.2 min
+### 23:56:27 537728/2730668 b64 chars, 11.2 KB/s, eta 3.2 min
+### 23:56:30 563328/2730668 b64 chars, 11.2 KB/s, eta 3.2 min
+### 23:56:32 588928/2730668 b64 chars, 11.2 KB/s, eta 3.1 min
+### 23:56:34 614528/2730668 b64 chars, 11.2 KB/s, eta 3.1 min
+### 23:56:36 640128/2730668 b64 chars, 11.2 KB/s, eta 3.0 min
+### 23:56:39 665728/2730668 b64 chars, 11.2 KB/s, eta 3.0 min
+### 23:56:41 691328/2730668 b64 chars, 11.2 KB/s, eta 3.0 min
+### 23:56:43 716928/2730668 b64 chars, 11.2 KB/s, eta 2.9 min
+### 23:56:45 742528/2730668 b64 chars, 11.2 KB/s, eta 2.9 min
+### 23:56:48 768128/2730668 b64 chars, 11.2 KB/s, eta 2.9 min
+### 23:56:50 793728/2730668 b64 chars, 11.2 KB/s, eta 2.8 min
+### 23:56:52 819328/2730668 b64 chars, 11.2 KB/s, eta 2.8 min
+### 23:56:54 844928/2730668 b64 chars, 11.2 KB/s, eta 2.7 min
+### 23:56:57 870528/2730668 b64 chars, 11.2 KB/s, eta 2.7 min
+### 23:56:59 896128/2730668 b64 chars, 11.2 KB/s, eta 2.7 min
+### 23:57:01 921728/2730668 b64 chars, 11.2 KB/s, eta 2.6 min
+### 23:57:03 947328/2730668 b64 chars, 11.2 KB/s, eta 2.6 min
+### 23:57:05 972928/2730668 b64 chars, 11.2 KB/s, eta 2.6 min
+### 23:57:08 998528/2730668 b64 chars, 11.2 KB/s, eta 2.5 min
+### 23:57:10 1024128/2730668 b64 chars, 11.2 KB/s, eta 2.5 min
+### 23:57:12 1049728/2730668 b64 chars, 11.2 KB/s, eta 2.5 min
+### 23:57:14 1075328/2730668 b64 chars, 11.2 KB/s, eta 2.4 min
+### 23:57:17 1100928/2730668 b64 chars, 11.2 KB/s, eta 2.4 min
+### 23:57:19 1126528/2730668 b64 chars, 11.2 KB/s, eta 2.3 min
+### 23:57:21 1152128/2730668 b64 chars, 11.2 KB/s, eta 2.3 min
+### 23:57:23 1177728/2730668 b64 chars, 11.2 KB/s, eta 2.3 min
+### 23:57:26 1203328/2730668 b64 chars, 11.2 KB/s, eta 2.2 min
+### 23:57:28 1228928/2730668 b64 chars, 11.2 KB/s, eta 2.2 min
+### 23:57:30 1254528/2730668 b64 chars, 11.2 KB/s, eta 2.2 min
+### 23:57:32 1280128/2730668 b64 chars, 11.2 KB/s, eta 2.1 min
+### 23:57:35 1305728/2730668 b64 chars, 11.2 KB/s, eta 2.1 min
+### 23:57:37 1331328/2730668 b64 chars, 11.2 KB/s, eta 2.0 min
+### 23:57:39 1356928/2730668 b64 chars, 11.2 KB/s, eta 2.0 min
+### 23:57:41 1382528/2730668 b64 chars, 11.2 KB/s, eta 2.0 min
+### 23:57:44 1408128/2730668 b64 chars, 11.2 KB/s, eta 1.9 min
+### 23:57:46 1433728/2730668 b64 chars, 11.2 KB/s, eta 1.9 min
+### 23:57:48 1459328/2730668 b64 chars, 11.2 KB/s, eta 1.9 min
+### 23:57:50 1484928/2730668 b64 chars, 11.2 KB/s, eta 1.8 min
+### 23:57:53 1510528/2730668 b64 chars, 11.2 KB/s, eta 1.8 min
+### 23:57:55 1536128/2730668 b64 chars, 11.2 KB/s, eta 1.7 min
+### 23:57:57 1561728/2730668 b64 chars, 11.2 KB/s, eta 1.7 min
+### 23:57:59 1587328/2730668 b64 chars, 11.2 KB/s, eta 1.7 min
+### 23:58:01 1612928/2730668 b64 chars, 11.2 KB/s, eta 1.6 min
+### 23:58:04 1638528/2730668 b64 chars, 11.2 KB/s, eta 1.6 min
+### 23:58:06 1664128/2730668 b64 chars, 11.2 KB/s, eta 1.6 min
+### 23:58:08 1689728/2730668 b64 chars, 11.2 KB/s, eta 1.5 min
+### 23:58:10 1715328/2730668 b64 chars, 11.2 KB/s, eta 1.5 min
+### 23:58:13 1740928/2730668 b64 chars, 11.2 KB/s, eta 1.4 min
+### 23:58:15 1766528/2730668 b64 chars, 11.2 KB/s, eta 1.4 min
+### 23:58:17 1792128/2730668 b64 chars, 11.2 KB/s, eta 1.4 min
+### 23:58:19 1817728/2730668 b64 chars, 11.2 KB/s, eta 1.3 min
+### 23:58:22 1843328/2730668 b64 chars, 11.2 KB/s, eta 1.3 min
+### 23:58:24 1868928/2730668 b64 chars, 11.2 KB/s, eta 1.3 min
+### 23:58:26 1894528/2730668 b64 chars, 11.2 KB/s, eta 1.2 min
+### 23:58:28 1920128/2730668 b64 chars, 11.2 KB/s, eta 1.2 min
+### 23:58:31 1945728/2730668 b64 chars, 11.2 KB/s, eta 1.1 min
+### 23:58:33 1971328/2730668 b64 chars, 11.2 KB/s, eta 1.1 min
+### 23:58:35 1996928/2730668 b64 chars, 11.2 KB/s, eta 1.1 min
+### 23:58:37 2022528/2730668 b64 chars, 11.2 KB/s, eta 1.0 min
+### 23:58:40 2048128/2730668 b64 chars, 11.2 KB/s, eta 1.0 min
+### 23:58:42 2073728/2730668 b64 chars, 11.2 KB/s, eta 1.0 min
+### 23:58:44 2099328/2730668 b64 chars, 11.2 KB/s, eta 0.9 min
+### 23:58:46 2124928/2730668 b64 chars, 11.2 KB/s, eta 0.9 min
+### 23:58:49 2150528/2730668 b64 chars, 11.2 KB/s, eta 0.8 min
+### 23:58:51 2176128/2730668 b64 chars, 11.2 KB/s, eta 0.8 min
+### 23:58:53 2201728/2730668 b64 chars, 11.2 KB/s, eta 0.8 min
+### 23:58:55 2227328/2730668 b64 chars, 11.2 KB/s, eta 0.7 min
+### 23:58:57 2252928/2730668 b64 chars, 11.2 KB/s, eta 0.7 min
+### 23:59:00 2278528/2730668 b64 chars, 11.2 KB/s, eta 0.7 min
+### 23:59:02 2304128/2730668 b64 chars, 11.2 KB/s, eta 0.6 min
+### 23:59:04 2329728/2730668 b64 chars, 11.2 KB/s, eta 0.6 min
+### 23:59:06 2355328/2730668 b64 chars, 11.2 KB/s, eta 0.5 min
+### 23:59:09 2380928/2730668 b64 chars, 11.2 KB/s, eta 0.5 min
+### 23:59:11 2406528/2730668 b64 chars, 11.2 KB/s, eta 0.5 min
+### 23:59:13 2432128/2730668 b64 chars, 11.2 KB/s, eta 0.4 min
+### 23:59:15 2457728/2730668 b64 chars, 11.2 KB/s, eta 0.4 min
+### 23:59:18 2483328/2730668 b64 chars, 11.2 KB/s, eta 0.4 min
+### 23:59:20 2508928/2730668 b64 chars, 11.2 KB/s, eta 0.3 min
+### 23:59:22 2534528/2730668 b64 chars, 11.2 KB/s, eta 0.3 min
+### 23:59:24 2560128/2730668 b64 chars, 11.2 KB/s, eta 0.2 min
+### 23:59:27 2585728/2730668 b64 chars, 11.2 KB/s, eta 0.2 min
+### 23:59:29 2611328/2730668 b64 chars, 11.2 KB/s, eta 0.2 min
+### 23:59:31 2636928/2730668 b64 chars, 11.2 KB/s, eta 0.1 min
+### 23:59:33 2662528/2730668 b64 chars, 11.2 KB/s, eta 0.1 min
+### 23:59:36 2688128/2730668 b64 chars, 11.2 KB/s, eta 0.1 min
+### 23:59:38 2713728/2730668 b64 chars, 11.2 KB/s, eta 0.0 min
+### 23:59:40 stream finished in 240s
+__R381755__=0
+/root/xv6run # sha256sum /root/xv6run/fs-user-previous.img; echo __R382261__=$?
+05a4562b72e3bace52602321372340262e0118801ffa6ef2aa13a49b7c5484f5  /root/xv6run/fs-user-previous.img
+__R382261__=0
+/root/xv6run # ### 23:59:42 sha256 verified on the board: 05a4562b72e3bace52602321372340262e0118801ffa6ef2aa13a49b7c5484f5
+### 23:59:42 SEND_OK /root/xv6run/fs-user-previous.img 2048000 bytes in 240s (8.3 KB/s)
+### 23:59:44 fs-perf.img -> /root/xv6run/fs-launchtest.img: 2048000 bytes, sha256 d558e4444abcea60
+mkdir -p $(dirname /root/xv6run/fs-launchtest.img); echo __R38425
+4__=$?
+__R384254__=0
+/root/xv6run # stty -echo ixoff; echo __R384762__=$?
+__R384762__=0
+/root/xv6run # ### 23:59:45 128/2730668 b64 chars, 10.5 KB/s, eta 4.2 min
+### 23:59:48 25728/2730668 b64 chars, 11.2 KB/s, eta 3.9 min
+### 23:59:50 51328/2730668 b64 chars, 11.2 KB/s, eta 3.9 min
+### 23:59:52 76928/2730668 b64 chars, 11.2 KB/s, eta 3.9 min
+### 23:59:54 102528/2730668 b64 chars, 11.2 KB/s, eta 3.8 min
+### 23:59:56 128128/2730668 b64 chars, 11.2 KB/s, eta 3.8 min
+### 23:59:59 153728/2730668 b64 chars, 11.2 KB/s, eta 3.8 min
+### 00:00:01 179328/2730668 b64 chars, 11.2 KB/s, eta 3.7 min
+### 00:00:03 204928/2730668 b64 chars, 11.2 KB/s, eta 3.7 min
+### 00:00:05 230528/2730668 b64 chars, 11.2 KB/s, eta 3.6 min
+### 00:00:08 256128/2730668 b64 chars, 11.2 KB/s, eta 3.6 min
+### 00:00:10 281728/2730668 b64 chars, 11.2 KB/s, eta 3.6 min
+### 00:00:12 307328/2730668 b64 chars, 11.2 KB/s, eta 3.5 min
+### 00:00:14 332928/2730668 b64 chars, 11.2 KB/s, eta 3.5 min
+### 00:00:17 358528/2730668 b64 chars, 11.2 KB/s, eta 3.5 min
+### 00:00:19 384128/2730668 b64 chars, 11.2 KB/s, eta 3.4 min
+### 00:00:21 409728/2730668 b64 chars, 11.2 KB/s, eta 3.4 min
+### 00:00:23 435328/2730668 b64 chars, 11.2 KB/s, eta 3.3 min
+### 00:00:26 460928/2730668 b64 chars, 11.2 KB/s, eta 3.3 min
+### 00:00:28 486528/2730668 b64 chars, 11.2 KB/s, eta 3.3 min
+### 00:00:30 512128/2730668 b64 chars, 11.2 KB/s, eta 3.2 min
+### 00:00:32 537728/2730668 b64 chars, 11.2 KB/s, eta 3.2 min
+### 00:00:35 563328/2730668 b64 chars, 11.2 KB/s, eta 3.2 min
+### 00:00:37 588928/2730668 b64 chars, 11.2 KB/s, eta 3.1 min
+### 00:00:39 614528/2730668 b64 chars, 11.2 KB/s, eta 3.1 min
+### 00:00:41 640128/2730668 b64 chars, 11.2 KB/s, eta 3.0 min
+### 00:00:44 665728/2730668 b64 chars, 11.2 KB/s, eta 3.0 min
+### 00:00:46 691328/2730668 b64 chars, 11.2 KB/s, eta 3.0 min
+### 00:00:48 716928/2730668 b64 chars, 11.2 KB/s, eta 2.9 min
+### 00:00:50 742528/2730668 b64 chars, 11.2 KB/s, eta 2.9 min
+### 00:00:52 768128/2730668 b64 chars, 11.2 KB/s, eta 2.9 min
+### 00:00:55 793728/2730668 b64 chars, 11.2 KB/s, eta 2.8 min
+### 00:00:57 819328/2730668 b64 chars, 11.2 KB/s, eta 2.8 min
+### 00:00:59 844928/2730668 b64 chars, 11.2 KB/s, eta 2.7 min
+### 00:01:01 870528/2730668 b64 chars, 11.2 KB/s, eta 2.7 min
+### 00:01:04 896128/2730668 b64 chars, 11.2 KB/s, eta 2.7 min
+### 00:01:06 921728/2730668 b64 chars, 11.2 KB/s, eta 2.6 min
+### 00:01:08 947328/2730668 b64 chars, 11.2 KB/s, eta 2.6 min
+### 00:01:10 972928/2730668 b64 chars, 11.2 KB/s, eta 2.6 min
+### 00:01:13 998528/2730668 b64 chars, 11.2 KB/s, eta 2.5 min
+### 00:01:15 1024128/2730668 b64 chars, 11.2 KB/s, eta 2.5 min
+### 00:01:17 1049728/2730668 b64 chars, 11.2 KB/s, eta 2.5 min
+### 00:01:19 1075328/2730668 b64 chars, 11.2 KB/s, eta 2.4 min
+### 00:01:22 1100928/2730668 b64 chars, 11.2 KB/s, eta 2.4 min
+### 00:01:24 1126528/2730668 b64 chars, 11.2 KB/s, eta 2.3 min
+### 00:01:26 1152128/2730668 b64 chars, 11.2 KB/s, eta 2.3 min
+### 00:01:28 1177728/2730668 b64 chars, 11.2 KB/s, eta 2.3 min
+### 00:01:31 1203328/2730668 b64 chars, 11.2 KB/s, eta 2.2 min
+### 00:01:33 1228928/2730668 b64 chars, 11.2 KB/s, eta 2.2 min
+### 00:01:35 1254528/2730668 b64 chars, 11.2 KB/s, eta 2.2 min
+### 00:01:37 1280128/2730668 b64 chars, 11.2 KB/s, eta 2.1 min
+### 00:01:39 1305728/2730668 b64 chars, 11.2 KB/s, eta 2.1 min
+### 00:01:42 1331328/2730668 b64 chars, 11.2 KB/s, eta 2.0 min
+### 00:01:44 1356928/2730668 b64 chars, 11.2 KB/s, eta 2.0 min
+### 00:01:46 1382528/2730668 b64 chars, 11.2 KB/s, eta 2.0 min
+### 00:01:48 1408128/2730668 b64 chars, 11.2 KB/s, eta 1.9 min
+### 00:01:51 1433728/2730668 b64 chars, 11.2 KB/s, eta 1.9 min
+### 00:01:53 1459328/2730668 b64 chars, 11.2 KB/s, eta 1.9 min
+### 00:01:55 1484928/2730668 b64 chars, 11.2 KB/s, eta 1.8 min
+### 00:01:57 1510528/2730668 b64 chars, 11.2 KB/s, eta 1.8 min
+### 00:02:00 1536128/2730668 b64 chars, 11.2 KB/s, eta 1.7 min
+### 00:02:02 1561728/2730668 b64 chars, 11.2 KB/s, eta 1.7 min
+### 00:02:04 1587328/2730668 b64 chars, 11.2 KB/s, eta 1.7 min
+### 00:02:06 1612928/2730668 b64 chars, 11.2 KB/s, eta 1.6 min
+### 00:02:09 1638528/2730668 b64 chars, 11.2 KB/s, eta 1.6 min
+### 00:02:11 1664128/2730668 b64 chars, 11.2 KB/s, eta 1.6 min
+### 00:02:13 1689728/2730668 b64 chars, 11.2 KB/s, eta 1.5 min
+### 00:02:15 1715328/2730668 b64 chars, 11.2 KB/s, eta 1.5 min
+### 00:02:18 1740928/2730668 b64 chars, 11.2 KB/s, eta 1.4 min
+### 00:02:20 1766528/2730668 b64 chars, 11.2 KB/s, eta 1.4 min
+### 00:02:22 1792128/2730668 b64 chars, 11.2 KB/s, eta 1.4 min
+### 00:02:24 1817728/2730668 b64 chars, 11.2 KB/s, eta 1.3 min
+### 00:02:27 1843328/2730668 b64 chars, 11.2 KB/s, eta 1.3 min
+### 00:02:29 1868928/2730668 b64 chars, 11.2 KB/s, eta 1.3 min
+### 00:02:31 1894528/2730668 b64 chars, 11.2 KB/s, eta 1.2 min
+### 00:02:33 1920128/2730668 b64 chars, 11.2 KB/s, eta 1.2 min
+### 00:02:35 1945728/2730668 b64 chars, 11.2 KB/s, eta 1.1 min
+### 00:02:38 1971328/2730668 b64 chars, 11.2 KB/s, eta 1.1 min
+### 00:02:40 1996928/2730668 b64 chars, 11.2 KB/s, eta 1.1 min
+### 00:02:42 2022528/2730668 b64 chars, 11.2 KB/s, eta 1.0 min
+### 00:02:44 2048128/2730668 b64 chars, 11.2 KB/s, eta 1.0 min
+### 00:02:47 2073728/2730668 b64 chars, 11.2 KB/s, eta 1.0 min
+### 00:02:49 2099328/2730668 b64 chars, 11.2 KB/s, eta 0.9 min
+### 00:02:51 2124928/2730668 b64 chars, 11.2 KB/s, eta 0.9 min
+### 00:02:53 2150528/2730668 b64 chars, 11.2 KB/s, eta 0.8 min
+### 00:02:56 2176128/2730668 b64 chars, 11.2 KB/s, eta 0.8 min
+### 00:02:58 2201728/2730668 b64 chars, 11.2 KB/s, eta 0.8 min
+### 00:03:00 2227328/2730668 b64 chars, 11.2 KB/s, eta 0.7 min
+### 00:03:02 2252928/2730668 b64 chars, 11.2 KB/s, eta 0.7 min
+### 00:03:05 2278528/2730668 b64 chars, 11.2 KB/s, eta 0.7 min
+### 00:03:07 2304128/2730668 b64 chars, 11.2 KB/s, eta 0.6 min
+### 00:03:09 2329728/2730668 b64 chars, 11.2 KB/s, eta 0.6 min
+### 00:03:11 2355328/2730668 b64 chars, 11.2 KB/s, eta 0.5 min
+### 00:03:14 2380928/2730668 b64 chars, 11.2 KB/s, eta 0.5 min
+### 00:03:16 2406528/2730668 b64 chars, 11.2 KB/s, eta 0.5 min
+### 00:03:18 2432128/2730668 b64 chars, 11.2 KB/s, eta 0.4 min
+### 00:03:20 2457728/2730668 b64 chars, 11.2 KB/s, eta 0.4 min
+### 00:03:23 2483328/2730668 b64 chars, 11.2 KB/s, eta 0.4 min
+### 00:03:25 2508928/2730668 b64 chars, 11.2 KB/s, eta 0.3 min
+### 00:03:27 2534528/2730668 b64 chars, 11.2 KB/s, eta 0.3 min
+### 00:03:29 2560128/2730668 b64 chars, 11.2 KB/s, eta 0.2 min
+### 00:03:31 2585728/2730668 b64 chars, 11.2 KB/s, eta 0.2 min
+### 00:03:34 2611328/2730668 b64 chars, 11.2 KB/s, eta 0.2 min
+### 00:03:36 2636928/2730668 b64 chars, 11.2 KB/s, eta 0.1 min
+### 00:03:38 2662528/2730668 b64 chars, 11.2 KB/s, eta 0.1 min
+### 00:03:40 2688128/2730668 b64 chars, 11.2 KB/s, eta 0.1 min
+### 00:03:43 2713728/2730668 b64 chars, 11.2 KB/s, eta 0.0 min
+### 00:03:45 stream finished in 240s
+__R626640__=0
+/root/xv6run # sha256sum /root/xv6run/fs-launchtest.img; echo __R627145__=$?
+d558e4444abcea6046147d85b81e538ecf604049b6d8ab15552f9a3d32bf688c  /root/xv6run/fs-launchtest.img
+__R627145__=0
+/root/xv6run # ### 00:03:47 sha256 verified on the board: d558e4444abcea6046147d85b81e538ecf604049b6d8ab15552f9a3d32bf688c
+### 00:03:47 SEND_OK /root/xv6run/fs-launchtest.img 2048000 bytes in 240s (8.3 KB/s)
