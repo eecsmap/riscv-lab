@@ -1,0 +1,5 @@
+sim=/home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4a/runs/sims-1/sim-fast/obj_dir/sim
+elf=/home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4c/ws/freq-dual-sim-2/freq_sim_b.elf (9b947b010f84362d)
+max_cycles=2000000 wall=110 plusargs=
+start=2026-09-30T06:12:07Z
+wall_s=2

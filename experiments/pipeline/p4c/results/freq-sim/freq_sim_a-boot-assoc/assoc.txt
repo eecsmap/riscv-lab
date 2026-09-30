@@ -1,0 +1,2 @@
+ASSOC H0 END cycles=129239 fails=0
+ASSOC H1 END cycles=129239 fails=0

@@ -1,0 +1,16 @@
+FREQ-SPIN cycles=0x00000000000493e8 mtime_delta=0x0000000000000bb9 hart1_id=0x0000000000000001
+TEACHING-FREQ-SPIN-OK
+PIPE COVERAGE redirects=62020 redirect_while_held=118 killed_fetch_responses=138 killed_after_two_flushes=0 flush_with_pending_valid=137 irq_tokens=0 irq_synthetic=1 irq_synthetic_fetch_ahead=1 irq_cancelled=0 drain_wait_cycles=32 loaduse_stall_cycles=14070 fwd_exmem=604 fwd_memwb=2019 wb_bypass=216 uncached_wait_cycles=190
+PIPE COVERAGE-SV39 fetch_walks=0 data_walks=0 walks_preempted_by_data=0 walks_aborted=0 pte_transactions_killed=0 tlb_flushes=0
+PIPE COVERAGE redirects=65280 redirect_while_held=0 killed_fetch_responses=0 killed_after_two_flushes=0 flush_with_pending_valid=0 irq_tokens=0 irq_synthetic=1 irq_synthetic_fetch_ahead=0 irq_cancelled=0 drain_wait_cycles=20 loaduse_stall_cycles=0 fwd_exmem=6 fwd_memwb=0 wb_bypass=1 uncached_wait_cycles=193
+PIPE COVERAGE-SV39 fetch_walks=0 data_walks=0 walks_preempted_by_data=0 walks_aborted=0 pte_transactions_killed=0 tlb_flushes=0
+ASSOC H0 COVER responses fetch=393 if_pte=0 d_pte=0 data=1859 load=1738 store=121 amo=0 lr=0 sc=0 killed_fetch=138 killed_if_pte=0 killed_d_pte=0
+ASSOC H0 COVER if_pte_overlapping_a_retirement=0 d_pte_overlapping_a_retirement=0 pte_same_cycle_as_a_retirement=0 data_responses_then_trap=0 same_cycle_data_priority=0 max_cycles_resp_to_retire=1 cpu_resets=0 resets_abandoning_a_data_response=0 resets_with_core_transaction_outstanding=0
+ASSOC H0 COVER data_response_pending_at_end=0
+ASSOC H0 END cycles=329014 fails=0
+ASSOC H1 COVER responses fetch=230 if_pte=0 d_pte=0 data=7 load=4 store=3 amo=0 lr=0 sc=0 killed_fetch=0 killed_if_pte=0 killed_d_pte=0
+ASSOC H1 COVER if_pte_overlapping_a_retirement=0 d_pte_overlapping_a_retirement=0 pte_same_cycle_as_a_retirement=0 data_responses_then_trap=0 same_cycle_data_priority=0 max_cycles_resp_to_retire=1 cpu_resets=0 resets_abandoning_a_data_response=0 resets_with_core_transaction_outstanding=0
+ASSOC H1 COVER data_response_pending_at_end=0
+ASSOC H1 END cycles=329014 fails=0
+HARTS_USER user0=101 range0=0 user1=108 range1=0
+

@@ -1,0 +1,37 @@
+# PIPE-P4c: lib/ is a VERBATIM copy of the accepted MC-M5 dual board library (experiments/multicore/m5-board/board/lib):
+# the six dual-hart gates, GATE_COUNT, no perf probes. Diff vs M5 copy (must be empty):
+(identical)
+
+# Diff vs the PRODUCTION E1 library (read-only, unmodified), i.e. M5's own isolated change:
+--- /home/engineer/fpga/riscv-lab/experiments/E1-clock-scaling/scripts/lib-e1.sh	2026-09-25 05:57:49.271838102 +0000
++++ lib/lib-e1.sh	2026-09-30 06:12:54.714619476 +0000
+@@ -219,11 +219,16 @@
+ }
+ 
+ # --- the eight startup gates: exact marker AND confirmed exit. A failure stops the session ---------
+-GATES="boot01_marker boot02_clint boot03_ddr boot04_badaddr ext01_m ext02_c ext03_a ext04_sv39"
++# MC-M5 ISOLATED COPY (experiments/multicore/m5-board): the dual-core variant's startup gates are the six
++# accepted M2b dual-hart programs (dual06_drain needs the harness injector and is not a board gate). The
++# production library (riscv-lab/.../lib-e1.sh) is NOT modified; this copy differs from it only in GATES, the
++# gate count, and PERF_PROBES (no perf probes for the dual variant). See ../LIB-DIFF.txt.
++GATES="dual01_boot dual02_clint dual03_lock dual04_pbus dual05_fencei dual07_long"
++GATE_COUNT=6
+ # Overridable: the IPS campaign measures perf02/03/04/06, E1 measured perf03/04. The GATES list is NOT
+ # overridable -- all eight run on every variant, and ext03_a's simulation limitation is not a hardware
+ # waiver.
+-: "${PERF_PROBES:=perf03_fetch perf04_where}"
++: "${PERF_PROBES:=}"
+ marker_for() { awk -v p="$1" '$1==p {print $2}' "$(dirname "${BASH_SOURCE[0]}")/markers.tsv"; }
+ 
+ # The probes are RISC-V TARGET ELFs. They cannot execute on the ARM at all: they run under
+@@ -258,8 +263,8 @@
+             || die $EX_GATE "startup gate $g exited 0 but never printed its completion marker '$want'. An exit status is not a result"
+         n=$((n+1)); say "  gate $g: ok ($want)"
+     done
+-    [ "$n" -eq 8 ] || die $EX_GATE "only $n of 8 gates ran"
+-    say "  STARTUP GATES 8/8"
++    [ "$n" -eq "$GATE_COUNT" ] || die $EX_GATE "only $n of $GATE_COUNT gates ran"
++    say "  STARTUP GATES $GATE_COUNT/$GATE_COUNT"
+ }
+ 
+ # --- perf samples: validated by the production probe parser, not by RC=0 --------------------------

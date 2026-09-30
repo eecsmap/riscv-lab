@@ -1,0 +1,6 @@
+dual01_boot	M2B-BOOT-OK
+dual02_clint	M2B-CLINT-OK
+dual03_lock	M2B-LOCK-OK
+dual04_pbus	M2B-PBUS-OK
+dual05_fencei	M2B-FENCEI-OK
+dual07_long	M2B-LONG-OK
