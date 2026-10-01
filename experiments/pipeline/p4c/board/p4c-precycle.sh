@@ -39,7 +39,7 @@ printf '%s\n' "$BOARD_OUT" > "$O/pre-state.txt"; say "$(tr -d '\r' < "$O/pre-sta
 [ "$(field LOCK)" = NO_LOCK ] || die $EX_BUSY "the host lock is present (owner '$(field LOCKOWNER)'); it must not be cleared by hand"
 say "== backups: every disk image, and every file that is not a known accepted artefact"
 KNOWN=$(awk '{print $1}' "$P4C/known-hashes.txt")
-tr -d '\r' < "$O/pre-state.txt" | grep -E '^[0-9a-f]{64}  ' | while read -r h n; do
+tr -d '\r' < "$O/pre-state.txt" | { grep -E '^[0-9a-f]{64}  ' || true; } | while read -r h n; do   # none on an empty board
   if [[ $n == *.img ]]; then echo "BACKUP  $h  $n  (disk image)"
   elif grep -qx "$h" <<<"$KNOWN"; then echo "known   $h  $n"
   else echo "BACKUP  $h  $n  (unknown hash)"; fi
