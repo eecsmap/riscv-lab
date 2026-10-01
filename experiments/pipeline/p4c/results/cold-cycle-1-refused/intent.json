@@ -1,0 +1,1 @@
+{ "variant": "pipedual", "payload_sha256": "f330769dac6172da32c3b097ae615d7dde878a9cd2a276835686b1e0de5de7dd", "bit_sha256": "646d88b73b908ad74b76db818cf9692797b3ce1545297c8582b45dd81a65d69a", "expected_gates": 6, "gates": "dual01_boot dual02_clint dual03_lock dual04_pbus dual05_fencei dual07_long", "started_utc": "2026-09-30T23:58:18Z" }

@@ -1,0 +1,64 @@
+== local artefacts
+  frozen artefact set verified: 14 artefacts; payload f330769dac6172da… (bit 646d88b73b908ad7…)
+== leases, before any transport
+  claimed lease: board
+  claimed lease: serial
+== no process on this host may hold the board's serial ports
+  none
+== the console: stop a running user session only the documented way
+CONSOLE ARM prompt, nothing running (b'\n~ # ')
+== pre-state (read-only)
+  transport/remote failure during: reading the pre-state
+  ---- last reply ----
+BID=82c150fb-88f6-4e25-ba12-94ec04ae217c
+UP=1870
+PD=1
+FESVR=0
+LOCK=NO_LOCK
+LOCKOWNER=
+TOOLS=timeout,gzip,base64,sha256sum,flock,
+df: /root: can't find mount point
+DF=Filesystem 1K-blocks Used Available Use% Mounted on
+PID   USER     TIME  COMMAND
+    1 root      0:01 init
+    2 root      0:00 [kthreadd]
+    3 root      0:00 [ksoftirqd/0]
+    4 root      0:00 [kworker/0:0]
+    5 root      0:00 [kworker/0:0H]
+    6 root      0:00 [kworker/u4:0]
+    7 root      0:00 [rcu_preempt]
+    8 root      0:00 [rcu_sched]
+    9 root      0:00 [rcu_bh]
+   10 root      0:00 [migration/0]
+   11 root      0:00 [migration/1]
+   12 root      0:00 [ksoftirqd/1]
+   13 root      0:00 [kworker/1:0]
+   14 root      0:00 [kworker/1:0H]
+   15 root      0:00 [khelper]
+   16 root      0:00 [kdevtmpfs]
+   66 root      0:00 [writeback]
+   70 root      0:00 [bioset]
+   73 root      0:00 [kblockd]
+   76 root      0:00 [khubd]
+   84 root      0:00 [edac-poller]
+  234 root      0:00 [kworker/1:1]
+  242 root      0:00 [rpciod]
+  246 root      0:00 [kworker/0:1]
+  356 root      0:00 [kswapd0]
+  357 root      0:00 [fsnotify_mark]
+  358 root      0:00 [nfsiod]
+  453 root      0:00 [spi0]
+  525 root      0:00 [kpsmoused]
+  554 root      0:00 [kworker/u4:2]
+  562 root      0:00 [irq/39-f8007100]
+  574 root      0:00 [deferwq]
+  580 root      0:00 [mmcqd/0]
+  581 root      0:00 /bin/sh
+  609 root      0:00 ps
+rootfs on / type rootfs (rw,size=116144k,nr_inodes=29036)
+ls: /root/xv6run: No such file or directory
+/bin/sh: cd: can't cd to /root/xv6run: No such file or directory
+  --------------------
+REFUSE(62): reading the pre-state failed; the board's state is not known from here and nothing further may be attempted
+  released lease: board
+  released lease: serial

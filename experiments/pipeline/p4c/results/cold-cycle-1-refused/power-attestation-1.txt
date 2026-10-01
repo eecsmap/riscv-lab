@@ -1,0 +1,6 @@
+POWER_REMOVED=yes
+AT=2026-09-30T23:58:11Z
+VARIANT=pipedual
+BY=engineer
+SOURCE=the user, directly in the Claude session on 2026-09-30T23:58Z: 已断电上电 (after Codex's explicit power-off/wait/power-on request, codex-pipe-p4c-cold-cycle-confirmed.md)
+MEANS=attested by the user, not measured. This host cannot distinguish a power cycle from a warm reboot.

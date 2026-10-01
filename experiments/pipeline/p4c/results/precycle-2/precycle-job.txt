@@ -1,0 +1,27 @@
+== local artefacts
+  frozen artefact set verified: 14 artefacts; payload f330769dac6172da… (bit 646d88b73b908ad7…)
+== leases, before any transport
+  claimed lease: board
+  claimed lease: serial
+== no process on this host may hold the board's serial ports
+  none
+== the console: stop a running user session only the documented way
+CONSOLE ARM prompt, nothing running (b'\n~ # ')
+== pre-state (read-only)
+BID=82c150fb-88f6-4e25-ba12-94ec04ae217c
+UP=1949
+PD=1
+FESVR=0
+LOCK=NO_LOCK
+LOCKOWNER=
+TOOLS=timeout,gzip,base64,sha256sum,flock,
+DF=Filesystem 1K-blocks Used Available Use% Mounted on
+== backups: every disk image, and every file that is not a known accepted artefact
+== re-reading the board's hashes after the backups (nothing may have changed while reading)
+== the board's timeout builtin
+  timeout: yes
+== pinning the current boot id
+pinned pre-cycle boot id: 82c150fb-88f6-4e25-ba12-94ec04ae217c (/home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4c/ws/state/precycle-20261001T000029Z/pin.txt; /home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4c/ws/state/current-precycle -> precycle-20261001T000029Z)
+P4C_READY_FOR_COLD_CYCLE precycle=/home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4c/ws/state/precycle-20261001T000029Z
+  released lease: board
+  released lease: serial

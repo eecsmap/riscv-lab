@@ -1,0 +1,14 @@
+=== PIPE-P4c dual-pipeline board session, /home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4c/ws/sessions/session-pipedual-20260930T235818Z (pre-cycle step /home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4c/ws/state/precycle-20260930T062519Z)
+  frozen artefact set verified: 14 artefacts; payload f330769dac6172da… (bit 646d88b73b908ad7…)
+  board has 'timeout' (recorded by the precheck): probes bounded on both sides
+== leases, before any transport
+  claimed lease: board
+  claimed lease: serial
+== step 1: the cold cycle
+  power removal: ATTESTED by the user at 2026-09-30T23:58:11Z (attested, not measured)
+  boot id now    : 82c150fb-88f6-4e25-ba12-94ec04ae217c
+  pinned before  : 4d45136e-7c10-46fd-b6f8-dfcd30775917
+  uptime         : 1811 s;  /root/xv6run entries: 0;  fesvr: 0;  lock: NO_LOCK
+REFUSE(11): the boot id changed but uptime is 1811s (> 600s); that is not the cold platform this step requires
+  released lease: board
+  released lease: serial

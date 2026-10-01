@@ -1,0 +1,1 @@
+checked=/dev/ttyUSB0 /dev/ttyUSB1 via /proc/*/fd (processes of user engineer; others are not visible)
