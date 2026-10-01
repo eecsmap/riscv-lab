@@ -1,0 +1,28 @@
+  frozen artefact set verified: 14 artefacts; payload f330769dac6172da… (bit 646d88b73b908ad7…)
+  claimed lease: board
+  claimed lease: serial
+  no host running: comm scan 0, pgrep 0, lock free
+== deploy the kernel and a FRESH disk copy (hash-verified on the board)
+  deployed+verified: /root/xv6run/kernel-perf-128mib
+  deployed+verified: /root/xv6run/fs-run.img
+XV6_RC=0 wall=77s
+  [phase   71.53s] teardown: drain done
+  [phase   72.76s] teardown: closing logs
+BOARD_RUN stages=10 failed=0 host_exit=0 (deliberate-stop-after-all-commands)
+PD=1
+FESVR=0
+COMMHOSTS=0
+LOCK=NO_LOCK
+BID=1e44b36c-0340-4c30-9d18-cb02e55602d6
+INFO mtimetest: 8 reads monotonic, consecutive deltas [189, 189, 189, 189, 190, 189, 189] mtime units; child 291788461 within [291783044,291801369]; spin100k=80312 mtime units (8031200 cycles, 80 cycles/iter)
+RESULT PERF-COMPUTE size=2000000 dmtime=3180313 readcost=189 ticks_diag=127 seconds=7.951 work_per_s=1006190
+RESULT PERF-COMPUTE size=2000000 dmtime=3198422 readcost=187 ticks_diag=128 seconds=7.996 work_per_s=1000493
+RESULT PERF-COMPUTE size=2000000 dmtime=3173376 readcost=188 ticks_diag=127 seconds=7.933 work_per_s=1008390
+RESULT PERF-ARRAY size=128 dmtime=3314272 readcost=188 ticks_diag=132 seconds=8.286 work_per_s=1012422
+RESULT PERF-ARRAY size=128 dmtime=3302420 readcost=194 ticks_diag=132 seconds=8.256 work_per_s=1016056
+RESULT PERF-ARRAY size=128 dmtime=3322476 readcost=187 ticks_diag=133 seconds=8.306 work_per_s=1009922
+PASS /home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4c/ws/sessions/session-pipedual-20261001T002837Z/xv6-perf-board-20261001T004821Z (6 perf runs)
+HART_CHECK PASS hart 1 started the kernel (console: 'hart 1 starting' after 'xv6 kernel is booting')
+P4C_XV6_DONE workload=perf-board rc=0 judge=0 hart=0 dir=/home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4c/ws/sessions/session-pipedual-20261001T002837Z/xv6-perf-board-20261001T004821Z
+  released lease: board
+  released lease: serial

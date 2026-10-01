@@ -1,0 +1,4 @@
+pair 1: short 1.06 s / 40000006 cycles (mtime 400000, ratio 100.000); long 21.06 s / 840000005 cycles (mtime 8400000, ratio 100.000); f = 40.0000 MHz (+-0.10 % from the 10 ms resolution)
+pair 2: short 1.06 s / 40000005 cycles (mtime 400000, ratio 100.000); long 21.06 s / 840000006 cycles (mtime 8400000, ratio 100.000); f = 40.0000 MHz (+-0.10 % from the 10 ms resolution)
+pair 3: short 1.06 s / 40000005 cycles (mtime 400001, ratio 100.000); long 21.07 s / 840000004 cycles (mtime 8400000, ratio 100.000); f = 39.9800 MHz (+-0.10 % from the 10 ms resolution)
+FREQ core clock vs the PS clock: median 40.0000 MHz, range 39.9800-40.0000 MHz over 3 pairs

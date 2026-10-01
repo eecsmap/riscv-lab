@@ -1,0 +1,22 @@
+  frozen artefact set verified: 14 artefacts; payload f330769dac6172da… (bit 646d88b73b908ad7…)
+  claimed lease: board
+  claimed lease: serial
+  no host running: comm scan 0, pgrep 0, lock free
+== deploy the kernel and a FRESH disk copy (hash-verified on the board)
+  deployed+verified: /root/xv6run/kernel-dual-128mib
+  deployed+verified: /root/xv6run/fs-run.img
+XV6_RC=0 wall=21s
+  [phase   16.86s] teardown: drain done
+  [phase   18.09s] teardown: closing logs
+BOARD_RUN stages=6 failed=0 host_exit=0 (deliberate-stop-after-all-commands)
+PD=1
+FESVR=0
+COMMHOSTS=0
+LOCK=NO_LOCK
+BID=1e44b36c-0340-4c30-9d18-cb02e55602d6
+INFO check-xv6.py --require-commands: XV6_CHECK segments=4 prompts=4 stages=6 console_bytes=532 fails=0
+PASS /home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4c/ws/sessions/session-pipedual-20261001T002837Z/xv6-m4smoke-20261001T004254Z
+HART_CHECK PASS hart 1 started the kernel (console: 'hart 1 starting' after 'xv6 kernel is booting')
+P4C_XV6_DONE workload=m4smoke rc=0 judge=0 hart=0 dir=/home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4c/ws/sessions/session-pipedual-20261001T002837Z/xv6-m4smoke-20261001T004254Z
+  released lease: board
+  released lease: serial

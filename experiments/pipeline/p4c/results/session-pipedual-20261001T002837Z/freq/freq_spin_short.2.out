@@ -1,0 +1,6 @@
+teaching: ready after 50 ms; status=0x00000811 cpu_restart_safe=1 pl_reconfig_safe=0 draining=0 drain_timeout=0 boot_ready=1 boot_timeout=0 epoch=8 ndrained=0
+FREQ-SPIN cycles=0x0000000002625a05 mtime_delta=0x0000000000061a80 hart1_id=0x0000000000000001
+TEACHING-FREQ-SPIN-OK
+RC=0
+T0=786.82
+T1=787.88

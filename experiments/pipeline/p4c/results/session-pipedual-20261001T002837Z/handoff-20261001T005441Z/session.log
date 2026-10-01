@@ -1,0 +1,18 @@
+  frozen artefact set verified: 14 artefacts; payload f330769dac6172da… (bit 646d88b73b908ad7…)
+  claimed lease: board
+  claimed lease: serial
+  no host running: comm scan 0, pgrep 0, lock free
+== the launcher, the measurement kernel
+  deployed+verified: /root/xv6run/xv6-pipe-dual.sh
+  deployed+verified: /root/xv6run/kernel-perf-128mib
+== the user's disks, restored from the pre-cycle backups (/home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4c/ws/state/precycle-20260930T062519Z/backup)
+  deployed+verified: /root/xv6run/fs-user-previous.img
+  deployed+verified: /root/xv6run/fs-user.img
+== the benchmark disks
+  deployed+verified: /root/xv6run/fs-bench-pristine.img
+  deployed+verified: /root/xv6run/fs-bench.img
+== launch / commands / stop / restart / stop on a THROWAWAY disk copy
+  deployed+verified: /root/xv6run/fs-launchtest.img
+P4C_HANDOFF_READY: installed and ready, NOT running (no host, lock free). The user launches with: cd /root/xv6run && ./xv6-pipe-dual.sh
+  released lease: board
+  released lease: serial

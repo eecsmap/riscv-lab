@@ -1,0 +1,16 @@
+LAUNCH ok   ARM prompt
+LAUNCH ok   launch 1: xv6 shell prompt
+LAUNCH ok   launch 1: 'hart 1 starting' on the console
+LAUNCH ok   ls listing and next prompt
+LAUNCH ok   mtimetest present on the disk
+LAUNCH ok   perfcompute present on the disk
+LAUNCH ok   perfarray present on the disk
+LAUNCH ok   write a file
+LAUNCH ok   stop 1: host exited, lock released
+LAUNCH ok   stop 1: ARM prompt again
+LAUNCH ok   launch 2: xv6 shell prompt
+LAUNCH ok   launch 2: 'hart 1 starting' on the console
+LAUNCH ok   after the restart the file is still there
+LAUNCH ok   stop 2: host exited, lock released
+LAUNCH ok   stop 2: ARM prompt again
+LAUNCH_TEST PASS

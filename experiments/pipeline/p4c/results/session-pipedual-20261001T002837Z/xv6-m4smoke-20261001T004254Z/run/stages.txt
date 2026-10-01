@@ -1,0 +1,21 @@
+ok	5.4	kernel banner
+ok	9.6	init started / first prompt
+ok	9.6	shell prompt
+ok	11.7	command b0compute
+ok	13.8	command m3par2
+ok	17.9	command m3fs
+# driver: v3
+# platform: board
+# workload: m4smoke
+# channel: exclusive
+# console device: /dev/ttyUSB1
+# bitstream sha256: 646d88b73b908ad74b76db818cf9692797b3ce1545297c8582b45dd81a65d69a
+# host binary sha256: c050eab30f80a21a7c92c8688faa2f043c67aa2900fbc08b80f3dd8de2ba1fb9
+# kernel sha256: 33021237cf1d82f1500bf7c0d7b8c8a2035a34c81669720fd71b3add75c99fb9
+# disk at start sha256: d8e502693bba1b14625d0f7b9a165f2ece055c64382887cb19610d0db41d7281
+# memory evidence session: 1e44b36c-0340-4c30-9d18-cb02e55602d6
+# memory evidence digest: bf9add88b6b4551232929b051211ae7414b6dd079ca8c212eae2f1028b7ddf7b
+# board boot id: 1e44b36c-0340-4c30-9d18-cb02e55602d6
+# host exit: 0
+# stop: deliberate-stop-after-all-commands
+# remote exit confirmed: yes

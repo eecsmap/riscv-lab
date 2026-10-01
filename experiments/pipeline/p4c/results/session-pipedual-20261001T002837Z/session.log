@@ -1,0 +1,65 @@
+=== PIPE-P4c dual-pipeline board session, /home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4c/ws/sessions/session-pipedual-20261001T002837Z (pre-cycle step /home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4c/ws/state/precycle-20261001T000029Z)
+  frozen artefact set verified: 14 artefacts; payload f330769dac6172da… (bit 646d88b73b908ad7…)
+  board has 'timeout' (recorded by the precheck): probes bounded on both sides
+== leases, before any transport
+  claimed lease: board
+  claimed lease: serial
+== step 1: the cold cycle
+  power removal: ATTESTED by the user at 2026-10-01T00:28:35Z (attested, not measured)
+  boot id now    : 1e44b36c-0340-4c30-9d18-cb02e55602d6
+  pinned before  : 82c150fb-88f6-4e25-ba12-94ec04ae217c
+  uptime         : 9 s;  /root/xv6run entries: 0;  fesvr: 0;  lock: NO_LOCK
+  boot evidence consistent with a cold start (new boot id 1e44b36c-0340-4c30-9d18-cb02e55602d6)
+  no host running: comm scan 0, pgrep 0, lock free
+== step 2: this boot's memory evidence, then the production preflight
+  captured memory evidence for session 1e44b36c-0340-4c30-9d18-cb02e55602d6
+## evidence: /home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4c/ws/sessions/session-pipedual-20261001T002837Z/memory
+   session 1e44b36c-0340-4c30-9d18-cb02e55602d6
+   #address-cells=1 #size-cells=1
+   DT memory: 0x00000000 + 0x10000000 (256 MiB)
+   no reserved-memory captured (absent is acceptable; unreadable is not)
+   iomem System RAM: 0x00000000-0x0fffffff
+   MemTotal 247 MiB
+## target window: 0x10000000-0x1fffffff
+MEM_PREFLIGHT OK refusals=0
+  MEM_PREFLIGHT passed for session 1e44b36c-0340-4c30-9d18-cb02e55602d6
+== step 3: deploy, each artefact hash-verified on the board
+  deployed+verified: /root/xv6run/pipedual.bit.bin
+  deployed+verified: /root/xv6run/fesvr-teaching-static
+  deployed+verified: /root/xv6run/dual01_boot.elf
+  deployed+verified: /root/xv6run/dual02_clint.elf
+  deployed+verified: /root/xv6run/dual03_lock.elf
+  deployed+verified: /root/xv6run/dual04_pbus.elf
+  deployed+verified: /root/xv6run/dual05_fencei.elf
+  deployed+verified: /root/xv6run/dual07_long.elf
+  deployed+verified: /root/xv6run/freq_spin_short.elf
+  deployed+verified: /root/xv6run/freq_spin_long.elf
+  executable mode set
+== step 4: program from the cold, quiescent platform
+  no host running: comm scan 0, pgrep 0, lock free
+  programming /root/xv6run/pipedual.bit.bin
+  programming reported rc=0 and prog_done=1
+  the payload on the board still hashes f330769dac6172da… after programming
+== step 5: the 6 dual-hart startup gates (exact marker AND RC=0)
+  gate dual01_boot: ok (M2B-BOOT-OK)
+  gate dual02_clint: ok (M2B-CLINT-OK)
+  gate dual03_lock: ok (M2B-LOCK-OK)
+  gate dual04_pbus: ok (M2B-PBUS-OK)
+  gate dual05_fencei: ok (M2B-FENCEI-OK)
+  gate dual07_long: ok (M2B-LONG-OK)
+  STARTUP GATES 6/6
+== step 6: the frequency reference: short and long two-hart spins timed by the PS's own clock (/proc/uptime), 3 pairs
+  freq_spin_short #1: T0=763.33 T1=764.39 FREQ-SPIN cycles=0x0000000002625a06 mtime_delta=0x0000000000061a80 hart1_id=0x0000000000000001
+  freq_spin_long #1: T0=765.06 T1=786.12 FREQ-SPIN cycles=0x0000000032116205 mtime_delta=0x0000000000802c80 hart1_id=0x0000000000000001
+  freq_spin_short #2: T0=786.82 T1=787.88 FREQ-SPIN cycles=0x0000000002625a05 mtime_delta=0x0000000000061a80 hart1_id=0x0000000000000001
+  freq_spin_long #2: T0=788.64 T1=809.70 FREQ-SPIN cycles=0x0000000032116206 mtime_delta=0x0000000000802c80 hart1_id=0x0000000000000001
+  freq_spin_short #3: T0=810.38 T1=811.44 FREQ-SPIN cycles=0x0000000002625a05 mtime_delta=0x0000000000061a81 hart1_id=0x0000000000000001
+  freq_spin_long #3: T0=812.10 T1=833.17 FREQ-SPIN cycles=0x0000000032116204 mtime_delta=0x0000000000802c80 hart1_id=0x0000000000000001
+== step 6b: can the board SEE a running host? (every 'no host running' guard depends on it)
+  while a host ran: pgrep -x=0 comm-scan=1 pidof=1; after: comm-scan=0 (waited 18 s)
+  NOTE: pgrep -x does NOT see a running host on this board: the accepted library's 'no host' checks are blind (reported, not changed here); the lock is the effective guard
+== step 7: state and health
+P4C_INSTALL_DONE session=/home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4c/ws/sessions/session-pipedual-20261001T002837Z
+The board holds the dual-pipeline bitstream (payload f330769dac6172da…). Next: ./p4c-xv6.sh /home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4c/ws/sessions/session-pipedual-20261001T002837Z m4smoke ; ./p4c-xv6.sh /home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4c/ws/sessions/session-pipedual-20261001T002837Z perf-board ; ./p4c-interactive.sh /home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4c/ws/sessions/session-pipedual-20261001T002837Z
+  released lease: board
+  released lease: serial

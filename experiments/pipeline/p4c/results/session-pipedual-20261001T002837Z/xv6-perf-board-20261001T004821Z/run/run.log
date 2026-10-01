@@ -1,0 +1,54 @@
+teaching: ready after 50 ms; status=0x00010e11 cpu_restart_safe=1 pl_reconfig_safe=0 draining=0 drain_timeout=0 boot_ready=1 boot_timeout=0 epoch=14 ndrained=1
+
+xv6 kernel is booting
+
+blkdev: 4000 sectors (1 MB), max request 16 sectors
+hart 1 starting
+init: starting sh
+$ mtimetest
+MTIME-READS 291777687 291777876 291778065 291778254 291778443 291778633 291778822 291779011
+MTIME-SHARED p0=291783044 child=291788461 p1=291801369 ticks=1 spin100k=80312 x=723cc1865dd69690
+MTIME-DONE ok=1
+$ perfcompute
+PERF-COMPUTE size=2000000 children=4 mt0=292607252 mt1=295787565 dmtime=3180313 readcost=189 ticks=127 ok=1
+PERF-COMPUTE-CHILD0 checksum=df0e6f317efd01d3
+PERF-COMPUTE-CHILD1 checksum=472b7f173170b0a1
+PERF-COMPUTE-CHILD2 checksum=94faa18bf5c1bfb5
+PERF-COMPUTE-CHILD3 checksum=5445d10fd597600d
+PERF-DONE ok=1
+$ perfcompute
+PERF-COMPUTE size=2000000 children=4 mt0=296677650 mt1=299876072 dmtime=3198422 readcost=187 ticks=128 ok=1
+PERF-COMPUTE-CHILD0 checksum=df0e6f317efd01d3
+PERF-COMPUTE-CHILD1 checksum=472b7f173170b0a1
+PERF-COMPUTE-CHILD2 checksum=94faa18bf5c1bfb5
+PERF-COMPUTE-CHILD3 checksum=5445d10fd597600d
+PERF-DONE ok=1
+$ perfcompute
+PERF-COMPUTE size=2000000 children=4 mt0=300759794 mt1=303933170 dmtime=3173376 readcost=188 ticks=127 ok=1
+PERF-COMPUTE-CHILD0 checksum=df0e6f317efd01d3
+PERF-COMPUTE-CHILD1 checksum=472b7f173170b0a1
+PERF-COMPUTE-CHILD2 checksum=94faa18bf5c1bfb5
+PERF-COMPUTE-CHILD3 checksum=5445d10fd597600d
+PERF-DONE ok=1
+$ perfarray
+PERF-ARRAY size=128 children=4 mt0=304825876 mt1=308140148 dmtime=3314272 readcost=188 ticks=132 ok=1
+PERF-ARRAY-CHILD0 checksum=cf7c57da8f1b305d
+PERF-ARRAY-CHILD1 checksum=6f6e4815a5be03dc
+PERF-ARRAY-CHILD2 checksum=5edb9d2ace6dcb2b
+PERF-ARRAY-CHILD3 checksum=aceec0b95d6a49a2
+PERF-DONE ok=1
+$ perfarray
+PERF-ARRAY size=128 children=4 mt0=308874505 mt1=312176925 dmtime=3302420 readcost=194 ticks=132 ok=1
+PERF-ARRAY-CHILD0 checksum=cf7c57da8f1b305d
+PERF-ARRAY-CHILD1 checksum=6f6e4815a5be03dc
+PERF-ARRAY-CHILD2 checksum=5edb9d2ace6dcb2b
+PERF-ARRAY-CHILD3 checksum=aceec0b95d6a49a2
+PERF-DONE ok=1
+$ perfarray
+PERF-ARRAY size=128 children=4 mt0=312911662 mt1=316234138 dmtime=3322476 readcost=187 ticks=133 ok=1
+PERF-ARRAY-CHILD0 checksum=cf7c57da8f1b305d
+PERF-ARRAY-CHILD1 checksum=6f6e4815a5be03dc
+PERF-ARRAY-CHILD2 checksum=5edb9d2ace6dcb2b
+PERF-ARRAY-CHILD3 checksum=aceec0b95d6a49a2
+PERF-DONE ok=1
+$ 

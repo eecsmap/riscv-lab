@@ -1,0 +1,76 @@
+
+<<SEND b'\n'>>
+
+/root/xv6run # 
+<<SEND b'cd /root/xv6run && ./xv6-pipe-dual.sh /root/xv6run/fs-launchtest.img\n'>>
+cd /root/xv6run && ./xv6-pipe-dual.sh /root/xv6run/fs-launchtest.
+img
+xv6 on the dual-pipeline system (2 harts): disk /root/xv6run/fs-launchtest.img. Stop: Ctrl-C at the xv6 prompt. Relaunch: ./xv6-pipe-dual.sh
+teaching: ready after 50 ms; status=0x00030f11 cpu_restart_safe=1 pl_reconfig_safe=0 draining=0 drain_timeout=0 boot_ready=1 boot_timeout=0 epoch=15 ndrained=3
+
+xv6 kernel is booting
+
+blkdev: 4000 sectors (1 MB), max request 16 sectors
+hart 1 starting
+init: starting sh
+$ 
+<<SEND b'ls\n'>>
+ls
+.              1 1 1024
+..             1 1 1024
+README         2 2 2441
+b0compute      2 3 35696
+b0array        2 4 36248
+b0file         2 5 37376
+m3fs           2 6 41568
+m3par2         2 7 41536
+perfcompute    2 8 47200
+perfarray      2 9 47776
+mtimetest      2 10 43144
+cat            2 11 36968
+echo           2 12 35816
+forktest       2 13 17544
+grep           2 14 40400
+init           2 15 36272
+kill           2 16 35752
+ln             2 17 35552
+ls             2 18 39096
+mkdir          2 19 35800
+rm             2 20 35784
+sh             2 21 58816
+stressfs       2 22 36672
+usertests      2 23 201784
+grind          2 24 52224
+wc             2 25 37952
+zombie         2 26 35144
+logstress      2 27 37736
+forphan        2 28 36552
+dorphan        2 29 36000
+sync           2 30 35216
+console        3 31 0
+$ 
+<<SEND b'echo p4c-persist > p4cmark\n'>>
+echo p4c-persist > p4cmark
+$ 
+<<SEND b'\x03'>>
+xv6 host exited (status 0); lock released. Relaunch with: ./xv6-pipe-dual.sh
+/root/xv6run # 
+<<SEND b'cd /root/xv6run && ./xv6-pipe-dual.sh /root/xv6run/fs-launchtest.img\n'>>
+cd /root/xv6run && ./xv6-pipe-dual.sh /root/xv6run/fs-launchtest.
+img
+xv6 on the dual-pipeline system (2 harts): disk /root/xv6run/fs-launchtest.img. Stop: Ctrl-C at the xv6 prompt. Relaunch: ./xv6-pipe-dual.sh
+teaching: ready after 50 ms; status=0x00041011 cpu_restart_safe=1 pl_reconfig_safe=0 draining=0 drain_timeout=0 boot_ready=1 boot_timeout=0 epoch=16 ndrained=4
+
+xv6 kernel is booting
+
+blkdev: 4000 sectors (1 MB), max request 16 sectors
+hart 1 starting
+init: starting sh
+$ 
+<<SEND b'cat p4cmark\n'>>
+cat p4cmark
+p4c-persist
+$ 
+<<SEND b'\x03'>>
+xv6 host exited (status 0); lock released. Relaunch with: ./xv6-pipe-dual.sh
+/root/xv6run # 

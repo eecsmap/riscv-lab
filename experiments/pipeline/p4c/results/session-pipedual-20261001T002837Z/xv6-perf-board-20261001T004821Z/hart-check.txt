@@ -1,0 +1,1 @@
+HART_CHECK PASS hart 1 started the kernel (console: 'hart 1 starting' after 'xv6 kernel is booting')

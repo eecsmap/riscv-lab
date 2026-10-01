@@ -1,0 +1,76 @@
+mkdir -p $(dirname /root/xv6run/xv6-pipe-dual.sh); echo __R83589_
+_=$?
+__R83589__=0
+/root/xv6run # stty -echo ixoff; echo __R84097__=$?
+__R84097__=0
+/root/xv6run # ### 00:54:45 128/4472 b64 chars, 10.6 KB/s, eta 0.0 min
+__R87501__=0
+/root/xv6run # sha256sum /root/xv6run/xv6-pipe-dual.sh; echo __R88007__=$?
+2a0c408c6fcd76cc3a717c22fe30ba9a9b86164bd8346ca3dd413f859d5bca3b  /root/xv6run/xv6-pipe-dual.sh
+__R88007__=0
+/root/xv6run # ### 00:54:48 sha256 verified on the board: 2a0c408c6fcd76cc3a717c22fe30ba9a9b86164bd8346ca3dd413f859d5bca3b
+mkdir -p $(dirname /root/xv6run/kernel-perf-128mib); echo __R8856
+0__=$?
+__R88560__=0
+/root/xv6run # stty -echo ixoff; echo __R89069__=$?
+__R89069__=0
+/root/xv6run # ### 00:54:50 128/366400 b64 chars, 10.5 KB/s, eta 0.6 min
+__R124134__=0
+/root/xv6run # sha256sum /root/xv6run/kernel-perf-128mib; echo __R124638__=$?
+133f5b72290781ad47d766beeede7d7a07d9af63985caeb34c669dfeba67081c  /root/xv6run/kernel-perf-128mib
+__R124638__=0
+/root/xv6run # ### 00:55:25 sha256 verified on the board: 133f5b72290781ad47d766beeede7d7a07d9af63985caeb34c669dfeba67081c
+mkdir -p $(dirname /root/xv6run/fs-user-previous.img); echo __R12
+5204__=$?
+__R125204__=0
+/root/xv6run # stty -echo ixoff; echo __R125712__=$?
+__R125712__=0
+/root/xv6run # ### 00:55:26 128/2730668 b64 chars, 10.6 KB/s, eta 4.2 min
+__R367601__=0
+/root/xv6run # sha256sum /root/xv6run/fs-user-previous.img; echo __R368107__=$?
+05a4562b72e3bace52602321372340262e0118801ffa6ef2aa13a49b7c5484f5  /root/xv6run/fs-user-previous.img
+__R368107__=0
+/root/xv6run # ### 00:59:28 sha256 verified on the board: 05a4562b72e3bace52602321372340262e0118801ffa6ef2aa13a49b7c5484f5
+mkdir -p $(dirname /root/xv6run/fs-user.img); echo __R368686__=$?
+__R368686__=0
+/root/xv6run # stty -echo ixoff; echo __R369193__=$?
+__R369193__=0
+/root/xv6run # ### 00:59:30 128/2730668 b64 chars, 10.6 KB/s, eta 4.2 min
+__R611088__=0
+/root/xv6run # sha256sum /root/xv6run/fs-user.img; echo __R611593__=$?
+8b147b4566acccc7d612a12d79d9a2689dc61664186d545075bc09d9050218f5  /root/xv6run/fs-user.img
+__R611593__=0
+/root/xv6run # ### 01:03:32 sha256 verified on the board: 8b147b4566acccc7d612a12d79d9a2689dc61664186d545075bc09d9050218f5
+mkdir -p $(dirname /root/xv6run/fs-bench-pristine.img); echo __R6
+12174__=$?
+__R612174__=0
+/root/xv6run # stty -echo ixoff; echo __R612683__=$?
+__R612683__=0
+/root/xv6run # ### 01:03:33 128/2730668 b64 chars, 10.5 KB/s, eta 4.2 min
+__R854567__=0
+/root/xv6run # sha256sum /root/xv6run/fs-bench-pristine.img; echo __R855073__=$?
+d558e4444abcea6046147d85b81e538ecf604049b6d8ab15552f9a3d32bf688c  /root/xv6run/fs-bench-pristine.img
+__R855073__=0
+/root/xv6run # ### 01:07:35 sha256 verified on the board: d558e4444abcea6046147d85b81e538ecf604049b6d8ab15552f9a3d32bf688c
+mkdir -p $(dirname /root/xv6run/fs-bench.img); echo __R855633__=$
+?
+__R855633__=0
+/root/xv6run # stty -echo ixoff; echo __R856140__=$?
+__R856140__=0
+/root/xv6run # ### 01:07:37 128/2730668 b64 chars, 10.5 KB/s, eta 4.2 min
+__R98017__=0
+/root/xv6run # sha256sum /root/xv6run/fs-bench.img; echo __R98521__=$?
+d558e4444abcea6046147d85b81e538ecf604049b6d8ab15552f9a3d32bf688c  /root/xv6run/fs-bench.img
+__R98521__=0
+/root/xv6run # ### 01:11:39 sha256 verified on the board: d558e4444abcea6046147d85b81e538ecf604049b6d8ab15552f9a3d32bf688c
+mkdir -p $(dirname /root/xv6run/fs-launchtest.img); echo __R10071
+3__=$?
+__R100713__=0
+/root/xv6run # stty -echo ixoff; echo __R101223__=$?
+__R101223__=0
+/root/xv6run # ### 01:11:42 128/2730668 b64 chars, 10.6 KB/s, eta 4.2 min
+__R343103__=0
+/root/xv6run # sha256sum /root/xv6run/fs-launchtest.img; echo __R343609__=$?
+d558e4444abcea6046147d85b81e538ecf604049b6d8ab15552f9a3d32bf688c  /root/xv6run/fs-launchtest.img
+__R343609__=0
+/root/xv6run # ### 01:15:44 sha256 verified on the board: d558e4444abcea6046147d85b81e538ecf604049b6d8ab15552f9a3d32bf688c

@@ -1,0 +1,100 @@
+mkdir -p $(dirname /root/xv6run/pipedual.bit.bin); echo __R524015__=$?
+__R524015__=0
+~ # stty -echo ixoff; echo __R524523__=$?
+__R524523__=0
+~ # ### 00:28:45 128/5394088 b64 chars, 10.6 KB/s, eta 8.3 min
+__R999404__=0
+~ # sha256sum /root/xv6run/pipedual.bit.bin; echo __R999910__=$?
+f330769dac6172da32c3b097ae615d7dde878a9cd2a276835686b1e0de5de7dd  /root/xv6run/pipedual.bit.bin
+__R999910__=0
+~ # ### 00:36:40 sha256 verified on the board: f330769dac6172da32c3b097ae615d7dde878a9cd2a276835686b1e0de5de7dd
+mkdir -p $(dirname /root/xv6run/fesvr-teaching-static); echo __R497__=$?
+__R497__=0
+~ # stty -echo ixoff; echo __R1007__=$?
+__R1007__=0
+~ # ### 00:36:42 128/2408876 b64 chars, 10.5 KB/s, eta 3.7 min
+__R214752__=0
+~ # sha256sum /root/xv6run/fesvr-teaching-static; echo __R215256__=$?
+c050eab30f80a21a7c92c8688faa2f043c67aa2900fbc08b80f3dd8de2ba1fb9  /root/xv6run/fesvr-teaching-static
+__R215256__=0
+~ # ### 00:40:15 sha256 verified on the board: c050eab30f80a21a7c92c8688faa2f043c67aa2900fbc08b80f3dd8de2ba1fb9
+mkdir -p $(dirname /root/xv6run/dual01_boot.elf); echo __R215809__=$?
+__R215809__=0
+~ # stty -echo ixoff; echo __R216317__=$?
+__R216317__=0
+~ # ### 00:40:17 128/9600 b64 chars, 10.6 KB/s, eta 0.0 min
+__R220169__=0
+~ # sha256sum /root/xv6run/dual01_boot.elf; echo __R220675__=$?
+aa1faca1d5b1456acca9cde25870788f4383603915877646a5077707a72e87bc  /root/xv6run/dual01_boot.elf
+__R220675__=0
+~ # ### 00:40:21 sha256 verified on the board: aa1faca1d5b1456acca9cde25870788f4383603915877646a5077707a72e87bc
+mkdir -p $(dirname /root/xv6run/dual02_clint.elf); echo __R221227__=$?
+__R221227__=0
+~ # stty -echo ixoff; echo __R221735__=$?
+__R221735__=0
+~ # ### 00:40:22 128/10328 b64 chars, 10.5 KB/s, eta 0.0 min
+__R225650__=0
+~ # sha256sum /root/xv6run/dual02_clint.elf; echo __R226156__=$?
+beffce7e53733a293c13c14d2f50690ac3728b9ac61cbb8eb429e64ca157e718  /root/xv6run/dual02_clint.elf
+__R226156__=0
+~ # ### 00:40:26 sha256 verified on the board: beffce7e53733a293c13c14d2f50690ac3728b9ac61cbb8eb429e64ca157e718
+mkdir -p $(dirname /root/xv6run/dual03_lock.elf); echo __R226708__=$?
+__R226708__=0
+~ # stty -echo ixoff; echo __R227215__=$?
+__R227215__=0
+~ # ### 00:40:28 128/12888 b64 chars, 10.6 KB/s, eta 0.0 min
+__R231355__=0
+~ # sha256sum /root/xv6run/dual03_lock.elf; echo __R231860__=$?
+7bb6d1df99eea7b7fb548d482f1541292912442879c32d028e46b987e1604767  /root/xv6run/dual03_lock.elf
+__R231860__=0
+~ # ### 00:40:32 sha256 verified on the board: 7bb6d1df99eea7b7fb548d482f1541292912442879c32d028e46b987e1604767
+mkdir -p $(dirname /root/xv6run/dual04_pbus.elf); echo __R232413__=$?
+__R232413__=0
+~ # stty -echo ixoff; echo __R232921__=$?
+__R232921__=0
+~ # ### 00:40:33 128/9880 b64 chars, 10.4 KB/s, eta 0.0 min
+__R236797__=0
+~ # sha256sum /root/xv6run/dual04_pbus.elf; echo __R237301__=$?
+ab568bd79abfbee3e167b8ee4d6a721d4eaec3424b7451d174611a1deea1be8a  /root/xv6run/dual04_pbus.elf
+__R237301__=0
+~ # ### 00:40:37 sha256 verified on the board: ab568bd79abfbee3e167b8ee4d6a721d4eaec3424b7451d174611a1deea1be8a
+mkdir -p $(dirname /root/xv6run/dual05_fencei.elf); echo __R237854__=$?
+__R237854__=0
+~ # stty -echo ixoff; echo __R238364__=$?
+__R238364__=0
+~ # ### 00:40:39 128/9688 b64 chars, 10.6 KB/s, eta 0.0 min
+__R242222__=0
+~ # sha256sum /root/xv6run/dual05_fencei.elf; echo __R242726__=$?
+495360cb6f21b745ef5f42084a6e8ccc90badb73b6988fd419754a46dca1ff37  /root/xv6run/dual05_fencei.elf
+__R242726__=0
+~ # ### 00:40:43 sha256 verified on the board: 495360cb6f21b745ef5f42084a6e8ccc90badb73b6988fd419754a46dca1ff37
+mkdir -p $(dirname /root/xv6run/dual07_long.elf); echo __R243282__=$?
+__R243282__=0
+~ # stty -echo ixoff; echo __R243791__=$?
+__R243791__=0
+~ # ### 00:40:44 128/35352 b64 chars, 10.6 KB/s, eta 0.1 min
+__R249894__=0
+~ # sha256sum /root/xv6run/dual07_long.elf; echo __R250398__=$?
+459347189d79d4f10ba99f68a5119ee12fc2dcbebbdc6ae9eb4b647c8c02f117  /root/xv6run/dual07_long.elf
+__R250398__=0
+~ # ### 00:40:50 sha256 verified on the board: 459347189d79d4f10ba99f68a5119ee12fc2dcbebbdc6ae9eb4b647c8c02f117
+mkdir -p $(dirname /root/xv6run/freq_spin_short.elf); echo __R250952__=$?
+__R250952__=0
+~ # stty -echo ixoff; echo __R251460__=$?
+__R251460__=0
+~ # ### 00:40:52 128/8908 b64 chars, 10.5 KB/s, eta 0.0 min
+__R255250__=0
+~ # sha256sum /root/xv6run/freq_spin_short.elf; echo __R255754__=$?
+eadf27036ee5cc95cfc9810ed8957e131ae419d313ebcf192c525d37362264bf  /root/xv6run/freq_spin_short.elf
+__R255754__=0
+~ # ### 00:40:56 sha256 verified on the board: eadf27036ee5cc95cfc9810ed8957e131ae419d313ebcf192c525d37362264bf
+mkdir -p $(dirname /root/xv6run/freq_spin_long.elf); echo __R256308__=$?
+__R256308__=0
+~ # stty -echo ixoff; echo __R256817__=$?
+__R256817__=0
+~ # ### 00:40:57 128/8908 b64 chars, 10.5 KB/s, eta 0.0 min
+__R260608__=0
+~ # sha256sum /root/xv6run/freq_spin_long.elf; echo __R261114__=$?
+62524e01162a95b753d6e594b58012869b6fbe01f1cf187931ce89e49133676b  /root/xv6run/freq_spin_long.elf
+__R261114__=0
+~ # ### 00:41:01 sha256 verified on the board: 62524e01162a95b753d6e594b58012869b6fbe01f1cf187931ce89e49133676b

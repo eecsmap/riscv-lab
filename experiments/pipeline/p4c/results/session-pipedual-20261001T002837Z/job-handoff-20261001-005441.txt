@@ -1,0 +1,36 @@
+  frozen artefact set verified: 14 artefacts; payload f330769dac6172da… (bit 646d88b73b908ad7…)
+  claimed lease: board
+  claimed lease: serial
+  no host running: comm scan 0, pgrep 0, lock free
+== the launcher, the measurement kernel
+  deployed+verified: /root/xv6run/xv6-pipe-dual.sh
+  deployed+verified: /root/xv6run/kernel-perf-128mib
+== the user's disks, restored from the pre-cycle backups (/home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4c/ws/state/precycle-20260930T062519Z/backup)
+  deployed+verified: /root/xv6run/fs-user-previous.img
+fs-user-previous.img 05a4562b72e3bace52602321372340262e0118801ffa6ef2aa13a49b7c5484f5 restored from the pre-cycle backup
+  deployed+verified: /root/xv6run/fs-user.img
+fs-user.img 8b147b4566acccc7d612a12d79d9a2689dc61664186d545075bc09d9050218f5 restored from the pre-cycle backup
+== the benchmark disks
+  deployed+verified: /root/xv6run/fs-bench-pristine.img
+  deployed+verified: /root/xv6run/fs-bench.img
+== launch / commands / stop / restart / stop on a THROWAWAY disk copy
+  deployed+verified: /root/xv6run/fs-launchtest.img
+LAUNCH ok   ARM prompt
+LAUNCH ok   launch 1: xv6 shell prompt
+LAUNCH ok   launch 1: 'hart 1 starting' on the console
+LAUNCH ok   ls listing and next prompt
+LAUNCH ok   mtimetest present on the disk
+LAUNCH ok   perfcompute present on the disk
+LAUNCH ok   perfarray present on the disk
+LAUNCH ok   write a file
+LAUNCH ok   stop 1: host exited, lock released
+LAUNCH ok   stop 1: ARM prompt again
+LAUNCH ok   launch 2: xv6 shell prompt
+LAUNCH ok   launch 2: 'hart 1 starting' on the console
+LAUNCH ok   after the restart the file is still there
+LAUNCH ok   stop 2: host exited, lock released
+LAUNCH ok   stop 2: ARM prompt again
+LAUNCH_TEST PASS
+P4C_HANDOFF_READY: installed and ready, NOT running (no host, lock free). The user launches with: cd /root/xv6run && ./xv6-pipe-dual.sh
+  released lease: board
+  released lease: serial

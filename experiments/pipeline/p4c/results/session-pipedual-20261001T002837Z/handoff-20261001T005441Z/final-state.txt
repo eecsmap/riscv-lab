@@ -1,0 +1,44 @@
+F=0
+C=0
+L=NO_LOCK
+PD=1
+BID=1e44b36c-0340-4c30-9d18-cb02e55602d6
+total 16356
+drwxr-xr-x    2 root     0              400 Jan  1 00:47 [1;34m.[m
+drwxr-xr-x    3 1000     1000           180 Jan  1 00:00 [1;34m..[m
+-rwxr-xr-x    1 root     0             7200 Jan  1 00:11 [1;32mdual01_boot.elf[m
+-rwxr-xr-x    1 root     0             7744 Jan  1 00:11 [1;32mdual02_clint.elf[m
+-rwxr-xr-x    1 root     0             9664 Jan  1 00:12 [1;32mdual03_lock.elf[m
+-rwxr-xr-x    1 root     0             7408 Jan  1 00:12 [1;32mdual04_pbus.elf[m
+-rwxr-xr-x    1 root     0             7264 Jan  1 00:12 [1;32mdual05_fencei.elf[m
+-rwxr-xr-x    1 root     0            26512 Jan  1 00:12 [1;32mdual07_long.elf[m
+-rwxr-xr-x    1 root     0          1806656 Jan  1 00:11 [1;32mfesvr-teaching-static[m
+-rwxr-xr-x    1 root     0             6680 Jan  1 00:12 [1;32mfreq_spin_long.elf[m
+-rwxr-xr-x    1 root     0             6680 Jan  1 00:12 [1;32mfreq_spin_short.elf[m
+-r--r--r--    1 root     0          2048000 Jan  1 00:39 [0;0mfs-bench-pristine.img[m
+-rw-r--r--    1 root     0          2048000 Jan  1 00:43 [0;0mfs-bench.img[m
+-rw-r--r--    1 root     0          2048000 Jan  1 00:24 [0;0mfs-run.img[m
+-rw-r--r--    1 root     0          2048000 Jan  1 00:30 [0;0mfs-user-previous.img[m
+-rw-r--r--    1 root     0          2048000 Jan  1 00:35 [0;0mfs-user.img[m
+-rw-r--r--    1 root     0           274448 Jan  1 00:15 [0;0mkernel-dual-128mib[m
+-rw-r--r--    1 root     0           274800 Jan  1 00:26 [0;0mkernel-perf-128mib[m
+-rw-r--r--    1 root     0          4045564 Jan  1 00:08 [0;0mpipedual.bit.bin[m
+-rwxr-xr-x    1 root     0             3354 Jan  1 00:26 [1;32mxv6-pipe-dual.sh[m
+aa1faca1d5b1456acca9cde25870788f4383603915877646a5077707a72e87bc  dual01_boot.elf
+beffce7e53733a293c13c14d2f50690ac3728b9ac61cbb8eb429e64ca157e718  dual02_clint.elf
+7bb6d1df99eea7b7fb548d482f1541292912442879c32d028e46b987e1604767  dual03_lock.elf
+ab568bd79abfbee3e167b8ee4d6a721d4eaec3424b7451d174611a1deea1be8a  dual04_pbus.elf
+495360cb6f21b745ef5f42084a6e8ccc90badb73b6988fd419754a46dca1ff37  dual05_fencei.elf
+459347189d79d4f10ba99f68a5119ee12fc2dcbebbdc6ae9eb4b647c8c02f117  dual07_long.elf
+c050eab30f80a21a7c92c8688faa2f043c67aa2900fbc08b80f3dd8de2ba1fb9  fesvr-teaching-static
+62524e01162a95b753d6e594b58012869b6fbe01f1cf187931ce89e49133676b  freq_spin_long.elf
+eadf27036ee5cc95cfc9810ed8957e131ae419d313ebcf192c525d37362264bf  freq_spin_short.elf
+d558e4444abcea6046147d85b81e538ecf604049b6d8ab15552f9a3d32bf688c  fs-bench-pristine.img
+d558e4444abcea6046147d85b81e538ecf604049b6d8ab15552f9a3d32bf688c  fs-bench.img
+8b147b4566acccc7d612a12d79d9a2689dc61664186d545075bc09d9050218f5  fs-run.img
+05a4562b72e3bace52602321372340262e0118801ffa6ef2aa13a49b7c5484f5  fs-user-previous.img
+8b147b4566acccc7d612a12d79d9a2689dc61664186d545075bc09d9050218f5  fs-user.img
+33021237cf1d82f1500bf7c0d7b8c8a2035a34c81669720fd71b3add75c99fb9  kernel-dual-128mib
+133f5b72290781ad47d766beeede7d7a07d9af63985caeb34c669dfeba67081c  kernel-perf-128mib
+f330769dac6172da32c3b097ae615d7dde878a9cd2a276835686b1e0de5de7dd  pipedual.bit.bin
+2a0c408c6fcd76cc3a717c22fe30ba9a9b86164bd8346ca3dd413f859d5bca3b  xv6-pipe-dual.sh

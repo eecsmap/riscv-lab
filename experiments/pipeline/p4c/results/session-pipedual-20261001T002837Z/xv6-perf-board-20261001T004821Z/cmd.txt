@@ -1,0 +1,6 @@
+config=dual pipeline (payload f330769dac6172da32c3b097ae615d7dde878a9cd2a276835686b1e0de5de7dd, bit 646d88b73b908ad74b76db818cf9692797b3ce1545297c8582b45dd81a65d69a) workload=perf-board stage_timeout=900 wall=5400
+kernel=/root/xv6run/kernel-perf-128mib (133f5b72290781ad47d766beeede7d7a07d9af63985caeb34c669dfeba67081c)
+disk=/root/xv6run/fs-run.img (d558e4444abcea6046147d85b81e538ecf604049b6d8ab15552f9a3d32bf688c, fresh copy of fs-perf.img)
+host=/root/xv6run/fesvr-teaching-static (c050eab30f80a21a7c92c8688faa2f043c67aa2900fbc08b80f3dd8de2ba1fb9)
+evidence=/home/engineer/fpga/worktrees/pipe-dual/experiments/pipeline/p4c/ws/sessions/session-pipedual-20261001T002837Z/memory boot_id=1e44b36c-0340-4c30-9d18-cb02e55602d6
+start=2026-10-01T00:53:03Z

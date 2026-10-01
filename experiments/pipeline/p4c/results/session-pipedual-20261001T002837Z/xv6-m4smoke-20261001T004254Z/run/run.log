@@ -1,0 +1,19 @@
+teaching: ready after 50 ms; status=0x00000d11 cpu_restart_safe=1 pl_reconfig_safe=0 draining=0 drain_timeout=0 boot_ready=1 boot_timeout=0 epoch=13 ndrained=0
+
+xv6 kernel is booting
+
+blkdev: 4000 sectors (1 MB), max request 16 sectors
+hart 1 starting
+init: starting sh
+$ b0compute
+B0-COMPUTE-CHECKSUM=5ADF55920BF7696
+B0-COMPUTE-DONE
+$ m3par2
+M4-PAR-CHILD0 checksum=f6d983767e3c5638 harts=0x0
+M4-PAR-CHILD1 checksum=01d86a21f972f3fa harts=0x0
+M4-PAR-DONE children=2 ok=1
+$ m3fs
+M3-FS-CHILD0 ok=1
+M3-FS-CHILD1 ok=1
+M3-FS-DONE ok=1
+$ 

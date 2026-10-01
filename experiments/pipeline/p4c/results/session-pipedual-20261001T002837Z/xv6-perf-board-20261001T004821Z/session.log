@@ -1,0 +1,14 @@
+  frozen artefact set verified: 14 artefacts; payload f330769dac6172da… (bit 646d88b73b908ad7…)
+  claimed lease: board
+  claimed lease: serial
+  no host running: comm scan 0, pgrep 0, lock free
+== deploy the kernel and a FRESH disk copy (hash-verified on the board)
+  deployed+verified: /root/xv6run/kernel-perf-128mib
+  deployed+verified: /root/xv6run/fs-run.img
+PD=1
+FESVR=0
+COMMHOSTS=0
+LOCK=NO_LOCK
+BID=1e44b36c-0340-4c30-9d18-cb02e55602d6
+  released lease: board
+  released lease: serial
