@@ -65,7 +65,13 @@ DETFLAGS = -ffile-prefix-map=$(CURDIR)=.
 
 CFLAGS = -Wall -Werror -Wno-unknown-attributes -O -fno-omit-frame-pointer -ggdb -gdwarf-2
 CFLAGS += $(DETFLAGS)
-CFLAGS += -march=rv64gc
+# TEACHING build: RV64IA + Zicsr + Zifencei only. The teaching core reaches xv6 without the M and C
+# extensions; those are added later as measured extensions, not prerequisites. Four source deviations
+# from the xv6-sim baseline follow from this: TEACHING_NO_PMP below, the shift in kernel/entry.S that
+# replaced the kernel's one mul, the shift-based printint in kernel/printk.c, and user/softmath.c
+# providing the libgcc multiply/divide entry points for user programs (the kernel needs none).
+# No libgcc is linked, so a stray multiply or divide fails to link.
+CFLAGS += -march=rv64ia_zicsr_zifencei -mabi=lp64
 CFLAGS += -std=gnu99
 CFLAGS += -MD
 CFLAGS += -mcmodel=medany
@@ -100,12 +106,12 @@ $K/kernel: $(OBJS) $K/kernel.ld
 	$(OBJDUMP) -t $K/kernel | sed '1,/SYMBOL TABLE/d; s/ .* / /; /^$$/d' > $K/kernel.sym
 
 $K/%.o: $K/%.S
-	$(CC) -march=rv64gc -g $(DETFLAGS) -c -o $@ $<
+	$(CC) -march=rv64ia_zicsr_zifencei -mabi=lp64 -g $(DETFLAGS) -c -o $@ $<
 
 tags: $(OBJS)
 	etags kernel/*.S kernel/*.c
 
-ULIB = $U/ulib.o $U/usys.o $U/printf.o $U/umalloc.o
+ULIB = $U/ulib.o $U/usys.o $U/printf.o $U/umalloc.o $U/softmath.o
 
 _%: %.o $(ULIB) $U/user.ld
 	$(LD) $(LDFLAGS) -T $U/user.ld -o $@ $< $(ULIB)
@@ -121,7 +127,7 @@ $U/usys.o : $U/usys.S
 $U/_forktest: $U/forktest.o $(ULIB)
 	# forktest has less library code linked in - needs to be small
 	# in order to be able to max out the proc table.
-	$(LD) $(LDFLAGS) -N -e main -Ttext 0 -o $U/_forktest $U/forktest.o $U/ulib.o $U/usys.o
+	$(LD) $(LDFLAGS) -N -e main -Ttext 0 -o $U/_forktest $U/forktest.o $U/ulib.o $U/usys.o $U/softmath.o
 	$(OBJDUMP) -S $U/_forktest > $U/forktest.asm
 
 mkfs/mkfs: mkfs/mkfs.c $K/fs.h $K/param.h

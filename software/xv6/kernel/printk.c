@@ -25,12 +25,33 @@ static struct {
 
 static char digits[] = "0123456789abcdef";
 
+// TEACHING build: the core is built without the M extension and the kernel is linked without libgcc,
+// so no integer `/` or `%` with a non-constant operand may appear in the kernel. printint is the only
+// place that had one (`x / base`, `x % base`); it now divides by shift-and-subtract. Every other
+// multiply, divide and modulo in the kernel has a constant operand and compiles to shifts and adds.
+static unsigned long long
+udiv_shift(unsigned long long n, unsigned long long d, unsigned long long *rem)
+{
+  unsigned long long q = 0, r = 0;
+  int i;
+
+  for (i = 63; i >= 0; i--) {
+    r = (r << 1) | ((n >> i) & 1);
+    if (r >= d) {
+      r -= d;
+      q |= 1ULL << i;
+    }
+  }
+  *rem = r;
+  return q;
+}
+
 static void
 printint(long long xx, int base, int sign)
 {
   char buf[20];
   int i;
-  unsigned long long x;
+  unsigned long long x, r;
 
   if (sign && (sign = (xx < 0)))
     x = -xx;
@@ -39,8 +60,9 @@ printint(long long xx, int base, int sign)
 
   i = 0;
   do {
-    buf[i++] = digits[x % base];
-  } while ((x /= base) != 0);
+    x = udiv_shift(x, base, &r);
+    buf[i++] = digits[r];
+  } while (x != 0);
 
   if (sign)
     buf[i++] = '-';
