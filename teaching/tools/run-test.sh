@@ -36,5 +36,5 @@ ok=1
 for g in ${GREPS[@]+"${GREPS[@]}"}; do grep -qE "$g" "$log" || { ok=0; echo "  missing in log: $g"; }; done
 if [ $ok = 1 ]; then printf '  ok    %-10s %-16s %-8s %s\n' "$STEP" "$name" "$TAG" "$summary"; exit 0; fi
 printf '  FAIL  %-10s %-16s %-8s expected %s, got %s -- %s\n' "$STEP" "$name" "$TAG" "$EXPECT" "${result:-none}" "$log"
-grep -E 'PROTO ERROR|OBS ERROR|TIMEOUT|TRAP' "$log" | head -5 | sed 's/^/        /'
+grep -E '^(PROTO ERROR|OBS ERROR|TIMEOUT|TRAP )' "$log" | head -5 | sed 's/^/        /'
 exit 1
