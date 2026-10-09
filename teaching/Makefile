@@ -2,7 +2,7 @@
 # fault injections that step N's tests must catch; `make stepN-all` is both.
 #
 #   make step1-init                    # copy the step-1 skeleton and the given regfile into teaching/work/cpu
-  make step1                         # your core: teaching/work/cpu/*.v (default CORE)
+#   make step1                         # your core: teaching/work/cpu/*.v (default CORE)
 #   make step1-all CORE=../rtl/cpu     # the reference core, which every step must pass
 #
 # Needs: iverilog, python3, and a riscv64 GCC (riscv64-unknown-elf- or riscv64-linux-gnu-; or TOOLPREFIX=).
