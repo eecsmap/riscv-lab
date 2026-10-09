@@ -15,3 +15,5 @@ __pycache__/
 /software/xv6/user/*.sym
 /software/xv6/fs.img
 /software/xv6/mkfs/mkfs
+teaching/out/
+teaching/work/
