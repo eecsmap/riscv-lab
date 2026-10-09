@@ -15,6 +15,8 @@ make step1-all CORE=../rtl/cpu     # 用参考核跑同样的东西（每一步�
 依赖：`iverilog`、`python3`、任一 riscv64 GCC（自动识别 `riscv64-unknown-elf-`、`riscv64-elf-`、
 `riscv64-linux-gnu-`，或 `TOOLPREFIX=/path/to/riscv64-unknown-elf-`）。
 
+`make pl-sim` 把同一个核放到 `teaching/pl/` 的纯 PL 顶层上跑（BRAM 内存，无 harness），见 [`pl/README.md`](pl/README.md)。
+
 ## 固定接口
 
 三样东西整门课不变，harness 会强制检查：

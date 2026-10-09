@@ -23,7 +23,7 @@ export OBJCOPY := $(TOOLPREFIX)objcopy
 export NM := $(TOOLPREFIX)nm
 RUN := $(TEACH)/tools/run-test.sh
 
-.PHONY: all clean step1-init step1 step1-mutants step1-all
+.PHONY: all clean step1-init step1 step1-mutants step1-all pl-sim
 
 all: step1-all
 
@@ -45,6 +45,20 @@ step1-mutants:
 	@$(RUN) --expect FAIL --grep 'PROTO ERROR: request withdrawn before the handshake' \
 	    step1 $(TEACH)/step1/s1_tohost.S rv64i withdraw -P REQ_WITHDRAW=1 -P READY_DELAY=2
 step1-all: step1 step1-mutants
+
+# ---- pure PL: the core on tcpu_bram_mem behind tcpu_pl_top, no harness (teaching/pl/README.md) --------------
+PL_TEST ?= $(TEACH)/step1/s1_tohost.S
+pl-sim:
+	@echo "== pl-sim: tcpu_pl_top + BRAM memory, $(notdir $(PL_TEST)) (CORE=$(CORE))"
+	@mkdir -p $(OUT)/pl
+	@$(CC) -march=rv64i -mabi=lp64 -nostdlib -nostartfiles -static -Wl,--no-relax -Wl,--no-warn-rwx-segments \
+	    -T $(ROOT)/software/probes/link.ld -o $(OUT)/pl/prog.elf $(PL_TEST)
+	@python3 $(TEACH)/tools/elf2hex.py $(OBJCOPY) $(NM) $(OUT)/pl/prog.elf $(OUT)/pl/prog.hex $(OUT)/pl/prog.tohost >/dev/null
+	@iverilog -g2005 -I $(ROOT)/rtl/cpu -I $(CORE) -o $(OUT)/pl/sim.vvp \
+	    $(TEACH)/pl/tb_pl.v $(TEACH)/pl/tcpu_pl_top.v $(TEACH)/pl/tcpu_bram_mem.v $(CORE)/*.v
+	@vvp -n $(OUT)/pl/sim.vvp +hex=$(OUT)/pl/prog.hex +tohost=$$(cat $(OUT)/pl/prog.tohost) $${VCD:+ +vcd=$(OUT)/pl/sim.vcd} \
+	    > $(OUT)/pl/sim.log 2>&1; grep -E '^(SUMMARY|TOHOST|TIMEOUT|RESULT)' $(OUT)/pl/sim.log | tr '\n' ' '; echo
+	@grep -q '^RESULT PASS' $(OUT)/pl/sim.log
 
 clean:
 	rm -rf $(OUT)

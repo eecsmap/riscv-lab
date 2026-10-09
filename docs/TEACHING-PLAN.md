@@ -16,6 +16,9 @@
 5. **取指从 4 字节对齐开始。** 第 1 到第 11 步的取指路径不变：`req_size = 2`，没有 `insn_len`、`pc2` 和
    第二个 parcel。第 12 步加 C 时才改成 parcel 取指，学生会亲手量到两种取指差一倍的 CPI。
 
+第 1 到 8 步的核也能脱离 SoC 在纯 PL 上跑：`teaching/pl/` 有一块可综合的协议内存和带 tohost LED 的顶层，
+`make pl-sim` 在仿真里验证，容量够时直接上板（PYNQ-Z1 的 BRAM 够 512 KiB，xv6 仍需 PS DDR）。
+
 文件切分即写作顺序：`tcpu_core.v` 与 `tcpu_regfile.v` 先写，`tcpu_csr.v`、`tcpu_ptw.v`、`tcpu_muldiv.v`、
 `tcpu_cdecode.v` 依次加入。
 
