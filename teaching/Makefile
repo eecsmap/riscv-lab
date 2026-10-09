@@ -1,7 +1,8 @@
 # Teaching steps: `make stepN` runs step N's tests against the core in $(CORE); `make stepN-mutants` runs the
 # fault injections that step N's tests must catch; `make stepN-all` is both.
 #
-#   make step1                         # your core: teaching/work/cpu/*.v (default CORE)
+#   make step1-init                    # copy the step-1 skeleton and the given regfile into teaching/work/cpu
+  make step1                         # your core: teaching/work/cpu/*.v (default CORE)
 #   make step1-all CORE=../rtl/cpu     # the reference core, which every step must pass
 #
 # Needs: iverilog, python3, and a riscv64 GCC (riscv64-unknown-elf- or riscv64-linux-gnu-; or TOOLPREFIX=).
@@ -22,11 +23,18 @@ export OBJCOPY := $(TOOLPREFIX)objcopy
 export NM := $(TOOLPREFIX)nm
 RUN := $(TEACH)/tools/run-test.sh
 
-.PHONY: all clean step1 step1-mutants step1-all
+.PHONY: all clean step1-init step1 step1-mutants step1-all
 
 all: step1-all
 
 # ---- step 1: the first instructions retire (addi, auipc, sd, jal; 4-byte aligned fetch) --------------------
+# step1-init: your starting point. Refuses to overwrite a tcpu_core.v you have already begun.
+step1-init:
+	@mkdir -p $(TEACH)/work/cpu
+	@if [ -e $(TEACH)/work/cpu/tcpu_core.v ]; then echo "work/cpu/tcpu_core.v exists; not overwriting"; \
+	 else cp $(TEACH)/step1/tcpu_core_skeleton.v $(TEACH)/work/cpu/tcpu_core.v && echo "copied skeleton -> work/cpu/tcpu_core.v"; fi
+	@cp -n $(ROOT)/rtl/cpu/tcpu_regfile.v $(TEACH)/work/cpu/ && echo "regfile -> work/cpu/tcpu_regfile.v (given)"
+	@echo "now: fill the TODOs in work/cpu/tcpu_core.v, then: make step1"
 step1:
 	@echo "== step1: tests (CORE=$(CORE))"
 	@$(RUN) step1 $(TEACH)/step1/s1_tohost.S rv64i plain

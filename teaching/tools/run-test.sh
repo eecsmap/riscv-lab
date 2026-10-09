@@ -21,7 +21,7 @@ STEP=${POS[0]}; SRC=${POS[1]}; MARCH=${POS[2]}; TAG=${POS[3]}
 IVERILOG=${IVERILOG:-iverilog}; VVP=${VVP:-vvp}
 name=$(basename "$SRC" .S); dir=$OUT/$STEP; mkdir -p "$dir"
 elf=$dir/$name.elf; hex=$dir/$name.hex; th=$dir/$name.tohost; sim=$dir/$name.$TAG.vvp; log=$dir/$name.$TAG.log
-core_srcs=$(ls "$CORE"/*.v 2>/dev/null) || { echo "run-test: no .v files in CORE=$CORE"; exit 2; }
+core_srcs=$(ls "$CORE"/*.v 2>/dev/null) || { echo "run-test: no .v files in CORE=$CORE"; echo "  your core goes there: run 'make step1-init' first, or point CORE= at a directory of core sources (CORE=../rtl/cpu is the reference)"; exit 2; }
 
 $CC -march=$MARCH -mabi=lp64 -nostdlib -nostartfiles -static -Wl,--no-relax -Wl,--no-warn-rwx-segments -I"$ROOT/teaching/$STEP" -I"$ROOT/tests/cpu/tests2" \
     -T "$ROOT/software/probes/link.ld" -o "$elf" "$SRC" || exit 2

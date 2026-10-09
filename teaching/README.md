@@ -6,6 +6,7 @@
 
 ```sh
 cd teaching
+make step1-init                    # 把第 1 步的骨架和给定的寄存器堆复制到 teaching/work/cpu
 make step1                         # 跑你的核：teaching/work/cpu/*.v
 make step1-mutants                 # 跑这一步必须抓住的故障注入
 make step1-all CORE=../rtl/cpu     # 用参考核跑同样的东西（每一步参考核都必须通过）

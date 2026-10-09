@@ -5,8 +5,8 @@
 
 ## 做什么
 
-1. 把 `tcpu_core_skeleton.v` 复制为 `teaching/work/cpu/tcpu_core.v`，把 `rtl/cpu/tcpu_regfile.v` 复制到同一目录
-   （寄存器堆给定：x0 读 0、写入丢弃，这是第 2 步的变异体要检查的性质）。
+1. `make step1-init`：把 `tcpu_core_skeleton.v` 复制为 `teaching/work/cpu/tcpu_core.v`，把 `rtl/cpu/tcpu_regfile.v`
+   复制到同一目录（寄存器堆给定：x0 读 0、写入丢弃，这是第 2 步的变异体要检查的性质）。
 2. 填骨架里的 TODO。模块名、参数、端口一个都不能动，harness 按它们实例化。
 3. `make step1` 直到 `RESULT PASS`，三种时序（立即应答、固定延迟、随机延迟）都要过。
 4. 实现 `REQ_WITHDRAW` 这个故障开关（见下），`make step1-mutants` 要看到监视器抓住它。
