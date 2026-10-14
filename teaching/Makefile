@@ -23,7 +23,7 @@ export OBJCOPY := $(TOOLPREFIX)objcopy
 export NM := $(TOOLPREFIX)nm
 RUN := $(TEACH)/tools/run-test.sh
 
-.PHONY: all clean step1-init step1 step1-mutants step1-all pl-sim
+.PHONY: all clean step1-init step1 step1-mutants step1-all step2 step2-mutants step2-all pl-sim
 
 all: step1-all
 
@@ -45,6 +45,29 @@ step1-mutants:
 	@$(RUN) --expect FAIL --grep 'PROTO ERROR: request withdrawn before the handshake' \
 	    step1 $(TEACH)/step1/s1_tohost.S rv64i withdraw -P REQ_WITHDRAW=1 -P READY_DELAY=2
 step1-all: step1 step1-mutants
+
+# ---- step 2: the whole of RV64I --------------------------------------------------------------------------------
+# t01..t03 are the step's own tests; d03 and d06 come from tests/cpu/tests. All define `main`; dcrt.S is the crt.
+CRT2 := --crt $(ROOT)/tests/cpu/tests/dcrt.S
+S2   := $(TEACH)/step2
+D    := $(ROOT)/tests/cpu/tests
+step2:
+	@echo "== step2: tests (CORE=$(CORE))"
+	@$(RUN) $(CRT2) step2 $(S2)/t01_alu.S    rv64i_zifencei plain
+	@$(RUN) $(CRT2) step2 $(S2)/t01_alu.S    rv64i_zifencei random -P RANDOM=1 -P SEED=3
+	@$(RUN) $(CRT2) step2 $(S2)/t02_branch.S rv64i_zifencei plain
+	@$(RUN) $(CRT2) step2 $(S2)/t02_branch.S rv64i_zifencei random -P RANDOM=1 -P SEED=5
+	@$(RUN) $(CRT2) step2 $(S2)/t03_ldst.S   rv64i_zifencei plain
+	@$(RUN) $(CRT2) step2 $(S2)/t03_ldst.S   rv64i_zifencei slow -P READY_DELAY=2 -P RESP_DELAY=4
+	@$(RUN) $(CRT2) step2 $(D)/d03_badbranch.S  rv64i_zifencei plain
+	@$(RUN) $(CRT2) step2 $(D)/d06_loadpayload.S rv64i_zifencei plain
+step2-mutants:
+	@echo "== step2: mutants (CORE=$(CORE))"
+	@$(RUN) --expect FAIL --grep 'TOHOST code=1$$' $(CRT2) step2 $(S2)/t01_alu.S  rv64i_zifencei x0     -P X0_WRITABLE=1
+	@$(RUN) --expect FAIL --grep 'TOHOST code=2$$' $(CRT2) step2 $(S2)/t03_ldst.S rv64i_zifencei nosext -P NO_LOAD_SEXT=1
+	@$(RUN) --expect FAIL --grep 'PROTO ERROR: read request carried a write payload' \
+	    $(CRT2) step2 $(D)/d06_loadpayload.S rv64i_zifencei leak -P LOAD_WDATA_LEAK=1
+step2-all: step2 step2-mutants
 
 # ---- pure PL: the core on tcpu_bram_mem behind tcpu_pl_top, no harness (teaching/pl/README.md) --------------
 PL_TEST ?= $(TEACH)/step1/s1_tohost.S

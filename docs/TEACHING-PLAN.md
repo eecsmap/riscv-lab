@@ -1,6 +1,6 @@
 # 教学路线：从第一条指令到跑通 xv6 的多周期 RV64 核
 
-状态更新于 2026-10-09。分支 `teach-rv64ia`。作业包在 `teaching/`（见其 README）。这份文件是路线的唯一权威版本，每一步完成后在"状态"列更新，
+状态更新于 2026-10-14。分支 `teach-rv64ia`。作业包在 `teaching/`（见其 README）。这份文件是路线的唯一权威版本，每一步完成后在"状态"列更新，
 并链接证据目录。历史讨论里的旧版本（M、C 在 xv6 之前）作废。
 
 ## 总体原则
@@ -27,7 +27,7 @@
 | 步 | 内容 | 唯一的新机制 | 验收 | 必须失败的变异体 | 状态 |
 | --- | --- | --- | --- | --- | --- |
 | 1 | 4 字节取指；addi / auipc / sd / jal；S_IF_REQ、S_IF_WAIT、S_EXEC、S_WB 四态 | ready/valid 握手，请求保持到握手 | `teaching/step1`：s1_tohost 三种时序 | `REQ_WITHDRAW` 触发端口监视器 | **材料就绪**：骨架、测试、变异体、参考核验证 |
-| 2 | 完整 RV64I：W 后缀、六种分支、jalr、全宽度 load/store、fence、fence.i | S_MEM_WAIT 与字节通道移位 | t01 算术、t02 分支、t03 访存（学生写）；d03、d06 | `X0_WRITABLE`、`NO_LOAD_SEXT` | 待做 |
+| 2 | 完整 RV64I：W 后缀、六种分支、jalr、全宽度 load/store、fence、fence.i | 字节通道：位置、掩码、扩展 | `teaching/step2`：t01 算术、t02 分支、t03 访存；d03、d06 | `X0_WRITABLE`、`NO_LOAD_SEXT`、`LOAD_WDATA_LEAK` | **材料就绪**：参考核 8/8，变异体 3/3 |
 | 3 | 同步异常；M 级 CSR 最小集；六种 Zicsr；ecall / ebreak / mret；S_TRAP、S_ARCH | S_ARCH 空拍；先判合法再产生副作用 | d01、d02、d04、d05、d07、d08；c01 到 c10 | `TRAP_BAD_MEPC`、`TRAP_COUNTS_RET`、`ALLOW_RO_WRITE` | 待做 |
 | 4 | mie / mip、三根中断线、wfi | 中断只在 S_IF_REQ 采样 | i01 到 i09、j01、j02；`IRQ_POINT` 十二个注入点 | `EARLY_IRQ`、`STALE_MIE`、`IRQ_BAD_MEPC` | 待做 |
 | 5 | 进入 RD2 SoC 仿真：桥、TileLink、CLINT、HTIF 控制台（Scala 产物给定） | 地址映射与复位向量 0x10040 | boot01 到 boot04 | 无，这步是集成 | 待做 |
@@ -119,7 +119,7 @@ ls 慢一个数量级，推测是每个数字的每一位都走一次 softmath �
 
 | 需要 | 现状 |
 | --- | --- |
-| 第 2 步的 t01 到 t03 与 `testmac.h` | 未提交，d 系列测试引用了它 |
+| 第 2 步的 t01 到 t03 与 `testmac.h` | **已有**：`teaching/step2/`，d 系列测试可直接用 |
 | 第 6 步的 S/U 往返测试程序 | 只有 `docs/archive/cpu-su-prep/TEST_PLAN.md` |
 | 按步运行的脚本 | **已有**：`teaching/Makefile`，`make stepN` / `stepN-mutants`，纯 Verilog testbench `teaching/tb/tb_step.v`，iverilog |
 | 预编译的 RD2 仿真器分发 | 需要旧版 rocket-chip 工具链生成一次 |

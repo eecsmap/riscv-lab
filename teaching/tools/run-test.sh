@@ -1,16 +1,17 @@
 #!/usr/bin/env bash
 # Build one test program, simulate it against the core in $CORE, and judge the log.
 #
-#   run-test.sh [--expect PASS|FAIL] [--grep REGEX]... [-P NAME=VALUE]... <step> <test.S> <march> <tag>
+#   run-test.sh [--expect PASS|FAIL] [--grep REGEX]... [--crt file.S]... [-P NAME=VALUE]... <step> <test.S> <march> <tag>
 #
 # --expect FAIL is for mutants: the run must end in RESULT FAIL *and* every --grep pattern must appear in the
 # log, so a mutant that is caught for the wrong reason, or not caught at all, is itself a failure.
 set -u
-EXPECT=PASS; GREPS=(); PARAMS=(); POS=()
+EXPECT=PASS; GREPS=(); PARAMS=(); POS=(); CRT=()
 while [ $# -gt 0 ]; do
   case "$1" in
     --expect) EXPECT=$2; shift 2 ;;
     --grep)   GREPS+=("$2"); shift 2 ;;
+    --crt)    CRT+=("$2"); shift 2 ;;
     -P)       PARAMS+=("-Ptb_step.$2"); shift 2 ;;
     *)        POS+=("$1"); shift ;;
   esac
@@ -24,7 +25,7 @@ elf=$dir/$name.elf; hex=$dir/$name.hex; th=$dir/$name.tohost; sim=$dir/$name.$TA
 core_srcs=$(ls "$CORE"/*.v 2>/dev/null) || { echo "run-test: no .v files in CORE=$CORE"; echo "  your core goes there: run 'make step1-init' first, or point CORE= at a directory of core sources (CORE=../rtl/cpu is the reference)"; exit 2; }
 
 $CC -march=$MARCH -mabi=lp64 -nostdlib -nostartfiles -static -Wl,--no-relax -Wl,--no-warn-rwx-segments -I"$ROOT/teaching/$STEP" -I"$ROOT/tests/cpu/tests2" \
-    -T "$ROOT/software/probes/link.ld" -o "$elf" "$SRC" || exit 2
+    -T "$ROOT/software/probes/link.ld" -o "$elf" "$SRC" ${CRT[@]+"${CRT[@]}"} || exit 2
 python3 "$ROOT/teaching/tools/elf2hex.py" "$OBJCOPY" "$NM" "$elf" "$hex" "$th" >/dev/null || exit 2
 $IVERILOG -g2005 -I "$ROOT/rtl/cpu" -I "$CORE" ${PARAMS[@]+"${PARAMS[@]}"} -o "$sim" \
     "$ROOT/teaching/tb/tb_step.v" "$ROOT/tests/cpu/tb/tcpu_harness.v" $core_srcs || { echo "run-test: compile failed ($TAG)"; exit 2; }
