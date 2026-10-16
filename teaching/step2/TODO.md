@@ -28,22 +28,36 @@ wire alt = funct7[5];                                // sub / sra 的选择位
 操作数 B：`is_op | is_op32 ? rs2_val : imm_i`。移位量：64 位用 `is_op ? rs2_val[5:0] : insn[25:20]`，
 W 用 `is_op32 ? rs2_val[4:0] : insn[24:20]`。
 
+算术右移必须先放进自己的 wire。`alt ? ($signed(x) >>> n) : (x >> n)` 这种写法里，三目运算的另一支是无符号的，
+Verilog 会把整个表达式按无符号求值，`$signed` 被抵消，`>>>` 退化成逻辑右移（t01 code 13 就死在这里）。
+基线核的写法是把 `sra64`、`w_sra` 各自算成独立的 wire，再在 case 里选。
+
 ```verilog
+wire [63:0] sra64 = $signed(rs1_val) >>> shamt6;     // 单独的 wire：这里只有有符号操作数，>>> 才是算术移位
+wire [31:0] w_sra = $signed(w_a) >>> shamt5;
+
 reg [63:0] alu_out;
+reg [31:0] w;
 always @(*) begin
-  alu_out = 64'd0;
+  alu_out = 64'd0; w = 32'd0;
   if (is_opimm || is_op) case (funct3)
     3'b000: alu_out = (is_op && alt) ? rs1_val - op_b : rs1_val + op_b;
     3'b001: alu_out = rs1_val << shamt6;
     3'b010: alu_out = {63'd0, $signed(rs1_val) < $signed(op_b)};
     3'b011: alu_out = {63'd0, rs1_val < op_b};
     3'b100: alu_out = rs1_val ^ op_b;
-    3'b101: alu_out = alt ? ($signed(rs1_val) >>> shamt6) : (rs1_val >> shamt6);
+    3'b101: alu_out = alt ? sra64 : (rs1_val >> shamt6);
     3'b110: alu_out = rs1_val | op_b;
     3'b111: alu_out = rs1_val & op_b;
   endcase
   else if (is_opimm32 || is_op32) begin
-    // 对低 32 位算，结果符号扩展：先算出 32 位的 w，再 {{32{w[31]}}, w}
+    case (funct3)
+      3'b000:  w = (is_op32 && alt) ? (w_a - w_b) : (w_a + w_b);
+      3'b001:  w = w_a << shamt5;
+      3'b101:  w = alt ? w_sra : (w_a >> shamt5);
+      default: w = 32'd0;
+    endcase
+    alu_out = {{32{w[31]}}, w};                      // 结果符号扩展到 64 位
   end
 end
 ```
