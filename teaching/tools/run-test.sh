@@ -1,17 +1,22 @@
 #!/usr/bin/env bash
 # Build one test program, simulate it against the core in $CORE, and judge the log.
 #
-#   run-test.sh [--expect PASS|FAIL] [--grep REGEX]... [--crt file.S]... [-P NAME=VALUE]... <step> <test.S> <march> <tag>
+#   run-test.sh [--expect PASS|FAIL] [--grep RE]... [--nogrep RE]... [--crt file.S]... [--cflag X]... [--plus ARG]...
+#               [-P NAME=VALUE]... <step> <test.S> <march> <tag>
+#   --nogrep: the pattern must NOT appear; --cflag: extra compiler flag (-DJALR_F3=3); --plus: a testbench plusarg (expect_trap=7)
 #
 # --expect FAIL is for mutants: the run must end in RESULT FAIL *and* every --grep pattern must appear in the
 # log, so a mutant that is caught for the wrong reason, or not caught at all, is itself a failure.
 set -u
-EXPECT=PASS; GREPS=(); PARAMS=(); POS=(); CRT=()
+EXPECT=PASS; GREPS=(); NOGREPS=(); PARAMS=(); POS=(); CRT=(); CFLAGS_X=(); PLUS=()
 while [ $# -gt 0 ]; do
   case "$1" in
     --expect) EXPECT=$2; shift 2 ;;
     --grep)   GREPS+=("$2"); shift 2 ;;
     --crt)    CRT+=("$2"); shift 2 ;;
+    --nogrep) NOGREPS+=("$2"); shift 2 ;;
+    --cflag)  CFLAGS_X+=("$2"); shift 2 ;;
+    --plus)   PLUS+=("+$2"); shift 2 ;;
     -P)       PARAMS+=("-Ptb_step.$2"); shift 2 ;;
     *)        POS+=("$1"); shift ;;
   esac
@@ -24,18 +29,19 @@ name=$(basename "$SRC" .S); dir=$OUT/$STEP; mkdir -p "$dir"
 elf=$dir/$name.elf; hex=$dir/$name.hex; th=$dir/$name.tohost; sim=$dir/$name.$TAG.vvp; log=$dir/$name.$TAG.log
 core_srcs=$(ls "$CORE"/*.v 2>/dev/null) || { echo "run-test: no .v files in CORE=$CORE"; echo "  your core goes there: run 'make step1-init' first, or point CORE= at a directory of core sources (CORE=../rtl/cpu is the reference)"; exit 2; }
 
-$CC -march=$MARCH -mabi=lp64 -nostdlib -nostartfiles -static -Wl,--no-relax -Wl,--no-warn-rwx-segments -I"$ROOT/teaching/$STEP" -I"$ROOT/tests/cpu/tests2" \
+$CC -march=$MARCH -mabi=lp64 -fno-pie -nostdlib -nostartfiles -static -Wl,--no-relax -Wl,--no-warn-rwx-segments ${CFLAGS_X[@]+"${CFLAGS_X[@]}"} -I"$ROOT/teaching/include" -I"$ROOT/teaching/$STEP" -I"$ROOT/tests/cpu/tests2" \
     -T "$ROOT/software/probes/link.ld" -o "$elf" "$SRC" ${CRT[@]+"${CRT[@]}"} || exit 2
 python3 "$ROOT/teaching/tools/elf2hex.py" "$OBJCOPY" "$NM" "$elf" "$hex" "$th" >/dev/null || exit 2
 $IVERILOG -g2005 -I "$ROOT/rtl/cpu" -I "$CORE" ${PARAMS[@]+"${PARAMS[@]}"} -o "$sim" \
     "$ROOT/teaching/tb/tb_step.v" "$ROOT/tests/cpu/tb/tcpu_harness.v" $core_srcs || { echo "run-test: compile failed ($TAG)"; exit 2; }
-$VVP -n "$sim" +hex="$hex" +tohost=$(cat "$th") ${MAXCYCLES:+ +maxcycles=$MAXCYCLES} ${VCD:+ +vcd=$dir/$name.$TAG.vcd} > "$log" 2>&1
+$VVP -n "$sim" +hex="$hex" +tohost=$(cat "$th") ${PLUS[@]+"${PLUS[@]}"} ${MAXCYCLES:+ +maxcycles=$MAXCYCLES} ${VCD:+ +vcd=$dir/$name.$TAG.vcd} > "$log" 2>&1
 result=$(grep -oE '^RESULT (PASS|FAIL)' "$log" | tail -1 | cut -d' ' -f2)
 summary=$(grep -E '^(SUMMARY|TOHOST|TIMEOUT)' "$log" | tr '\n' ' ')
 ok=1
 [ "$result" = "$EXPECT" ] || ok=0
 for g in ${GREPS[@]+"${GREPS[@]}"}; do grep -qE "$g" "$log" || { ok=0; echo "  missing in log: $g"; }; done
+for g in ${NOGREPS[@]+"${NOGREPS[@]}"}; do grep -qE "$g" "$log" && { ok=0; echo "  forbidden in log: $g"; }; done
 if [ $ok = 1 ]; then printf '  ok    %-10s %-16s %-8s %s\n' "$STEP" "$name" "$TAG" "$summary"; exit 0; fi
 printf '  FAIL  %-10s %-16s %-8s expected %s, got %s -- %s\n' "$STEP" "$name" "$TAG" "$EXPECT" "${result:-none}" "$log"
-grep -E '^(PROTO ERROR|OBS ERROR|TIMEOUT|TRAP |TOHOST)' "$log" | head -5 | sed 's/^/        /'
+grep -E '^(PROTO ERROR|OBS ERROR|TIMEOUT|TRAP STORM|HALT|TOHOST)' "$log" | head -5 | sed 's/^/        /'
 exit 1

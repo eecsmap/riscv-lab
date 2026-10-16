@@ -23,7 +23,15 @@ export OBJCOPY := $(TOOLPREFIX)objcopy
 export NM := $(TOOLPREFIX)nm
 RUN := $(TEACH)/tools/run-test.sh
 
-.PHONY: all clean step1-init step1 step1-mutants step1-all step2 step2-mutants step2-all pl-sim
+# Which extensions the core under test has. Some step-3 expectations depend on it (mepc alignment, misa, the
+# mstatus bits, whether a 2-byte-aligned jump target traps). A student's core has none until the step that
+# adds it; the reference core has them all, and is detected by path. Override on the command line:
+#   make step3 ISA_FLAGS="-DHAS_S"           after step 6
+REF_ISA   := -DHAS_C -DHAS_S -DHAS_M
+ISA_FLAGS ?= $(if $(filter $(abspath $(CORE)),$(ROOT)/rtl/cpu),$(REF_ISA),)
+ISA_CF    := $(foreach f,$(ISA_FLAGS),--cflag $(f))
+
+.PHONY: all clean step1-init step1 step1-mutants step1-all step2 step2-mutants step2-all step3 step3-mutants step3-all pl-sim
 
 all: step1-all
 
@@ -68,6 +76,42 @@ step2-mutants:
 	@$(RUN) --expect FAIL --grep 'PROTO ERROR: read request carried a write payload' \
 	    $(CRT2) step2 $(D)/d06_loadpayload.S rv64i_zifencei leak -P LOAD_WDATA_LEAK=1
 step2-all: step2 step2-mutants
+
+# ---- step 3: synchronous exceptions, the M-mode CSRs, mret ------------------------------------------------------
+# d tests end in a trap (STOP_ON_TRAP=1, +expect_trap); c tests run through the shared handler thandler.S.
+# c07 is a negative control: its handler faults on every entry, and the run must be rejected as a TRAP STORM.
+S3   := $(TEACH)/step3
+T2   := $(ROOT)/tests/cpu/tests2
+CRTH := --crt $(ROOT)/tests/cpu/tests/dcrt.S --crt $(T2)/thandler.S
+M3   := rv64i_zicsr_zifencei
+TRAP := -P STOP_ON_TRAP=1 --plus
+MUT  ?=                                  # extra run-test options applied to every step-3 run, e.g. MUT="-P TRAP_BAD_MEPC=1" (kill matrix)
+step3:
+	@echo "== step3: tests (CORE=$(CORE) ISA_FLAGS=$(ISA_FLAGS))"
+	@$(RUN) $(MUT) $(CRT2) $(TRAP) expect_trap=7 --grep 'HALT cause=7 .* data_requests=0' step3 $(D)/d01_highpa.S $(M3) plain
+	@$(RUN) $(MUT) $(CRT2) $(TRAP) expect_trap=4 --grep 'HALT cause=4 .* data_requests=0' step3 $(D)/d02_misaligned.S $(M3) plain
+	@$(RUN) $(MUT) $(CRT2) $(TRAP) expect_trap=2 --nogrep 'COMMIT .* insn=0000007b' step3 $(D)/d04_illegal.S $(M3) plain
+	@for n in 1 2 3 4 5 6 7; do $(RUN) $(MUT) $(CRT2) $(TRAP) expect_trap=2 --cflag -DJALR_F3=$$n --grep 'REG x9=000000005a5a5a5a' \
+	    step3 $(D)/d05_jalr_illegal.S $(M3) f3_$$n || exit 1; done
+	@$(RUN) $(MUT) $(CRT2) $(TRAP) expect_trap=2 --grep 'REG x9=000000005a5a5a5a' step3 $(S3)/d07_csr_time.S $(M3) plain
+	@$(RUN) $(MUT) $(CRT2) step3 $(D)/d08_minstret_ok.S $(M3) plain
+	@$(RUN) $(MUT) $(CRTH) $(ISA_CF) step3 $(T2)/c01_csrforms.S     $(M3) plain
+	@$(RUN) $(MUT) $(CRTH) $(ISA_CF) step3 $(S3)/c02_warl.S         $(M3) plain
+	@$(RUN) $(MUT) $(CRTH) $(ISA_CF) step3 $(S3)/c03_csr_illegal.S  $(M3) plain
+	@$(RUN) $(MUT) $(CRTH) $(ISA_CF) step3 $(T2)/c04_counters.S     $(M3) plain
+	@$(RUN) $(MUT) $(CRTH) $(ISA_CF) step3 $(T2)/c05_mret_count.S   $(M3) plain
+	@$(RUN) $(MUT) $(CRTH) $(ISA_CF) step3 $(S3)/c06_targets.S      $(M3) plain
+	@$(RUN) $(MUT) $(CRTH) $(ISA_CF) step3 $(T2)/c08_accessfault.S  $(M3) plain
+	@$(RUN) $(MUT) $(CRTH) $(ISA_CF) step3 $(T2)/c09_ecall_ebreak.S $(M3) plain --nogrep 'COMMIT .* insn=00000073' --nogrep 'COMMIT .* insn=00100073'
+	@$(RUN) $(MUT) $(CRTH) $(ISA_CF) step3 $(T2)/c10_trapcount.S    $(M3) plain
+	@$(RUN) $(MUT) $(CRTH) $(ISA_CF) step3 $(T2)/c10_trapcount.S    $(M3) random -P RANDOM=1 -P SEED=11
+	@$(RUN) $(MUT) $(CRTH) --expect FAIL --grep 'TRAP STORM' step3 $(T2)/c07_handler_fault.S $(M3) storm
+step3-mutants:
+	@echo "== step3: mutants (CORE=$(CORE))"
+	@$(RUN) --expect FAIL --grep 'TOHOST code=1$$' $(CRTH) $(ISA_CF) step3 $(T2)/c09_ecall_ebreak.S $(M3) badmepc   -P TRAP_BAD_MEPC=1
+	@$(RUN) --expect FAIL --grep 'TOHOST code=1$$' $(CRTH) $(ISA_CF) step3 $(T2)/c10_trapcount.S   $(M3) countsret -P TRAP_COUNTS_RET=1
+	@$(RUN) --expect FAIL --grep 'TOHOST code=1$$' $(CRTH) $(ISA_CF) step3 $(S3)/c03_csr_illegal.S $(M3) rowrite   -P ALLOW_RO_WRITE=1
+step3-all: step3 step3-mutants
 
 # ---- pure PL: the core on tcpu_bram_mem behind tcpu_pl_top, no harness (teaching/pl/README.md) --------------
 PL_TEST ?= $(TEACH)/step1/s1_tohost.S

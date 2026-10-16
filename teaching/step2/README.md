@@ -42,7 +42,7 @@ make step2            # t01 算术、t02 分支、t03 访存，各两种时序�
 make step2-mutants    # X0_WRITABLE 杀 t01 code 1；NO_LOAD_SEXT 杀 t03 code 2；LOAD_WDATA_LEAK 被监视器抓
 ```
 
-测试用 `testmac.h` 的四个宏，每个检查一个唯一 code，失败时日志 `TOHOST code=N` 直接告诉你是哪个检查。
+测试用 `teaching/include/testmac.h` 的四个宏，每个检查一个唯一 code，失败时日志 `TOHOST code=N` 直接告诉你是哪个检查。
 `main` 由 `tests/cpu/tests/dcrt.S` 的 `_start` 调用，`PASS` 跳到它的 `tt_exit`。
 
 | 测试 | 查什么 | 退休数（参考核） |

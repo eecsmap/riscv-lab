@@ -5,8 +5,13 @@
 //   +tohost=<addr>     the ELF's tohost word; the program ends by writing (code << 1) | 1 to it
 //   +maxcycles=<n>     give up after this many cycles (default 200000); a timeout is a FAIL
 //   +vcd=<file>        optional waveform dump
+//   +expect_trap=<n>   (with STOP_ON_TRAP=1) the run ends at the first trap; PASS iff its cause is n
 //
-// The verdict needs all of: tohost code 0, proto_errors == 0, obs_errors == 0, at least one retirement.
+// The verdict needs all of: tohost code 0 (or the expected trap), proto_errors == 0, obs_errors == 0, at least
+// one retirement. A trap storm -- 64 traps with no retirement between them -- is a FAIL of its own kind: a
+// handler that faults on every entry makes no progress and must never be mistaken for a pass (c07).
+// Every run ends by printing the 31 registers (REG x<n>=...) and the trap CSRs, so a test's extra properties
+// ("the link register was left alone", "mtval is the target") can be asserted by grep on the log.
 // Fault-injection and timing parameters are passed through to the harness: iverilog -P tb_step.NAME=value.
 `timescale 1ns/1ps
 module tb_step #(
@@ -36,6 +41,7 @@ module tb_step #(
   wire [31:0] fire_addr;
   wire [63:0] cpu_pc, bd_rd_data, bd_reg_data, bd_csr_data;
   reg  [31:0] tohost_addr = 32'd0;
+  reg  [4:0]  reg_sel = 5'd0, csr_sel = 5'd0;
 
   tcpu_harness #(.READY_DELAY(READY_DELAY), .RESP_DELAY(RESP_DELAY), .RANDOM(RANDOM), .SEED(SEED),
     .X0_WRITABLE(X0_WRITABLE), .NO_LOAD_SEXT(NO_LOAD_SEXT), .MEM_SAME_CYCLE(MEM_SAME_CYCLE),
@@ -48,8 +54,8 @@ module tb_step #(
     .clk(clk), .rst(rst),
     .bd_we(1'b0), .bd_addr(16'd0), .bd_data(64'd0), .bd_rd_addr(16'd0), .bd_rd_data(bd_rd_data),
     .bd_fault_addr(tohost_addr), .bd_watch_addr(32'd0), .bd_inject_pc(64'd0), .bd_core_rst(1'b0),
-    .cpu_state_o(cpu_state), .cpu_pc_o(cpu_pc), .bd_reg_addr(5'd0), .bd_reg_data(bd_reg_data),
-    .bd_csr_sel(5'd0), .bd_csr_data(bd_csr_data), .cpu_priv_o(cpu_priv),
+    .cpu_state_o(cpu_state), .cpu_pc_o(cpu_pc), .bd_reg_addr(reg_sel), .bd_reg_data(bd_reg_data),
+    .bd_csr_sel(csr_sel), .bd_csr_data(bd_csr_data), .cpu_priv_o(cpu_priv),
     .commit_valid(commit_valid), .commit_pc(commit_pc), .commit_insn(commit_insn), .commit_len(commit_len),
     .commit_rd_valid(commit_rd_valid), .commit_rd(commit_rd), .commit_rd_data(commit_rd_data),
     .trap_valid(trap_valid), .trap_interrupt(trap_interrupt), .trap_cause(trap_cause), .trap_epc(trap_epc),
@@ -65,6 +71,8 @@ module tb_step #(
 
   localparam [31:0] MEM_BASE = 32'h8000_0000;
   integer cycles = 0, commits = 0, traps = 0, maxcycles = 200000, i;
+  integer expect_trap = -1, storm = 0;       // storm: traps since the last retirement
+  reg [63:0] last_cause = 64'd0, last_epc = 64'd0, last_tval = 64'd0;
   reg [1023:0] hexfile, vcdfile;
   reg [63:0] tohost_val;
   wire [15:0] tohost_idx = (tohost_addr - MEM_BASE) >> 3;
@@ -73,6 +81,7 @@ module tb_step #(
     if (!$value$plusargs("hex=%s", hexfile)) begin $display("tb_step: +hex=<file> is required"); $finish; end
     if (!$value$plusargs("tohost=%h", tohost_addr)) begin $display("tb_step: +tohost=<addr> is required"); $finish; end
     if ($value$plusargs("maxcycles=%d", maxcycles)) ;
+    if ($value$plusargs("expect_trap=%d", expect_trap)) ;
     $display("PARAMS READY_DELAY=%0d RESP_DELAY=%0d RANDOM=%0d SEED=%0d REQ_WITHDRAW=%0d X0_WRITABLE=%0d NO_LOAD_SEXT=%0d STOP_ON_TRAP=%0d IRQ_POINT=%0d",
              READY_DELAY, RESP_DELAY, RANDOM, SEED, REQ_WITHDRAW, X0_WRITABLE, NO_LOAD_SEXT, STOP_ON_TRAP, IRQ_POINT);
     for (i = 0; i < (1 << 16); i = i + 1) h.mem[i] = 64'd0;   // no X in memory: an unwritten word reads 0
@@ -86,13 +95,22 @@ module tb_step #(
   always @(posedge clk) if (!rst) begin
     cycles = cycles + 1;
     if (commit_valid) begin
-      commits = commits + 1;
+      commits = commits + 1; storm = 0;
       if (commit_rd_valid) $display("COMMIT cyc=%0d pc=%h insn=%h x%0d=%h", cycles, commit_pc[31:0], commit_insn, commit_rd, commit_rd_data);
       else                 $display("COMMIT cyc=%0d pc=%h insn=%h", cycles, commit_pc[31:0], commit_insn);
     end
     if (trap_valid) begin
-      traps = traps + 1;
+      traps = traps + 1; storm = storm + 1;
+      last_cause = trap_cause; last_epc = trap_epc; last_tval = trap_tval;
       $display("TRAP   cyc=%0d cause=%0d epc=%h tval=%h%s", cycles, trap_cause[62:0], trap_epc[31:0], trap_tval, trap_interrupt ? " (interrupt)" : "");
+      if (storm >= 64) begin
+        $display("TRAP STORM: %0d traps without a retirement", storm);
+        finish_run(64'd0);
+      end
+    end
+    if (halted) begin
+      $display("HALT cause=%0d epc=%h tval=%h data_requests=%0d", last_cause[62:0], last_epc[31:0], last_tval, n_data_req);
+      finish_run(64'd0);
     end
     tohost_val = h.mem[tohost_idx];
     if (tohost_val != 64'd0) begin
@@ -106,13 +124,22 @@ module tb_step #(
     end
   end
 
-  task finish_run; input [63:0] th; reg ok; begin
-    ok = (th == 64'd1) && (proto_errors == 64'd0) && (obs_errors == 64'd0) && (commits > 0);
-    $display("SUMMARY cycles=%0d commits=%0d traps=%0d requests=%0d responses=%0d proto_errors=%0d obs_errors=%0d",
-             cycles, commits, traps, n_req, n_resp, proto_errors, obs_errors);
+  task finish_run; input [63:0] th; reg ok, trap_ok; begin
+    // a run that was told to expect a trap passes on that trap; any other run passes on tohost code 0
+    trap_ok = (expect_trap >= 0) && halted && (traps > 0) && (last_cause[62:0] == expect_trap) && !last_cause[63];
+    ok = (trap_ok || (expect_trap < 0 && th == 64'd1)) && (proto_errors == 64'd0) && (obs_errors == 64'd0) && (commits > 0);
+    $display("SUMMARY cycles=%0d commits=%0d traps=%0d requests=%0d data_requests=%0d responses=%0d proto_errors=%0d obs_errors=%0d",
+             cycles, commits, traps, n_req, n_data_req, n_resp, proto_errors, obs_errors);
     if (th == 64'd0)          $display("TOHOST never written");
     else if (th[0] == 1'b0)   $display("TOHOST malformed value %h (bit 0 must be 1)", th);
     else                      $display("TOHOST code=%0d", th >> 1);
+    for (i = 1; i < 32; i = i + 1) begin reg_sel = i; #0; #0; $display("REG x%0d=%h", i, bd_reg_data); end
+    csr_sel = 5'd0; #0; #0; $display("CSR mstatus=%h", bd_csr_data);
+    csr_sel = 5'd1; #0; #0; $display("CSR mtvec=%h", bd_csr_data);
+    csr_sel = 5'd2; #0; #0; $display("CSR mepc=%h", bd_csr_data);
+    csr_sel = 5'd3; #0; #0; $display("CSR mcause=%h", bd_csr_data);
+    csr_sel = 5'd4; #0; #0; $display("CSR mtval=%h", bd_csr_data);
+    csr_sel = 5'd7; #0; #0; $display("CSR minstret=%h", bd_csr_data);
     if (ok) $display("RESULT PASS"); else $display("RESULT FAIL");
     $finish;
   end endtask

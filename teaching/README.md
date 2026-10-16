@@ -30,6 +30,13 @@ make step1-all CORE=../rtl/cpu     # 用参考核跑同样的东西（每一步�
 harness 在 `tests/cpu/tb/tcpu_harness.v`：内存模型、时序配置（`READY_DELAY`、`RESP_DELAY`、`RANDOM`）、
 协议监视器、故障与中断注入都在里面，学生不改它。
 
+## 期望随扩展变化
+
+第 3 步起有几个测试的期望取决于核有哪些扩展（C、S、M）。`ISA_FLAGS` 告诉测试你的核有什么：学生默认为空，
+参考核自动得到 `-DHAS_C -DHAS_S -DHAS_M`，到第 6 步加 `ISA_FLAGS="-DHAS_S"`，第 12 步再加 `-DHAS_C`。
+以 trap 结束的测试用 `STOP_ON_TRAP=1` 加 `+expect_trap=<cause>` 判定；每次运行结束都会打印 31 个寄存器和
+trap CSR，附加性质用 `--grep` / `--nogrep` 断言。
+
 ## 一次运行产生什么
 
 `teaching/out/<step>/<test>.<tag>.log`，内容是：`PARAMS` 一行记录本次的参数；每条退休一行 `COMMIT`，每次 trap 一行
