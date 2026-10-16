@@ -7,7 +7,7 @@ S_ARCH 只做 `state <= S_IF_REQ`。S_TRAP：
 
 ```verilog
 S_TRAP: begin
-  trap_valid <= 1'b1;           // 观测口：这一拍报一次 trap
+  trap_valid <= 1'b1;           // 观测口：在这里赋值，下一拍（S_ARCH）为 1
   trap_enter <= 1'b1;           // 给 CSR 模块：写 mepc / mcause / mtval / mstatus
   pc <= csr_mtvec;              // 直接模式，向量就是 mtvec
   if (STOP_ON_TRAP != 0) begin halted <= 1'b1; state <= S_HALT; end
@@ -96,7 +96,7 @@ S_EXEC：`wb_we = csr_read_intent; wb_is_csr = 1`。S_WB：`rf_wd = csr_rdata`�
 
 ## TODO 8：观测口和开关
 
-`trap_valid` 只在 S_TRAP 那一拍为 1，且和 `commit_valid` 永不同拍。`trap_interrupt` 这一步恒 0。
+`trap_valid` 由 S_TRAP 产生：在 S_TRAP 那一拍赋值，在其后一拍（state 已是 S_ARCH）为 1，宽度一拍；它和 `commit_valid` 永不同拍。所有 `output reg` 观测信号都是这个关系：在状态 X 里赋值，在 X 的下一拍可见。`trap_interrupt` 这一步恒 0。
 `dbg_csr_sel` / `dbg_csr_val` 接到 CSR 模块。三个故障开关都在 CSR 模块里，核只负责透传参数。
 
 ## 顺序建议
