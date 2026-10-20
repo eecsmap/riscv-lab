@@ -31,7 +31,7 @@ REF_ISA   := -DHAS_C -DHAS_S -DHAS_M
 ISA_FLAGS ?= $(if $(filter $(abspath $(CORE)),$(ROOT)/rtl/cpu),$(REF_ISA),)
 ISA_CF    := $(foreach f,$(ISA_FLAGS),--cflag $(f))
 
-.PHONY: all clean step1-init step1 step1-mutants step1-all step2 step2-mutants step2-all step3 step3-mutants step3-all pl-sim mcu0-sim
+.PHONY: all clean step1-init step1 step1-mutants step1-all step2 step2-mutants step2-all step3 step3-mutants step3-all pl-sim mcu0-sim mcu0-fw mcu0-bit
 
 all: step1-all
 
@@ -143,6 +143,21 @@ mcu0-sim:
 	@vvp -n $(OUT)/mcu0/sim.vvp +hex=$(OUT)/mcu0/blink.hex +delay=$(MCU0_DELAY) $${VCD:+ +vcd=$(OUT)/mcu0/sim.vcd} > $(OUT)/mcu0/sim.log 2>&1; \
 	    grep -E '^(LED|BTN|BUS|SUMMARY|RESULT)' $(OUT)/mcu0/sim.log
 	@grep -q '^RESULT PASS' $(OUT)/mcu0/sim.log
+
+# board firmware (DELAY for 40 MHz) and the Vivado build; the bitstream lands in teaching/mcu0/build/
+MCU0_BOARD_DELAY ?= 20000000
+MCU0_BUILD := $(MCU0)/build
+mcu0-fw:
+	@mkdir -p $(MCU0_BUILD)
+	@$(CC) -march=rv64i -mabi=lp64 -O2 -ffreestanding -fno-pie -nostdlib -nostartfiles -static -Wl,--no-relax -Wl,--no-warn-rwx-segments \
+	    -DDELAY=$(MCU0_BOARD_DELAY) -T $(ROOT)/software/probes/link.ld -o $(MCU0_BUILD)/blink.elf $(MCU0)/start.S $(MCU0)/blink.c
+	@python3 $(TEACH)/tools/elf2hex.py $(OBJCOPY) $(NM) $(MCU0_BUILD)/blink.elf $(MCU0_BUILD)/blink.hex $(MCU0_BUILD)/blink.tohost
+	@echo "firmware: $(MCU0_BUILD)/blink.hex (DELAY=$(MCU0_BOARD_DELAY))"
+mcu0-bit: mcu0-fw
+	@echo "== mcu0-bit: Vivado batch build (CORE=$(CORE)) -> $(MCU0_BUILD)/mcu_board.bit"
+	cd $(MCU0_BUILD) && vivado -mode batch -nojournal -log vivado.log -source $(MCU0)/build.tcl \
+	    -tclargs $(abspath $(CORE)) $(MCU0_BUILD)/blink.hex $(MCU0_BUILD)
+	@grep -E 'WNS|Design Timing Summary' -A6 $(MCU0_BUILD)/timing.rpt | head -12
 
 clean:
 	rm -rf $(OUT)

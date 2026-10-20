@@ -34,14 +34,14 @@ testbench 扮演板子：装载固件，看 LED，在第二次翻转后按下 BT
 ## 上板
 
 ```sh
-# 1. 固件：板上的 DELAY
-riscv64-unknown-elf-gcc -march=rv64i -mabi=lp64 -O2 -ffreestanding -fno-pie -nostdlib -nostartfiles -static \
-    -Wl,--no-relax -T ../../software/probes/link.ld -o blink.elf start.S blink.c
-python3 ../tools/elf2hex.py riscv64-unknown-elf-objcopy riscv64-unknown-elf-nm blink.elf blink.hex blink.tohost
-# 2. bitstream（约十分钟）
-vivado -mode batch -source build.tcl -tclargs ../work/cpu $PWD/blink.hex $PWD/build
-# 3. 装进 PL：JTAG 用 hw_server 和 program_hw_devices，或者按本仓库原来的方式转成 .bit.bin 由 PS 侧装载
+cd teaching
+make mcu0-fw                     # 板上的固件：build/blink.hex，DELAY=20,000,000（MCU0_BOARD_DELAY 可改）
+make mcu0-bit                    # Vivado 批处理构建，约十分钟；产物 mcu0/build/mcu_board.bit，日志 build/vivado.log
+# 装进 PL：JTAG 用 hw_server 和 program_hw_devices，或者按本仓库原来的方式转成 .bit.bin 由 PS 侧装载
 ```
+
+`make mcu0-bit` 等价于 `vivado -mode batch -source build.tcl -tclargs <core-dir> <blink.hex> <out-dir>`，三个参数都要，
+参数不全脚本会直接退出。
 
 通电或按 BTN3 复位后，LED0 以 1 秒周期闪，按 BTN0、BTN1、BTN2 分别点亮 LED1、LED2、LED3。
 

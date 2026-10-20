@@ -2,7 +2,11 @@
 #   vivado -mode batch -source build.tcl -tclargs <core-dir> <blink.hex> <out-dir> [part]
 # <core-dir> holds the core's .v files (your teaching/work/cpu, or rtl/cpu for the reference core).
 # Produces <out-dir>/mcu_board.bit and the timing/utilisation reports. Not run in this repository's CI.
-set core_dir [lindex $argv 0]
+if {[llength $argv] < 3} {
+  puts "usage: vivado -mode batch -source build.tcl -tclargs <core-dir> <blink.hex> <out-dir> \[part\]  (or: make mcu0-bit)"
+  exit 1
+}
+set core_dir [file normalize [lindex $argv 0]]
 set hex      [file normalize [lindex $argv 1]]
 set out      [file normalize [lindex $argv 2]]
 set part     [expr {[llength $argv] > 3 ? [lindex $argv 3] : "xc7z020clg400-1"}]
