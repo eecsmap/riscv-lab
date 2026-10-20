@@ -16,6 +16,7 @@ make step1-all CORE=../rtl/cpu     # 用参考核跑同样的东西（每一步�
 `riscv64-linux-gnu-`，或 `TOOLPREFIX=/path/to/riscv64-unknown-elf-`）。
 
 `make pl-sim` 把同一个核放到 `teaching/pl/` 的纯 PL 顶层上跑（BRAM 内存，无 harness），见 [`pl/README.md`](pl/README.md)。
+`make mcu0-sim` 是 MCU-0：核 + 路由器 + RAM + CLINT + GPIO 跑 C 写的闪灯固件，带板级顶层和 Vivado 脚本，见 [`mcu0/README.md`](mcu0/README.md)。
 
 ## 固定接口
 

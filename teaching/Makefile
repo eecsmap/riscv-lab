@@ -31,7 +31,7 @@ REF_ISA   := -DHAS_C -DHAS_S -DHAS_M
 ISA_FLAGS ?= $(if $(filter $(abspath $(CORE)),$(ROOT)/rtl/cpu),$(REF_ISA),)
 ISA_CF    := $(foreach f,$(ISA_FLAGS),--cflag $(f))
 
-.PHONY: all clean step1-init step1 step1-mutants step1-all step2 step2-mutants step2-all step3 step3-mutants step3-all pl-sim
+.PHONY: all clean step1-init step1 step1-mutants step1-all step2 step2-mutants step2-all step3 step3-mutants step3-all pl-sim mcu0-sim
 
 all: step1-all
 
@@ -126,6 +126,23 @@ pl-sim:
 	@vvp -n $(OUT)/pl/sim.vvp +hex=$(OUT)/pl/prog.hex +tohost=$$(cat $(OUT)/pl/prog.tohost) $${VCD:+ +vcd=$(OUT)/pl/sim.vcd} \
 	    > $(OUT)/pl/sim.log 2>&1; grep -E '^(SUMMARY|TOHOST|TIMEOUT|RESULT)' $(OUT)/pl/sim.log | tr '\n' ' '; echo
 	@grep -q '^RESULT PASS' $(OUT)/pl/sim.log
+
+# ---- MCU-0: core + router + RAM + CLINT + GPIO, blink firmware in C (teaching/mcu0/README.md) -----------------
+MCU0 := $(TEACH)/mcu0
+MCU0_DELAY ?= 4000
+mcu0-sim:
+	@echo "== mcu0-sim: blink firmware on mcu_top (CORE=$(CORE), DELAY=$(MCU0_DELAY) ticks)"
+	@mkdir -p $(OUT)/mcu0
+	@$(CC) -march=rv64i -mabi=lp64 -O2 -ffreestanding -fno-pie -nostdlib -nostartfiles -static -Wl,--no-relax -Wl,--no-warn-rwx-segments \
+	    -DDELAY=$(MCU0_DELAY) -T $(ROOT)/software/probes/link.ld -o $(OUT)/mcu0/blink.elf $(MCU0)/start.S $(MCU0)/blink.c
+	@$(OBJCOPY) -O binary $(OUT)/mcu0/blink.elf $(OUT)/mcu0/blink.bin
+	@python3 $(TEACH)/tools/elf2hex.py $(OBJCOPY) $(NM) $(OUT)/mcu0/blink.elf $(OUT)/mcu0/blink.hex $(OUT)/mcu0/blink.tohost >/dev/null
+	@$(TOOLPREFIX)objdump -d $(OUT)/mcu0/blink.elf | grep -cE '\s(mul|div|rem|csr)' | grep -qx 0 || { echo "blink.elf uses M or CSR instructions"; exit 1; }
+	@iverilog -g2005 -I $(ROOT)/rtl/cpu -I $(CORE) -o $(OUT)/mcu0/sim.vvp \
+	    $(MCU0)/tb_mcu.v $(MCU0)/mcu_top.v $(MCU0)/mcu_router.v $(MCU0)/mcu_ram.v $(MCU0)/mcu_clint.v $(MCU0)/mcu_gpio.v $(CORE)/*.v
+	@vvp -n $(OUT)/mcu0/sim.vvp +hex=$(OUT)/mcu0/blink.hex +delay=$(MCU0_DELAY) $${VCD:+ +vcd=$(OUT)/mcu0/sim.vcd} > $(OUT)/mcu0/sim.log 2>&1; \
+	    grep -E '^(LED|BTN|BUS|SUMMARY|RESULT)' $(OUT)/mcu0/sim.log
+	@grep -q '^RESULT PASS' $(OUT)/mcu0/sim.log
 
 clean:
 	rm -rf $(OUT)

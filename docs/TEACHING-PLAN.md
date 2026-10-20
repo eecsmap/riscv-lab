@@ -18,6 +18,8 @@
 
 第 1 到 8 步的核也能脱离 SoC 在纯 PL 上跑：`teaching/pl/` 有一块可综合的协议内存和带 tohost LED 的顶层，
 `make pl-sim` 在仿真里验证，容量够时直接上板（PYNQ-Z1 的 BRAM 够 512 KiB，xv6 仍需 PS DDR）。
+`teaching/mcu0/` 是在它上面的第一个物理里程碑 MCU-0：路由器、RAM、CLINT、GPIO，C 固件闪灯并映射按钮，第 2 步的核即可；
+板级顶层、xdc 和 Vivado 脚本齐全，仿真用参考核验证过，板上待你第一次构建。
 
 文件切分即写作顺序：`tcpu_core.v` 与 `tcpu_regfile.v` 先写，`tcpu_csr.v`、`tcpu_ptw.v`、`tcpu_muldiv.v`、
 `tcpu_cdecode.v` 依次加入。
