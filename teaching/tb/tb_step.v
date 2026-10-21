@@ -91,6 +91,15 @@ module tb_step #(
     #1 rst = 1'b0;
   end
 
+  // X on the port while a request is offered is a defect the memory model cannot see (it ignores req_size,
+  // for one), so it is checked here: a core whose port carries X passes nothing. Counted into obs_errors.
+  integer x_errors = 0;
+  wire port_x = h.req_valid && (^{h.req_addr, h.req_size, h.req_write, h.req_wdata, h.req_wmask} === 1'bx);
+  always @(posedge clk) if (!rst && port_x && x_errors < 5) begin
+    x_errors = x_errors + 1;
+    $display("PROTO ERROR: X on the port with req_valid high: addr=%h size=%b write=%b wmask=%b", h.req_addr, h.req_size, h.req_write, h.req_wmask);
+  end
+
   // the commit stream, one line per retirement or trap, is the student's first debugging tool
   always @(posedge clk) if (!rst) begin
     cycles = cycles + 1;
@@ -127,9 +136,9 @@ module tb_step #(
   task finish_run; input [63:0] th; reg ok, trap_ok; begin
     // a run that was told to expect a trap passes on that trap; any other run passes on tohost code 0
     trap_ok = (expect_trap >= 0) && halted && (traps > 0) && (last_cause[62:0] == expect_trap) && !last_cause[63];
-    ok = (trap_ok || (expect_trap < 0 && th == 64'd1)) && (proto_errors == 64'd0) && (obs_errors == 64'd0) && (commits > 0);
-    $display("SUMMARY cycles=%0d commits=%0d traps=%0d requests=%0d data_requests=%0d responses=%0d proto_errors=%0d obs_errors=%0d",
-             cycles, commits, traps, n_req, n_data_req, n_resp, proto_errors, obs_errors);
+    ok = (trap_ok || (expect_trap < 0 && th == 64'd1)) && (proto_errors == 64'd0) && (obs_errors == 64'd0) && (x_errors == 0) && (commits > 0);
+    $display("SUMMARY cycles=%0d commits=%0d traps=%0d requests=%0d data_requests=%0d responses=%0d proto_errors=%0d obs_errors=%0d x_errors=%0d",
+             cycles, commits, traps, n_req, n_data_req, n_resp, proto_errors, obs_errors, x_errors);
     if (th == 64'd0)          $display("TOHOST never written");
     else if (th[0] == 1'b0)   $display("TOHOST malformed value %h (bit 0 must be 1)", th);
     else                      $display("TOHOST code=%0d", th >> 1);
