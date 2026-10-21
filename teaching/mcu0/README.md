@@ -45,8 +45,18 @@ make mcu0-bit                    # Vivado 批处理构建，约十分钟；产�
 
 通电或按 BTN3 复位后，LED0 以 1 秒周期闪，按 BTN0、BTN1、BTN2 分别点亮 LED1、LED2、LED3。
 
-板上的东西这边没有跑过：`mcu_board.v` 用了 Xilinx 原语，iverilog 不认；引脚按 PYNQ-Z1 的 master XDC 写，用前对一下
-你那块板的版本。时序上这个设计的关键路径在核里，40 MHz 应该有大量余量，`build/timing.rpt` 会给出 WNS。
+### 参考核的第一次构建（2026-10-21，Vivado 2025.2.1，xc7z020clg400-1）
+
+| 项 | 值 |
+| --- | --- |
+| 综合 + 实现 + bitstream | 约 3 分钟 |
+| WNS / WHS（25 ns 周期） | +9.414 ns / +0.049 ns，关键路径约 15.6 ns，40 MHz 余量很大 |
+| LUT 总计 | 6597，其中核 6002（寄存器堆 3112），路由器 480，CLINT 97 |
+| FF | 2704 |
+| BRAM | 16 个 RAMB36（64 KiB RAM），DSP 0 |
+
+`mcu_board.v` 的原语 iverilog 不认，所以板级顶层只在 Vivado 里验证；引脚按 PYNQ-Z1 的 master XDC 写，用前对一下
+你那块板的版本。bitstream 尚未烧进板子。
 
 ## 换程序
 
