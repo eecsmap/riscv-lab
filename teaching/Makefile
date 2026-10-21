@@ -31,7 +31,7 @@ REF_ISA   := -DHAS_C -DHAS_S -DHAS_M
 ISA_FLAGS ?= $(if $(filter $(abspath $(CORE)),$(ROOT)/rtl/cpu),$(REF_ISA),)
 ISA_CF    := $(foreach f,$(ISA_FLAGS),--cflag $(f))
 
-.PHONY: all clean step1-init step1 step1-mutants step1-all step2 step2-mutants step2-all step3 step3-mutants step3-all pl-sim mcu0-sim mcu0-fw mcu0-bit
+.PHONY: all clean step1-init step1 step1-mutants step1-all step2 step2-mutants step2-all step3 step3-mutants step3-all pl-sim mcu0-sim mcu0-fw mcu0-bit mcu0-prog
 
 all: step1-all
 
@@ -158,6 +158,12 @@ mcu0-bit: mcu0-fw
 	cd $(MCU0_BUILD) && vivado -mode batch -nojournal -log vivado.log -source $(MCU0)/build.tcl \
 	    -tclargs $(abspath $(CORE)) $(MCU0_BUILD)/blink.hex $(MCU0_BUILD)
 	@grep -E 'WNS|Design Timing Summary' -A6 $(MCU0_BUILD)/timing.rpt | head -12
+
+# program the PL over JTAG (hardware manager; the PS is left alone). BIT= picks another bitstream.
+BIT ?= $(MCU0_BUILD)/mcu_board.bit
+mcu0-prog:
+	@echo "== mcu0-prog: $(BIT)"
+	cd $(MCU0_BUILD) && vivado -mode batch -nojournal -log program.log -source $(MCU0)/program.tcl -tclargs $(BIT) | grep -E 'PROGRAMMED|ERROR|no xc7z020|no such'
 
 clean:
 	rm -rf $(OUT)

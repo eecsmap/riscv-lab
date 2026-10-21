@@ -37,7 +37,7 @@ testbench 扮演板子：装载固件，看 LED，在第二次翻转后按下 BT
 cd teaching
 make mcu0-fw                     # 板上的固件：build/blink.hex，DELAY=20,000,000（MCU0_BOARD_DELAY 可改）
 make mcu0-bit                    # Vivado 批处理构建，约十分钟；产物 mcu0/build/mcu_board.bit，日志 build/vivado.log
-# 装进 PL：JTAG 用 hw_server 和 program_hw_devices，或者按本仓库原来的方式转成 .bit.bin 由 PS 侧装载
+make mcu0-prog                   # JTAG 烧写（hw_server + program_hw_devices），只动 PL，PS 不受影响；BIT=... 换别的 bitstream
 ```
 
 `make mcu0-bit` 等价于 `vivado -mode batch -source build.tcl -tclargs <core-dir> <blink.hex> <out-dir>`，三个参数都要，
@@ -56,7 +56,11 @@ make mcu0-bit                    # Vivado 批处理构建，约十分钟；产�
 | BRAM | 16 个 RAMB36（64 KiB RAM），DSP 0 |
 
 `mcu_board.v` 的原语 iverilog 不认，所以板级顶层只在 Vivado 里验证；引脚按 PYNQ-Z1 的 master XDC 写，用前对一下
-你那块板的版本。bitstream 尚未烧进板子。
+你那块板的版本。
+
+**2026-10-21 第一次上板：** 学生核（第 2 步，4 态加访存态）的 bitstream 经 JTAG 烧入，综合实现 165 秒，
+WNS +9.328 ns，LUT 2740（核 2436，寄存器堆 2210），FF 792，BRAM 16。烧写走 `program.tcl`，PS 侧 Linux 不受影响。
+注意烧入 MCU-0 后 PL 上不再有 AXI 从设备，PS 不能再访问 0x43C0_0000 那段地址。
 
 ## 换程序
 
