@@ -3,7 +3,8 @@
 // Slave interface (fixed one-cycle latency, always ready): the router pulses `sel_<slave>` for one cycle
 // together with slv_we / slv_addr / slv_wdata / slv_wmask; the slave performs the write, or registers its read
 // data, at the end of that cycle, and holds <slave>_rdata until its next select. The router answers the core
-// the cycle after that. Accept -> response is therefore two cycles, which the port contract allows.
+// two cycles after that (busy, then answer). Offer -> ready is one cycle and accept -> response three; the
+// `answer` stage is conservative and can be removed (see README, exercise), the port contract allows either.
 //
 // Addresses nobody claims, and atomic requests, answer resp_error = 1 and touch no slave.
 `timescale 1ns/1ps
