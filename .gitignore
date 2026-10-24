@@ -17,4 +17,6 @@ __pycache__/
 /software/xv6/mkfs/mkfs
 teaching/out/
 teaching/work/
-teaching/mcu0/build/
+teaching/mcu0/build*/
+teaching/mcu0/vivado*.jou
+teaching/mcu0/vivado*.log
