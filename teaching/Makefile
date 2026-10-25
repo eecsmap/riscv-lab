@@ -45,7 +45,7 @@ unit:
 	for tb in $(UNIT_DIR)/tb_*.v; do n=$$(basename $$tb .v); \
 	  iverilog -g2005 -I $(ROOT)/rtl/cpu -I $(CORE) -s $$n -o $(OUT)/unit/$$n.vvp $$tb $(CORE)/*.v || { echo "  FAIL  $$n  (compile)"; fail=1; continue; }; \
 	  vvp -n $(OUT)/unit/$$n.vvp > $(OUT)/unit/$$n.log 2>&1; \
-	  if grep -q '^RESULT PASS' $(OUT)/unit/$$n.log; then echo "  ok    $$n  $$(grep -v RESULT $(OUT)/unit/$$n.log | tail -1)"; \
+	  if grep -q '^RESULT PASS' $(OUT)/unit/$$n.log; then echo "  ok    $$n  $$(grep -v -E 'RESULT|finish called' $(OUT)/unit/$$n.log | tail -1)"; \
 	  else echo "  FAIL  $$n  -- $(OUT)/unit/$$n.log"; grep -m5 -E 'MISMATCH|ERROR|FAIL' $(OUT)/unit/$$n.log | sed 's/^/        /'; fail=1; fi; \
 	done; exit $$fail
 
