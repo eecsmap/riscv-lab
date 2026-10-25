@@ -105,6 +105,7 @@ S_EXEC：`wb_we = csr_read_intent; wb_is_csr = 1`。S_WB：`rf_wd = csr_rdata`�
 | --- | --- | --- |
 | TODO 1、2 | `make step3` | d04、d05、d07 过（cause 2 停机） |
 | TODO 3 | 同上 | d01、d02 过 |
+| **练习**：自己写 `d09_pc_highpa.S` | 先故意把 S_IF_REQ 的 cause 写错，看它失败；再改对 | 第 3 步唯一一个检查取指地址越界（cause 1）的测试，由你来写 |
 | TODO 6、7 | 同上 | d08、c01、c02、c04 过 |
 | TODO 5 | 同上 | c05、c09、c10 过 |
 | TODO 2 的 CSR 部分 | 同上 | c03 过 |
