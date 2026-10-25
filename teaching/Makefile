@@ -31,9 +31,23 @@ REF_ISA   := -DHAS_C -DHAS_S -DHAS_M
 ISA_FLAGS ?= $(if $(filter $(abspath $(CORE)),$(ROOT)/rtl/cpu),$(REF_ISA),)
 ISA_CF    := $(foreach f,$(ISA_FLAGS),--cflag $(f))
 
-.PHONY: all clean step1-init step1 step1-mutants step1-all step2 step2-mutants step2-all step3 step3-mutants step3-all pl-sim mcu0-sim mcu0-fw mcu0-bit mcu0-prog
+.PHONY: all clean unit step1-init step1 step1-mutants step1-all step2 step2-mutants step2-all step3 step3-mutants step3-all pl-sim mcu0-sim mcu0-fw mcu0-bit mcu0-prog
 
 all: step1-all
+
+# ---- unit tests: every work/unit/tb_*.v is compiled with the core's sources and run on its own --------------
+# A unit test prints RESULT PASS or RESULT FAIL; `make unit` fails if any does not pass.
+UNIT_DIR := $(TEACH)/work/unit
+unit:
+	@echo "== unit: $(UNIT_DIR)/tb_*.v (CORE=$(CORE))"
+	@ls $(UNIT_DIR)/tb_*.v >/dev/null 2>&1 || { echo "no unit tests in $(UNIT_DIR)"; exit 1; }
+	@mkdir -p $(OUT)/unit; fail=0; \
+	for tb in $(UNIT_DIR)/tb_*.v; do n=$$(basename $$tb .v); \
+	  iverilog -g2005 -I $(ROOT)/rtl/cpu -I $(CORE) -s $$n -o $(OUT)/unit/$$n.vvp $$tb $(CORE)/*.v || { echo "  FAIL  $$n  (compile)"; fail=1; continue; }; \
+	  vvp -n $(OUT)/unit/$$n.vvp > $(OUT)/unit/$$n.log 2>&1; \
+	  if grep -q '^RESULT PASS' $(OUT)/unit/$$n.log; then echo "  ok    $$n  $$(grep -v RESULT $(OUT)/unit/$$n.log | tail -1)"; \
+	  else echo "  FAIL  $$n  -- $(OUT)/unit/$$n.log"; grep -m5 -E 'MISMATCH|ERROR|FAIL' $(OUT)/unit/$$n.log | sed 's/^/        /'; fail=1; fi; \
+	done; exit $$fail
 
 # ---- step 1: the first instructions retire (addi, auipc, sd, jal; 4-byte aligned fetch) --------------------
 # step1-init: your starting point. Refuses to overwrite a tcpu_core.v you have already begun.
