@@ -108,6 +108,7 @@ step3:
 	@for n in 1 2 3 4 5 6 7; do $(RUN) $(MUT) $(CRT2) $(TRAP) expect_trap=2 --cflag -DJALR_F3=$$n --grep 'REG x9=000000005a5a5a5a' \
 	    step3 $(D)/d05_jalr_illegal.S $(M3) f3_$$n || exit 1; done
 	@$(RUN) $(MUT) $(CRT2) $(TRAP) expect_trap=2 --grep 'REG x9=000000005a5a5a5a' step3 $(S3)/d07_csr_time.S $(M3) plain
+	@$(RUN) $(MUT) $(CRT2) $(TRAP) expect_trap=1 --grep 'HALT cause=1 .* tval=0000000100000000 data_requests=0' step3 $(S3)/d09_pc_highpa.S $(M3) plain
 	@$(RUN) $(MUT) $(CRT2) step3 $(D)/d08_minstret_ok.S $(M3) plain
 	@$(RUN) $(MUT) $(CRTH) $(ISA_CF) step3 $(T2)/c01_csrforms.S     $(M3) plain
 	@$(RUN) $(MUT) $(CRTH) $(ISA_CF) step3 $(S3)/c02_warl.S         $(M3) plain

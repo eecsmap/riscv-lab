@@ -32,7 +32,7 @@ S_IF_REQ，它只读 pc，所以没出事。从这一步起 S_IF_REQ 之后要�
 ## 测试
 
 ```sh
-make step3            # 23 次运行
+make step3            # 24 次运行
 make step3-mutants    # 3 个变异体
 ```
 
@@ -43,6 +43,7 @@ make step3-mutants    # 3 个变异体
 | d04 | 未实现的编码 cause 2，并且不出现在 commit 流里 | trap 停机 |
 | d05 ×7 | jalr 的 7 种非法 funct3：cause 2，链接寄存器 x9 原封不动 | trap 停机 |
 | d07 | 读不存在的 CSR（`time`）是非法指令，不能编一个值 | trap 停机 |
+| d09 | 跳到 32 位物理空间之外：jalr 正常退休，下一次取指报 cause 1，tval 是那个地址，零次数据请求（学生编写） | trap 停机 |
 | d08 | 真实实现的 minstret 和 instret 能读、在走 | tohost |
 | c01 | 六种 Zicsr 形式和写意图规则 | tohost |
 | c02 | WARL：mtvec、mepc、mstatus、misa、mhartid 的读回值 | tohost |
