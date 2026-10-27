@@ -79,6 +79,17 @@ module tcpu_csr #(parameter TRAP_BAD_MEPC = 0, TRAP_COUNTS_RET = 0, ALLOW_RO_WRI
 mret 时：MIE ← MPIE，MPIE ← 1。`minstret` 在 `retire || (TRAP_COUNTS_RET && trap)` 时加一，软件写优先。
 `dbg_sel`：0 mstatus、1 mtvec、2 mepc、3 mcause、4 mtval、5 mscratch、6 mcycle、7 minstret，testbench 结束时打印。
 
+### 单元测试
+
+先不接进核，单独测这个模块：
+
+```sh
+mkdir -p work/unit && cp step3/tb_csr.v work/unit/ && make unit
+```
+
+44 项检查分四段，按建议的写作顺序排列：A 译码与读、B 软件写、C 计数器、D trap 与 mret。末尾的 `STAGE` 四行告诉你
+写到哪一段了。测试只用模块的端口，计数器经 `dbg_sel` 6、7 读，你的内部变量名不受约束。
+
 ## TODO 7：Zicsr 在核里的接法
 
 ```verilog
