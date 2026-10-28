@@ -44,13 +44,12 @@ Branch `teach-rv64ia` turns it into a teaching path: a student rebuilds the core
   requires it), so misaligned accesses trap rather than being supported within a word.
 - **The baseline core has 27 CSR addresses.**
 
-## Student status (2026-10-27)
+## Student status (2026-10-28)
 
-Steps 1 and 2 done by the student; their step-2 core drove MCU-0 on the board (LED blink + button mirror via
-JTAG). Step 3 in progress: all d-tests pass, including `d09_pc_highpa`, the first test the student wrote;
-the CSR module passes `tb_csr` 44/44; open items are Zicsr writeback (`csr_rdata` into rd in S_WB),
-`illegal` must include `csr_addr_illegal`, then TODO 4 (bus errors) and TODO 5 (ecall/ebreak/mret).
-The student's own files are `teaching/work/` (gitignored), on their machine.
+Steps 1, 2 and 3 done by the student. Step 3: 24/24 runs and 3/3 mutants, plus `d09_pc_highpa`, the first test the
+student wrote, and a CSR module that passes `tb_csr` 44/44. Their step-2 core also drove MCU-0 on the board.
+Next: step 4 (interrupts); its teaching material is not written yet. The student's own files are `teaching/work/`
+(gitignored), on their machine.
 
 ## Proposed next course (not started)
 
