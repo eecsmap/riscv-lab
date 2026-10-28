@@ -31,7 +31,7 @@ REF_ISA   := -DHAS_C -DHAS_S -DHAS_M
 ISA_FLAGS ?= $(if $(filter $(abspath $(CORE)),$(ROOT)/rtl/cpu),$(REF_ISA),)
 ISA_CF    := $(foreach f,$(ISA_FLAGS),--cflag $(f))
 
-.PHONY: all clean unit step1-init step1 step1-mutants step1-all step2 step2-mutants step2-all step3 step3-mutants step3-all pl-sim mcu0-sim mcu0-fw mcu0-bit mcu0-prog
+.PHONY: all clean unit step1-init step1 step1-mutants step1-all step2 step2-mutants step2-all step3 step3-mutants step3-all step4 step4-mutants step4-all pl-sim mcu0-sim mcu0-fw mcu0-bit mcu0-prog
 
 all: step1-all
 
@@ -127,6 +127,60 @@ step3-mutants:
 	@$(RUN) --expect FAIL --grep 'TOHOST code=1$$' $(CRTH) $(ISA_CF) step3 $(T2)/c10_trapcount.S   $(M3) countsret -P TRAP_COUNTS_RET=1
 	@$(RUN) --expect FAIL --grep 'TOHOST code=1$$' $(CRTH) $(ISA_CF) step3 $(S3)/c03_csr_illegal.S $(M3) rowrite   -P ALLOW_RO_WRITE=1
 step3-all: step3 step3-mutants
+
+# ---- step 4: interrupts (mie, mip, three level lines, wfi), accepted only at the architectural boundary ---------
+# Every run checks the injection context the bench prints: the chosen moment occurred (hits > 0), the line was
+# raised once (fires=1) and quieted by the handler (clears=N), and for the placed injections the core state, the
+# pc it was aimed at and whether the enables were really in effect. @SYM@ is the address of a label in the test.
+# State numbers are the shared encodings: 1 IF_WAIT, 4 MEM_WAIT, 5 WB, 8 ARCH.
+S4   := $(TEACH)/step4
+CRTI := --crt $(ROOT)/tests/cpu/tests/dcrt.S --crt $(T2)/ihandler.S
+IRQ  := -P IRQ_LINE=1
+ONE  := 'IRQ hits=[1-9][0-9]* fires=1 clears=1 '
+ARMD := -P IRQ_ARM_REQUIRED=1 -P IRQ_NEED_ENABLED=1
+J01  := $(RUN) $(MUT) $(CRTI) $(ISA_CF) $(IRQ) $(ARMD)
+J02  := -P IRQ_POINT=4 -P IRQ_ARM_REQUIRED=1 -P IRQ_NEED_WRITE=1 --watch watch_slot
+SLOW := -P READY_DELAY=2 -P RESP_DELAY=4
+step4:
+	@echo "== step4: tests (CORE=$(CORE) ISA_FLAGS=$(ISA_FLAGS))"
+	@$(RUN) $(MUT) $(CRTI) $(ISA_CF) $(IRQ) -P IRQ_POINT=2 --grep $(ONE) step4 $(T2)/i01_basic.S $(M3) plain
+	@$(RUN) $(MUT) $(CRTI) $(ISA_CF) $(IRQ) -P IRQ_POINT=2 -P RANDOM=1 -P SEED=9 --grep $(ONE) step4 $(T2)/i01_basic.S $(M3) random
+	@$(RUN) $(MUT) $(CRTI) $(ISA_CF) -P IRQ_ALL_LINES=1 -P IRQ_POINT=2 --grep 'IRQ hits=[1-9][0-9]* fires=1 clears=3 ' step4 $(T2)/i02_priority.S $(M3) plain
+	@$(RUN) $(MUT) $(CRTI) $(ISA_CF) $(IRQ) -P IRQ_POINT=2 --grep $(ONE) step4 $(T2)/i03_masking.S $(M3) plain
+	@$(RUN) $(MUT) $(CRTI) $(ISA_CF) $(IRQ) -P IRQ_POINT=2 --grep $(ONE) step4 $(S4)/i04_mip_level.S $(M3) plain
+	@$(RUN) $(MUT) $(CRTI) $(ISA_CF) $(IRQ) -P IRQ_POINT=2 --grep $(ONE) step4 $(T2)/i05_wfi.S $(M3) plain
+	@$(RUN) $(MUT) $(CRTI) $(ISA_CF) $(IRQ) -P IRQ_POINT=2 --grep $(ONE) step4 $(T2)/i06_mret_reenter.S $(M3) plain
+	@$(RUN) $(MUT) $(CRTI) $(ISA_CF) $(IRQ) -P IRQ_POINT=6 -P IRQ_ARM_REQUIRED=1 --grep $(ONE)'fire_state=5 .* fire_enabled=1' step4 $(T2)/i07_epc_redirect.S $(M3) plain
+	@$(RUN) $(MUT) $(CRTI) $(ISA_CF) $(IRQ) -P IRQ_POINT=4 --grep $(ONE)'fire_state=4 fire_pc=@the_bad_load@ fire_enabled=1 fire_outstanding=1' step4 $(T2)/i08_sync_first.S $(M3) plain
+	@$(RUN) $(MUT) $(CRTI) $(ISA_CF) $(IRQ) -P IRQ_POINT=3 --grep $(ONE)'fire_state=4 .* fire_outstanding=0' step4 $(T2)/i09_store_exact.S $(M3) req
+	@$(RUN) $(MUT) $(CRTI) $(ISA_CF) $(IRQ) -P IRQ_POINT=4 --grep $(ONE)'fire_state=4 .* fire_outstanding=1' step4 $(T2)/i09_store_exact.S $(M3) resp
+	@$(RUN) $(MUT) $(CRTI) $(ISA_CF) $(IRQ) -P IRQ_POINT=4 -P READY_DELAY=2 -P RESP_DELAY=4 --grep $(ONE)'fire_state=4 .* fire_outstanding=1' step4 $(T2)/i09_store_exact.S $(M3) slow
+	@$(J01) -P IRQ_POINT=1 --grep $(ONE)'fire_state=1 fire_pc=@target_insn@ fire_enabled=1 fire_outstanding=0' step4 $(T2)/j01_enabled_boundary.S $(M3) if_req
+	@$(J01) -P IRQ_POINT=2 --grep $(ONE)'fire_state=1 fire_pc=@target_insn@ fire_enabled=1 fire_outstanding=1' step4 $(T2)/j01_enabled_boundary.S $(M3) if_resp
+	@$(J01) -P IRQ_POINT=3 --grep $(ONE)'fire_state=4 fire_pc=@target_insn@ fire_enabled=1 fire_outstanding=0' step4 $(T2)/j01_enabled_boundary.S $(M3) mem_req
+	@$(J01) -P IRQ_POINT=4 --grep $(ONE)'fire_state=4 fire_pc=@target_insn@ fire_enabled=1 fire_outstanding=1' step4 $(T2)/j01_enabled_boundary.S $(M3) mem_resp
+	@$(J01) -P IRQ_POINT=5 --grep $(ONE)'fire_state=5 fire_pc=@target_insn@ fire_enabled=1 fire_outstanding=0' step4 $(T2)/j01_enabled_boundary.S $(M3) wb
+	@$(J01) -P IRQ_POINT=7 --grep $(ONE)'fire_state=8 fire_pc=@after_target@ fire_enabled=1 fire_outstanding=0' step4 $(T2)/j01_enabled_boundary.S $(M3) arch
+	@$(RUN) $(MUT) $(CRTI) $(ISA_CF) $(IRQ) -P IRQ_POINT=4 -P IRQ_ARM_REQUIRED=1 -P IRQ_NEED_WRITE=1 --watch watch_slot \
+	    --grep $(ONE)'fire_state=4 fire_pc=@watched_store@ fire_enabled=1 fire_outstanding=1' \
+	    --grep 'WATCH addr=@watch_slot@ req=102 wreq=51 resp=102 writes=51$$' step4 $(T2)/j02_store_once.S $(M3) plain
+	@$(RUN) $(MUT) $(CRTI) $(ISA_CF) $(IRQ) $(J02) $(SLOW) --grep 'WATCH addr=@watch_slot@ req=102 wreq=51 resp=102 writes=51$$' \
+	    step4 $(T2)/j02_store_once.S $(M3) slow
+# EARLY_IRQ is killed two ways: on a fast bus it withdraws an unaccepted request (the port monitor, and mepc is the
+# load that never ran); on a slow bus it abandons a store whose response is outstanding, the handler returns to that
+# store and it runs twice -- invisible to the program, visible only in the watched-address counts.
+# DUP_STORE is a control on the bench itself: the memory model applies one watched write twice and only `writes` sees it.
+step4-mutants:
+	@echo "== step4: mutants (CORE=$(CORE))"
+	@$(RUN) --expect FAIL --grep 'TOHOST code=2$$' $(CRTI) $(ISA_CF) $(IRQ) -P IRQ_POINT=2 step4 $(T2)/i01_basic.S $(M3) stale -P STALE_MIE=1
+	@$(RUN) --expect FAIL --grep 'TOHOST code=3$$' $(CRTI) $(ISA_CF) $(IRQ) -P IRQ_POINT=6 -P IRQ_ARM_REQUIRED=1 step4 $(T2)/i07_epc_redirect.S $(M3) badmepc -P IRQ_BAD_MEPC=1
+	@$(RUN) --expect FAIL --grep 'PROTO ERROR: request withdrawn before the handshake' --grep 'TOHOST code=7$$' \
+	    $(CRTI) $(ISA_CF) $(IRQ) $(ARMD) -P IRQ_POINT=1 step4 $(T2)/j01_enabled_boundary.S $(M3) early -P EARLY_IRQ=1
+	@$(RUN) --grep 'WATCH addr=@watch_slot@ req=10[3-9] wreq=5[2-9] ' --nogrep 'wreq=51 ' \
+	    $(CRTI) $(ISA_CF) $(IRQ) $(J02) $(SLOW) step4 $(T2)/j02_store_once.S $(M3) early_slow -P EARLY_IRQ=1
+	@$(RUN) --grep 'WATCH addr=@watch_slot@ req=102 wreq=51 resp=102 writes=52$$' \
+	    $(CRTI) $(ISA_CF) $(IRQ) $(J02) $(SLOW) step4 $(T2)/j02_store_once.S $(M3) dup_store -P DUP_STORE=1
+step4-all: step4 step4-mutants
 
 # ---- pure PL: the core on tcpu_bram_mem behind tcpu_pl_top, no harness (teaching/pl/README.md) --------------
 PL_TEST ?= $(TEACH)/step1/s1_tohost.S

@@ -22,7 +22,7 @@ module tb_step #(
   parameter ALLOW_RO_WRITE = 0, parameter EARLY_IRQ = 0, parameter IRQ_BAD_MEPC = 0, parameter STALE_MIE = 0,
   parameter IRQ_POINT = 0, parameter IRQ_LINE = 0, parameter IRQ_TIMES = 1, parameter IRQ_AFTER = 0,
   parameter IRQ_ARM_REQUIRED = 0, parameter IRQ_NEED_ENABLED = 0, parameter FETCH_ERR_AFTER = 0,
-  parameter FETCH_ERR_ADDR = 0
+  parameter FETCH_ERR_ADDR = 0, parameter IRQ_ALL_LINES = 0, parameter IRQ_NEED_WRITE = 0, parameter DUP_STORE = 0
 );
   reg clk = 1'b0, rst = 1'b1;
   always #5 clk = ~clk;
@@ -40,7 +40,7 @@ module tb_step #(
   wire        fire_enabled, fire_req_valid, fire_req_ready, fire_outstanding, fire_is_write;
   wire [31:0] fire_addr;
   wire [63:0] cpu_pc, bd_rd_data, bd_reg_data, bd_csr_data;
-  reg  [31:0] tohost_addr = 32'd0;
+  reg  [31:0] tohost_addr = 32'd0, watch_addr = 32'd0;
   reg  [4:0]  reg_sel = 5'd0, csr_sel = 5'd0;
 
   tcpu_harness #(.READY_DELAY(READY_DELAY), .RESP_DELAY(RESP_DELAY), .RANDOM(RANDOM), .SEED(SEED),
@@ -50,10 +50,11 @@ module tb_step #(
     .ALLOW_RO_WRITE(ALLOW_RO_WRITE), .EARLY_IRQ(EARLY_IRQ), .IRQ_BAD_MEPC(IRQ_BAD_MEPC), .STALE_MIE(STALE_MIE),
     .IRQ_POINT(IRQ_POINT), .IRQ_LINE(IRQ_LINE), .IRQ_TIMES(IRQ_TIMES), .IRQ_AFTER(IRQ_AFTER),
     .IRQ_ARM_REQUIRED(IRQ_ARM_REQUIRED), .IRQ_NEED_ENABLED(IRQ_NEED_ENABLED),
-    .FETCH_ERR_AFTER(FETCH_ERR_AFTER), .FETCH_ERR_ADDR(FETCH_ERR_ADDR)) h (
+    .FETCH_ERR_AFTER(FETCH_ERR_AFTER), .FETCH_ERR_ADDR(FETCH_ERR_ADDR),
+    .IRQ_ALL_LINES(IRQ_ALL_LINES), .IRQ_NEED_WRITE(IRQ_NEED_WRITE), .DUP_STORE(DUP_STORE)) h (
     .clk(clk), .rst(rst),
     .bd_we(1'b0), .bd_addr(16'd0), .bd_data(64'd0), .bd_rd_addr(16'd0), .bd_rd_data(bd_rd_data),
-    .bd_fault_addr(tohost_addr), .bd_watch_addr(32'd0), .bd_inject_pc(64'd0), .bd_core_rst(1'b0),
+    .bd_fault_addr(tohost_addr), .bd_watch_addr(watch_addr), .bd_inject_pc(64'd0), .bd_core_rst(1'b0),
     .cpu_state_o(cpu_state), .cpu_pc_o(cpu_pc), .bd_reg_addr(reg_sel), .bd_reg_data(bd_reg_data),
     .bd_csr_sel(csr_sel), .bd_csr_data(bd_csr_data), .cpu_priv_o(cpu_priv),
     .commit_valid(commit_valid), .commit_pc(commit_pc), .commit_insn(commit_insn), .commit_len(commit_len),
@@ -82,8 +83,9 @@ module tb_step #(
     if (!$value$plusargs("tohost=%h", tohost_addr)) begin $display("tb_step: +tohost=<addr> is required"); $finish; end
     if ($value$plusargs("maxcycles=%d", maxcycles)) ;
     if ($value$plusargs("expect_trap=%d", expect_trap)) ;
-    $display("PARAMS READY_DELAY=%0d RESP_DELAY=%0d RANDOM=%0d SEED=%0d REQ_WITHDRAW=%0d X0_WRITABLE=%0d NO_LOAD_SEXT=%0d STOP_ON_TRAP=%0d IRQ_POINT=%0d",
-             READY_DELAY, RESP_DELAY, RANDOM, SEED, REQ_WITHDRAW, X0_WRITABLE, NO_LOAD_SEXT, STOP_ON_TRAP, IRQ_POINT);
+    if ($value$plusargs("watch=%h", watch_addr)) ;
+    $display("PARAMS READY_DELAY=%0d RESP_DELAY=%0d RANDOM=%0d SEED=%0d REQ_WITHDRAW=%0d X0_WRITABLE=%0d NO_LOAD_SEXT=%0d STOP_ON_TRAP=%0d IRQ_POINT=%0d IRQ_LINE=%0d IRQ_ARM_REQUIRED=%0d IRQ_NEED_ENABLED=%0d EARLY_IRQ=%0d STALE_MIE=%0d IRQ_BAD_MEPC=%0d",
+             READY_DELAY, RESP_DELAY, RANDOM, SEED, REQ_WITHDRAW, X0_WRITABLE, NO_LOAD_SEXT, STOP_ON_TRAP, IRQ_POINT, IRQ_LINE, IRQ_ARM_REQUIRED, IRQ_NEED_ENABLED, EARLY_IRQ, STALE_MIE, IRQ_BAD_MEPC);
     for (i = 0; i < (1 << 16); i = i + 1) h.mem[i] = 64'd0;   // no X in memory: an unwritten word reads 0
     $readmemh(hexfile, h.mem);
     if ($value$plusargs("vcd=%s", vcdfile)) begin $dumpfile(vcdfile); $dumpvars(0, tb_step); end
@@ -142,6 +144,11 @@ module tb_step #(
     if (th == 64'd0)          $display("TOHOST never written");
     else if (th[0] == 1'b0)   $display("TOHOST malformed value %h (bit 0 must be 1)", th);
     else                      $display("TOHOST code=%0d", th >> 1);
+    // interrupt injection: did the chosen moment occur, was the line raised and quieted, and in what context
+    $display("IRQ hits=%0d fires=%0d clears=%0d fire_state=%0d fire_pc=%h fire_enabled=%0d fire_outstanding=%0d",
+             irq_hits, irq_fires, irq_clears, fire_state, fire_pc[31:0], fire_enabled, fire_outstanding);
+    if (watch_addr != 32'd0)
+      $display("WATCH addr=%h req=%0d wreq=%0d resp=%0d writes=%0d", watch_addr, watch_req, watch_wreq, watch_resp, watch_writes);
     for (i = 1; i < 32; i = i + 1) begin reg_sel = i; #0; #0; $display("REG x%0d=%h", i, bd_reg_data); end
     csr_sel = 5'd0; #0; #0; $display("CSR mstatus=%h", bd_csr_data);
     csr_sel = 5'd1; #0; #0; $display("CSR mtvec=%h", bd_csr_data);

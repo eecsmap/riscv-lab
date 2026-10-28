@@ -32,7 +32,7 @@ BTN0 到 2 实时点亮 LED1 到 3。`make mcu0-fw mcu0-bit mcu0-prog` 三步完
 | 1 | 4 字节取指；addi / auipc / sd / jal；S_IF_REQ、S_IF_WAIT、S_EXEC、S_WB 四态 | ready/valid 握手，请求保持到握手 | `teaching/step1`：s1_tohost 三种时序 | `REQ_WITHDRAW` 触发端口监视器 | **学生完成** 2026-10-09 |
 | 2 | 完整 RV64I：W 后缀、六种分支、jalr、全宽度 load/store、fence、fence.i | 字节通道：位置、掩码、扩展 | `teaching/step2`：t01 算术、t02 分支、t03 访存；d03、d06 | `X0_WRITABLE`、`NO_LOAD_SEXT`、`LOAD_WDATA_LEAK` | **学生完成** 2026-10-16，并驱动 MCU-0 上板 |
 | 3 | 同步异常；M 级 CSR 最小集；六种 Zicsr；ecall / ebreak / mret；S_TRAP、S_ARCH | S_ARCH 空拍；先判合法再产生副作用 | `teaching/step3`：d01、d02、d04、d05×7、d07(time)、d08；c01 到 c10，c07 为反向测试 | `TRAP_BAD_MEPC`、`TRAP_COUNTS_RET`、`ALLOW_RO_WRITE` | **学生完成** 2026-10-28：24/24，变异体 3/3，另写了 d09 |
-| 4 | mie / mip、三根中断线、wfi | 中断只在 S_IF_REQ 采样 | i01 到 i09、j01、j02；`IRQ_POINT` 十二个注入点 | `EARLY_IRQ`、`STALE_MIE`、`IRQ_BAD_MEPC` | 待做 |
+| 4 | mie / mip、三根中断线、wfi | 中断只在 S_IF_REQ 采样 | `teaching/step4`：i01 到 i09、j01 六个时刻、j02 快慢总线，共 20 次；每次核对注入上下文 | `EARLY_IRQ`、`STALE_MIE`、`IRQ_BAD_MEPC`，外加 harness 对照 `DUP_STORE` | **材料就绪**：参考核 20/20，变异体 5/5 |
 | 5 | 进入 RD2 SoC 仿真：桥、TileLink、CLINT、HTIF 控制台（Scala 产物给定） | 地址映射与复位向量 0x10040 | boot01 到 boot04 | 无，这步是集成 | 待做 |
 | 6 | S/U 特权、medeleg / mideleg、sret、sfence.vma 空操作、计数器门控 | 同一组触发器的两个视图 | M→S→U→ecall→sret 往返程序（需补写） | `FAULT_NO_DELEG`、`FAULT_S_IRQ_IN_M`、`FAULT_SRET_SPP` | 待做 |
 | 7 | Sv39 walker、S_XLATE、端口 mux、satp / SUM / MXR / MPRV | 端口在两个主人之间切换 | ext04_sv39 | `FAULT_PTW_NO_PERM`、`FAULT_PPN_TRUNC` | 待做 |

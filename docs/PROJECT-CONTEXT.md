@@ -48,7 +48,7 @@ Branch `teach-rv64ia` turns it into a teaching path: a student rebuilds the core
 
 Steps 1, 2 and 3 done by the student. Step 3: 24/24 runs and 3/3 mutants, plus `d09_pc_highpa`, the first test the
 student wrote, and a CSR module that passes `tb_csr` 44/44. Their step-2 core also drove MCU-0 on the board.
-Next: step 4 (interrupts); its teaching material is not written yet. The student's own files are `teaching/work/`
+Next: step 4 (interrupts). Its material is in `teaching/step4/` (README, TODO; reference core 20/20 runs, 5/5 mutant checks); the student has not started it. The student's own files are `teaching/work/`
 (gitignored), on their machine.
 
 ## Proposed next course (not started)
