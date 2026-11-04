@@ -74,7 +74,7 @@ module tb_step #(
   integer cycles = 0, commits = 0, traps = 0, maxcycles = 200000, i;
   integer expect_trap = -1, storm = 0;       // storm: traps since the last retirement
   reg [63:0] last_cause = 64'd0, last_epc = 64'd0, last_tval = 64'd0;
-  reg [1023:0] hexfile, vcdfile;
+  reg [8*1024-1:0] hexfile, vcdfile;   // 1024 characters: a longer path would be cut from the front, silently
   reg [63:0] tohost_val;
   wire [15:0] tohost_idx = (tohost_addr - MEM_BASE) >> 3;
 

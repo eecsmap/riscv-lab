@@ -42,7 +42,8 @@ if (irq_pending) begin
   trap_tval      <= 64'd0;
   trap_epc       <= (IRQ_BAD_MEPC != 0) ? pc - 64'd4 : pc;   // mepc 就是这条还没执行的指令
   trap_interrupt <= 1'b1;
-  state          <= S_TRAP;                                   // 不发这次取指：core_req_valid 保持 0
+  core_req_valid <= 1'b0;                                     // 不发这次取指：前面的分支刚把它置了 1，这里要盖掉
+  state          <= S_TRAP;
 end
 ```
 
@@ -80,7 +81,7 @@ S_MEM_WAIT: if (EARLY_IRQ != 0 && irq_pending) begin core_req_valid <= 1'b0; ...
 | 加完 | 跑 | 预期 |
 | --- | --- | --- |
 | TODO 1 | `make step3` | 第 3 步仍然全过：mie、mip 只是多了两个地址 |
-| TODO 1 到 4 | `make step4` | i01、i02、i03、i04、i06、i08、i09 过 |
+| TODO 1 到 4 | `make -i step4`（不在第一个失败处停） | i01、i02、i03、i04、i06、i08、i09 过 |
 | TODO 5 | 同上 | i05 过 |
 | TODO 6 | 同上 | i07、j01 过，最后 20 个全 ok |
 | TODO 7 | `make step4-mutants` | 5 个 ok |
