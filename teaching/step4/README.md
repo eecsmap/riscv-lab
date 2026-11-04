@@ -109,6 +109,7 @@ make step4-mutants    # 5 个检查
 | i05 code 1，日志里有 `TRAP cause=2 tval=0000000010500073` | `wfi` 不在合法指令里 | TODO 5 |
 | i07 超时 | `dbg_redirect` 一直是 0，注入器等不到"正在写回跳转"的时刻 | TODO 6 |
 | i07 报 "result PASS as expected, but a required log condition failed"；j01 超时 | `dbg_irq_enabled` 一直是 0：i07 的 `fire_enabled=1` 不成立，j01 的注入器永远不触发 | TODO 6 |
+| IRQ 行里 `fire_enabled=z`；i07、i08、j02 报 log condition failed，j01 全部超时 | CSR 模块声明了 `irq_enabled` 输出却没有给它赋值，线悬空（z），注入器把它当成“没使能” | TODO 1 |
 | 日志里两个中断只隔几拍，第二个的 epc 是处理程序地址 | 中断在 S_IF_REQ 以外的地方被判定了，MIE 的清零还没落地 | TODO 4，对照 `STALE_MIE` |
 | 同步异常的 TRAP 行也带 `(interrupt)` | `trap_interrupt` 没有清零。程序不受影响（`mcause` 来自 `trap_cause`），但会误导你调试 | TODO 4 |
 

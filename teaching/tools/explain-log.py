@@ -43,6 +43,14 @@ def decode(insn):
 
 def main():
     log = open(sys.argv[1], errors="replace").read().splitlines()
+    # a z or x in a report line means a signal the testbench reads from the core is undriven or unknown
+    for l in log:
+        if re.match(r"(IRQ|WATCH|SUMMARY) ", l):
+            for name, v in re.findall(r"(\w+)=([zx])\b", l):
+                src = {"fire_enabled": " (it comes from dbg_irq_enabled)"}.get(name, "")
+                print("        %s=%s on the %s line%s: %s" % (name, v, l.split()[0], src,
+                      "a wire the testbench reads from your core is driven by nothing" if v == "z"
+                      else "a wire the testbench reads from your core is unknown (x)"))
     traps = [l for l in log if l.startswith("TRAP ") and "STORM" not in l]
     if not traps:
         print("        no trap was taken")
