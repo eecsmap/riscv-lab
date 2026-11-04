@@ -196,36 +196,52 @@ pl-sim:
 	    > $(OUT)/pl/sim.log 2>&1; grep -E '^(SUMMARY|TOHOST|TIMEOUT|RESULT)' $(OUT)/pl/sim.log | tr '\n' ' '; echo
 	@grep -q '^RESULT PASS' $(OUT)/pl/sim.log
 
-# ---- MCU-0: core + router + RAM + CLINT + GPIO, blink firmware in C (teaching/mcu0/README.md) -----------------
+# ---- MCU-0: core + router + RAM + CLINT + GPIO, firmware in C (teaching/mcu0/README.md) ------------------------
+# APP picks the firmware, teaching/mcu0/$(APP).c:
+#   blink      polled, RV64I only: runs on a step-2 core (start.S; objdump checks there are no CSR instructions)
+#   irq_blink  LED0 from the timer interrupt: needs a step-4 core (trap_start.S; the testbench requires interrupts)
+#   tasks      two tasks, preemptive round robin (task_start.S saves all registers); needs a step-4 core
 MCU0 := $(TEACH)/mcu0
-MCU0_DELAY ?= 4000
+APP ?= blink
+ifeq ($(APP),blink)
+MCU0_CRT := $(MCU0)/start.S
+MCU0_MARCH := rv64i
+MCU0_PLUS :=
+else
+MCU0_CRT := $(MCU0)/$(if $(filter tasks,$(APP)),task_start.S,trap_start.S)
+MCU0_MARCH := rv64i_zicsr
+MCU0_PLUS := +need_irq=1
+endif
+# a context switch costs several hundred cycles, so the scheduler's slice (DELAY/16) needs a longer DELAY in simulation
+MCU0_DELAY ?= $(if $(filter tasks,$(APP)),40000,4000)
+MCU0_CC = $(CC) -march=$(MCU0_MARCH) -mabi=lp64 -mcmodel=medany -O2 -ffreestanding -fno-pie -nostdlib -nostartfiles -static \
+    -Wl,--no-relax -Wl,--no-warn-rwx-segments -T $(ROOT)/software/probes/link.ld
+MS := $(OUT)/mcu0/$(APP)
 mcu0-sim:
-	@echo "== mcu0-sim: blink firmware on mcu_top (CORE=$(CORE), DELAY=$(MCU0_DELAY) ticks)"
-	@mkdir -p $(OUT)/mcu0
-	@$(CC) -march=rv64i -mabi=lp64 -O2 -ffreestanding -fno-pie -nostdlib -nostartfiles -static -Wl,--no-relax -Wl,--no-warn-rwx-segments \
-	    -DDELAY=$(MCU0_DELAY) -T $(ROOT)/software/probes/link.ld -o $(OUT)/mcu0/blink.elf $(MCU0)/start.S $(MCU0)/blink.c
-	@$(OBJCOPY) -O binary $(OUT)/mcu0/blink.elf $(OUT)/mcu0/blink.bin
-	@python3 $(TEACH)/tools/elf2hex.py $(OBJCOPY) $(NM) $(OUT)/mcu0/blink.elf $(OUT)/mcu0/blink.hex $(OUT)/mcu0/blink.tohost >/dev/null
-	@$(TOOLPREFIX)objdump -d $(OUT)/mcu0/blink.elf | grep -cE '\s(mul|div|rem|csr)' | grep -qx 0 || { echo "blink.elf uses M or CSR instructions"; exit 1; }
-	@iverilog -g2005 -I $(ROOT)/rtl/cpu -I $(CORE) -o $(OUT)/mcu0/sim.vvp \
+	@echo "== mcu0-sim: $(APP) firmware on mcu_top (CORE=$(CORE), DELAY=$(MCU0_DELAY) ticks)"
+	@mkdir -p $(MS)
+	@$(MCU0_CC) -DDELAY=$(MCU0_DELAY) -o $(MS)/$(APP).elf $(MCU0_CRT) $(MCU0)/$(APP).c
+	@python3 $(TEACH)/tools/elf2hex.py $(OBJCOPY) $(NM) $(MS)/$(APP).elf $(MS)/$(APP).hex $(MS)/$(APP).tohost >/dev/null
+	@[ "$(APP)" != blink ] || $(TOOLPREFIX)objdump -d $(MS)/$(APP).elf | grep -cE '\s(mul|div|rem|csr)' | grep -qx 0 \
+	    || { echo "blink.elf uses M or CSR instructions"; exit 1; }
+	@iverilog -g2005 -I $(ROOT)/rtl/cpu -I $(CORE) -o $(MS)/sim.vvp \
 	    $(MCU0)/tb_mcu.v $(MCU0)/mcu_top.v $(MCU0)/mcu_router.v $(MCU0)/mcu_ram.v $(MCU0)/mcu_clint.v $(MCU0)/mcu_gpio.v $(CORE)/*.v
-	@vvp -n $(OUT)/mcu0/sim.vvp +hex=$(OUT)/mcu0/blink.hex +delay=$(MCU0_DELAY) $${VCD:+ +vcd=$(OUT)/mcu0/sim.vcd} > $(OUT)/mcu0/sim.log 2>&1; \
-	    grep -E '^(LED|BTN|BUS|SUMMARY|RESULT)' $(OUT)/mcu0/sim.log
-	@grep -q '^RESULT PASS' $(OUT)/mcu0/sim.log
+	@vvp -n $(MS)/sim.vvp +hex=$(MS)/$(APP).hex +delay=$(MCU0_DELAY) $(MCU0_PLUS) $${VCD:+ +vcd=$(MS)/sim.vcd} > $(MS)/sim.log 2>&1; \
+	    grep -E '^(LED|BTN|BUS|TRAP|SUMMARY|RESULT)' $(MS)/sim.log
+	@grep -q '^RESULT PASS' $(MS)/sim.log
 
-# board firmware (DELAY for 40 MHz) and the Vivado build; the bitstream lands in teaching/mcu0/build/
+# board firmware (DELAY for 40 MHz) and the Vivado build: teaching/mcu0/build/ for blink, build-$(APP)/ otherwise
 MCU0_BOARD_DELAY ?= 20000000
-MCU0_BUILD := $(MCU0)/build
+MCU0_BUILD := $(MCU0)/build$(if $(filter blink,$(APP)),,-$(APP))
 mcu0-fw:
 	@mkdir -p $(MCU0_BUILD)
-	@$(CC) -march=rv64i -mabi=lp64 -O2 -ffreestanding -fno-pie -nostdlib -nostartfiles -static -Wl,--no-relax -Wl,--no-warn-rwx-segments \
-	    -DDELAY=$(MCU0_BOARD_DELAY) -T $(ROOT)/software/probes/link.ld -o $(MCU0_BUILD)/blink.elf $(MCU0)/start.S $(MCU0)/blink.c
-	@python3 $(TEACH)/tools/elf2hex.py $(OBJCOPY) $(NM) $(MCU0_BUILD)/blink.elf $(MCU0_BUILD)/blink.hex $(MCU0_BUILD)/blink.tohost
-	@echo "firmware: $(MCU0_BUILD)/blink.hex (DELAY=$(MCU0_BOARD_DELAY))"
+	@$(MCU0_CC) -DDELAY=$(MCU0_BOARD_DELAY) -o $(MCU0_BUILD)/$(APP).elf $(MCU0_CRT) $(MCU0)/$(APP).c
+	@python3 $(TEACH)/tools/elf2hex.py $(OBJCOPY) $(NM) $(MCU0_BUILD)/$(APP).elf $(MCU0_BUILD)/$(APP).hex $(MCU0_BUILD)/$(APP).tohost
+	@echo "firmware: $(MCU0_BUILD)/$(APP).hex (DELAY=$(MCU0_BOARD_DELAY))"
 mcu0-bit: mcu0-fw
-	@echo "== mcu0-bit: Vivado batch build (CORE=$(CORE)) -> $(MCU0_BUILD)/mcu_board.bit"
+	@echo "== mcu0-bit: Vivado batch build (CORE=$(CORE), APP=$(APP)) -> $(MCU0_BUILD)/mcu_board.bit"
 	cd $(MCU0_BUILD) && vivado -mode batch -nojournal -log vivado.log -source $(MCU0)/build.tcl \
-	    -tclargs $(abspath $(CORE)) $(MCU0_BUILD)/blink.hex $(MCU0_BUILD)
+	    -tclargs $(abspath $(CORE)) $(MCU0_BUILD)/$(APP).hex $(MCU0_BUILD)
 	@grep -E 'WNS|Design Timing Summary' -A6 $(MCU0_BUILD)/timing.rpt | head -12
 
 # program the PL over JTAG (hardware manager; the PS is left alone). BIT= picks another bitstream.
