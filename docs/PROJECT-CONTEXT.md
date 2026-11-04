@@ -49,8 +49,8 @@ Branch `teach-rv64ia` turns it into a teaching path: a student rebuilds the core
 Steps 1 to 4 done by the student. Step 4 (interrupts): `make step4-all` 25/25, i.e. 20/20 runs and 5/5 mutant
 checks; steps 1 to 3 still pass, MCU-0 simulation passes, and Vivado elaborates the core without critical warnings.
 Earlier: step 3 24/24 and 3/3 mutants plus `d09_pc_highpa` (the first test the student wrote); their step-2 core
-drove MCU-0 on the board. Next: step 4's board applications (timer-interrupt blink, two-task preemption; see
-`teaching/step4/README.md`), then step 5. The student's own files are `teaching/work/` (gitignored), on their machine.
+drove MCU-0 on the board. Step 4's board applications ran on the board on 2026-11-04 with the student's core: timer-interrupt blink
+(`APP=irq_blink`) and a two-task preemptive scheduler (`APP=tasks`), see `teaching/mcu0/README.md`. Next: step 5. The student's own files are `teaching/work/` (gitignored), on their machine.
 
 ## Proposed next course (not started)
 
