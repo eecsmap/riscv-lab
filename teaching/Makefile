@@ -31,7 +31,7 @@ REF_ISA   := -DHAS_C -DHAS_S -DHAS_M
 ISA_FLAGS ?= $(if $(filter $(abspath $(CORE)),$(ROOT)/rtl/cpu),$(REF_ISA),)
 ISA_CF    := $(foreach f,$(ISA_FLAGS),--cflag $(f))
 
-.PHONY: all clean unit step1-init step1 step1-mutants step1-all step2 step2-mutants step2-all step3 step3-mutants step3-all step4 step4-mutants step4-all pl-sim mcu0-sim mcu0-fw mcu0-bit mcu0-prog
+.PHONY: all clean unit step1-init step1 step1-mutants step1-all step2 step2-mutants step2-all step3 step3-mutants step3-all step4 step4-mutants step4-all step5-sim step5 step5-run pl-sim mcu0-sim mcu0-fw mcu0-bit mcu0-prog
 
 all: step1-all
 
@@ -195,6 +195,30 @@ pl-sim:
 	@vvp -n $(OUT)/pl/sim.vvp +hex=$(OUT)/pl/prog.hex +tohost=$$(cat $(OUT)/pl/prog.tohost) $${VCD:+ +vcd=$(OUT)/pl/sim.vcd} \
 	    > $(OUT)/pl/sim.log 2>&1; grep -E '^(SUMMARY|TOHOST|TIMEOUT|RESULT)' $(OUT)/pl/sim.log | tr '\n' ' '; echo
 	@grep -q '^RESULT PASS' $(OUT)/pl/sim.log
+
+# ---- step 5: your core inside the RD2 SoC (teaching/step5/README.md) ------------------------------------------
+# step5-sim verilates the SoC with $(CORE) (one simulator per core directory, rebuilt when a core file changes);
+# step5 runs the four boot programs and judges each with the accepted M3 checkers (teaching/step5/check).
+S5SIM := $(OUT)/step5/sim-$(shell printf '%s' $(abspath $(CORE)) | md5sum | cut -c1-8)
+S5RUN := $(TEACH)/tools/step5-run.sh $(S5SIM)/obj_dir/sim $(OUT)/step5
+M3T   := $(ROOT)/tests/cpu/m3tests
+S5C   := --exit=0 --assert-free --host-ok --exit-store-pc=@exit_store@ --tohost=@tohost@ --axi-min-reads=1 --axi-min-writes=1
+$(S5SIM)/obj_dir/sim: $(wildcard $(CORE)/*.v) $(TEACH)/step5/sim/step5_main.cpp $(TEACH)/step5/sim/RD2Harness.RD2BootConfig.v.xz
+	@echo "== step5-sim: verilating the SoC with CORE=$(CORE) (about 20 s)"
+	@$(TEACH)/tools/step5-build-sim.sh $(CORE) $(S5SIM)
+step5-sim: $(S5SIM)/obj_dir/sim
+step5: step5-sim
+	@echo "== step5: boot programs on the RD2 SoC (CORE=$(CORE))"
+	@$(S5RUN) boot01_marker  $(M3T)/boot01_marker.S  -- $(S5C) --marker=TEACHING-CPU-M3-OK --irqs=1 --sync-traps=0
+	@$(S5RUN) boot02_clint   $(M3T)/boot02_clint.S   -- $(S5C) --marker=M3-CLINT-OK --irqs=3 --sync-traps=0
+	@$(S5RUN) boot03_ddr     $(M3T)/boot03_ddr.S     -- $(S5C) --marker=M3-DDR-OK --irqs=1 --sync-traps=0
+	@$(S5RUN) boot04_badaddr $(M3T)/boot04_badaddr.S -- $(S5C) --marker=M3-BADADDR-OK --irqs=1 --sync-traps=1 \
+	    --sync-cause=5 --sync-epc=0x@bad_load@ --sync-tval=0x50000000
+# your own program: PROG=work/hello.c (C, with step5/crt.S and step5/console.h) or PROG=x.S (assembly, own _start)
+PROG ?= step5/hello.c
+step5-run: step5-sim
+	@$(S5RUN) $(basename $(notdir $(PROG))) $(if $(filter %.c,$(PROG)),$(TEACH)/step5/crt.S) $(abspath $(PROG))
+	@echo "---- console ($(OUT)/step5/$(basename $(notdir $(PROG))).console):"; cat $(OUT)/step5/$(basename $(notdir $(PROG))).console
 
 # ---- MCU-0: core + router + RAM + CLINT + GPIO, firmware in C (teaching/mcu0/README.md) ------------------------
 # APP picks the firmware, teaching/mcu0/$(APP).c:

@@ -50,7 +50,9 @@ Steps 1 to 4 done by the student. Step 4 (interrupts): `make step4-all` 25/25, i
 checks; steps 1 to 3 still pass, MCU-0 simulation passes, and Vivado elaborates the core without critical warnings.
 Earlier: step 3 24/24 and 3/3 mutants plus `d09_pc_highpa` (the first test the student wrote); their step-2 core
 drove MCU-0 on the board. Step 4's board applications ran on the board on 2026-11-04 with the student's core: timer-interrupt blink
-(`APP=irq_blink`) and a two-task preemptive scheduler (`APP=tasks`), see `teaching/mcu0/README.md`. Next: step 5. The student's own files are `teaching/work/` (gitignored), on their machine.
+(`APP=irq_blink`) and a two-task preemptive scheduler (`APP=tasks`), see `teaching/mcu0/README.md`. Step 5 material is ready (`teaching/step5/`, `make step5`): the RD2 SoC's generated
+Verilog is vendored (xz), re-verilated around any CORE in about 20 s; the student's core already passes boot01-04;
+the student's step-5 work is reading the boot chain and writing a first program (`make step5-run PROG=work/hello.c`). The student's own files are `teaching/work/` (gitignored), on their machine.
 
 ## Proposed next course (not started)
 

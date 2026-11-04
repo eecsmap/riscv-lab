@@ -2063,5 +2063,20 @@
     "source": "experiments/teaching-cpu/xv6-board-prep/build-inputs/MANIFEST.txt",
     "path": "evidence/board-inputs-original.tsv",
     "sha256": "c5df0c629053d399ac8d9cdeee71242aef1363a882199f3f104060e175892471"
+  },
+  {
+    "source": "experiments/teaching-cpu/reset-drain/rd2/final/gen-sim/RD2Harness.RD2BootConfig.v (xz -9)",
+    "path": "teaching/step5/sim/RD2Harness.RD2BootConfig.v.xz",
+    "sha256": "8e93caf92a815472688a6648288f2a037d01b08b22a6c624c81da58923d91cf2"
+  },
+  {
+    "source": "teaching-cpu-work/cpu/check-m3.py",
+    "path": "teaching/step5/check/check-m3.py",
+    "sha256": "fe9b7db40f97fe493dc29aaaf82caa34ac793a4cc3ce7ca3d23162e68e452c82"
+  },
+  {
+    "source": "teaching-cpu-work/cpu/check-axi.py",
+    "path": "teaching/step5/check/check-axi.py",
+    "sha256": "3d44f3c6845b2d7e415c9f62999c81c778e0be203cb2fda9f7e93660d10e3301"
   }
 ]
