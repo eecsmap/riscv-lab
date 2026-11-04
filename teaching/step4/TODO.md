@@ -11,10 +11,17 @@ output [63:0] irq_cause,                  // {1'b1, 57'd0, 6'd11/3/7}
 output irq_enabled,                       // 给 dbg_irq_enabled：MIE 打开且至少一根线的使能打开
 ```
 
-- `mie`：三个触发器 `mie_msie`、`mie_mtie`、`mie_meie`，读出 `{52'd0, meie, 3'd0, mtie, 3'd0, msie, 3'd0}`。
-- `mip`：**不是寄存器**，读出就是 `{52'd0, irq_meip, 3'd0, irq_mtip, 3'd0, irq_msip, 3'd0}`。地址 0x344 的 [11:10] 不是 11，
-  所以写它是合法指令，但模块里不存任何东西。
+- `mie`：三个触发器 `mie_msie`、`mie_mtie`、`mie_meie`（复位为 0，在写分支的 case 里加一项 `A_MIE`，取 wdata 的位 3、7、11）。
+- `mip`：**不是寄存器**，就是三根输入线的电平。地址 0x344 的 [11:10] 不是 11，所以写它是合法指令，
+  但写的 case 里不加它，模块里不存任何东西。
 - 两个地址加进"已知"列表。
+- 把两者按架构的位置拼成 64 位的线。读出（rdata 的 case）和 TODO 2 的中断判定都用这两根线，
+  位的排布只写一次：
+
+```verilog
+wire [63:0] mie_value = {52'd0, mie_meie, 3'd0, mie_mtie, 3'd0, mie_msie, 3'd0};   // 位 11 / 7 / 3
+wire [63:0] mip_value = {52'd0, irq_meip, 3'd0, irq_mtip, 3'd0, irq_msip, 3'd0};
+```
 
 ## TODO 2：优先级
 
