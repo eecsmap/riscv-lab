@@ -172,7 +172,7 @@ step4:
 # DUP_STORE is a control on the bench itself: the memory model applies one watched write twice and only `writes` sees it.
 step4-mutants:
 	@echo "== step4: mutants (CORE=$(CORE))"
-	@$(RUN) --expect FAIL --grep 'TOHOST code=2$$' $(CRTI) $(ISA_CF) $(IRQ) -P IRQ_POINT=2 step4 $(T2)/i01_basic.S $(M3) stale -P STALE_MIE=1
+	@$(RUN) --expect FAIL --grep 'TRAP .*epc=@trap_handler@ .*\(interrupt\)' $(CRTI) $(ISA_CF) $(IRQ) -P IRQ_POINT=2 step4 $(T2)/i01_basic.S $(M3) stale -P STALE_MIE=1
 	@$(RUN) --expect FAIL --grep 'TOHOST code=3$$' $(CRTI) $(ISA_CF) $(IRQ) -P IRQ_POINT=6 -P IRQ_ARM_REQUIRED=1 step4 $(T2)/i07_epc_redirect.S $(M3) badmepc -P IRQ_BAD_MEPC=1
 	@$(RUN) --expect FAIL --grep 'PROTO ERROR: request withdrawn before the handshake' --grep 'TOHOST code=7$$' \
 	    $(CRTI) $(ISA_CF) $(IRQ) $(ARMD) -P IRQ_POINT=1 step4 $(T2)/j01_enabled_boundary.S $(M3) early -P EARLY_IRQ=1

@@ -63,6 +63,10 @@ else why="expected $EXPECT, got ${result:-none}"; fi
 printf '  FAIL  %-10s %-16s %-8s %s -- %s\n' "$STEP" "$name" "$TAG" "$why" "$log"
 grep -E '^(PROTO ERROR|OBS ERROR|TIMEOUT|TRAP STORM|HALT|TOHOST)' "$log" | head -5 | sed 's/^/        /'
 printf '%s' "$conds"
+if [ "$EXPECT" = FAIL ] && [ "$result" = PASS ]; then   # a mutant that runs clean: its switch did nothing
+  sw=$(printf '%s ' ${PARAMS[@]+"${PARAMS[@]}"} | sed 's/-Ptb_step\.//g')
+  echo "        this is a mutant run ($sw): the program behaved as if the switch were off -- is it wired into your core?"
+fi
 python3 "$ROOT/teaching/tools/explain-log.py" "$log"
 grep -qs "失败了先看哪里" "$ROOT/teaching/$STEP/README.md" && echo "        symptom table: teaching/$STEP/README.md, section 失败了先看哪里"
 exit 1
