@@ -51,11 +51,18 @@ ok=1
 subst() { local g=$1 sym a; while [[ $g =~ @([A-Za-z_][A-Za-z0-9_]*)@ ]]; do sym=${BASH_REMATCH[1]};
   a=$($NM "$elf" | awk -v s="$sym" '$3 == s { print substr($1, length($1) - 7) }'); [ -n "$a" ] || a=NO_SUCH_SYMBOL_$sym;
   g=${g//@$sym@/$a}; done; printf '%s' "$g"; }
-for g in ${GREPS[@]+"${GREPS[@]}"}; do g=$(subst "$g"); grep -qE "$g" "$log" || { ok=0; echo "  missing in log: $g"; }; done
-for g in ${NOGREPS[@]+"${NOGREPS[@]}"}; do g=$(subst "$g"); grep -qE "$g" "$log" && { ok=0; echo "  forbidden in log: $g"; }; done
+# a failed log condition is reported under the FAIL line, next to the line the log does have with the same first word
+conds=
+for g in ${GREPS[@]+"${GREPS[@]}"}; do g=$(subst "$g"); grep -qE "$g" "$log" && continue; ok=0
+  have=$(grep -m1 "^${g%% *} " "$log"); conds+="        log should have: $g"$'\n'"        log has:         ${have:-(no such line)}"$'\n'; done
+for g in ${NOGREPS[@]+"${NOGREPS[@]}"}; do g=$(subst "$g"); grep -qE "$g" "$log" || continue; ok=0
+  conds+="        log must not have: $g"$'\n'"        but has:           $(grep -m1 -E "$g" "$log")"$'\n'; done
 if [ $ok = 1 ]; then printf '  ok    %-10s %-16s %-8s %s\n' "$STEP" "$name" "$TAG" "$summary"; exit 0; fi
 if [ "$result" = "$EXPECT" ]; then why="result $result as expected, but a required log condition failed"; 
 else why="expected $EXPECT, got ${result:-none}"; fi
 printf '  FAIL  %-10s %-16s %-8s %s -- %s\n' "$STEP" "$name" "$TAG" "$why" "$log"
 grep -E '^(PROTO ERROR|OBS ERROR|TIMEOUT|TRAP STORM|HALT|TOHOST)' "$log" | head -5 | sed 's/^/        /'
+printf '%s' "$conds"
+python3 "$ROOT/teaching/tools/explain-log.py" "$log"
+grep -qs "失败了先看哪里" "$ROOT/teaching/$STEP/README.md" && echo "        symptom table: teaching/$STEP/README.md, section 失败了先看哪里"
 exit 1
