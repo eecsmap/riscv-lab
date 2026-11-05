@@ -31,7 +31,7 @@ REF_ISA   := -DHAS_C -DHAS_S -DHAS_M
 ISA_FLAGS ?= $(if $(filter $(abspath $(CORE)),$(ROOT)/rtl/cpu),$(REF_ISA),)
 ISA_CF    := $(foreach f,$(ISA_FLAGS),--cflag $(f))
 
-.PHONY: all clean unit step1-init step1 step1-mutants step1-all step2 step2-mutants step2-all step3 step3-mutants step3-all step4 step4-mutants step4-all step5-sim step5 step5-run pl-sim mcu0-sim mcu0-fw mcu0-bit mcu0-prog
+.PHONY: all clean unit step1-init step1 step1-mutants step1-all step2 step2-mutants step2-all step3 step3-mutants step3-all step4 step4-mutants step4-all step5-sim step5 step5-run pl-sim oled-sim oled-fw-sim mcu0-sim mcu0-fw mcu0-bit mcu0-prog
 
 all: step1-all
 
@@ -227,7 +227,7 @@ step5-run: step5-sim
 #   tasks      two tasks, preemptive round robin (task_start.S saves all registers); needs a step-4 core
 MCU0 := $(TEACH)/mcu0
 APP ?= blink
-ifeq ($(APP),blink)
+ifneq ($(filter blink oled_%,$(APP)),)
 MCU0_CRT := $(MCU0)/start.S
 MCU0_MARCH := rv64i
 MCU0_PLUS :=
@@ -238,13 +238,15 @@ MCU0_PLUS := +need_irq=1
 endif
 # a context switch costs several hundred cycles, so the scheduler's slice (DELAY/16) needs a longer DELAY in simulation
 MCU0_DELAY ?= $(if $(filter tasks,$(APP)),40000,4000)
-MCU0_CC = $(CC) -march=$(MCU0_MARCH) -mabi=lp64 -mcmodel=medany -O2 -ffreestanding -fno-pie -nostdlib -nostartfiles -static \
+# oled_* apps live in teaching/oled (the Pmod OLEDrgb on JB, teaching/oled/README.md); RV64I, polled, like blink
+MCU0_SRC = $(if $(filter oled_%,$(APP)),$(TEACH)/oled,$(MCU0))/$(APP).c
+MCU0_CC = $(CC) -march=$(MCU0_MARCH) -mabi=lp64 -mcmodel=medany -O2 -ffreestanding -fno-pie -nostdlib -nostartfiles -static -I $(TEACH)/oled \
     -Wl,--no-relax -Wl,--no-warn-rwx-segments -T $(ROOT)/software/probes/link.ld
 MS := $(OUT)/mcu0/$(APP)
 mcu0-sim:
 	@echo "== mcu0-sim: $(APP) firmware on mcu_top (CORE=$(CORE), DELAY=$(MCU0_DELAY) ticks)"
 	@mkdir -p $(MS)
-	@$(MCU0_CC) -DDELAY=$(MCU0_DELAY) -o $(MS)/$(APP).elf $(MCU0_CRT) $(MCU0)/$(APP).c
+	@$(MCU0_CC) -DDELAY=$(MCU0_DELAY) -o $(MS)/$(APP).elf $(MCU0_CRT) $(MCU0_SRC)
 	@python3 $(TEACH)/tools/elf2hex.py $(OBJCOPY) $(NM) $(MS)/$(APP).elf $(MS)/$(APP).hex $(MS)/$(APP).tohost >/dev/null
 	@[ "$(APP)" != blink ] || $(TOOLPREFIX)objdump -d $(MS)/$(APP).elf | grep -cE '\s(mul|div|rem|csr)' | grep -qx 0 \
 	    || { echo "blink.elf uses M or CSR instructions"; exit 1; }
@@ -254,12 +256,37 @@ mcu0-sim:
 	    grep -E '^(LED|BTN|BUS|TRAP|SUMMARY|RESULT)' $(MS)/sim.log
 	@grep -q '^RESULT PASS' $(MS)/sim.log
 
+# ---- teaching/oled: the Pmod OLEDrgb on MCU-0. oled-sim runs an oled_* app (default oled_hello) against a model of
+# the display that checks the power order, the SPI timing and the commands, and writes the screen to screen.png.
+# The firmware's waits are scaled (1 ms = OLED_SIM_MS clocks); the SPI itself runs at full simulated speed. The timed
+# frame push is 8 rows instead of 64 (FRAME_SHIFT=3, the time is scaled up). OLED_FAST=1: the unrolled spi_byte.
+OAPP = $(if $(filter oled_%,$(APP)),$(APP),oled_hello)
+OLED_SIM_MS ?= 40
+OLED_FAST ?=
+OLED_DEFS = $(if $(OLED_FAST),-DOLED_FAST)
+OS = $(OUT)/oled/$(OAPP)
+oled-sim:
+	@echo "== oled-sim: $(OAPP) on mcu_top + SSD1331 model (CORE=$(CORE); waits scaled to 1 ms = $(OLED_SIM_MS) cycles)"
+	@mkdir -p $(OS)
+	@$(MAKE) -s --no-print-directory APP=$(OAPP) MCU0_MARCH=rv64i MCU0_CRT=$(MCU0)/start.S oled-fw-sim
+	@iverilog -g2005 -I $(ROOT)/rtl/cpu -I $(CORE) -o $(OS)/sim.vvp $(TEACH)/oled/tb_oled.v $(TEACH)/oled/ssd1331_model.v \
+	    $(MCU0)/mcu_top.v $(MCU0)/mcu_router.v $(MCU0)/mcu_ram.v $(MCU0)/mcu_clint.v $(MCU0)/mcu_gpio.v $(CORE)/*.v
+	@vvp -n $(OS)/sim.vvp +hex=$(OS)/$(OAPP).hex +ms=$(OLED_SIM_MS) +frame_bytes=1536 +ppm=$(OS)/screen.ppm $${VCD:+ +vcd=$(OS)/sim.vcd} \
+	    > $(OS)/sim.log 2>&1; grep -E '^(OLED|LED|BUS|TRAP|SUMMARY|RESULT)' $(OS)/sim.log
+	@python3 $(TEACH)/tools/ppm2png.py $(OS)/screen.ppm $(OS)/screen.png 4 && echo "screen: $(OS)/screen.png"
+	@grep -q '^RESULT PASS' $(OS)/sim.log
+oled-fw-sim:
+	@$(MCU0_CC) $(OLED_DEFS) -DTICKS_PER_MS=$(OLED_SIM_MS) -DFRAME_SHIFT=3 -DDELAY=20000 -o $(OS)/$(OAPP).elf $(MCU0_CRT) $(MCU0_SRC)
+	@python3 $(TEACH)/tools/elf2hex.py $(OBJCOPY) $(NM) $(OS)/$(OAPP).elf $(OS)/$(OAPP).hex $(OS)/$(OAPP).tohost >/dev/null
+	@$(TOOLPREFIX)objdump -d $(OS)/$(OAPP).elf | grep -cE '\s(mul|div|rem|csr)' | grep -qx 0 \
+	    || { echo "$(OAPP).elf uses M or CSR instructions: a step-2 core cannot run it"; exit 1; }
+
 # board firmware (DELAY for 40 MHz) and the Vivado build: teaching/mcu0/build/ for blink, build-$(APP)/ otherwise
 MCU0_BOARD_DELAY ?= 20000000
 MCU0_BUILD := $(MCU0)/build$(if $(filter blink,$(APP)),,-$(APP))
 mcu0-fw:
 	@mkdir -p $(MCU0_BUILD)
-	@$(MCU0_CC) -DDELAY=$(MCU0_BOARD_DELAY) -o $(MCU0_BUILD)/$(APP).elf $(MCU0_CRT) $(MCU0)/$(APP).c
+	@$(MCU0_CC) $(OLED_DEFS) -DDELAY=$(MCU0_BOARD_DELAY) -o $(MCU0_BUILD)/$(APP).elf $(MCU0_CRT) $(MCU0_SRC)
 	@python3 $(TEACH)/tools/elf2hex.py $(OBJCOPY) $(NM) $(MCU0_BUILD)/$(APP).elf $(MCU0_BUILD)/$(APP).hex $(MCU0_BUILD)/$(APP).tohost
 	@echo "firmware: $(MCU0_BUILD)/$(APP).hex (DELAY=$(MCU0_BOARD_DELAY))"
 mcu0-bit: mcu0-fw

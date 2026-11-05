@@ -1,4 +1,5 @@
-// MCU-0: core + router + RAM + CLINT + GPIO. Four LEDs are GPIO OUT[3:0]; the buttons and switches are IN.
+// MCU-0: core + router + RAM + CLINT + GPIO. Four LEDs are GPIO OUT[3:0], the Pmod JB header is OUT[15:8];
+// the buttons and switches are IN.
 // No host, no bridge: the program is the RAM's initial contents.
 `timescale 1ns/1ps
 module mcu_top #(
@@ -9,6 +10,7 @@ module mcu_top #(
   input             clk,
   input             rst,
   output     [3:0]  led,
+  output     [7:0]  jb,             // Pmod JB, pins 1-4 and 7-10 (teaching/oled)
   input      [3:0]  btn,
   input      [1:0]  sw,
   output            commit_valid,   // activity, for an LED or an ILA trigger
@@ -24,7 +26,8 @@ module mcu_top #(
   wire        sel_ram, sel_clint, sel_gpio, slv_we, mtip, msip;
   wire [31:0] slv_addr;
   wire [63:0] slv_wdata, ram_rdata, clint_rdata, gpio_rdata;
-  wire [7:0]  slv_wmask, gpio_out;
+  wire [7:0]  slv_wmask;
+  wire [15:0] gpio_out;
 
   tcpu_core #(.RESET_PC(RESET_PC)) cpu (
     .clk(clk), .rst(rst),
@@ -56,5 +59,6 @@ module mcu_top #(
     .rdata(gpio_rdata), .gpio_out(gpio_out), .gpio_in({2'b00, sw, btn}));
 
   assign led = gpio_out[3:0];
+  assign jb  = gpio_out[15:8];
   assign bus_error = resp_valid & resp_error;
 endmodule

@@ -1,5 +1,6 @@
 // MCU-0 on the PYNQ-Z1: 125 MHz on H16 -> MMCM x8/25 -> 40 MHz, the same clocking the accepted SoC uses.
-// BTN3 is the reset; BTN0..2 and the two switches are GPIO inputs; the four LEDs are GPIO OUT[3:0].
+// BTN3 is the reset; BTN0..2 and the two switches are GPIO inputs; the four LEDs are GPIO OUT[3:0] and the Pmod JB
+// header is GPIO OUT[15:8] (all low after reset: a Pmod OLEDrgb there stays powered off until firmware enables it).
 // Not simulated here (MMCME2_BASE is a Xilinx primitive): mcu_top is what tb_mcu exercises.
 `timescale 1ns/1ps
 module mcu_board #(
@@ -8,6 +9,7 @@ module mcu_board #(
 ) (
   input        clk,          // 125 MHz board clock
   output [3:0] led,
+  output [7:0] jb,           // Pmod JB: jb[0..3] = pins 1-4, jb[4..7] = pins 7-10
   input  [3:0] btn,
   input  [1:0] sw
 );
@@ -32,5 +34,5 @@ module mcu_board #(
   wire rst = rst_sync[2];
 
   mcu_top #(.MEM_BYTES(MEM_BYTES), .INIT_HEX(INIT_HEX), .TICK_DIV(1)) mcu (
-    .clk(clk40), .rst(rst), .led(led), .btn({1'b0, btn[2:0]}), .sw(sw), .commit_valid(), .bus_error());
+    .clk(clk40), .rst(rst), .led(led), .jb(jb), .btn({1'b0, btn[2:0]}), .sw(sw), .commit_valid(), .bus_error());
 endmodule

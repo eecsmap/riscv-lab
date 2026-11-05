@@ -8,13 +8,16 @@ LED0 按 CLINT 的 `mtime` 定时翻转，LED1 到 LED3 实时映射 BTN0 到 BT
 ```
 tcpu_core ── PHYSICAL_PORT ── mcu_router ──┬── mcu_ram    0x8000_0000  BRAM，64 KiB，hex 初始化
                                            ├── mcu_clint  0x0200_0000  msip +0，mtimecmp +0x4000，mtime +0xBFF8
-                                           └── mcu_gpio   0x1001_0000  OUT +0（LED），IN +8（{sw, btn}）
+                                           └── mcu_gpio   0x1001_0000  OUT +0（[3:0] LED，[15:8] Pmod JB），IN +8（{sw, btn}）
 mcu_board：125 MHz → MMCM ×8/25 → 40 MHz，BTN3 复位，mcu_top 在里面
 ```
 
 路由器守 PHYSICAL_PORT 契约：ready 寄存一拍，接受后一拍选中从设备，再一拍回响应；没映射的地址和原子请求回
 `resp_error`。从设备接口是固定一拍延迟的 `sel / we / addr / wdata / wmask → rdata`，加一个外设就是再写一个这样的
 模块加一行地址比较。地址图和 harness 一致，所以第 4 步的中断测试里软件看到的 CLINT 就是这一个。
+
+GPIO OUT 有两个字节通道：OUT[7:0] 是 LED，OUT[15:8] 接 Pmod JB（`oled` 分支加的，见 `teaching/oled/README.md`）。
+两个通道按 `wmask` 分开写；`blink.c` 用 64 位写，会把 JB 一起清零，没接东西时无所谓。
 
 ## 仿真
 
