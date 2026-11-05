@@ -1,5 +1,5 @@
-// MCU-0: core + router + RAM + CLINT + GPIO. Four LEDs are GPIO OUT[3:0], the Pmod JB header is OUT[15:8];
-// the buttons and switches are IN.
+// MCU-0: core + router + RAM + CLINT + GPIO + SPI. Four LEDs are GPIO OUT[3:0], the Pmod JB header is OUT[15:8];
+// the buttons and switches are IN. With the SPI master enabled, JB's SCK (pin 4) and MOSI (pin 2) come from it.
 // No host, no bridge: the program is the RAM's initial contents.
 `timescale 1ns/1ps
 module mcu_top #(
@@ -23,9 +23,9 @@ module mcu_top #(
   wire [63:0] req_wdata, resp_rdata;
   wire [7:0]  req_wmask;
   wire [3:0]  req_amo;
-  wire        sel_ram, sel_clint, sel_gpio, slv_we, mtip, msip;
+  wire        sel_ram, sel_clint, sel_gpio, sel_spi, slv_we, mtip, msip, spi_sck, spi_mosi, spi_en;
   wire [31:0] slv_addr;
-  wire [63:0] slv_wdata, ram_rdata, clint_rdata, gpio_rdata;
+  wire [63:0] slv_wdata, ram_rdata, clint_rdata, gpio_rdata, spi_rdata;
   wire [7:0]  slv_wmask;
   wire [15:0] gpio_out;
 
@@ -46,8 +46,8 @@ module mcu_top #(
     .req_valid(req_valid), .req_ready(req_ready), .req_addr(req_addr), .req_write(req_write), .req_size(req_size),
     .req_wdata(req_wdata), .req_wmask(req_wmask), .req_amo(req_amo), .req_lrsc(req_lrsc),
     .resp_valid(resp_valid), .resp_ready(resp_ready), .resp_rdata(resp_rdata), .resp_error(resp_error), .resp_scfail(resp_scfail),
-    .sel_ram(sel_ram), .sel_clint(sel_clint), .sel_gpio(sel_gpio), .slv_we(slv_we), .slv_addr(slv_addr),
-    .slv_wdata(slv_wdata), .slv_wmask(slv_wmask), .ram_rdata(ram_rdata), .clint_rdata(clint_rdata), .gpio_rdata(gpio_rdata));
+    .sel_ram(sel_ram), .sel_clint(sel_clint), .sel_gpio(sel_gpio), .sel_spi(sel_spi), .slv_we(slv_we), .slv_addr(slv_addr),
+    .slv_wdata(slv_wdata), .slv_wmask(slv_wmask), .ram_rdata(ram_rdata), .clint_rdata(clint_rdata), .gpio_rdata(gpio_rdata), .spi_rdata(spi_rdata));
 
   mcu_ram #(.MEM_BYTES(MEM_BYTES), .INIT_HEX(INIT_HEX)) ram (
     .clk(clk), .sel(sel_ram), .we(slv_we), .addr(slv_addr), .wdata(slv_wdata), .wmask(slv_wmask), .rdata(ram_rdata));
@@ -59,6 +59,11 @@ module mcu_top #(
     .rdata(gpio_rdata), .gpio_out(gpio_out), .gpio_in({2'b00, sw, btn}));
 
   assign led = gpio_out[3:0];
-  assign jb  = gpio_out[15:8];
+  mcu_spi spi (
+    .clk(clk), .rst(rst), .sel(sel_spi), .we(slv_we), .addr(slv_addr), .wdata(slv_wdata), .wmask(slv_wmask),
+    .rdata(spi_rdata), .sck(spi_sck), .mosi(spi_mosi), .en(spi_en));
+
+  // JB = GPIO OUT[15:8], except SCK (jb[3]) and MOSI (jb[1]) while the SPI master is enabled
+  assign jb  = {gpio_out[15:12], spi_en ? spi_sck : gpio_out[11], gpio_out[10], spi_en ? spi_mosi : gpio_out[9], gpio_out[8]};
   assign bus_error = resp_valid & resp_error;
 endmodule

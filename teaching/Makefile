@@ -251,7 +251,7 @@ mcu0-sim:
 	@[ "$(APP)" != blink ] || $(TOOLPREFIX)objdump -d $(MS)/$(APP).elf | grep -cE '\s(mul|div|rem|csr)' | grep -qx 0 \
 	    || { echo "blink.elf uses M or CSR instructions"; exit 1; }
 	@iverilog -g2005 -I $(ROOT)/rtl/cpu -I $(CORE) -o $(MS)/sim.vvp \
-	    $(MCU0)/tb_mcu.v $(MCU0)/mcu_top.v $(MCU0)/mcu_router.v $(MCU0)/mcu_ram.v $(MCU0)/mcu_clint.v $(MCU0)/mcu_gpio.v $(CORE)/*.v
+	    $(MCU0)/tb_mcu.v $(MCU0)/mcu_top.v $(MCU0)/mcu_router.v $(MCU0)/mcu_ram.v $(MCU0)/mcu_clint.v $(MCU0)/mcu_gpio.v $(MCU0_SPI) $(CORE)/*.v
 	@vvp -n $(MS)/sim.vvp +hex=$(MS)/$(APP).hex +delay=$(MCU0_DELAY) $(MCU0_PLUS) $${VCD:+ +vcd=$(MS)/sim.vcd} > $(MS)/sim.log 2>&1; \
 	    grep -E '^(LED|BTN|BUS|TRAP|SUMMARY|RESULT)' $(MS)/sim.log
 	@grep -q '^RESULT PASS' $(MS)/sim.log
@@ -264,14 +264,18 @@ OAPP = $(if $(filter oled_%,$(APP)),$(APP),oled_hello)
 OLED_SIM_MS ?= 40
 OLED_FAST ?=
 OLED_DEFS = $(if $(OLED_FAST),-DOLED_FAST)
+# the SPI master (project 3); MCU0_SPI=work/mcu_spi.v tries your own
+MCU0_SPI ?= $(MCU0)/mcu_spi.v
+# testbench options per app: oled_spi draws no rectangles, and SW0 = 1 animates through the SPI master
+OLED_TB_oled_spi = +rects=0 +sw=1
 OS = $(OUT)/oled/$(OAPP)
 oled-sim:
 	@echo "== oled-sim: $(OAPP) on mcu_top + SSD1331 model (CORE=$(CORE); waits scaled to 1 ms = $(OLED_SIM_MS) cycles)"
 	@mkdir -p $(OS)
 	@$(MAKE) -s --no-print-directory APP=$(OAPP) MCU0_MARCH=rv64i MCU0_CRT=$(MCU0)/start.S oled-fw-sim
 	@iverilog -g2005 -I $(ROOT)/rtl/cpu -I $(CORE) -o $(OS)/sim.vvp $(TEACH)/oled/tb_oled.v $(TEACH)/oled/ssd1331_model.v \
-	    $(MCU0)/mcu_top.v $(MCU0)/mcu_router.v $(MCU0)/mcu_ram.v $(MCU0)/mcu_clint.v $(MCU0)/mcu_gpio.v $(CORE)/*.v
-	@vvp -n $(OS)/sim.vvp +hex=$(OS)/$(OAPP).hex +ms=$(OLED_SIM_MS) +frame_bytes=1536 +ppm=$(OS)/screen.ppm $${VCD:+ +vcd=$(OS)/sim.vcd} \
+	    $(MCU0)/mcu_top.v $(MCU0)/mcu_router.v $(MCU0)/mcu_ram.v $(MCU0)/mcu_clint.v $(MCU0)/mcu_gpio.v $(MCU0_SPI) $(CORE)/*.v
+	@vvp -n $(OS)/sim.vvp +hex=$(OS)/$(OAPP).hex +ms=$(OLED_SIM_MS) +frame_bytes=1536 $(OLED_TB_$(OAPP)) +ppm=$(OS)/screen.ppm $${VCD:+ +vcd=$(OS)/sim.vcd} \
 	    > $(OS)/sim.log 2>&1; grep -E '^(OLED|LED|BUS|TRAP|SUMMARY|RESULT)' $(OS)/sim.log
 	@python3 $(TEACH)/tools/ppm2png.py $(OS)/screen.ppm $(OS)/screen.png 4 && echo "screen: $(OS)/screen.png"
 	@grep -q '^RESULT PASS' $(OS)/sim.log

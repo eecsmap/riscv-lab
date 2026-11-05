@@ -8,7 +8,8 @@ LED0 按 CLINT 的 `mtime` 定时翻转，LED1 到 LED3 实时映射 BTN0 到 BT
 ```
 tcpu_core ── PHYSICAL_PORT ── mcu_router ──┬── mcu_ram    0x8000_0000  BRAM，64 KiB，hex 初始化
                                            ├── mcu_clint  0x0200_0000  msip +0，mtimecmp +0x4000，mtime +0xBFF8
-                                           └── mcu_gpio   0x1001_0000  OUT +0（[3:0] LED，[15:8] Pmod JB），IN +8（{sw, btn}）
+                                           ├── mcu_gpio   0x1001_0000  OUT +0（[3:0] LED，[15:8] Pmod JB），IN +8（{sw, btn}）
+                                           └── mcu_spi    0x1002_0000  SPI 主机，EN 时接管 JB 的 SCK、MOSI（OLED 实验 3）
 mcu_board：125 MHz → MMCM ×8/25 → 40 MHz，BTN3 复位，mcu_top 在里面
 ```
 

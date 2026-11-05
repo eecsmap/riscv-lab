@@ -1,5 +1,6 @@
-// Pmod OLEDrgb (SSD1331 controller, 96 x 64 pixels, 16-bit colour) on MCU-0, driven by bit-banging the Pmod JB
-// header, which is GPIO OUT[15:8]. RV64I only: no multiply, no divide, no CSRs, no interrupts -- a step-2 core runs it.
+// Pmod OLEDrgb (SSD1331 controller, 96 x 64 pixels, 16-bit colour) on MCU-0, on the Pmod JB header, which is GPIO
+// OUT[15:8]. Bytes go out by bit-banging GPIO (project 1), or through the SPI master mcu_spi.v after spi_mode(1, div)
+// (project 3). RV64I only: no multiply, no divide, no CSRs, no interrupts -- a step-2 core runs it.
 //
 // The rules this follows, and where they come from (teaching/oled/README.md has the details):
 //   SSD1331 datasheet rev 1.2, 7.1.3  SCLK rising edge shifts SDIN in, D7 first; D/C# is sampled on the 8th clock
@@ -41,7 +42,33 @@
 
 static uint8_t jb_now;          // what the JB pins show now (a copy: reading GPIO back would cost a bus round trip)
 
-static void jb(uint8_t v) { jb_now = v; JB = v; }
+// ---- the SPI master, teaching/mcu0/mcu_spi.v (OLED project 3). Off after reset: then everything is bit-banged.
+#define SPI_DATA8  (*(volatile uint8_t  *)0x10020000)   // one byte into the FIFO
+#define SPI_DATA16 (*(volatile uint16_t *)0x10020008)   // one pixel: two bytes, bits 15:8 first
+#define SPI_STATUS (*(volatile uint32_t *)0x10020010)
+#define SPI_CTRL   (*(volatile uint32_t *)0x10020018)
+#define SPI_BUSY 1u                                     // a byte on the wire or waiting in the FIFO
+#define SPI_FULL 2u                                     // fewer than 2 free FIFO entries: wait before writing
+#define SPI_OVF  4u                                     // a write was dropped (cleared by writing CTRL)
+static int spi_hw;                                      // 1: bytes go through the SPI master
+
+static void spi_wait_idle(void) { while (SPI_STATUS & SPI_BUSY) ; }
+
+// hand SCK and MOSI to the SPI master (hw = 1) or back to GPIO (hw = 0); div: clocks per half SCK period
+static void spi_mode(int hw, uint32_t div)
+{
+  if (spi_hw) spi_wait_idle();
+  spi_hw = hw;
+  SPI_CTRL = (div << 8) | (hw ? 1u : 0u);
+}
+
+// CS# and D/C# stay on GPIO. Changing them while a byte is still on the wire would cut it off or change D/C# before
+// the 8th edge samples it, so with the SPI master on, wait for it to finish first.
+static void jb(uint8_t v)
+{
+  if (spi_hw) spi_wait_idle();
+  jb_now = v; JB = v;
+}
 
 static void delay_ms(uint32_t ms)
 {
@@ -52,10 +79,10 @@ static void delay_ms(uint32_t ms)
   }
 }
 
-// one byte, SPI mode 0: SCK rests low; MOSI is set while SCK is low and the display takes it on the rising edge.
-// Two stores per bit, never one: if MOSI and SCK changed in the same store there would be no setup time.
+// one byte by bit-banging, SPI mode 0: SCK rests low; MOSI is set while SCK is low and the display takes it on the
+// rising edge. Two stores per bit, never one: if MOSI and SCK changed in the same store there would be no setup time.
 #ifndef OLED_FAST
-static void spi_byte(uint8_t b)
+static void bb_byte(uint8_t b)
 {
   uint8_t lo = jb_now & (uint8_t)~(JB_MOSI | JB_SCK);
   for (int i = 0; i < 8; i++) {
@@ -69,7 +96,7 @@ static void spi_byte(uint8_t b)
 #else
 // OLED_FAST: the same bits, without the loop counter and without the branch -- the bit is moved straight to the MOSI
 // position (bit 1) with a shift and a mask. Same SPI waveform, fewer instructions per bit.
-static void spi_byte(uint8_t b)
+static void bb_byte(uint8_t b)
 {
   uint32_t lo = jb_now & (uint8_t)~(JB_MOSI | JB_SCK), hi = lo | JB_SCK, v = b, m;
 #define SPI_BIT(k) m = ((k) >= 1 ? (v >> ((k) - 1)) : (v << 1)) & JB_MOSI; JB = (uint8_t)(lo | m); JB = (uint8_t)(hi | m);
@@ -78,6 +105,12 @@ static void spi_byte(uint8_t b)
   JB = (uint8_t)lo;
 }
 #endif
+
+static void spi_byte(uint8_t b)
+{
+  if (spi_hw) { while (SPI_STATUS & SPI_FULL) ; SPI_DATA8 = b; }
+  else bb_byte(b);
+}
 
 // a command and its parameters: D/C# = 0 for every byte, CS# low around the whole group
 static void oled_cmds(const uint8_t *p, int n)
@@ -91,7 +124,11 @@ static void oled_cmd1(uint8_t c) { oled_cmds(&c, 1); }
 
 // display data: D/C# = 1, two bytes per pixel, high byte first (datasheet figure 11: C4..C0 B5..B3, then B2..B0 A4..A0)
 static void oled_data_begin(void) { jb((jb_now | JB_DC) & (uint8_t)~JB_CS); }
-static void oled_pixel(uint16_t c) { spi_byte((uint8_t)(c >> 8)); spi_byte((uint8_t)c); }
+static void oled_pixel(uint16_t c)
+{
+  if (spi_hw) { while (SPI_STATUS & SPI_FULL) ; SPI_DATA16 = c; }      // one store per pixel
+  else { bb_byte((uint8_t)(c >> 8)); bb_byte((uint8_t)c); }
+}
 static void oled_data_end(void) { jb((jb_now | JB_CS) & (uint8_t)~JB_DC); }
 
 // where the next pixels go: columns c1..c2, rows r1..r2, filled left to right, then top to bottom
