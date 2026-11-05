@@ -227,7 +227,13 @@ step5-run: step5-sim
 #   tasks      two tasks, preemptive round robin (task_start.S saves all registers); needs a step-4 core
 MCU0 := $(TEACH)/mcu0
 APP ?= blink
-ifneq ($(filter blink oled_%,$(APP)),)
+# oled_* apps that take interrupts (step-4 core); the other oled_* apps are polled RV64I like blink
+OLED_IRQ_APPS := oled_snake
+ifneq ($(filter $(OLED_IRQ_APPS),$(APP)),)
+MCU0_CRT := $(MCU0)/trap_start.S
+MCU0_MARCH := rv64i_zicsr
+MCU0_PLUS := +need_irq=1
+else ifneq ($(filter blink oled_%,$(APP)),)
 MCU0_CRT := $(MCU0)/start.S
 MCU0_MARCH := rv64i
 MCU0_PLUS :=
@@ -238,7 +244,7 @@ MCU0_PLUS := +need_irq=1
 endif
 # a context switch costs several hundred cycles, so the scheduler's slice (DELAY/16) needs a longer DELAY in simulation
 MCU0_DELAY ?= $(if $(filter tasks,$(APP)),40000,4000)
-# oled_* apps live in teaching/oled (the Pmod OLEDrgb on JB, teaching/oled/README.md); RV64I, polled, like blink
+# oled_* apps live in teaching/oled (the Pmod OLEDrgb on JB, teaching/oled/README.md)
 MCU0_SRC = $(if $(filter oled_%,$(APP)),$(TEACH)/oled,$(MCU0))/$(APP).c
 MCU0_CC = $(CC) -march=$(MCU0_MARCH) -mabi=lp64 -mcmodel=medany -O2 -ffreestanding -fno-pie -nostdlib -nostartfiles -static -I $(TEACH)/oled \
     -Wl,--no-relax -Wl,--no-warn-rwx-segments -T $(ROOT)/software/probes/link.ld
@@ -266,28 +272,37 @@ OLED_FAST ?=
 OLED_DEFS = $(if $(OLED_FAST),-DOLED_FAST)
 # the SPI master (project 3); MCU0_SPI=work/mcu_spi.v tries your own
 MCU0_SPI ?= $(MCU0)/mcu_spi.v
-# testbench options per app: oled_spi draws no rectangles, and SW0 = 1 animates through the SPI master
+# testbench options per app (before the defaults: the first +option on the line wins): oled_spi draws no rectangles, and SW0 = 1 animates through the SPI master
 OLED_TB_oled_spi = +rects=0 +sw=1
+# snake: no frame push; steer by the script in oled/snake.script (LEFT at move 3 must be ignored: it is straight back;
+# UP at move 8), end at game over with score 1 (LED3..1 = 101); mid.ppm is the screen after 11 moves
+OLED_TB_oled_snake = +frame_bytes=0 +script=$(TEACH)/oled/snake.script +until_led3=1 +expect_led=5 \
+    +snap=11 +snap_ppm=$(OS)/mid.ppm
+# firmware defines per app in simulation: snake's tick is 4 s of scaled time (160,000 clocks), so that a move with
+# a score redraw fits in one tick
+OLED_SIMDEFS_oled_snake = -DTICK_MS=4000
 OS = $(OUT)/oled/$(OAPP)
 oled-sim:
 	@echo "== oled-sim: $(OAPP) on mcu_top + SSD1331 model (CORE=$(CORE); waits scaled to 1 ms = $(OLED_SIM_MS) cycles)"
 	@mkdir -p $(OS)
-	@$(MAKE) -s --no-print-directory APP=$(OAPP) MCU0_MARCH=rv64i MCU0_CRT=$(MCU0)/start.S oled-fw-sim
+	@$(MAKE) -s --no-print-directory APP=$(OAPP) oled-fw-sim
 	@iverilog -g2005 -I $(ROOT)/rtl/cpu -I $(CORE) -o $(OS)/sim.vvp $(TEACH)/oled/tb_oled.v $(TEACH)/oled/ssd1331_model.v \
 	    $(MCU0)/mcu_top.v $(MCU0)/mcu_router.v $(MCU0)/mcu_ram.v $(MCU0)/mcu_clint.v $(MCU0)/mcu_gpio.v $(MCU0_SPI) $(CORE)/*.v
-	@vvp -n $(OS)/sim.vvp +hex=$(OS)/$(OAPP).hex +ms=$(OLED_SIM_MS) +frame_bytes=1536 $(OLED_TB_$(OAPP)) +ppm=$(OS)/screen.ppm $${VCD:+ +vcd=$(OS)/sim.vcd} \
-	    > $(OS)/sim.log 2>&1; grep -E '^(OLED|LED|BUS|TRAP|SUMMARY|RESULT)' $(OS)/sim.log
+	@vvp -n $(OS)/sim.vvp +hex=$(OS)/$(OAPP).hex +ms=$(OLED_SIM_MS) $(OLED_TB_$(OAPP)) +frame_bytes=1536 +ppm=$(OS)/screen.ppm $${VCD:+ +vcd=$(OS)/sim.vcd} \
+	    > $(OS)/sim.log 2>&1; grep -E '^(OLED|LED3|BTN|BUS|TRAP|SUMMARY|RESULT)' $(OS)/sim.log
 	@python3 $(TEACH)/tools/ppm2png.py $(OS)/screen.ppm $(OS)/screen.png 4 && echo "screen: $(OS)/screen.png"
 	@grep -q '^RESULT PASS' $(OS)/sim.log
 oled-fw-sim:
-	@$(MCU0_CC) $(OLED_DEFS) -DTICKS_PER_MS=$(OLED_SIM_MS) -DFRAME_SHIFT=3 -DDELAY=20000 -o $(OS)/$(OAPP).elf $(MCU0_CRT) $(MCU0_SRC)
+	@$(MCU0_CC) $(OLED_DEFS) $(OLED_SIMDEFS_$(OAPP)) -DTICKS_PER_MS=$(OLED_SIM_MS) -DFRAME_SHIFT=3 -DDELAY=20000 -o $(OS)/$(OAPP).elf $(MCU0_CRT) $(MCU0_SRC)
 	@python3 $(TEACH)/tools/elf2hex.py $(OBJCOPY) $(NM) $(OS)/$(OAPP).elf $(OS)/$(OAPP).hex $(OS)/$(OAPP).tohost >/dev/null
-	@$(TOOLPREFIX)objdump -d $(OS)/$(OAPP).elf | grep -cE '\s(mul|div|rem|csr)' | grep -qx 0 \
-	    || { echo "$(OAPP).elf uses M or CSR instructions: a step-2 core cannot run it"; exit 1; }
+	@$(TOOLPREFIX)objdump -d $(OS)/$(OAPP).elf | grep -cE '\s(mul|div|rem$(if $(filter $(OLED_IRQ_APPS),$(OAPP)),,|csr))' | grep -qx 0 \
+	    || { echo "$(OAPP).elf uses instructions its core cannot run (M; or CSRs in a step-2 app)"; exit 1; }
 
 # board firmware (DELAY for 40 MHz) and the Vivado build: teaching/mcu0/build/ for blink, build-$(APP)/ otherwise
 MCU0_BOARD_DELAY ?= 20000000
 MCU0_BUILD := $(MCU0)/build$(if $(filter blink,$(APP)),,-$(APP))
+# extra mcu_board parameters per app: the snake needs BTN3, so SW1 becomes the reset
+MCU0_GENERIC_oled_snake = RESET_SW1=1
 mcu0-fw:
 	@mkdir -p $(MCU0_BUILD)
 	@$(MCU0_CC) $(OLED_DEFS) -DDELAY=$(MCU0_BOARD_DELAY) -o $(MCU0_BUILD)/$(APP).elf $(MCU0_CRT) $(MCU0_SRC)
@@ -296,7 +311,7 @@ mcu0-fw:
 mcu0-bit: mcu0-fw
 	@echo "== mcu0-bit: Vivado batch build (CORE=$(CORE), APP=$(APP)) -> $(MCU0_BUILD)/mcu_board.bit"
 	cd $(MCU0_BUILD) && vivado -mode batch -nojournal -log vivado.log -source $(MCU0)/build.tcl \
-	    -tclargs $(abspath $(CORE)) $(MCU0_BUILD)/$(APP).hex $(MCU0_BUILD)
+	    -tclargs $(abspath $(CORE)) $(MCU0_BUILD)/$(APP).hex $(MCU0_BUILD) $(MCU0_GENERIC_$(APP))
 	@grep -E 'WNS|Design Timing Summary' -A6 $(MCU0_BUILD)/timing.rpt | head -12
 
 # program the PL over JTAG (hardware manager; the PS is left alone). BIT= picks another bitstream.

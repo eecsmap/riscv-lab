@@ -1,5 +1,7 @@
 # MCU-0 bitstream, non-interactive:
-#   vivado -mode batch -source build.tcl -tclargs <core-dir> <blink.hex> <out-dir> [part]
+#   vivado -mode batch -source build.tcl -tclargs <core-dir> <blink.hex> <out-dir> [part] [NAME=value ...]
+# NAME=value arguments are more mcu_board parameters, e.g. RESET_SW1=1 for the OLED snake. (Not an environment
+# variable: the vivado wrapper runs in a container that does not see this shell's environment.)
 # <core-dir> holds the core's .v files (your teaching/work/cpu, or rtl/cpu for the reference core).
 # Produces <out-dir>/mcu_board.bit and the timing/utilisation reports. Not run in this repository's CI.
 if {[llength $argv] < 3} {
@@ -9,7 +11,11 @@ if {[llength $argv] < 3} {
 set core_dir [file normalize [lindex $argv 0]]
 set hex      [file normalize [lindex $argv 1]]
 set out      [file normalize [lindex $argv 2]]
-set part     [expr {[llength $argv] > 3 ? [lindex $argv 3] : "xc7z020clg400-1"}]
+set part     "xc7z020clg400-1"
+set extra    ""
+foreach a [lrange $argv 3 end] {
+  if {[string first "=" $a] > 0} { append extra " $a" } else { set part $a }
+}
 set here     [file dirname [file normalize [info script]]]
 set rtl      [file normalize "$here/../../rtl/cpu"]
 
@@ -20,7 +26,7 @@ add_files [list $here/mcu_top.v $here/mcu_router.v $here/mcu_ram.v $here/mcu_cli
 set_property include_dirs [list $rtl $core_dir] [current_fileset]
 add_files -fileset constrs_1 $here/pynq-z1.xdc
 set_property top mcu_board [current_fileset]
-set_property generic "INIT_HEX=\"$hex\"" [current_fileset]
+set_property generic "INIT_HEX=\"$hex\" $extra" [current_fileset]
 update_compile_order -fileset sources_1
 
 launch_runs synth_1 -jobs 4

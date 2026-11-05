@@ -1,11 +1,13 @@
 // MCU-0 on the PYNQ-Z1: 125 MHz on H16 -> MMCM x8/25 -> 40 MHz, the same clocking the accepted SoC uses.
-// BTN3 is the reset; BTN0..2 and the two switches are GPIO inputs; the four LEDs are GPIO OUT[3:0] and the Pmod JB
+// BTN3 is the reset; BTN0..2 and the two switches are GPIO inputs (with RESET_SW1 = 1, SW1 is the reset and all four
+// buttons are inputs); the four LEDs are GPIO OUT[3:0] and the Pmod JB
 // header is GPIO OUT[15:8] (all low after reset: a Pmod OLEDrgb there stays powered off until firmware enables it).
 // Not simulated here (MMCME2_BASE is a Xilinx primitive): mcu_top is what tb_mcu exercises.
 `timescale 1ns/1ps
 module mcu_board #(
   parameter MEM_BYTES = 65536,
-  parameter INIT_HEX  = "blink.hex"
+  parameter INIT_HEX  = "blink.hex",
+  parameter RESET_SW1 = 0          // 1: SW1 up holds the reset and BTN3 becomes an input (OLED snake: four directions)
 ) (
   input        clk,          // 125 MHz board clock
   output [3:0] led,
@@ -30,9 +32,9 @@ module mcu_board #(
   reg [2:0] rst_sync = 3'b111;
   always @(posedge clk40 or negedge locked)
     if (!locked) rst_sync <= 3'b111;
-    else         rst_sync <= {rst_sync[1:0], btn[3]};
+    else         rst_sync <= {rst_sync[1:0], RESET_SW1 ? sw[1] : btn[3]};
   wire rst = rst_sync[2];
 
   mcu_top #(.MEM_BYTES(MEM_BYTES), .INIT_HEX(INIT_HEX), .TICK_DIV(1)) mcu (
-    .clk(clk40), .rst(rst), .led(led), .jb(jb), .btn({1'b0, btn[2:0]}), .sw(sw), .commit_valid(), .bus_error());
+    .clk(clk40), .rst(rst), .led(led), .jb(jb), .btn(RESET_SW1 ? btn : {1'b0, btn[2:0]}), .sw(sw), .commit_valid(), .bus_error());
 endmodule
