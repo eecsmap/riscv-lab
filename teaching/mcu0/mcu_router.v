@@ -1,4 +1,4 @@
-// MCU-0 address router: the PHYSICAL_PORT slave the core talks to, and four simple slaves behind it.
+// MCU-0 address router: the PHYSICAL_PORT slave the core talks to, and five simple slaves behind it.
 //
 // Slave interface (fixed one-cycle latency, always ready): the router pulses `sel_<slave>` for one cycle
 // together with slv_we / slv_addr / slv_wdata / slv_wmask; the slave performs the write, or registers its read
@@ -13,7 +13,8 @@ module mcu_router #(
   parameter        RAM_BYTES  = 65536,
   parameter [31:0] CLINT_BASE = 32'h0200_0000,   // 64 KiB window
   parameter [31:0] GPIO_BASE  = 32'h1001_0000,   // 4 KiB window
-  parameter [31:0] SPI_BASE   = 32'h1002_0000    // 4 KiB window (OLED project 3)
+  parameter [31:0] SPI_BASE   = 32'h1002_0000,   // 4 KiB window (OLED project 3)
+  parameter [31:0] VGA_BASE   = 32'h1003_0000    // 64 KiB window (teaching/vga)
 ) (
   input             clk,
   input             rst,
@@ -37,6 +38,7 @@ module mcu_router #(
   output reg        sel_clint,
   output reg        sel_gpio,
   output reg        sel_spi,
+  output reg        sel_vga,
   output reg        slv_we,
   output reg [31:0] slv_addr,
   output reg [63:0] slv_wdata,
@@ -44,33 +46,35 @@ module mcu_router #(
   input      [63:0] ram_rdata,
   input      [63:0] clint_rdata,
   input      [63:0] gpio_rdata,
-  input      [63:0] spi_rdata
+  input      [63:0] spi_rdata,
+  input      [63:0] vga_rdata
 );
   wire [31:0] ram_off   = req_addr - RAM_BASE;
   wire        hit_ram   = (req_addr >= RAM_BASE) && (ram_off < RAM_BYTES);
   wire        hit_clint = ((req_addr & 32'hFFFF_0000) == CLINT_BASE);
   wire        hit_gpio  = ((req_addr & 32'hFFFF_F000) == GPIO_BASE);
   wire        hit_spi   = ((req_addr & 32'hFFFF_F000) == SPI_BASE);
+  wire        hit_vga   = ((req_addr & 32'hFFFF_0000) == VGA_BASE);
   wire        atomic    = (req_amo != 4'd0) || (req_lrsc != 2'd0);
-  wire        legal     = (hit_ram | hit_clint | hit_gpio | hit_spi) & !atomic;
+  wire        legal     = (hit_ram | hit_clint | hit_gpio | hit_spi | hit_vga) & !atomic;
 
   reg        busy;            // accepted, slave cycle in progress
   reg        answer;          // slave cycle done, respond now
-  reg [3:0]  which;           // {spi, gpio, clint, ram} of the accepted request
+  reg [4:0]  which;           // {vga, spi, gpio, clint, ram} of the accepted request
   assign resp_scfail = 1'b0;
   assign resp_rdata  = resp_error ? 64'd0 :
-                       which[0] ? ram_rdata : which[1] ? clint_rdata : which[2] ? gpio_rdata : which[3] ? spi_rdata : 64'd0;
+                       which[0] ? ram_rdata : which[1] ? clint_rdata : which[2] ? gpio_rdata : which[3] ? spi_rdata : which[4] ? vga_rdata : 64'd0;
 
   always @(posedge clk) begin
     if (rst) begin
-      req_ready <= 1'b0; busy <= 1'b0; answer <= 1'b0; resp_valid <= 1'b0; resp_error <= 1'b0; which <= 4'd0;
-      sel_ram <= 1'b0; sel_clint <= 1'b0; sel_gpio <= 1'b0; sel_spi <= 1'b0; slv_we <= 1'b0; slv_addr <= 32'd0; slv_wdata <= 64'd0; slv_wmask <= 8'd0;
+      req_ready <= 1'b0; busy <= 1'b0; answer <= 1'b0; resp_valid <= 1'b0; resp_error <= 1'b0; which <= 5'd0;
+      sel_ram <= 1'b0; sel_clint <= 1'b0; sel_gpio <= 1'b0; sel_spi <= 1'b0; sel_vga <= 1'b0; slv_we <= 1'b0; slv_addr <= 32'd0; slv_wdata <= 64'd0; slv_wmask <= 8'd0;
     end else begin
-      resp_valid <= 1'b0; sel_ram <= 1'b0; sel_clint <= 1'b0; sel_gpio <= 1'b0; sel_spi <= 1'b0;
+      resp_valid <= 1'b0; sel_ram <= 1'b0; sel_clint <= 1'b0; sel_gpio <= 1'b0; sel_spi <= 1'b0; sel_vga <= 1'b0;
       req_ready  <= req_valid && !busy && !answer && !req_ready;
       if (req_valid && req_ready) begin                      // accept: select the slave for the next cycle
-        busy <= 1'b1; resp_error <= !legal; which <= {hit_spi, hit_gpio, hit_clint, hit_ram} & {4{!atomic}};
-        sel_ram <= hit_ram & !atomic; sel_clint <= hit_clint & !atomic; sel_gpio <= hit_gpio & !atomic; sel_spi <= hit_spi & !atomic;
+        busy <= 1'b1; resp_error <= !legal; which <= {hit_vga, hit_spi, hit_gpio, hit_clint, hit_ram} & {5{!atomic}};
+        sel_ram <= hit_ram & !atomic; sel_clint <= hit_clint & !atomic; sel_gpio <= hit_gpio & !atomic; sel_spi <= hit_spi & !atomic; sel_vga <= hit_vga & !atomic;
         slv_we <= req_write; slv_addr <= req_addr; slv_wdata <= req_wdata; slv_wmask <= req_wmask;
       end
       if (busy)   begin busy <= 1'b0; answer <= 1'b1; end      // the slave is doing its cycle

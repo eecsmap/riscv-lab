@@ -1,5 +1,6 @@
-// MCU-0: core + router + RAM + CLINT + GPIO + SPI. Four LEDs are GPIO OUT[3:0], the Pmod JB header is OUT[15:8];
-// the buttons and switches are IN. With the SPI master enabled, JB's SCK (pin 4) and MOSI (pin 2) come from it.
+// MCU-0: core + router + RAM + CLINT + GPIO + SPI + VGA. Four LEDs are GPIO OUT[3:0], the Pmod JB header is
+// OUT[15:8]; the buttons and switches are IN. With the SPI master enabled, JB's SCK (pin 4) and MOSI (pin 2) come from
+// it. The VGA text mode's signals come out separately; the board top decides which Pmod pins they drive.
 // No host, no bridge: the program is the RAM's initial contents.
 `timescale 1ns/1ps
 module mcu_top #(
@@ -11,6 +12,11 @@ module mcu_top #(
   input             rst,
   output     [3:0]  led,
   output     [7:0]  jb,             // Pmod JB, pins 1-4 and 7-10 (teaching/oled)
+  output     [3:0]  vga_r,          // VGA, 4 bits per colour, syncs active high (teaching/vga)
+  output     [3:0]  vga_g,
+  output     [3:0]  vga_b,
+  output            vga_hs,
+  output            vga_vs,
   input      [3:0]  btn,
   input      [1:0]  sw,
   output            commit_valid,   // activity, for an LED or an ILA trigger
@@ -23,9 +29,9 @@ module mcu_top #(
   wire [63:0] req_wdata, resp_rdata;
   wire [7:0]  req_wmask;
   wire [3:0]  req_amo;
-  wire        sel_ram, sel_clint, sel_gpio, sel_spi, slv_we, mtip, msip, spi_sck, spi_mosi, spi_en;
+  wire        sel_ram, sel_clint, sel_gpio, sel_spi, sel_vga, slv_we, mtip, msip, spi_sck, spi_mosi, spi_en;
   wire [31:0] slv_addr;
-  wire [63:0] slv_wdata, ram_rdata, clint_rdata, gpio_rdata, spi_rdata;
+  wire [63:0] slv_wdata, ram_rdata, clint_rdata, gpio_rdata, spi_rdata, vga_rdata;
   wire [7:0]  slv_wmask;
   wire [15:0] gpio_out;
 
@@ -46,8 +52,8 @@ module mcu_top #(
     .req_valid(req_valid), .req_ready(req_ready), .req_addr(req_addr), .req_write(req_write), .req_size(req_size),
     .req_wdata(req_wdata), .req_wmask(req_wmask), .req_amo(req_amo), .req_lrsc(req_lrsc),
     .resp_valid(resp_valid), .resp_ready(resp_ready), .resp_rdata(resp_rdata), .resp_error(resp_error), .resp_scfail(resp_scfail),
-    .sel_ram(sel_ram), .sel_clint(sel_clint), .sel_gpio(sel_gpio), .sel_spi(sel_spi), .slv_we(slv_we), .slv_addr(slv_addr),
-    .slv_wdata(slv_wdata), .slv_wmask(slv_wmask), .ram_rdata(ram_rdata), .clint_rdata(clint_rdata), .gpio_rdata(gpio_rdata), .spi_rdata(spi_rdata));
+    .sel_ram(sel_ram), .sel_clint(sel_clint), .sel_gpio(sel_gpio), .sel_spi(sel_spi), .sel_vga(sel_vga), .slv_we(slv_we), .slv_addr(slv_addr),
+    .slv_wdata(slv_wdata), .slv_wmask(slv_wmask), .ram_rdata(ram_rdata), .clint_rdata(clint_rdata), .gpio_rdata(gpio_rdata), .spi_rdata(spi_rdata), .vga_rdata(vga_rdata));
 
   mcu_ram #(.MEM_BYTES(MEM_BYTES), .INIT_HEX(INIT_HEX)) ram (
     .clk(clk), .sel(sel_ram), .we(slv_we), .addr(slv_addr), .wdata(slv_wdata), .wmask(slv_wmask), .rdata(ram_rdata));
@@ -65,5 +71,9 @@ module mcu_top #(
 
   // JB = GPIO OUT[15:8], except SCK (jb[3]) and MOSI (jb[1]) while the SPI master is enabled
   assign jb  = {gpio_out[15:12], spi_en ? spi_sck : gpio_out[11], gpio_out[10], spi_en ? spi_mosi : gpio_out[9], gpio_out[8]};
+  mcu_vga vga (
+    .clk(clk), .rst(rst), .sel(sel_vga), .we(slv_we), .addr(slv_addr), .wdata(slv_wdata), .wmask(slv_wmask),
+    .rdata(vga_rdata), .r(vga_r), .g(vga_g), .b(vga_b), .hs(vga_hs), .vs(vga_vs));
+
   assign bus_error = resp_valid & resp_error;
 endmodule

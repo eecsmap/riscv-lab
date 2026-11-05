@@ -2,15 +2,19 @@
 // BTN3 is the reset; BTN0..2 and the two switches are GPIO inputs (with RESET_SW1 = 1, SW1 is the reset and all four
 // buttons are inputs); the four LEDs are GPIO OUT[3:0] and the Pmod JB
 // header is GPIO OUT[15:8] (all low after reset: a Pmod OLEDrgb there stays powered off until firmware enables it).
+// With PMOD_VGA = 1 a Pmod VGA on JA + JB shows the VGA text mode instead (teaching/vga): JA = red (pins 1-4) and
+// blue (7-10), JB = green (1-4), HSYNC (7), VSYNC (8). Then nothing else drives JB; with PMOD_VGA = 0, JA stays low.
 // Not simulated here (MMCME2_BASE is a Xilinx primitive): mcu_top is what tb_mcu exercises.
 `timescale 1ns/1ps
 module mcu_board #(
   parameter MEM_BYTES = 65536,
   parameter INIT_HEX  = "blink.hex",
-  parameter RESET_SW1 = 0          // 1: SW1 up holds the reset and BTN3 becomes an input (OLED snake: four directions)
+  parameter RESET_SW1 = 0,         // 1: SW1 up holds the reset and BTN3 becomes an input (OLED snake: four directions)
+  parameter PMOD_VGA  = 0          // 1: JA + JB carry the VGA picture (a Pmod VGA across both headers)
 ) (
   input        clk,          // 125 MHz board clock
   output [3:0] led,
+  output [7:0] ja,           // Pmod JA: ja[0..3] = pins 1-4, ja[4..7] = pins 7-10
   output [7:0] jb,           // Pmod JB: jb[0..3] = pins 1-4, jb[4..7] = pins 7-10
   input  [3:0] btn,
   input  [1:0] sw
@@ -35,6 +39,13 @@ module mcu_board #(
     else         rst_sync <= {rst_sync[1:0], RESET_SW1 ? sw[1] : btn[3]};
   wire rst = rst_sync[2];
 
+  wire [7:0] jb_mcu;
+  wire [3:0] vga_r, vga_g, vga_b;
+  wire       vga_hs, vga_vs;
+  assign ja = PMOD_VGA ? {vga_b, vga_r} : 8'd0;
+  assign jb = PMOD_VGA ? {2'b00, vga_vs, vga_hs, vga_g} : jb_mcu;
+
   mcu_top #(.MEM_BYTES(MEM_BYTES), .INIT_HEX(INIT_HEX), .TICK_DIV(1)) mcu (
-    .clk(clk40), .rst(rst), .led(led), .jb(jb), .btn(RESET_SW1 ? btn : {1'b0, btn[2:0]}), .sw(sw), .commit_valid(), .bus_error());
+    .clk(clk40), .rst(rst), .led(led), .jb(jb_mcu),
+    .vga_r(vga_r), .vga_g(vga_g), .vga_b(vga_b), .vga_hs(vga_hs), .vga_vs(vga_vs), .btn(RESET_SW1 ? btn : {1'b0, btn[2:0]}), .sw(sw), .commit_valid(), .bus_error());
 endmodule

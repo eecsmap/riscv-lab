@@ -9,8 +9,9 @@ LED0 按 CLINT 的 `mtime` 定时翻转，LED1 到 LED3 实时映射 BTN0 到 BT
 tcpu_core ── PHYSICAL_PORT ── mcu_router ──┬── mcu_ram    0x8000_0000  BRAM，64 KiB，hex 初始化
                                            ├── mcu_clint  0x0200_0000  msip +0，mtimecmp +0x4000，mtime +0xBFF8
                                            ├── mcu_gpio   0x1001_0000  OUT +0（[3:0] LED，[15:8] Pmod JB），IN +8（{sw, btn}）
-                                           └── mcu_spi    0x1002_0000  SPI 主机，EN 时接管 JB 的 SCK、MOSI（OLED 实验 3）
-mcu_board：125 MHz → MMCM ×8/25 → 40 MHz，BTN3 复位，mcu_top 在里面
+                                           ├── mcu_spi    0x1002_0000  SPI 主机，EN 时接管 JB 的 SCK、MOSI（OLED 实验 3）
+                                           └── mcu_vga    0x1003_0000  VGA 文字模式，100 × 75 字符，800 × 600 @ 60 Hz（teaching/vga）
+mcu_board：125 MHz → MMCM ×8/25 → 40 MHz，BTN3 复位，mcu_top 在里面；PMOD_VGA=1 时 JA + JB 输出 VGA 信号
 ```
 
 路由器守 PHYSICAL_PORT 契约：ready 寄存一拍，接受后一拍选中从设备，再一拍回响应；没映射的地址和原子请求回
@@ -19,6 +20,10 @@ mcu_board：125 MHz → MMCM ×8/25 → 40 MHz，BTN3 复位，mcu_top 在里面
 
 GPIO OUT 有两个字节通道：OUT[7:0] 是 LED，OUT[15:8] 接 Pmod JB（`oled` 分支加的，见 `teaching/oled/README.md`）。
 两个通道按 `wmask` 分开写；`blink.c` 用 64 位写，会把 JB 一起清零，没接东西时无所谓。
+
+`mcu_vga`（`vga` 分支加的，见 `teaching/vga/README.md`）总在 `mcu_top` 里，所有 MCU-0 仿真都编译它；它的信号只在
+`mcu_board` 的 `PMOD_VGA=1` 时接到 JA + JB 上，那时 JB 不再接 GPIO 和 SPI。固件共用的寄存器地址、`delay_ms` 和不用除法的
+十进制输出在 `mcu0.h`。
 
 ## 仿真
 

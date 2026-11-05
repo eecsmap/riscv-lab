@@ -31,7 +31,7 @@ REF_ISA   := -DHAS_C -DHAS_S -DHAS_M
 ISA_FLAGS ?= $(if $(filter $(abspath $(CORE)),$(ROOT)/rtl/cpu),$(REF_ISA),)
 ISA_CF    := $(foreach f,$(ISA_FLAGS),--cflag $(f))
 
-.PHONY: all clean unit step1-init step1 step1-mutants step1-all step2 step2-mutants step2-all step3 step3-mutants step3-all step4 step4-mutants step4-all step5-sim step5 step5-run pl-sim oled-sim oled-fw-sim mcu0-sim mcu0-fw mcu0-bit mcu0-prog
+.PHONY: all clean unit step1-init step1 step1-mutants step1-all step2 step2-mutants step2-all step3 step3-mutants step3-all step4 step4-mutants step4-all step5-sim step5 step5-run pl-sim oled-sim oled-fw-sim vga-sim vga-fw-sim mcu0-sim mcu0-fw mcu0-bit mcu0-prog
 
 all: step1-all
 
@@ -233,7 +233,7 @@ ifneq ($(filter $(OLED_IRQ_APPS),$(APP)),)
 MCU0_CRT := $(MCU0)/trap_start.S
 MCU0_MARCH := rv64i_zicsr
 MCU0_PLUS := +need_irq=1
-else ifneq ($(filter blink oled_%,$(APP)),)
+else ifneq ($(filter blink oled_% vga_%,$(APP)),)
 MCU0_CRT := $(MCU0)/start.S
 MCU0_MARCH := rv64i
 MCU0_PLUS :=
@@ -244,9 +244,9 @@ MCU0_PLUS := +need_irq=1
 endif
 # a context switch costs several hundred cycles, so the scheduler's slice (DELAY/16) needs a longer DELAY in simulation
 MCU0_DELAY ?= $(if $(filter tasks,$(APP)),40000,4000)
-# oled_* apps live in teaching/oled (the Pmod OLEDrgb on JB, teaching/oled/README.md)
-MCU0_SRC = $(if $(filter oled_%,$(APP)),$(TEACH)/oled,$(MCU0))/$(APP).c
-MCU0_CC = $(CC) -march=$(MCU0_MARCH) -mabi=lp64 -mcmodel=medany -O2 -ffreestanding -fno-pie -nostdlib -nostartfiles -static -I $(TEACH)/oled \
+# oled_* apps live in teaching/oled (the Pmod OLEDrgb on JB, teaching/oled/README.md), vga_* in teaching/vga
+MCU0_SRC = $(if $(filter oled_%,$(APP)),$(TEACH)/oled,$(if $(filter vga_%,$(APP)),$(TEACH)/vga,$(MCU0)))/$(APP).c
+MCU0_CC = $(CC) -march=$(MCU0_MARCH) -mabi=lp64 -mcmodel=medany -O2 -ffreestanding -fno-pie -nostdlib -nostartfiles -static -I $(MCU0) -I $(TEACH)/oled -I $(TEACH)/vga \
     -Wl,--no-relax -Wl,--no-warn-rwx-segments -T $(ROOT)/software/probes/link.ld
 MS := $(OUT)/mcu0/$(APP)
 mcu0-sim:
@@ -257,7 +257,7 @@ mcu0-sim:
 	@[ "$(APP)" != blink ] || $(TOOLPREFIX)objdump -d $(MS)/$(APP).elf | grep -cE '\s(mul|div|rem|csr)' | grep -qx 0 \
 	    || { echo "blink.elf uses M or CSR instructions"; exit 1; }
 	@iverilog -g2005 -I $(ROOT)/rtl/cpu -I $(CORE) -o $(MS)/sim.vvp \
-	    $(MCU0)/tb_mcu.v $(MCU0)/mcu_top.v $(MCU0)/mcu_router.v $(MCU0)/mcu_ram.v $(MCU0)/mcu_clint.v $(MCU0)/mcu_gpio.v $(MCU0_SPI) $(CORE)/*.v
+	    $(MCU0)/tb_mcu.v $(MCU0)/mcu_top.v $(MCU0)/mcu_router.v $(MCU0)/mcu_ram.v $(MCU0)/mcu_clint.v $(MCU0)/mcu_gpio.v $(MCU0_SPI) $(MCU0_VGA) $(CORE)/*.v
 	@vvp -n $(MS)/sim.vvp +hex=$(MS)/$(APP).hex +delay=$(MCU0_DELAY) $(MCU0_PLUS) $${VCD:+ +vcd=$(MS)/sim.vcd} > $(MS)/sim.log 2>&1; \
 	    grep -E '^(LED|BTN|BUS|TRAP|SUMMARY|RESULT)' $(MS)/sim.log
 	@grep -q '^RESULT PASS' $(MS)/sim.log
@@ -272,6 +272,8 @@ OLED_FAST ?=
 OLED_DEFS = $(if $(OLED_FAST),-DOLED_FAST)
 # the SPI master (project 3); MCU0_SPI=work/mcu_spi.v tries your own
 MCU0_SPI ?= $(MCU0)/mcu_spi.v
+# the VGA text mode (teaching/vga); every MCU-0 simulation has it, it is part of mcu_top
+MCU0_VGA = $(MCU0)/mcu_vga.v $(MCU0)/mcu_vga_font.v
 # testbench options per app (before the defaults: the first +option on the line wins): oled_spi draws no rectangles, and SW0 = 1 animates through the SPI master
 OLED_TB_oled_spi = +rects=0 +sw=1
 # snake: no frame push; steer by the script in oled/snake.script (LEFT at move 3 must be ignored: it is straight back;
@@ -287,7 +289,7 @@ oled-sim:
 	@mkdir -p $(OS)
 	@$(MAKE) -s --no-print-directory APP=$(OAPP) oled-fw-sim
 	@iverilog -g2005 -I $(ROOT)/rtl/cpu -I $(CORE) -o $(OS)/sim.vvp $(TEACH)/oled/tb_oled.v $(TEACH)/oled/ssd1331_model.v \
-	    $(MCU0)/mcu_top.v $(MCU0)/mcu_router.v $(MCU0)/mcu_ram.v $(MCU0)/mcu_clint.v $(MCU0)/mcu_gpio.v $(MCU0_SPI) $(CORE)/*.v
+	    $(MCU0)/mcu_top.v $(MCU0)/mcu_router.v $(MCU0)/mcu_ram.v $(MCU0)/mcu_clint.v $(MCU0)/mcu_gpio.v $(MCU0_SPI) $(MCU0_VGA) $(CORE)/*.v
 	@vvp -n $(OS)/sim.vvp +hex=$(OS)/$(OAPP).hex +ms=$(OLED_SIM_MS) $(OLED_TB_$(OAPP)) +frame_bytes=1536 +ppm=$(OS)/screen.ppm $${VCD:+ +vcd=$(OS)/sim.vcd} \
 	    > $(OS)/sim.log 2>&1; grep -E '^(OLED|LED3|BTN|BUS|TRAP|SUMMARY|RESULT)' $(OS)/sim.log
 	@python3 $(TEACH)/tools/ppm2png.py $(OS)/screen.ppm $(OS)/screen.png 4 && echo "screen: $(OS)/screen.png"
@@ -299,10 +301,35 @@ oled-fw-sim:
 	    || { echo "$(OAPP).elf uses instructions its core cannot run (M; or CSRs in a step-2 app)"; exit 1; }
 
 # board firmware (DELAY for 40 MHz) and the Vivado build: teaching/mcu0/build/ for blink, build-$(APP)/ otherwise
+# ---- teaching/vga: the VGA text mode on MCU-0. vga-sim runs a vga_* app (default vga_hello) and checks the VGA
+# output pixel by pixel against the text RAM (tb_vga.v); screen.png is the first frame checked, 800 x 600.
+# In simulation LED0 toggles every frame and SW0 (VGA_SW=1) scrolls one row per frame.
+VAPP = $(if $(filter vga_%,$(APP)),$(APP),vga_hello)
+VS = $(OUT)/vga/$(VAPP)
+VGA_SW ?= 0
+VGA_TB = +sw=$(VGA_SW) $(if $(filter 1 3,$(VGA_SW)),+expect_led=3)
+vga-sim:
+	@echo "== vga-sim: $(VAPP) on mcu_top, VGA output checked against the text RAM (CORE=$(CORE))"
+	@mkdir -p $(VS)
+	@$(MAKE) -s --no-print-directory APP=$(VAPP) vga-fw-sim
+	@python3 $(TEACH)/tools/font2rom.py $(TEACH)/oled/font8x8.h $(MCU0)/mcu_vga_font.v $(VS)/font_rom.hex
+	@iverilog -g2005 -I $(ROOT)/rtl/cpu -I $(CORE) -o $(VS)/sim.vvp $(TEACH)/vga/tb_vga.v \
+	    $(MCU0)/mcu_top.v $(MCU0)/mcu_router.v $(MCU0)/mcu_ram.v $(MCU0)/mcu_clint.v $(MCU0)/mcu_gpio.v $(MCU0_SPI) $(MCU0_VGA) $(CORE)/*.v
+	@vvp -n $(VS)/sim.vvp +hex=$(VS)/$(VAPP).hex +font=$(VS)/font_rom.hex $(VGA_TB) +ppm=$(VS)/screen.ppm $${VCD:+ +vcd=$(VS)/sim.vcd} \
+	    > $(VS)/sim.log 2>&1; grep -E '^(VGA|SYNC|PIXEL|LATE|BUS|TRAP|SUMMARY|RESULT)' $(VS)/sim.log
+	@[ ! -f $(VS)/screen.ppm ] || { python3 $(TEACH)/tools/ppm2png.py $(VS)/screen.ppm $(VS)/screen.png 1 && echo "screen: $(VS)/screen.png"; }
+	@grep -q '^RESULT PASS' $(VS)/sim.log
+vga-fw-sim:
+	@$(MCU0_CC) -DHEART_FRAMES=1 -DSCROLL_FRAMES=1 -o $(VS)/$(VAPP).elf $(MCU0_CRT) $(MCU0_SRC)
+	@python3 $(TEACH)/tools/elf2hex.py $(OBJCOPY) $(NM) $(VS)/$(VAPP).elf $(VS)/$(VAPP).hex $(VS)/$(VAPP).tohost >/dev/null
+	@$(TOOLPREFIX)objdump -d $(VS)/$(VAPP).elf | grep -cE '\s(mul|div|rem|csr)' | grep -qx 0 \
+	    || { echo "$(VAPP).elf uses M or CSR instructions: a step-2 core cannot run it"; exit 1; }
+
 MCU0_BOARD_DELAY ?= 20000000
 MCU0_BUILD := $(MCU0)/build$(if $(filter blink,$(APP)),,-$(APP))
 # extra mcu_board parameters per app: the snake needs BTN3, so SW1 becomes the reset
 MCU0_GENERIC_oled_snake = RESET_SW1=1
+MCU0_GENERIC_vga_hello = PMOD_VGA=1
 mcu0-fw:
 	@mkdir -p $(MCU0_BUILD)
 	@$(MCU0_CC) $(OLED_DEFS) -DDELAY=$(MCU0_BOARD_DELAY) -o $(MCU0_BUILD)/$(APP).elf $(MCU0_CRT) $(MCU0_SRC)
