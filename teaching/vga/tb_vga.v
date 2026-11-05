@@ -1,18 +1,23 @@
 // VGA testbench: MCU-0 (mcu_top) watched by a "monitor" on its VGA outputs.
-//   +hex=<file> +font=<font_rom.hex> [+frames=<n>] [+vblank_only=0] [+maxcycles=<n>] [+ppm=<file>] [+sw=<SW1:0>] [+expect_led=<LED2..1>]
+//   +hex=<file> +font=<font_rom.hex> [+frames=<n>] [+vblank_only=0] [+maxcycles=<n>] [+ppm=<file>] [+sw=<SW1:0>]
+//   [+expect_led=<LED3..1>] [+start_led=<mask>] [+script=<file>] [+until_led3=1] [+snap=<moves> +snap_ppm=<file>]
 //   [+vcd=<file>]
+// For games (as in teaching/oled/tb_oled.v): +script lines "<moves> <buttons>": when LED0 has toggled <moves> times, set
+// BTN3..0 to <buttons> (hex). +until_led3=1: once LED3 lights (game over), judge two more frames and stop.
+// +snap: also save the frame completed after that many LED0 toggles. +ppm is the last frame completed.
 // The monitor locks onto the first VSYNC and from then on knows where the beam must be. Every clock it checks:
 //   - HSYNC high exactly in columns 840..967 of each 1056-clock line, VSYNC high exactly for 4 lines of each 628
 //   - black outside the 800 x 600 visible area
 //   - inside it, the colour this testbench works out by itself from the text RAM, the scroll register, the font
 //     (font_rom.hex, from the same font8x8.h) and its own copy of the palette -- so a pipeline stage too few or too
 //     many, a swapped colour or a wrong row/column calculation shows up as a mismatch at an exact pixel
-// It starts judging pixels at the first frame after LED1 lights (the firmware has drawn its screen) and checks
-// `frames` whole frames (default 2). From then on the firmware promises to change the screen only in the vertical
+// It starts judging pixels at the first frame after an LED in start_led lights (default 2, LED1: the firmware has drawn
+// its screen) and checks `frames` whole frames (default 2). From then on the firmware promises to change the screen only in the vertical
 // blank: every store into the text RAM or the scroll register while the beam is on lines 0..599 is a "late store"
 // (+vblank_only=0 turns that rule off, for an app that does not make the promise).
 // PASS needs: no sync error, no pixel mismatch, no late store, the frames checked, LED0 toggling (the per-frame loop
-// runs), no bus error, no synchronous trap, and LED2..1 = expect_led (default 1: drawn, not scrolling).
+// runs), no bus error, no synchronous trap, LED3..1 = expect_led (default 1: drawn, not scrolling, no game over), and
+// with +until_led3=1 LED3 lit.
 `timescale 1ns/1ps
 module tb_vga;
   localparam LINE = 1056, LINES = 628, H_SYNC0 = 840, H_SYNC1 = 968, V_FIRST = 601;   // VSYNC rises at the start of line 601
@@ -28,11 +33,22 @@ module tb_vga;
   reg [7:0]  font [0:2047];
   reg [11:0] shot [0:479999];             // the first frame checked, for the picture
   reg [1023:0] hexfile, fontfile, ppmfile, vcdfile;
-  integer frames = 2, vblank_only = 1, late = 0, maxcycles = 8000000, swset = 0, expect_led = 1;
+  integer frames = 2, vblank_only = 1, late = 0, maxcycles = 8000000, swset = 0, expect_led = 1, start_led = 2,
+          until_led3 = 0, led3_seen = 0, snap = -1, script_fd = 0, next_at = -1, next_btn = 0, rc;
+  reg [1023:0] scriptfile, snapfile;
   integer locked_at = -1, last_vs = -1, judging = 0, checked = 0, sync_err = 0, pix_err = 0, errors = 0, traps = 0,
           toggles = 0, t, ln, col, vline, srow, cell_i, fd, i;
-  reg vs_q = 1'b0, led0_q = 1'b0, have_ppm = 1'b0, shooting = 1'b0;
+  reg vs_q = 1'b0, led0_q = 1'b0, have_ppm = 1'b0;
   reg [63:0] word; reg [15:0] c; reg [7:0] glyph; reg [3:0] idx; reg [11:0] want, got;
+
+  task dump(input [1023:0] name);           // the last frame completed, as a PPM
+    begin
+      fd = $fopen(name, "w");
+      $fwrite(fd, "P3\n800 600\n15\n");
+      for (i = 0; i < 480000; i = i + 1) $fwrite(fd, "%0d %0d %0d\n", shot[i][11:8], shot[i][7:4], shot[i][3:0]);
+      $fclose(fd);
+    end
+  endtask
 
   function [11:0] palette(input [3:0] k);   // the colours as the README lists them, written out independently
     case (k)
@@ -52,6 +68,16 @@ module tb_vga;
     if ($value$plusargs("maxcycles=%d", maxcycles)) ;
     if ($value$plusargs("sw=%d", swset)) sw = swset;
     if ($value$plusargs("expect_led=%d", expect_led)) ;
+    if ($value$plusargs("start_led=%d", start_led)) ;
+    if ($value$plusargs("until_led3=%d", until_led3)) ;
+    if (until_led3) frames = 1 << 30;           // run until the game is over, then two more frames
+    if ($value$plusargs("snap=%d", snap)) if (!$value$plusargs("snap_ppm=%s", snapfile)) snap = -1;
+    if ($value$plusargs("script=%s", scriptfile)) begin
+      script_fd = $fopen(scriptfile, "r");
+      if (script_fd == 0) begin $display("tb_vga: cannot open the script"); $finish; end
+      rc = $fscanf(script_fd, "%d %h\n", next_at, next_btn);
+      if (rc != 2) next_at = -1;
+    end
     if ($value$plusargs("ppm=%s", ppmfile)) have_ppm = 1'b1;
     $readmemh(fontfile, font);
     $readmemh(hexfile, top.ram.mem);
@@ -68,6 +94,16 @@ module tb_vga;
       $display("TRAP cyc=%0d cause=%0d epc=%h", cycles, top.cpu.trap_cause, top.cpu.trap_epc[31:0]);
     end
     if (led[0] != led0_q) begin toggles = toggles + 1; led0_q = led[0]; end
+    if (next_at >= 0 && toggles >= next_at) begin
+      btn <= next_btn[3:0];
+      $display("BTN  cyc=%0d after %0d moves: buttons %b", cycles, toggles, next_btn[3:0]);
+      rc = $fscanf(script_fd, "%d %h\n", next_at, next_btn);
+      if (rc != 2) next_at = -1;
+    end
+    if (until_led3 && led[3] && !led3_seen) begin
+      led3_seen = 1; frames = checked + 2;
+      $display("LED3 cyc=%0d on (LEDs %b) after %0d moves: two more frames", cycles, led, toggles);
+    end
     if (judging && vblank_only && top.vga.sel && top.vga.we && top.vga.vc < 600) begin
       late = late + 1;
       if (late <= 5) $display("LATE STORE cyc=%0d: the CPU wrote %h while the beam was on line %0d", cycles, top.vga.addr, top.vga.vc);
@@ -80,8 +116,11 @@ module tb_vga;
       end
       if (locked_at < 0) $display("VGA  cyc=%0d locked on VSYNC", cycles);
       last_vs = cycles; locked_at = cycles;
-      if (judging) begin checked = checked + 1; shooting = 1'b0; end
-      if (!judging && led[1]) begin judging = 1; shooting = have_ppm; $display("VGA  cyc=%0d judging from this frame (LEDs %b)", cycles, led); end
+      if (judging) begin
+        checked = checked + 1;
+        if (snap >= 0 && toggles >= snap) begin dump(snapfile); snap = -1; end
+      end
+      if (!judging && (led & start_led)) begin judging = 1; $display("VGA  cyc=%0d judging from this frame (LEDs %b)", cycles, led); end
     end
     vs_q = vs;
 
@@ -106,7 +145,7 @@ module tb_vga;
           glyph = font[{c[7:0], vline[2:0]}];
           idx = glyph[7 - (col & 7)] ? c[11:8] : c[15:12];
           want = palette(idx);
-          if (shooting) shot[vline * 800 + col] = got;
+          if (judging) shot[vline * 800 + col] = got;
         end else want = 12'h000;
         if (judging && got !== want) begin
           pix_err = pix_err + 1;
@@ -118,14 +157,9 @@ module tb_vga;
     if (checked >= frames || cycles >= maxcycles || traps > 0) begin
       $display("SUMMARY cycles=%0d frames_checked=%0d sync_errors=%0d pixel_errors=%0d late_stores=%0d heartbeat=%0d leds=%b scroll=%0d bus_errors=%0d traps=%0d",
                cycles, checked, sync_err, pix_err, late, toggles, led, top.vga.top, errors, traps);
-      if (have_ppm && checked > 0) begin
-        fd = $fopen(ppmfile, "w");
-        $fwrite(fd, "P3\n800 600\n15\n");
-        for (i = 0; i < 480000; i = i + 1) $fwrite(fd, "%0d %0d %0d\n", shot[i][11:8], shot[i][7:4], shot[i][3:0]);
-        $fclose(fd);
-      end
+      if (have_ppm && checked > 0) dump(ppmfile);
       if (checked >= frames && sync_err == 0 && pix_err == 0 && late == 0 && toggles >= 2 && errors == 0 && traps == 0
-          && led[2:1] == expect_led[1:0]) $display("RESULT PASS");
+          && led[3:1] == expect_led[2:0] && (!until_led3 || led3_seen)) $display("RESULT PASS");
       else $display("RESULT FAIL");
       $finish;
     end

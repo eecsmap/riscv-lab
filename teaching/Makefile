@@ -307,7 +307,13 @@ oled-fw-sim:
 VAPP = $(if $(filter vga_%,$(APP)),$(APP),vga_hello)
 VS = $(OUT)/vga/$(VAPP)
 VGA_SW ?= 0
-VGA_TB = +sw=$(VGA_SW) $(if $(filter 1 3,$(VGA_SW)),+expect_led=3)
+VGA_TB = $(VGA_TB_$(VAPP)) +sw=$(VGA_SW) $(if $(filter 1 3,$(VGA_SW)),+expect_led=3)
+# snake: the OLED snake's script (LEFT at move 3 is straight back and ignored, UP at move 8); judged from the first
+# move to two frames after game over, which must come with score 1 (LED3..1 = 101); mid.png after 9 moves. In
+# simulation one move per frame, starting on row 3 so that the crash into the top wall comes soon.
+VGA_TB_vga_snake = +start_led=1 +script=$(TEACH)/oled/snake.script +until_led3=1 +expect_led=5 +maxcycles=30000000 \
+    +snap=9 +snap_ppm=$(VS)/mid.ppm
+VGA_SIMDEFS_vga_snake = -DSTART_FRAMES=1 -DMIN_FRAMES=1 -DSTART_Y=3
 vga-sim:
 	@echo "== vga-sim: $(VAPP) on mcu_top, VGA output checked against the text RAM (CORE=$(CORE))"
 	@mkdir -p $(VS)
@@ -316,11 +322,11 @@ vga-sim:
 	@iverilog -g2005 -I $(ROOT)/rtl/cpu -I $(CORE) -o $(VS)/sim.vvp $(TEACH)/vga/tb_vga.v \
 	    $(MCU0)/mcu_top.v $(MCU0)/mcu_router.v $(MCU0)/mcu_ram.v $(MCU0)/mcu_clint.v $(MCU0)/mcu_gpio.v $(MCU0_SPI) $(MCU0_VGA) $(CORE)/*.v
 	@vvp -n $(VS)/sim.vvp +hex=$(VS)/$(VAPP).hex +font=$(VS)/font_rom.hex $(VGA_TB) +ppm=$(VS)/screen.ppm $${VCD:+ +vcd=$(VS)/sim.vcd} \
-	    > $(VS)/sim.log 2>&1; grep -E '^(VGA|SYNC|PIXEL|LATE|BUS|TRAP|SUMMARY|RESULT)' $(VS)/sim.log
-	@[ ! -f $(VS)/screen.ppm ] || { python3 $(TEACH)/tools/ppm2png.py $(VS)/screen.ppm $(VS)/screen.png 1 && echo "screen: $(VS)/screen.png"; }
+	    > $(VS)/sim.log 2>&1; grep -E '^(VGA|SYNC|PIXEL|LATE|BTN|LED3|BUS|TRAP|SUMMARY|RESULT)' $(VS)/sim.log
+	@for f in screen mid; do [ ! -f $(VS)/$$f.ppm ] || { python3 $(TEACH)/tools/ppm2png.py $(VS)/$$f.ppm $(VS)/$$f.png 1 && echo "$$f: $(VS)/$$f.png"; }; done
 	@grep -q '^RESULT PASS' $(VS)/sim.log
 vga-fw-sim:
-	@$(MCU0_CC) -DHEART_FRAMES=1 -DSCROLL_FRAMES=1 -o $(VS)/$(VAPP).elf $(MCU0_CRT) $(MCU0_SRC)
+	@$(MCU0_CC) -DHEART_FRAMES=1 -DSCROLL_FRAMES=1 $(VGA_SIMDEFS_$(VAPP)) -o $(VS)/$(VAPP).elf $(MCU0_CRT) $(MCU0_SRC)
 	@python3 $(TEACH)/tools/elf2hex.py $(OBJCOPY) $(NM) $(VS)/$(VAPP).elf $(VS)/$(VAPP).hex $(VS)/$(VAPP).tohost >/dev/null
 	@$(TOOLPREFIX)objdump -d $(VS)/$(VAPP).elf | grep -cE '\s(mul|div|rem|csr)' | grep -qx 0 \
 	    || { echo "$(VAPP).elf uses M or CSR instructions: a step-2 core cannot run it"; exit 1; }
@@ -330,6 +336,7 @@ MCU0_BUILD := $(MCU0)/build$(if $(filter blink,$(APP)),,-$(APP))
 # extra mcu_board parameters per app: the snake needs BTN3, so SW1 becomes the reset
 MCU0_GENERIC_oled_snake = RESET_SW1=1
 MCU0_GENERIC_vga_hello = PMOD_VGA=1
+MCU0_GENERIC_vga_snake = PMOD_VGA=1 RESET_SW1=1
 mcu0-fw:
 	@mkdir -p $(MCU0_BUILD)
 	@$(MCU0_CC) $(OLED_DEFS) -DDELAY=$(MCU0_BOARD_DELAY) -o $(MCU0_BUILD)/$(APP).elf $(MCU0_CRT) $(MCU0_SRC)
