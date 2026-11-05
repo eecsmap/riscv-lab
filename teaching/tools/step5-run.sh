@@ -14,7 +14,9 @@ $CC -march=rv64i_zicsr -mabi=lp64 -mcmodel=medany -O2 -ffreestanding -nostdlib -
     -Wl,--no-relax -Wl,--no-warn-rwx-segments -I"$M3" -I"$HERE/step5" -T "$ROOT/software/probes/link.ld" \
     -o "$elf" "${SRCS[@]}" "$M3/htif.S" || exit 2
 sym() { $NM "$elf" | awk -v s="$1" '$3 == s { print $1 }' | head -1; }
-timeout "${WALL:-300}" "$SIM" +max-cycles="${MAXCYC:-600000}" "$elf" > "$log" 2>&1; ec=$?; echo $ec > "$OUT/$NAME.exit"
+# </dev/null: run from a terminal, timeout puts the simulator in a background process group; if it then touches
+# the terminal (fesvr reads stdin for console input) the kernel stops it, and the timer stops with it -- a silent hang
+timeout "${WALL:-300}" "$SIM" +max-cycles="${MAXCYC:-600000}" "$elf" < /dev/null > "$log" 2>&1; ec=$?; echo $ec > "$OUT/$NAME.exit"
 # the console bytes arrive on the simulator's stdout interleaved with the event lines: a character sits in front
 # of the next line's tag ("hEV 1400 ..."), and a newline from the program shows up as an empty line
 awk '{ if ($0 == "") printf "\n"; else if (match($0, /(EV|EVA|EVH|RD2) +[0-9]+ |AXI ar=|CYCLES total=/)) printf "%s", substr($0, 1, RSTART - 1) }' \
