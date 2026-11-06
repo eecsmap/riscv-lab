@@ -10,8 +10,10 @@
 //   - Anything slow (numbers need udiv) is prepared after the stores and written at the next blank.
 // Board build: RESET_SW1=1 PMOD_VGA=1 (make mcu0-bit APP=vga_snake adds both).
 //   BTN3 left, BTN2 up, BTN1 down, BTN0 right. SW0 up: pause. SW1 up: reset. After a crash any button starts again.
+//   With an analog joystick on the Arduino header (project 5; found at reset): push to steer, press it to pause.
 // LEDs: LED0 toggles on every move, LED1..2 = score & 3, LED3 = the game-over screen is up.
 #include "vga.h"
+#include "adc.h"
 
 #ifndef START_FRAMES
 #define START_FRAMES 9          // frames per move at the start: 150 ms
@@ -48,6 +50,8 @@ static int food_x, food_y;
 static uint8_t queue[2];
 static int queued;
 static uint16_t lfsr = 0xACE1;
+static struct joystick joy;
+static int paused;                                     // toggled by pressing the joystick
 
 static int cell(int x, int y) { return (y << 5) + (y << 4) + x; }   // y * 48 + x
 
@@ -116,7 +120,9 @@ static void new_game(void)
   vga_fill(CELL(' ', WHITE, BLACK));                    // not tear-free (1.5 ms is longer than a blank); once a game
   for (int x = -1; x <= COLS; x++) { square(x, -1, C_BORDER); square(x, ROWS, C_BORDER); }
   for (int y = 0; y < ROWS; y++) { square(-1, y, C_BORDER); square(COLS, y, C_BORDER); }
-  vga_text(2, 74, "BTN3 LEFT  BTN2 UP  BTN1 DOWN  BTN0 RIGHT   SW0 PAUSE   SW1 RESET", DGREY, BLACK);
+  vga_text(2, 74, joy.present ? "JOYSTICK: PUSH TO STEER, PRESS TO PAUSE   OR BTN3 LEFT  BTN2 UP  BTN1 DOWN  BTN0 RIGHT"
+                              : "BTN3 LEFT  BTN2 UP  BTN1 DOWN  BTN0 RIGHT   SW0 PAUSE   SW1 RESET", DGREY, BLACK);
+  paused = 0;
   len = 3; head = 2; dir = RIGHT; score = 0; dead = 0; queued = 0; speed = START_FRAMES;
   for (int i = 0; i < 3; i++) {
     body_x[i] = (uint8_t)(2 + i); body_y[i] = START_Y;
@@ -131,23 +137,36 @@ static void new_game(void)
   leds(0);
 }
 
-// ---- buttons, exactly as in oled_snake.c
+// a new direction from a button or the stick: queue it unless it is the way already going, or straight back
+static void steer(int d)
+{
+  if (queued == 2) return;
+  int last = queued ? queue[queued - 1] : dir;
+  if (d != last && d != (last ^ 2)) queue[queued++] = (uint8_t)d;
+}
+
+// ---- buttons as in oled_snake.c, plus the joystick's switch (GPIO IN bit 6)
 static uint32_t btn_raw, btn_stable;
 static uint64_t btn_since;
 
 static void poll_buttons(void)
 {
-  uint32_t raw = (uint32_t)(BUTTONS & 0xF);
+  uint32_t raw = (uint32_t)(BUTTONS & (0xF | JOY_SW));
   if (raw != btn_raw) { btn_raw = raw; btn_since = CLINT_MTIME; return; }
   if (raw == btn_stable || CLINT_MTIME - btn_since < (uint64_t)DEBOUNCE_MS * TICKS_PER_MS) return;
   uint32_t pressed = raw & ~btn_stable;
   btn_stable = raw;
   if (pressed) lfsr ^= (uint16_t)CLINT_MTIME | 1;
-  for (int b = 0; b < 4; b++) {
-    if (!(pressed & (1u << b)) || queued == 2) continue;
-    int d = dir_of_button[b], last = queued ? queue[queued - 1] : dir;
-    if (d != last && d != (last ^ 2)) queue[queued++] = (uint8_t)d;
-  }
+  for (int b = 0; b < 4; b++)
+    if (pressed & (1u << b)) steer(dir_of_button[b]);
+  if (pressed & JOY_SW) paused ^= 1;
+}
+
+// the stick: a direction counts once, when it starts (like pressing a button); holding it does not queue it again
+static void poll_joystick(void)
+{
+  int was = joy.dir, d = joy_read(&joy);
+  if (d != was && d != JOY_NONE) steer(d);           // JOY_RIGHT..JOY_UP are RIGHT..UP
 }
 
 // one move; only stores while the beam is off screen. Returns 1 if the score changed.
@@ -193,16 +212,18 @@ static void game_over(void)
 
 int main(void)
 {
+  joy_init(&joy);                                       // the stick must be at rest at reset: that is its centre
   for (;;) {
     new_game();
     uint32_t seen = VGA_FRAME;
     int wait = 0;
     while (!dead) {
       poll_buttons();
+      poll_joystick();
       if (VGA_FRAME == seen) continue;
       seen = VGA_FRAME;                                 // a frame just ended: the beam is in the blank now
       if (status_ready) { vga_text(0, 0, status, YELLOW, BLACK); status_ready = 0; }
-      if (BUTTONS & SW0) continue;                      // paused
+      if ((BUTTONS & SW0) || paused) continue;
       if (++wait < speed) continue;
       wait = 0;
       int scored = move();
@@ -210,8 +231,9 @@ int main(void)
       if (scored) prepare_status();                     // slow (udiv): after the stores, shown at the next blank
     }
     game_over();
-    while (btn_stable) poll_buttons();                  // let go of the button that steered into the wall ...
-    while (!btn_stable) poll_buttons();                 // ... then any press starts again
+    // let go of the button (or the stick) that steered into the wall ... then any press or push starts again
+    while (btn_stable || joy.dir != JOY_NONE) { poll_buttons(); joy_read(&joy); }
+    while (!btn_stable && joy.dir == JOY_NONE) { poll_buttons(); joy_read(&joy); }
     queued = 0;
   }
 }

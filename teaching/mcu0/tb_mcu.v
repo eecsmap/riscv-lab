@@ -11,7 +11,7 @@ module tb_mcu;
   always #5 clk = ~clk;
   reg [3:0] btn = 4'd0; reg [1:0] sw = 2'd0;
   wire [3:0] led; wire commit_valid, bus_error;
-  mcu_top top (.clk(clk), .rst(rst), .led(led), .btn(btn), .sw(sw), .commit_valid(commit_valid), .bus_error(bus_error));
+  mcu_top top (.clk(clk), .rst(rst), .led(led), .btn(btn), .sw(sw), .joy_sw(1'b0), .xadc_drdy(1'b0), .xadc_do(16'd0), .xadc_eos(1'b0), .commit_valid(commit_valid), .bus_error(bus_error));
 
   reg [1023:0] hexfile, vcdfile;
   integer delay = 4000, maxcycles = 400000, cycles = 0, toggles = 0, last_toggle = 0, errors = 0, bad_interval = 0;

@@ -272,8 +272,8 @@ OLED_FAST ?=
 OLED_DEFS = $(if $(OLED_FAST),-DOLED_FAST)
 # the SPI master (project 3); MCU0_SPI=work/mcu_spi.v tries your own
 MCU0_SPI ?= $(MCU0)/mcu_spi.v
-# the VGA text mode (teaching/vga); every MCU-0 simulation has it, it is part of mcu_top
-MCU0_VGA = $(MCU0)/mcu_vga.v $(MCU0)/mcu_vga_font.v
+# the VGA text mode and the ADC (teaching/vga); every MCU-0 simulation has them, they are part of mcu_top
+MCU0_VGA = $(MCU0)/mcu_vga.v $(MCU0)/mcu_vga_font.v $(MCU0)/mcu_adc.v
 # testbench options per app (before the defaults: the first +option on the line wins): oled_spi draws no rectangles, and SW0 = 1 animates through the SPI master
 OLED_TB_oled_spi = +rects=0 +sw=1
 # snake: no frame push; steer by the script in oled/snake.script (LEFT at move 3 must be ignored: it is straight back;
@@ -310,16 +310,21 @@ VGA_SW ?= 0
 VGA_TB = $(VGA_TB_$(VAPP)) +sw=$(VGA_SW) $(if $(filter 1 3,$(VGA_SW)),+expect_led=3)
 # snake: the OLED snake's script (LEFT at move 3 is straight back and ignored, UP at move 8); judged from the first
 # move to two frames after game over, which must come with score 1 (LED3..1 = 101); mid.png after 9 moves. In
-# simulation one move per frame, starting on row 3 so that the crash into the top wall comes soon.
-VGA_TB_vga_snake = +start_led=1 +script=$(TEACH)/oled/snake.script +until_led3=1 +expect_led=5 +maxcycles=30000000 \
-    +snap=9 +snap_ppm=$(VS)/mid.ppm
+# simulation one move per frame, starting on row 3 so that the crash into the top wall comes soon. JOY=1: the same
+# game steered by the joystick instead (vga/snake-joy.script: left at move 3, up at move 8, released in between).
+VGA_TB_vga_snake = +start_led=1 +until_led3=1 +expect_led=5 +maxcycles=30000000 +snap=9 +snap_ppm=$(VS)/mid.ppm \
+    $(if $(filter 1,$(JOY)),+joy=1 +script=$(TEACH)/vga/snake-joy.script,+script=$(TEACH)/oled/snake.script)
 VGA_SIMDEFS_vga_snake = -DSTART_FRAMES=1 -DMIN_FRAMES=1 -DSTART_Y=3
+# joystick (project 5): a joystick at rest near the middle; after 2 frames pushed right, after 4 pushed up and pressed
+# down. Six frames judged; then LED3..1 = 111 (pushed or pressed, joystick found, drawn) and JB = 3 (up) + 16
+# (pressed); mid.png is frame 3, pushed right. JOY=0: nothing plugged in, LED3..1 = 001, JB = 4 (no direction).
+VGA_TB_vga_joystick = $(if $(filter-out 0,$(or $(JOY),1)),+snap=3 +snap_ppm=$(VS)/mid.ppm +joy=1 +script=$(TEACH)/vga/joystick.script +frames=6 +expect_led=7 +expect_jb=19,+frames=3 +expect_jb=4)
 vga-sim:
 	@echo "== vga-sim: $(VAPP) on mcu_top, VGA output checked against the text RAM (CORE=$(CORE))"
 	@mkdir -p $(VS)
 	@$(MAKE) -s --no-print-directory APP=$(VAPP) vga-fw-sim
 	@python3 $(TEACH)/tools/font2rom.py $(TEACH)/oled/font8x8.h $(MCU0)/mcu_vga_font.v $(VS)/font_rom.hex
-	@iverilog -g2005 -I $(ROOT)/rtl/cpu -I $(CORE) -o $(VS)/sim.vvp $(TEACH)/vga/tb_vga.v \
+	@iverilog -g2005 -I $(ROOT)/rtl/cpu -I $(CORE) -o $(VS)/sim.vvp $(TEACH)/vga/tb_vga.v $(TEACH)/vga/xadc_model.v \
 	    $(MCU0)/mcu_top.v $(MCU0)/mcu_router.v $(MCU0)/mcu_ram.v $(MCU0)/mcu_clint.v $(MCU0)/mcu_gpio.v $(MCU0_SPI) $(MCU0_VGA) $(CORE)/*.v
 	@vvp -n $(VS)/sim.vvp +hex=$(VS)/$(VAPP).hex +font=$(VS)/font_rom.hex $(VGA_TB) +ppm=$(VS)/screen.ppm $${VCD:+ +vcd=$(VS)/sim.vcd} \
 	    > $(VS)/sim.log 2>&1; grep -E '^(VGA|SYNC|PIXEL|LATE|BTN|LED3|BUS|TRAP|SUMMARY|RESULT)' $(VS)/sim.log
@@ -337,6 +342,7 @@ MCU0_BUILD := $(MCU0)/build$(if $(filter blink,$(APP)),,-$(APP))
 MCU0_GENERIC_oled_snake = RESET_SW1=1
 MCU0_GENERIC_vga_hello = PMOD_VGA=1
 MCU0_GENERIC_vga_snake = PMOD_VGA=1 RESET_SW1=1
+MCU0_GENERIC_vga_joystick = PMOD_VGA=1
 mcu0-fw:
 	@mkdir -p $(MCU0_BUILD)
 	@$(MCU0_CC) $(OLED_DEFS) -DDELAY=$(MCU0_BOARD_DELAY) -o $(MCU0_BUILD)/$(APP).elf $(MCU0_CRT) $(MCU0_SRC)

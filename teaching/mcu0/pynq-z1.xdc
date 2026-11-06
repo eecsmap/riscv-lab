@@ -42,5 +42,15 @@ set_property -dict {PACKAGE_PIN W13 IOSTANDARD LVCMOS33} [get_ports {jb[7]}]
 # the outputs are slow software-driven levels: no output timing to meet
 set_false_path -to [get_ports {jb[*]}]
 
+# Arduino header: the analog joystick (teaching/vga/README.md, project 5). A0 and A1 go to the XADC (VAUX1, VAUX9), the
+# board divides 0..3.3 V down to its 0..1 V; the _n pins are the divider's ground side. The switch is on D4, pulled up.
+# Power the joystick from the header's 3.3 V pin, never 5 V: its outputs swing up to its supply.
+set_property -dict {PACKAGE_PIN E17 IOSTANDARD LVCMOS33} [get_ports vaux1_p]
+set_property -dict {PACKAGE_PIN D18 IOSTANDARD LVCMOS33} [get_ports vaux1_n]
+set_property -dict {PACKAGE_PIN E18 IOSTANDARD LVCMOS33} [get_ports vaux9_p]
+set_property -dict {PACKAGE_PIN E19 IOSTANDARD LVCMOS33} [get_ports vaux9_n]
+set_property -dict {PACKAGE_PIN V15 IOSTANDARD LVCMOS33 PULLUP true} [get_ports joy_sw_n]
+set_false_path -from [get_ports joy_sw_n]
+
 # the buttons and switches are asynchronous inputs, synchronised inside mcu_gpio / the reset synchroniser
 set_false_path -from [get_ports {btn[*] sw[*]}]

@@ -1,6 +1,8 @@
-// MCU-0: core + router + RAM + CLINT + GPIO + SPI + VGA. Four LEDs are GPIO OUT[3:0], the Pmod JB header is
+// MCU-0: core + router + RAM + CLINT + GPIO + SPI + VGA + ADC. Four LEDs are GPIO OUT[3:0], the Pmod JB header is
 // OUT[15:8]; the buttons and switches are IN. With the SPI master enabled, JB's SCK (pin 4) and MOSI (pin 2) come from
 // it. The VGA text mode's signals come out separately; the board top decides which Pmod pins they drive.
+// The ADC's converter (the XADC) is outside, in mcu_board, and talks to mcu_adc over its DRP port; GPIO IN bit 6 is
+// the joystick's push switch (1 = pressed).
 // No host, no bridge: the program is the RAM's initial contents.
 `timescale 1ns/1ps
 module mcu_top #(
@@ -19,6 +21,12 @@ module mcu_top #(
   output            vga_vs,
   input      [3:0]  btn,
   input      [1:0]  sw,
+  input             joy_sw,         // the joystick's switch, 1 = pressed: GPIO IN bit 6
+  output            xadc_den,       // the XADC's DRP, read side (mcu_adc)
+  output     [6:0]  xadc_daddr,
+  input             xadc_drdy,
+  input      [15:0] xadc_do,
+  input             xadc_eos,
   output            commit_valid,   // activity, for an LED or an ILA trigger
   output            bus_error       // a response with error set: the program touched a bad address
 );
@@ -29,9 +37,9 @@ module mcu_top #(
   wire [63:0] req_wdata, resp_rdata;
   wire [7:0]  req_wmask;
   wire [3:0]  req_amo;
-  wire        sel_ram, sel_clint, sel_gpio, sel_spi, sel_vga, slv_we, mtip, msip, spi_sck, spi_mosi, spi_en;
+  wire        sel_ram, sel_clint, sel_gpio, sel_spi, sel_vga, sel_adc, slv_we, mtip, msip, spi_sck, spi_mosi, spi_en;
   wire [31:0] slv_addr;
-  wire [63:0] slv_wdata, ram_rdata, clint_rdata, gpio_rdata, spi_rdata, vga_rdata;
+  wire [63:0] slv_wdata, ram_rdata, clint_rdata, gpio_rdata, spi_rdata, vga_rdata, adc_rdata;
   wire [7:0]  slv_wmask;
   wire [15:0] gpio_out;
 
@@ -52,8 +60,9 @@ module mcu_top #(
     .req_valid(req_valid), .req_ready(req_ready), .req_addr(req_addr), .req_write(req_write), .req_size(req_size),
     .req_wdata(req_wdata), .req_wmask(req_wmask), .req_amo(req_amo), .req_lrsc(req_lrsc),
     .resp_valid(resp_valid), .resp_ready(resp_ready), .resp_rdata(resp_rdata), .resp_error(resp_error), .resp_scfail(resp_scfail),
-    .sel_ram(sel_ram), .sel_clint(sel_clint), .sel_gpio(sel_gpio), .sel_spi(sel_spi), .sel_vga(sel_vga), .slv_we(slv_we), .slv_addr(slv_addr),
-    .slv_wdata(slv_wdata), .slv_wmask(slv_wmask), .ram_rdata(ram_rdata), .clint_rdata(clint_rdata), .gpio_rdata(gpio_rdata), .spi_rdata(spi_rdata), .vga_rdata(vga_rdata));
+    .sel_ram(sel_ram), .sel_clint(sel_clint), .sel_gpio(sel_gpio), .sel_spi(sel_spi), .sel_vga(sel_vga), .sel_adc(sel_adc), .slv_we(slv_we), .slv_addr(slv_addr),
+    .slv_wdata(slv_wdata), .slv_wmask(slv_wmask), .ram_rdata(ram_rdata), .clint_rdata(clint_rdata), .gpio_rdata(gpio_rdata), .spi_rdata(spi_rdata), .vga_rdata(vga_rdata),
+    .adc_rdata(adc_rdata));
 
   mcu_ram #(.MEM_BYTES(MEM_BYTES), .INIT_HEX(INIT_HEX)) ram (
     .clk(clk), .sel(sel_ram), .we(slv_we), .addr(slv_addr), .wdata(slv_wdata), .wmask(slv_wmask), .rdata(ram_rdata));
@@ -62,7 +71,7 @@ module mcu_top #(
     .rdata(clint_rdata), .mtip(mtip), .msip(msip));
   mcu_gpio gpio (
     .clk(clk), .rst(rst), .sel(sel_gpio), .we(slv_we), .addr(slv_addr), .wdata(slv_wdata), .wmask(slv_wmask),
-    .rdata(gpio_rdata), .gpio_out(gpio_out), .gpio_in({2'b00, sw, btn}));
+    .rdata(gpio_rdata), .gpio_out(gpio_out), .gpio_in({1'b0, joy_sw, sw, btn}));
 
   assign led = gpio_out[3:0];
   mcu_spi spi (
@@ -74,6 +83,10 @@ module mcu_top #(
   mcu_vga vga (
     .clk(clk), .rst(rst), .sel(sel_vga), .we(slv_we), .addr(slv_addr), .wdata(slv_wdata), .wmask(slv_wmask),
     .rdata(vga_rdata), .r(vga_r), .g(vga_g), .b(vga_b), .hs(vga_hs), .vs(vga_vs));
+
+  mcu_adc adc (
+    .clk(clk), .rst(rst), .sel(sel_adc), .we(slv_we), .addr(slv_addr), .wdata(slv_wdata), .wmask(slv_wmask),
+    .rdata(adc_rdata), .den(xadc_den), .daddr(xadc_daddr), .drdy(xadc_drdy), .dout(xadc_do), .eos(xadc_eos));
 
   assign bus_error = resp_valid & resp_error;
 endmodule
