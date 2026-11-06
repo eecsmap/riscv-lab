@@ -3,7 +3,8 @@
 // 5 V!), VRx -> A0, VRy -> A1, SW -> D4.
 //
 // Left: a 64 x 64-cell box; the dot is where the stick is (X = A0 to the right, Y = A1 downwards, 64 ADC steps per
-// cell). The dotted square is the dead zone: inside it the stick counts as "not pushed". The dot turns green when a
+// cell). The dotted rectangle is the dead zone (40% of the travel on each side, so not centred: see adc.h): inside it
+// the stick counts as "not pushed". The dot turns green when a
 // direction counts, red while the stick is pressed down.
 // Right: the raw readings, the voltage at the pin, the centre found at reset, the direction, the die temperature and
 // how many conversion sequences the XADC completes per second.
@@ -22,17 +23,24 @@
 #define BY 6
 #define PX 68                   // the panel's left column: a multiple of 4, so a row of it is whole doublewords
 #define PW 28                   // its width, 7 doublewords
-#define PLINES 9
+#define PLINES 10
 
 static struct joystick joy;
 static char panel[PLINES][PW + 1], num[24];
 static uint64_t cells[PLINES][PW / 4];    // the panel as cells, four to a doubleword: 63 stores in the blank, not 252
-static const int prow[PLINES] = { 6, 8, 11, 13, 16, 18, 21, 23, 26 };
+static const int prow[PLINES] = { 6, 8, 11, 13, 14, 17, 19, 22, 24, 27 };
 
-static int on_square(int x, int y)        // the dead zone's border, in cells of the box
+static int zl, zr, zt, zb;                 // the dead zone's edges, in cells of the box (set after joy_init)
+
+static int edge(int c, int dir)           // the position 40% of the way from c to the end (dir -1: to 0, +1: to 4095)
 {
-  int r = JOY_ON >> 6, ox = x - (joy.cx >> 6), oy = y - (joy.cy >> 6);
-  return ((ox == -r || ox == r) && oy >= -r && oy <= r) || ((oy == -r || oy == r) && ox >= -r && ox <= r);
+  int part = (int)udiv((uint64_t)(dir < 0 ? c : 4095 - c) << 1, 5, 0);
+  return (dir < 0 ? c - part : c + part) >> 6;
+}
+
+static int on_square(int x, int y)        // the dead zone's border
+{
+  return ((x == zl || x == zr) && y >= zt && y <= zb) || ((y == zt || y == zb) && x >= zl && x <= zr);
 }
 
 static uint16_t background(int x, int y)  // what the box shows at (x, y) without the dot
@@ -52,7 +60,7 @@ static void draw_box(void)
     for (int x = 0; x < 64; x++)
       VGA_TEXT[mul100((uint32_t)(BY + y)) + (uint32_t)(BX + x)] = background(x, y);
   vga_text(BX, BY + 65, "X = A0 ->   Y = A1 DOWN   ONE CELL = 64 STEPS", LGREY, BLACK);
-  vga_text(BX, BY + 66, "DOTTED: THE DEAD ZONE, +-800 STEPS FROM THE CENTRE", LGREY, BLACK);
+  vga_text(BX, BY + 66, "DOTTED: THE DEAD ZONE, 40% OF THE WAY TO EACH END", LGREY, BLACK);
 }
 
 static char *sgn(char *d, int v, int width)              // "+123" / "-123", right-aligned
@@ -73,6 +81,8 @@ static void line(int i, const char *label, const char *value)
   *p = 0;
 }
 
+static int pct(int n) { int a = iabs(n); a = ((a << 6) + (a << 5) + (a << 2)) >> 10; return n < 0 ? -a : a; }   // n*100/1024
+
 static const char *const dir_name[5] = { "RIGHT", "DOWN", "LEFT", "UP", "-" };
 
 // everything slow: the panel's text, ready for the next frame
@@ -91,19 +101,21 @@ static void prepare(uint32_t x, uint32_t y, uint32_t temp, int click, uint32_t r
   line(2, "CENTRE ", joy.present ? v : "NONE");
   p = sgn(v, joy.dx, 6); p = append(p, " "); sgn(p, joy.dy, 6);
   line(3, "DX DY ", v);
-  line(4, "DIR    ", dir_name[joy.dir]);
-  line(5, "CLICK  ", click ? "YES" : "NO");
+  p = sgn(v, pct(joy.nx), 5); p = append(p, "%  "); p = sgn(p, pct(joy.ny), 5); append(p, "%");
+  line(4, "PUSHED", v);
+  line(5, "DIR    ", dir_name[joy.dir]);
+  line(6, "CLICK  ", click ? "YES" : "NO");
   uint64_t t10 = ((uint64_t)temp << 12) + ((uint64_t)temp << 9) + ((uint64_t)temp << 8) + ((uint64_t)temp << 7)
                + ((uint64_t)temp << 5) + ((uint64_t)temp << 4);                       // * 5040: tenths of 504 C
   t10 >>= 12;
   p = append(v, t10 > 2732 ? fmt_fixed(num, t10 - 2732, 1, 5) : "  ---"); append(p, " C");
-  line(6, "CHIP   ", v);
-  line(7, "SEQ/S  ", rate ? fmt_fixed(num, rate, 0, 6) : "     -");
-  line(8, "", joy.present ? "" : "NO JOYSTICK FOUND AT RESET");
+  line(7, "CHIP   ", v);
+  line(8, "SEQ/S  ", rate ? fmt_fixed(num, rate, 0, 6) : "     -");
+  line(9, "", joy.present ? "" : "NO JOYSTICK FOUND AT RESET");
   for (int i = 0; i < PLINES; i++)
     for (int k = 0; k < PW / 4; k++) {
       uint64_t w = 0;
-      for (int j = 3; j >= 0; j--) w = (w << 16) | CELL(panel[i][4 * k + j], i == 8 ? LRED : WHITE, BLACK);
+      for (int j = 3; j >= 0; j--) w = (w << 16) | CELL(panel[i][4 * k + j], i == 9 ? LRED : WHITE, BLACK);
       cells[i][k] = w;
     }
 }
@@ -112,6 +124,7 @@ int main(void)
 {
   vga_fill(CELL(' ', WHITE, BLACK));
   joy_init(&joy);
+  zl = edge(joy.cx, -1); zr = edge(joy.cx, 1); zt = edge(joy.cy, -1); zb = edge(joy.cy, 1);
   vga_text(BX - 1, 1, "JOYSTICK ON THE XADC   A0 = X, A1 = Y, D4 = CLICK   12 BITS, 0..4095 = 0..3.3 V", YELLOW, BLACK);
   vga_text(BX - 1, 2, "POWER IT FROM 3.3 V, NOT 5 V", LRED, BLACK);
   draw_box();

@@ -36,13 +36,14 @@ module tb_vga;
                .btn(btn), .sw(sw), .joy_sw(joy_sw), .xadc_den(xden), .xadc_daddr(xdaddr), .xadc_drdy(xdrdy), .xadc_do(xdo),
                .xadc_eos(xeos), .commit_valid(commit_valid), .bus_error(bus_error));
   xadc_model xadc (.clk(clk), .den(xden), .daddr(xdaddr), .drdy(xdrdy), .dout(xdo), .eos(xeos));
-  localparam JX = 2030, JY = 2070;        // a joystick at rest is near, not at, the middle: firmware calibrates
+  localparam JX = 935, JY = 1007;         // at rest, as measured on the board: the board's divider pulls it low
+  localparam JLO = 12, JHI = 3980;        // pushed all the way
   integer joy = 0;
   task stick(input [8:0] v);              // the script's bits 8:4
     begin
       if (joy) begin
-        xadc.x = v[4] ? 3950 : v[6] ? 120 : JX;
-        xadc.y = v[5] ? 3950 : v[7] ? 120 : JY;
+        xadc.x = v[4] ? JHI : v[6] ? JLO : JX;
+        xadc.y = v[5] ? JHI : v[7] ? JLO : JY;
       end
       joy_sw = v[8];
     end
