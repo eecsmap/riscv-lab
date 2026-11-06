@@ -10,6 +10,11 @@
 #define ADC_TEMP  (*(volatile uint32_t *)0x10040010)   // die temperature, raw
 #define ADC_COUNT (*(volatile uint32_t *)0x10040018)   // sequences completed: changes when X, Y, TEMP are fresh
 #define JOY_SW    (1u << 6)                            // GPIO IN bit 6: the stick pressed down (Arduino D4)
+// A0 read a second way, as a digital input (pin Y11; VGA project 6, teaching/vga/vga_threshold.c)
+#define A0_PIN    (1u << 7)                            // GPIO IN bit 7: A0 as an ordinary GPIO input, 0 or 1
+#define ADC_ONES   (*(volatile uint32_t *)0x10040028)  // clocks during the last sequence in which the pin read 1
+#define ADC_CYCLES (*(volatile uint32_t *)0x10040030)  // clocks in that sequence
+#define ADC_FLIPS  (*(volatile uint32_t *)0x10040038)  // how often the pin changed during it
 
 // which way the board's X and Y run depends on how the joystick is held; vga_joystick shows the raw numbers
 #ifndef JOY_SWAP_XY

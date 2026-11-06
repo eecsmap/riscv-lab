@@ -51,6 +51,10 @@ set_property -dict {PACKAGE_PIN E18 IOSTANDARD LVCMOS33} [get_ports vaux9_p]
 set_property -dict {PACKAGE_PIN E19 IOSTANDARD LVCMOS33} [get_ports vaux9_n]
 set_property -dict {PACKAGE_PIN V15 IOSTANDARD LVCMOS33 PULLUP true} [get_ports joy_sw_n]
 set_false_path -from [get_ports joy_sw_n]
+# A0 is wired to two FPGA pins: through the divider to the XADC (E17/D18 above), and directly to Y11 ("digital 14" in
+# the master XDC). Read as a digital input: no pull-up, no pull-down, so the pin only listens (VGA project 6).
+set_property -dict {PACKAGE_PIN Y11 IOSTANDARD LVCMOS33} [get_ports a0_dig]
+set_false_path -from [get_ports a0_dig]
 
 # the buttons and switches are asynchronous inputs, synchronised inside mcu_gpio / the reset synchroniser
 set_false_path -from [get_ports {btn[*] sw[*]}]

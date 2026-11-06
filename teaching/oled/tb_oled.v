@@ -17,7 +17,7 @@ module tb_oled;
   wire [3:0] led; wire [7:0] jb; wire commit_valid, bus_error;
   reg [63:0] cycles = 64'd0;
 
-  mcu_top top (.clk(clk), .rst(rst), .led(led), .jb(jb), .btn(btn), .sw(sw), .joy_sw(1'b0), .xadc_drdy(1'b0), .xadc_do(16'd0), .xadc_eos(1'b0), .commit_valid(commit_valid), .bus_error(bus_error));
+  mcu_top top (.clk(clk), .rst(rst), .led(led), .jb(jb), .btn(btn), .sw(sw), .joy_sw(1'b0), .xadc_drdy(1'b0), .xadc_do(16'd0), .xadc_eos(1'b0), .a0_dig(1'b0), .commit_valid(commit_valid), .bus_error(bus_error));
   ssd1331_model oled (.clk(clk), .now(cycles), .cs(jb[0]), .mosi(jb[1]), .sck(jb[3]), .dc(jb[4]), .res(jb[5]),
                       .vccen(jb[6]), .pmoden(jb[7]));
 

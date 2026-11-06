@@ -319,6 +319,10 @@ VGA_SIMDEFS_vga_snake = -DSTART_FRAMES=1 -DMIN_FRAMES=1 -DSTART_Y=3
 # down. Six frames judged; then LED3..1 = 111 (pushed or pressed, joystick found, drawn) and JB = 3 (up) + 16
 # (pressed); mid.png is frame 3, pushed right. JOY=0: nothing plugged in, LED3..1 = 001, JB = 4 (no direction).
 VGA_TB_vga_joystick = $(if $(filter-out 0,$(or $(JOY),1)),+snap=3 +snap_ppm=$(VS)/mid.ppm +joy=1 +script=$(TEACH)/vga/joystick.script +frames=6 +expect_led=7 +expect_jb=19,+frames=3 +expect_jb=4)
+# vga_threshold (project 6): A0 swept 1600 -> 1800 -> 1600, one step every 16,000 clocks; the model's digital A0
+# switches at 1700. At the end LED3 (both flips seen) and LED1 on, LED2 (the pin, now at 1600) off, and JB = the middle
+# of the two flips / 16 = 106 (1696..1711), give or take one.
+VGA_TB_vga_threshold = +sweep=16000 +frames=12 +maxcycles=14000000 +expect_led=5 +expect_jb=106 +jb_tol=1 +snap=7 +snap_ppm=$(VS)/mid.ppm
 vga-sim:
 	@echo "== vga-sim: $(VAPP) on mcu_top, VGA output checked against the text RAM (CORE=$(CORE))"
 	@mkdir -p $(VS)
@@ -327,7 +331,7 @@ vga-sim:
 	@iverilog -g2005 -I $(ROOT)/rtl/cpu -I $(CORE) -o $(VS)/sim.vvp $(TEACH)/vga/tb_vga.v $(TEACH)/vga/xadc_model.v \
 	    $(MCU0)/mcu_top.v $(MCU0)/mcu_router.v $(MCU0)/mcu_ram.v $(MCU0)/mcu_clint.v $(MCU0)/mcu_gpio.v $(MCU0_SPI) $(MCU0_VGA) $(CORE)/*.v
 	@vvp -n $(VS)/sim.vvp +hex=$(VS)/$(VAPP).hex +font=$(VS)/font_rom.hex $(VGA_TB) +ppm=$(VS)/screen.ppm $${VCD:+ +vcd=$(VS)/sim.vcd} \
-	    > $(VS)/sim.log 2>&1; grep -E '^(VGA|SYNC|PIXEL|LATE|BTN|LED3|BUS|TRAP|SUMMARY|RESULT)' $(VS)/sim.log
+	    > $(VS)/sim.log 2>&1; grep -E '^(VGA|SYNC|PIXEL|LATE|BTN|LED3|SWEEP|BUS|TRAP|SUMMARY|RESULT)' $(VS)/sim.log
 	@for f in screen mid; do [ ! -f $(VS)/$$f.ppm ] || { python3 $(TEACH)/tools/ppm2png.py $(VS)/$$f.ppm $(VS)/$$f.png 1 && echo "$$f: $(VS)/$$f.png"; }; done
 	@grep -q '^RESULT PASS' $(VS)/sim.log
 vga-fw-sim:
@@ -343,6 +347,7 @@ MCU0_GENERIC_oled_snake = RESET_SW1=1
 MCU0_GENERIC_vga_hello = PMOD_VGA=1
 MCU0_GENERIC_vga_snake = PMOD_VGA=1 RESET_SW1=1
 MCU0_GENERIC_vga_joystick = PMOD_VGA=1
+MCU0_GENERIC_vga_threshold = PMOD_VGA=1
 mcu0-fw:
 	@mkdir -p $(MCU0_BUILD)
 	@$(MCU0_CC) $(OLED_DEFS) -DDELAY=$(MCU0_BOARD_DELAY) -o $(MCU0_BUILD)/$(APP).elf $(MCU0_CRT) $(MCU0_SRC)

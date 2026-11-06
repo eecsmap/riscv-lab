@@ -2,7 +2,7 @@
 // OUT[15:8]; the buttons and switches are IN. With the SPI master enabled, JB's SCK (pin 4) and MOSI (pin 2) come from
 // it. The VGA text mode's signals come out separately; the board top decides which Pmod pins they drive.
 // The ADC's converter (the XADC) is outside, in mcu_board, and talks to mcu_adc over its DRP port; GPIO IN bit 6 is
-// the joystick's push switch (1 = pressed).
+// the joystick's push switch (1 = pressed); bit 7 is Arduino A0 read as a plain digital input (VGA project 6).
 // No host, no bridge: the program is the RAM's initial contents.
 `timescale 1ns/1ps
 module mcu_top #(
@@ -27,6 +27,7 @@ module mcu_top #(
   input             xadc_drdy,
   input      [15:0] xadc_do,
   input             xadc_eos,
+  input             a0_dig,         // Arduino A0 read as a digital input (pin Y11): GPIO IN bit 7, and counted by mcu_adc
   output            commit_valid,   // activity, for an LED or an ILA trigger
   output            bus_error       // a response with error set: the program touched a bad address
 );
@@ -71,7 +72,7 @@ module mcu_top #(
     .rdata(clint_rdata), .mtip(mtip), .msip(msip));
   mcu_gpio gpio (
     .clk(clk), .rst(rst), .sel(sel_gpio), .we(slv_we), .addr(slv_addr), .wdata(slv_wdata), .wmask(slv_wmask),
-    .rdata(gpio_rdata), .gpio_out(gpio_out), .gpio_in({1'b0, joy_sw, sw, btn}));
+    .rdata(gpio_rdata), .gpio_out(gpio_out), .gpio_in({a0_dig, joy_sw, sw, btn}));
 
   assign led = gpio_out[3:0];
   mcu_spi spi (
@@ -86,7 +87,7 @@ module mcu_top #(
 
   mcu_adc adc (
     .clk(clk), .rst(rst), .sel(sel_adc), .we(slv_we), .addr(slv_addr), .wdata(slv_wdata), .wmask(slv_wmask),
-    .rdata(adc_rdata), .den(xadc_den), .daddr(xadc_daddr), .drdy(xadc_drdy), .dout(xadc_do), .eos(xadc_eos));
+    .rdata(adc_rdata), .den(xadc_den), .daddr(xadc_daddr), .drdy(xadc_drdy), .dout(xadc_do), .eos(xadc_eos), .dig(a0_dig));
 
   assign bus_error = resp_valid & resp_error;
 endmodule
