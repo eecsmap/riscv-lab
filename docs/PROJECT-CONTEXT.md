@@ -17,6 +17,7 @@ Branch `teach-rv64ia` turns it into a teaching path: a student rebuilds the core
 | Topic | File |
 | --- | --- |
 | The 12-step curriculum, status per step | `docs/TEACHING-PLAN.md` |
+| Open items outside the curriculum: what the student should build by hand, the UART loader, loose ends | `docs/TODO.md` |
 | The verification track V0..V9 (draft, branch `teach-verify`) | `docs/VERIFICATION-TRACK.md` |
 | How to run the steps, the three fixed interfaces | `teaching/README.md` |
 | Per-step assignment, tests, mutants | `teaching/stepN/README.md`, `teaching/stepN/TODO.md` |
