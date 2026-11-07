@@ -36,7 +36,7 @@ module tb_vga;
 
   mcu_top top (.clk(clk), .rst(rst), .led(led), .jb(jb), .vga_r(vr), .vga_g(vg), .vga_b(vb), .vga_hs(hs), .vga_vs(vs),
                .btn(btn), .sw(sw), .joy_sw(joy_sw), .xadc_den(xden), .xadc_daddr(xdaddr), .xadc_drdy(xdrdy), .xadc_do(xdo),
-               .xadc_eos(xeos), .a0_dig(xdig), .commit_valid(commit_valid), .bus_error(bus_error));
+               .xadc_eos(xeos), .a0_dig(xdig), .uart_rx(1'b1), .uart_tx(), .commit_valid(commit_valid), .bus_error(bus_error));
   xadc_model xadc (.clk(clk), .den(xden), .daddr(xdaddr), .drdy(xdrdy), .dout(xdo), .eos(xeos), .dig(xdig));
   localparam SWEEP_LO = 1600, SWEEP_HI = 1800;
   integer sweep = 0, sweep_t = 0, sweep_dir = 0;    // sweep_dir: 0 not started, 1 up, -1 down, 2 done

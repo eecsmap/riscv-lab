@@ -30,6 +30,8 @@
 
 - [ ] **`updatemem`**：配 MMI 文件直接改写比特流里的 BRAM 内容，几秒钟，不需要新硬件。可以由 Claude 先做，马上缩短反馈。
 - [ ] **UART 外设 + 引导程序**：适合作为学生亲手做的第一个外设（对应 A1）。
+  - 2026-11-07：UART 外设和 `uart_echo` 已由 Claude 做好并上板（`teaching/uart/`），作为参考实现，带测试和 4 个变异体。
+    还剩：引导程序；学生照 `teaching/uart/README.md` 的寄存器表自己重写一遍 `mcu_uart.v`，用同一个测试和变异体验收。
   - 硬件：MCU-0 总线上的 UART（TX + RX）。PYNQ-Z1 的 USB 串口接在 PS 上，PL 用不到，需要一个 3.3 V 的
     USB 转串口模块接到 Pmod 或 Arduino 排针。testbench 加 TX 位流解码。
   - 固件：`putchar` / `getchar`、精简 `printf`；引导程序收"长度 + 数据 + 校验和"，写进 RAM，跳过去。只需轮询。

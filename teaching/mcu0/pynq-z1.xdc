@@ -58,3 +58,11 @@ set_false_path -from [get_ports a0_dig]
 
 # the buttons and switches are asynchronous inputs, synchronised inside mcu_gpio / the reset synchroniser
 set_false_path -from [get_ports {btn[*] sw[*]}]
+
+# UART on the Arduino header (teaching/uart): D0 = RX from the PC, D1 = TX to the PC, for a 3.3 V USB serial adapter
+# (an FT232H: its D0/TX goes to our D0, its D1/RX to our D1, and GND to GND). The pull-up keeps an open RX pin at the
+# idle level. RX is asynchronous; mcu_uart synchronises it.
+set_property -dict {PACKAGE_PIN T14 IOSTANDARD LVCMOS33 PULLUP true} [get_ports uart_rx]
+set_property -dict {PACKAGE_PIN U12 IOSTANDARD LVCMOS33} [get_ports uart_tx]
+set_false_path -from [get_ports uart_rx]
+set_false_path -to [get_ports uart_tx]

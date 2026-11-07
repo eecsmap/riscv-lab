@@ -7,6 +7,7 @@
 // The XADC scans the joystick on the Arduino header -- A0 (VAUX1), A1 (VAUX9) -- and the die temperature for mcu_adc;
 // the joystick's switch is on D4 (active low, the pin's pull-up is on in the XDC). Power the joystick from 3.3 V.
 // A0 also reaches an ordinary FPGA pin (Y11) directly; a0_dig reads it as a digital input (VGA project 6).
+// The UART is on Arduino D0 (RX, from the PC) and D1 (TX, to the PC), for a 3.3 V USB serial adapter (teaching/uart).
 // Not simulated here (MMCME2_BASE is a Xilinx primitive): mcu_top is what tb_mcu exercises.
 `timescale 1ns/1ps
 module mcu_board #(
@@ -26,7 +27,9 @@ module mcu_board #(
   input        vaux9_p,      // Arduino A1
   input        vaux9_n,
   input        joy_sw_n,     // Arduino D4: the joystick's switch, low = pressed
-  input        a0_dig        // Arduino A0 again, as a digital input (pin Y11: the header pin goes to both)
+  input        a0_dig,       // Arduino A0 again, as a digital input (pin Y11: the header pin goes to both)
+  input        uart_rx,      // Arduino D0: serial from the PC (pulled up in the XDC, so an open pin reads idle)
+  output       uart_tx       // Arduino D1: serial to the PC
 );
   wire gclk_i, clk40_i, clk40, fb, locked;
   IBUFG ibufg (.I(clk), .O(gclk_i));
@@ -82,5 +85,5 @@ module mcu_board #(
     .clk(clk40), .rst(rst), .led(led), .jb(jb_mcu),
     .vga_r(vga_r), .vga_g(vga_g), .vga_b(vga_b), .vga_hs(vga_hs), .vga_vs(vga_vs), .btn(RESET_SW1 ? btn : {1'b0, btn[2:0]}), .sw(sw),
     .joy_sw(!joy_sw_n), .xadc_den(xadc_den), .xadc_daddr(xadc_daddr), .xadc_drdy(xadc_drdy), .xadc_do(xadc_do),
-    .xadc_eos(xadc_eos), .a0_dig(a0_dig), .commit_valid(), .bus_error());
+    .xadc_eos(xadc_eos), .a0_dig(a0_dig), .uart_rx(uart_rx), .uart_tx(uart_tx), .commit_valid(), .bus_error());
 endmodule

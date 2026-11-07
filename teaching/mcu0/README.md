@@ -11,9 +11,10 @@ tcpu_core ── PHYSICAL_PORT ── mcu_router ──┬── mcu_ram    0x80
                                            ├── mcu_gpio   0x1001_0000  OUT +0（[3:0] LED，[15:8] Pmod JB），IN +8（{摇杆按键, sw, btn}）
                                            ├── mcu_spi    0x1002_0000  SPI 主机，EN 时接管 JB 的 SCK、MOSI（OLED 实验 3）
                                            ├── mcu_vga    0x1003_0000  VGA 文字模式，100 × 75 字符，800 × 600 @ 60 Hz（teaching/vga）
-                                           └── mcu_adc    0x1004_0000  XADC 结果：X（A0）、Y（A1）、芯片温度、轮数（VGA 实验 5）
+                                           ├── mcu_adc    0x1004_0000  XADC 结果：X（A0）、Y（A1）、芯片温度、轮数（VGA 实验 5）
+                                           └── mcu_uart   0x1005_0000  串口 8N1，115200 波特，Arduino D0 = RX、D1 = TX（teaching/uart）
 mcu_board：125 MHz → MMCM ×8/25 → 40 MHz，BTN3 复位，mcu_top 在里面；PMOD_VGA=1 时 JA + JB 输出 VGA 信号；
-           XADC 硬核经 DRP 接 mcu_adc；Arduino D4 = 摇杆按键（GPIO IN 第 6 位）
+           XADC 硬核经 DRP 接 mcu_adc；Arduino D4 = 摇杆按键（GPIO IN 第 6 位）；D0、D1 = 串口（接 USB 转串口模块）
 ```
 
 路由器守 PHYSICAL_PORT 契约：ready 寄存一拍，接受后一拍选中从设备，再一拍回响应；没映射的地址和原子请求回
@@ -153,5 +154,5 @@ make mcu0-bit APP=tasks                  # mcu0/build-tasks/mcu_board.bit
 
 ## 下一步 MCU-1
 
-串口。借 picosoc 的 `simpleuart.v` 换成这里的从设备接口，固件加 `putchar`、`getchar` 和一个精简 printf，testbench
+**（已完成：`teaching/uart/`，2026-11-07 上板。）** 原计划：串口。借 picosoc 的 `simpleuart.v` 换成这里的从设备接口，固件加 `putchar`、`getchar` 和一个精简 printf，testbench
 加 TX 位流解码。那时核最好已经到第 3 步，访问错地址会 trap 而不是静默。
