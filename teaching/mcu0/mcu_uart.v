@@ -7,6 +7,9 @@
 // (otherwise it was a glitch and is ignored). Then every DIV clocks one sample, in the middle of each data bit and of
 // the stop bit. Sampling in the middle is what tolerates two clocks that disagree: the error grows by a little each
 // bit, and there is half a bit of room for it.
+// After a framing error (a stop bit that is low: noise, or a "break" -- the line held low on purpose) the receiver
+// waits until the line is high again before it looks for a start bit. Otherwise a long break would be read as a run of
+// bad frames, and the moment the line goes high in the middle of one of them, that frame could pass as a junk byte.
 //
 // Registers, 64-bit words like the GPIO's (base 0x1005_0000):
 //   +0x00 TX      W   one byte (lane 0) to send. One byte waits here while the previous one is on the wire; a write
@@ -51,6 +54,7 @@ module mcu_uart (
   reg  [15:0] rcnt;                 // clocks to the next sample
   reg  [7:0]  rsh, rbr;
   reg         rvalid, ovr, ferr;
+  reg         rwait;                // after a framing error: wait for the line to go high
   wire        take = sel && !we && is_rx && rvalid;   // this read takes the byte
 
   always @(posedge clk) begin
@@ -58,7 +62,7 @@ module mcu_uart (
       div <= 16'd347; rdata <= 64'd0;
       thr <= 8'd0; thr_full <= 1'b0; tact <= 1'b0; txovf <= 1'b0; tsh <= 9'h1FF; tbits <= 4'd0; tcnt <= 16'd0; tx <= 1'b1;
       rx1 <= 1'b1; rx2 <= 1'b1; ract <= 1'b0; rbit <= 4'd0; rcnt <= 16'd0; rsh <= 8'd0; rbr <= 8'd0;
-      rvalid <= 1'b0; ovr <= 1'b0; ferr <= 1'b0;
+      rvalid <= 1'b0; ovr <= 1'b0; ferr <= 1'b0; rwait <= 1'b0;
     end else begin
       // ---- the bus side
       if (sel) begin
@@ -91,8 +95,9 @@ module mcu_uart (
 
       // ---- the receiver
       rx1 <= rx; rx2 <= rx1;
+      if (rx2) rwait <= 1'b0;
       if (!ract) begin
-        if (!rx2) begin ract <= 1'b1; rbit <= 4'd0; rcnt <= {1'b0, bitlen[15:1]}; end   // half a bit: the middle of the start bit
+        if (!rx2 && !rwait) begin ract <= 1'b1; rbit <= 4'd0; rcnt <= {1'b0, bitlen[15:1]}; end   // half a bit: the middle of the start bit
       end else if (rcnt != 16'd1) rcnt <= rcnt - 16'd1;
       else begin
         rcnt <= bitlen;
@@ -103,7 +108,7 @@ module mcu_uart (
           rsh <= {rx2, rsh[7:1]}; rbit <= rbit + 4'd1;                // least significant bit first
         end else begin                            // the middle of the stop bit
           ract <= 1'b0;
-          if (!rx2) ferr <= 1'b1;
+          if (!rx2) begin ferr <= 1'b1; rwait <= 1'b1; end
           else if (rvalid && !take) ovr <= 1'b1;
           else begin rbr <= rsh; rvalid <= 1'b1; end
         end

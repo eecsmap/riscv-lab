@@ -17,6 +17,15 @@
 #define UART_RX_FRAME   16u
 #define UART_TX_OVERFLOW 32u
 
+// Call first. Clears the sticky error bits; a simulation build (-DUART_DIV_INIT=n) also sets a faster bit rate.
+static void uart_init(void)
+{
+#ifdef UART_DIV_INIT
+  UART_DIV = UART_DIV_INIT;
+#endif
+  UART_STATUS = 0;
+}
+
 static void uart_putc(char c)
 {
   while (!(UART_STATUS & UART_TX_READY))

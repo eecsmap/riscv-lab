@@ -11,6 +11,7 @@ int main(void)
   uint64_t len = 0;
   int last = 0;
 
+  uart_init();
   uart_puts("\nMCU-0 UART ready. Type; it comes back in upper case. Enter ends a line.\n> ");
   for (;;) {
     uint64_t st = UART_STATUS;

@@ -31,7 +31,7 @@ REF_ISA   := -DHAS_C -DHAS_S -DHAS_M
 ISA_FLAGS ?= $(if $(filter $(abspath $(CORE)),$(ROOT)/rtl/cpu),$(REF_ISA),)
 ISA_CF    := $(foreach f,$(ISA_FLAGS),--cflag $(f))
 
-.PHONY: all clean unit step1-init step1 step1-mutants step1-all step2 step2-mutants step2-all step3 step3-mutants step3-all step4 step4-mutants step4-all step5-sim step5 step5-run pl-sim oled-sim oled-fw-sim vga-sim vga-fw-sim uart-sim mcu0-sim mcu0-fw mcu0-bit mcu0-prog
+.PHONY: all clean unit step1-init step1 step1-mutants step1-all step2 step2-mutants step2-all step3 step3-mutants step3-all step4 step4-mutants step4-all step5-sim step5 step5-run pl-sim oled-sim oled-fw-sim vga-sim vga-fw-sim uart-sim uart-boot-sim boot-load mcu0-sim mcu0-fw mcu0-bit mcu0-prog
 
 all: step1-all
 
@@ -246,8 +246,11 @@ endif
 MCU0_DELAY ?= $(if $(filter tasks,$(APP)),40000,4000)
 # oled_* apps live in teaching/oled (the Pmod OLEDrgb on JB, teaching/oled/README.md), vga_* in teaching/vga
 MCU0_SRC = $(if $(filter oled_%,$(APP)),$(TEACH)/oled,$(if $(filter vga_%,$(APP)),$(TEACH)/vga,$(if $(filter uart_%,$(APP)),$(TEACH)/uart,$(MCU0))))/$(APP).c
-MCU0_CC = $(CC) -march=$(MCU0_MARCH) -mabi=lp64 -mcmodel=medany -O2 -ffreestanding -fno-pie -nostdlib -nostartfiles -static -I $(MCU0) -I $(TEACH)/oled -I $(TEACH)/vga \
-    -Wl,--no-relax -Wl,--no-warn-rwx-segments -T $(ROOT)/software/probes/link.ld
+MCU0_FLAGS = -mabi=lp64 -mcmodel=medany -O2 -ffreestanding -fno-pie -nostdlib -nostartfiles -static -I $(MCU0) -I $(TEACH)/oled -I $(TEACH)/vga \
+    -Wl,--no-relax -Wl,--no-warn-rwx-segments
+# the bootloader (teaching/uart) is linked into the first 4 KiB; everything else from 0x8000_0000 as before
+MCU0_LD = $(if $(filter uart_boot,$(APP)),$(TEACH)/uart/boot.ld,$(ROOT)/software/probes/link.ld)
+MCU0_CC = $(CC) -march=$(MCU0_MARCH) $(MCU0_FLAGS) -T $(MCU0_LD)
 MS := $(OUT)/mcu0/$(APP)
 mcu0-sim:
 	@echo "== mcu0-sim: $(APP) firmware on mcu_top (CORE=$(CORE), DELAY=$(MCU0_DELAY) ticks)"
@@ -318,6 +321,41 @@ uart-sim:
 	@vvp -n $(US)/sim.vvp +hex=$(US)/$(UAPP).hex +pc_div=$(UART_PC_DIV) $${VCD:+ +vcd=$(US)/sim.vcd} > $(US)/sim.log 2>&1; \
 	    grep -E 'PC  |MISMATCH|LENGTH|FRAME|BUS ERROR|TRAP|SUMMARY|RESULT' $(US)/sim.log; grep -q 'RESULT PASS' $(US)/sim.log
 
+# uart-boot-sim: the bootloader loads uart_echo (linked at 0x8000_1000 by uart/app.ld) and starts it, then a break
+# brings the bootloader back (teaching/uart/tb_boot.v). Both run at UART_BOOT_DIV clocks a bit to keep it short.
+UART_BOOT_DIV ?= 120
+UB = $(OUT)/uart/boot
+uart-boot-sim:
+	@echo "== uart-boot-sim: uart_boot loads uart_echo over the UART, runs it, a break resets (CORE=$(CORE), $(UART_BOOT_DIV) clocks a bit)"
+	@mkdir -p $(UB)
+	@$(CC) -march=rv64i $(MCU0_FLAGS) -T $(TEACH)/uart/boot.ld -DUART_DIV_INIT=$(UART_BOOT_DIV) -DTICKS_PER_MS=40 \
+	    -o $(UB)/uart_boot.elf $(MCU0)/start.S $(TEACH)/uart/uart_boot.c
+	@$(CC) -march=rv64i $(MCU0_FLAGS) -T $(TEACH)/uart/app.ld -DUART_DIV_INIT=$(UART_BOOT_DIV) \
+	    -o $(UB)/uart_echo.elf $(MCU0)/start.S $(TEACH)/uart/uart_echo.c
+	@for e in uart_boot uart_echo; do $(TOOLPREFIX)objdump -d $(UB)/$$e.elf | grep -cE '\s(mul|div|rem|csr)' | grep -qx 0 \
+	    || { echo "$$e.elf uses M or CSR instructions"; exit 1; }; done
+	@python3 $(TEACH)/tools/elf2hex.py $(OBJCOPY) $(NM) $(UB)/uart_boot.elf $(UB)/uart_boot.hex $(UB)/uart_boot.tohost >/dev/null
+	@$(OBJCOPY) -O binary $(UB)/uart_echo.elf $(UB)/uart_echo.bin
+	@python3 $(TEACH)/tools/bin2bytes.py $(UB)/uart_echo.bin $(UB)/uart_echo.bytes > $(UB)/pay.args
+	@iverilog -g2005 -I $(ROOT)/rtl/cpu -I $(CORE) -o $(UB)/sim.vvp $(TEACH)/uart/tb_boot.v $(MCU0)/mcu_break.v \
+	    $(MCU0)/mcu_top.v $(MCU0)/mcu_router.v $(MCU0)/mcu_ram.v $(MCU0)/mcu_clint.v $(MCU0)/mcu_gpio.v $(MCU0_SPI) $(MCU0_IO) $(CORE)/*.v
+	@vvp -n $(UB)/sim.vvp +hex=$(UB)/uart_boot.hex +pay=$(UB)/uart_echo.bytes $$(cat $(UB)/pay.args) +div=$(UART_BOOT_DIV) \
+	    +pc_div=$$(( $(UART_BOOT_DIV) * 103 / 100 )) $${VCD:+ +vcd=$(UB)/sim.vcd} > $(UB)/sim.log 2>&1; \
+	    grep -E 'PC  |ANSWER|WRONG|RESET|FRAME|BUS ERROR|TRAP|SUMMARY|RESULT' $(UB)/sim.log; grep -q 'RESULT PASS' $(UB)/sim.log
+
+# boot-load: build APP for 0x8000_1000 (uart/app.ld, board timing) and send it to the bootloader on the board, which
+# must be running the uart_boot bitstream (make mcu0-bit APP=uart_boot && make mcu0-prog APP=uart_boot). No Vivado.
+# BOOT_TERM=1 stays connected as a terminal afterwards; BOOT_WATCH=<seconds> prints the program's output for a while.
+BOOT_PORT ?= /dev/serial/by-id/usb-0403_6014-if00-port0
+BL = $(OUT)/boot-load/$(APP)
+boot-load:
+	@mkdir -p $(BL)
+	@$(CC) -march=$(MCU0_MARCH) $(MCU0_FLAGS) -T $(TEACH)/uart/app.ld $(OLED_DEFS) -DDELAY=$(MCU0_BOARD_DELAY) \
+	    -o $(BL)/$(APP).elf $(MCU0_CRT) $(MCU0_SRC)
+	@$(OBJCOPY) -O binary $(BL)/$(APP).elf $(BL)/$(APP).bin
+	@echo "== boot-load: $(APP), $$(stat -c %s $(BL)/$(APP).bin) bytes -> $(BOOT_PORT)"
+	@python3 $(TEACH)/tools/uart_load.py --port $(BOOT_PORT) $(if $(BOOT_TERM),--term,$(if $(BOOT_WATCH),--watch $(BOOT_WATCH))) $(BL)/$(APP).bin
+
 # board firmware (DELAY for 40 MHz) and the Vivado build: teaching/mcu0/build/ for blink, build-$(APP)/ otherwise
 # ---- teaching/vga: the VGA text mode on MCU-0. vga-sim runs a vga_* app (default vga_hello) and checks the VGA
 # output pixel by pixel against the text RAM (tb_vga.v); screen.png is the first frame checked, 800 x 600.
@@ -366,6 +404,8 @@ MCU0_GENERIC_vga_hello = PMOD_VGA=1
 MCU0_GENERIC_vga_snake = PMOD_VGA=1 RESET_SW1=1
 MCU0_GENERIC_vga_joystick = PMOD_VGA=1
 MCU0_GENERIC_vga_threshold = PMOD_VGA=1
+# the bootloader's bitstream drives the Pmod VGA, so that vga_* programs can be loaded into it
+MCU0_GENERIC_uart_boot = PMOD_VGA=1
 mcu0-fw:
 	@mkdir -p $(MCU0_BUILD)
 	@$(MCU0_CC) $(OLED_DEFS) -DDELAY=$(MCU0_BOARD_DELAY) -o $(MCU0_BUILD)/$(APP).elf $(MCU0_CRT) $(MCU0_SRC)

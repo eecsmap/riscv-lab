@@ -8,13 +8,15 @@
 // the joystick's switch is on D4 (active low, the pin's pull-up is on in the XDC). Power the joystick from 3.3 V.
 // A0 also reaches an ordinary FPGA pin (Y11) directly; a0_dig reads it as a digital input (VGA project 6).
 // The UART is on Arduino D0 (RX, from the PC) and D1 (TX, to the PC), for a 3.3 V USB serial adapter (teaching/uart).
+// With BREAK_RESET = 1, the PC holding D0 low for 26 ms (a serial "break") resets the MCU once, like BTN3 (mcu_break).
 // Not simulated here (MMCME2_BASE is a Xilinx primitive): mcu_top is what tb_mcu exercises.
 `timescale 1ns/1ps
 module mcu_board #(
   parameter MEM_BYTES = 65536,
   parameter INIT_HEX  = "blink.hex",
   parameter RESET_SW1 = 0,         // 1: SW1 up holds the reset and BTN3 becomes an input (OLED snake: four directions)
-  parameter PMOD_VGA  = 0          // 1: JA + JB carry the VGA picture (a Pmod VGA across both headers)
+  parameter PMOD_VGA  = 0,         // 1: JA + JB carry the VGA picture (a Pmod VGA across both headers)
+  parameter BREAK_RESET = 1        // 1: a break on the UART's RX resets the MCU (teaching/uart, the bootloader)
 ) (
   input        clk,          // 125 MHz board clock
   output [3:0] led,
@@ -44,11 +46,13 @@ module mcu_board #(
     .CLKIN1(gclk_i), .PWRDWN(1'b0), .RST(1'b0), .CLKFBIN(fb));
   BUFG bufg (.I(clk40_i), .O(clk40));
 
-  // reset: held while the MMCM is not locked or BTN3 is pressed, released synchronously
+  // reset: held while the MMCM is not locked or BTN3 is pressed, released synchronously; a serial break pulses it
+  wire brk;
+  mcu_break brkdet (.clk(clk40), .rx(uart_rx), .brk(brk));
   reg [2:0] rst_sync = 3'b111;
   always @(posedge clk40 or negedge locked)
     if (!locked) rst_sync <= 3'b111;
-    else         rst_sync <= {rst_sync[1:0], RESET_SW1 ? sw[1] : btn[3]};
+    else         rst_sync <= {rst_sync[1:0], (RESET_SW1 ? sw[1] : btn[3]) | (BREAK_RESET && brk)};
   wire rst = rst_sync[2];
 
   wire [7:0] jb_mcu;
