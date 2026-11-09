@@ -10,6 +10,8 @@ MCU-0 加一个串口（UART），通过一个 USB 转串口模块接到 PC。�
 
 只用轮询，不用中断：第 2 步的核就能跑。
 
+背景知识（历史、电气层、和 SPI/I²C/USB/以太网的比较、上层协议、和网络/AI 的联系）在 [`BACKGROUND.md`](BACKGROUND.md)。
+
 ## 接线
 
 PYNQ-Z1 板上的 USB 串口接在 ARM 那一侧（PS），MCU-0 所在的 FPGA 逻辑（PL）用不到，所以要一个外接的 3.3 V
